@@ -1,0 +1,426 @@
+# Create a comprehensive page: Ecuaciones y Desigualdades (ESO, Bachillerato, Universidad, Doctorado)
+# Design: same family as before; expanded theory + solved examples (5 por apartado).
+html = """<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ecuaciones y Desigualdades — ESO, Bachillerato, Universidad y Doctorado</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  /* ===== Tokens de diseño accesible ===== */
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+      --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  /* ===== Barra de niveles ===== */
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);
+    color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));
+    border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;
+    box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:22px clamp(18px,3vw,28px);
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);
+    border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .theorem{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border);
+    border-left:6px solid var(--accent2); padding:12px 14px; border-radius:12px; margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;
+    background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  /* === Bloques de ejemplos === */
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border);
+    border-radius:12px; padding:12px 14px; margin:14px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border);
+    border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">ƒ</span><span class="brand-title">Ecuaciones y Desigualdades — ESO · Bachillerato · Universidad · Doctorado</span></a>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="eso" role="tab" aria-selected="true">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level" data-active>
+      <h1>ESO — Ecuaciones e Inecuaciones básicas con sentido</h1>
+      <p class="lead">Objetivo: dominar los pasos <em>equivalentes</em>, escribir soluciones en <strong>notación de intervalos</strong> y representar en la recta real. Se trabaja con lineales, con paréntesis y fracciones, con valor absoluto y con cuadráticas sencillas.</p>
+      <div class="toc">
+        <a href="#e1">1) Principios básicos y equivalencia</a>
+        <a href="#e2">2) Lineales de una variable</a>
+        <a href="#e3">3) Paréntesis y fracciones (m.c.d.)</a>
+        <a href="#e4">4) Inecuaciones simples y compuestas</a>
+        <a href="#e5">5) Valor absoluto (casos)</a>
+        <a href="#e6">6) Cuadráticas intro (factorización)</a>
+      </div>
+
+      <h2 id="e1">1) Principios básicos</h2>
+      <p>Resolver una ecuación es hallar todos los valores de x que hacen verdadera la igualdad. Pasos válidos: sumar/restar la misma expresión, multiplicar/dividir por un número no nulo y sustituir por expresiones <em>equivalentes</em>. Hay que <strong>restringir el dominio</strong> cuando aparecen denominadores o raíces de índice par.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>¿Puedo dividir por x?</summary>Solo si x≠0. Alternativa: multiplicar por x y estudiar x=0 aparte.</details></li>
+        <li><details><summary>Elevar al cuadrado</summary>Paso no invertible: puede añadir soluciones extrañas; al final, comprobar en la ecuación original.</details></li>
+        <li><details><summary>Dominio</summary>En 1/(x−3)=2, excluir x=3 antes de multiplicar.</details></li>
+        <li><details><summary>Equivalencia vs. implicación</summary>Si de A pasas a B sin poder volver, B ⇒ A no es cierto; revisa validez.</details></li>
+        <li><details><summary>Notación de intervalos</summary>(a,b), [a,b], (−∞,a], etc. Unión ∪ e intersección ∩.</details></li>
+      </ol></div>
+
+      <h2 id="e2">2) Lineales de una variable</h2>
+      <p>Forma general ax+b=c. Se aísla x con pasos equivalentes. Si a=0 y b≠c, no hay solución; si a=0 y b=c, hay infinitas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>3x−7=11</summary>x=6.</details></li>
+        <li><details><summary>2(x−3)=5x+1</summary>2x−6=5x+1 ⇒ −7=3x ⇒ x=−7/3.</details></li>
+        <li><details><summary>5−(2x−1)=3x</summary>5−2x+1=3x ⇒ 6=5x ⇒ x=6/5.</details></li>
+        <li><details><summary>x/3 + 1/2 = 5/6</summary>x/3=1/3 ⇒ x=1.</details></li>
+        <li><details><summary>0·x=4</summary>Incompatible: ∅.</details></li>
+      </ol></div>
+
+      <h2 id="e3">3) Paréntesis y fracciones</h2>
+      <p>Distribuir con cuidado (propiedad distributiva) y usar un denominador común para limpiar fracciones. Recordar excluir ceros de denominador.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>(x−2)/3 + (x+1)/2 = 5</summary>Multiplica por 6 ⇒ 2(x−2)+3(x+1)=30 ⇒ 5x−1=30 ⇒ x=31/5.</details></li>
+        <li><details><summary>2(3x−4)−(x−5)=0</summary>6x−8−x+5=0 ⇒ 5x−3=0 ⇒ x=3/5.</details></li>
+        <li><details><summary>(x+1)/(x−2)=3</summary>x≠2; x+1=3x−6 ⇒ x=7/2.</details></li>
+        <li><details><summary>1/(x+1) + 1/(x−1) = 1</summary>MCM=(x+1)(x−1) ⇒ 2x = x²−1 ⇒ x²−2x−1=0 ⇒ x=1±√2, excluir x=±1.</details></li>
+        <li><details><summary>Fracción reducible</summary>(2x+4)/(x+2)=2 (si x≠−2); valida tras excluir el punto.</details></li>
+      </ol></div>
+
+      <h2 id="e4">4) Inecuaciones simples y compuestas</h2>
+      <p>Al multiplicar por un negativo, el signo <strong>se invierte</strong>. Las compuestas se resuelven por pasos y se expresan en intervalos. Representación en la recta con puntos abiertos/cerrados.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>−2x &lt; 8</summary>Dividir por −2 ⇒ x &gt; −4.</details></li>
+        <li><details><summary>1 ≤ 2x+3 &lt; 9</summary>Restar 3 y dividir: −1 ≤ x &lt; 3.</details></li>
+        <li><details><summary>(x−1)/(x+2) ≥ 0</summary>Puntos críticos −2 y 1; tabla de signos ⇒ (−∞,−2) ∪ [1,∞).</details></li>
+        <li><details><summary>√(x−1) ≥ 2</summary>Dominio x≥1; elevar: x−1≥4 ⇒ x≥5.</details></li>
+        <li><details><summary>|x−2| &lt; 3</summary>−3 &lt; x−2 &lt; 3 ⇒ −1 &lt; x &lt; 5.</details></li>
+      </ol></div>
+
+      <h2 id="e5">5) Valor absoluto</h2>
+      <p>|x| mide distancia a 0. Para ecuaciones y desigualdades, se trabaja por casos o usando equivalencias: |x|&lt;a ⇔ −a&lt;x&lt;a; |x|≥a ⇔ x≤−a o x≥a (a≥0).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>|2x−5|=1</summary>2x−5=±1 ⇒ x=3 o x=2.</details></li>
+        <li><details><summary>|x+4|≥7</summary>x≤−11 o x≥3.</details></li>
+        <li><details><summary>|x|≤2</summary>[−2,2].</details></li>
+        <li><details><summary>|x−1|=|2x+3|</summary>Casos: x−1=2x+3 ⇒ x=−4; x−1=−2x−3 ⇒ 3x=−2 ⇒ x=−2/3.</details></li>
+        <li><details><summary>|x−a|&lt;ε</summary>(a−ε,a+ε).</details></li>
+      </ol></div>
+
+      <h2 id="e6">6) Cuadráticas (intro)</h2>
+      <p>ax²+bx+c=0. Si factoriza, raíces por factores; si no, fórmula general. La gráfica y=ax²+bx+c ayuda a entender desigualdades cuadráticas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>x²−9=0</summary>(x−3)(x+3)=0 ⇒ x=±3.</details></li>
+        <li><details><summary>x²+x−6 ≥ 0</summary>(x+3)(x−2) ⇒ ≥0 en (−∞,−3]∪[2,∞).</details></li>
+        <li><details><summary>2x²−5x+2=0</summary>D=25−16=9 ⇒ x=(5±3)/4 ⇒ 2 o 1/2.</details></li>
+        <li><details><summary>Vértice de y=x²−6x+5</summary>(3,−4).</details></li>
+        <li><details><summary>Completar cuadrado</summary>x²+4x+1=0 ⇒ (x+2)²=3 ⇒ x=−2±√3.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Técnicas sólidas y resolución sistemática</h1>
+      <p class="lead">Se profundiza en racionales, radicales, valor absoluto, cuadráticas y sistemas, y se añaden exponenciales, logaritmos y ecuaciones con parámetros. Para desigualdades, método de intervalos, tablas de signo y equivalencias potentes.</p>
+      <div class="toc">
+        <a href="#b1">1) Lineales y sistemas 2×2 (resumen)</a>
+        <a href="#b2">2) Cuadráticas y racionales</a>
+        <a href="#b3">3) Exponenciales y logarítmicas</a>
+        <a href="#b4">4) Valor absoluto avanzado</a>
+        <a href="#b5">5) Desigualdades polinómicas y racionales</a>
+        <a href="#b6">6) Parámetros y familias de ecuaciones</a>
+      </div>
+
+      <h2 id="b1">1) Lineales y sistemas 2×2</h2>
+      <p>Igualación, sustitución y reducción. Interpretación geométrica: intersección de dos rectas. Determinante ≠0 ⇒ única solución.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>{x+2y=7; 3x−y=5}</summary>(x,y)=(17/7, 16/7).</details></li>
+        <li><details><summary>Incompatibilidad</summary>{2x−4y=6; x−2y=1} ⇒ rectas paralelas.</details></li>
+        <li><details><summary>Infinitas soluciones</summary>{2x−4y=6; 4x−8y=12} ⇒ misma recta.</details></li>
+        <li><details><summary>Regla de Cramer</summary>x=det(B_x)/det(A) cuando det(A)≠0.</details></li>
+        <li><details><summary>Parámetro</summary>{x+ky=2; 2x+2ky=4} ⇒ si k≠0, infinitas; si k=0, {x=2, 2x=4} ⇒ infinitas; nunca incompatible.</details></li>
+      </ol></div>
+
+      <h2 id="b2">2) Cuadráticas y racionales</h2>
+      <p>Completar cuadrado, fórmula general, discriminante y gráficas. Racionales: factorizar numerador/denominador, excluir ceros, simplificar y usar método de intervalos para desigualdades.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>(x−1)/(x+2) &gt; 0</summary>Puntos: −2 (excluido) y 1. Signos ⇒ (−∞,−2) ∪ (1,∞).</details></li>
+        <li><details><summary>(x+3)/(x−1) ≤ 2</summary>(x+3)−2(x−1) ≤ 0 ⇒ 5−x ≤ 0 ⇒ x ≥ 5 con x≠1. Solución: (5,∞).</details></li>
+        <li><details><summary>2x²+bx+8=0 tiene raíz doble</summary>D=b²−64=0 ⇒ b=±8. Raíz doble en x=−b/(2a).</details></li>
+        <li><details><summary>Asintotas de y=(x²−1)/(x−1)</summary>Simplifica a y=x+1 con x≠1; hay hueco en x=1.</details></li>
+        <li><details><summary>Desigualdad (x²−9)/(x−3) ≥ 0</summary>Simplifica a x+3 con exclusión x≠3 ⇒ solución [−3,∞)\{3}.</details></li>
+      </ol></div>
+
+      <h2 id="b3">3) Exponenciales y logarítmicas</h2>
+      <p>Para a^x: base positiva ≠1. Logaritmos: base &gt;0, ≠1; dominio positivo. Las ecuaciones se resuelven linealizando con logaritmos o igualando exponentes cuando las bases coinciden.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>2^{x}=16</summary>x=4.</details></li>
+        <li><details><summary>log₃(x−1)=2</summary>x−1=9 ⇒ x=10.</details></li>
+        <li><details><summary>3^{2x−1}=27</summary>2x−1=3 ⇒ x=2.</details></li>
+        <li><details><summary>log(x)+log(x−1)=1 (base 10)</summary>log(x(x−1))=1 ⇒ x(x−1)=10 ⇒ x²−x−10=0 ⇒ x= (1±√41)/2, con dominio x&gt;1 ⇒ x=(1+√41)/2.</details></li>
+        <li><details><summary>Desigualdad e^{x} ≥ 5</summary>x ≥ ln 5.</details></li>
+      </ol></div>
+
+      <h2 id="b4">4) Valor absoluto avanzado</h2>
+      <p>Descomposición por casos y equivalencias. Para |ax+b|≤c: −c≤ax+b≤c. Para |f(x)|≤|g(x)|, cuadrar es válido si ambos lados ≥0 y se justifica dominio.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>|x−3|≤2</summary>1≤x≤5.</details></li>
+        <li><details><summary>|2x+1|&gt;3</summary>x&lt;−2 o x&gt;1.</details></li>
+        <li><details><summary>|x−1|≤|x+2|</summary>Cuadrar: (x−1)²≤(x+2)² ⇒ −2x+1≤4x+4 ⇒ x≥−1/2.</details></li>
+        <li><details><summary>|x|+|x−2|≥2</summary>Siempre cierta (desigualdad triangular).</details></li>
+        <li><details><summary>Distancia a un intervalo</summary>|x−a|≤r describe la “bola” (a−r,a+r).</details></li>
+      </ol></div>
+
+      <h2 id="b5">5) Desigualdades polinómicas y racionales</h2>
+      <p>Método general: llevar a un lado, factorizar, puntos críticos y tabla de signos. En racionales, excluir ceros de denominador. En potencias pares, atención a signos.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>x³−x ≤ 0</summary>x(x−1)(x+1)≤0 ⇒ signos ⇒ [−1,0]∪[1,∞) complement? <em>Tabla</em> ⇒ solución [−1,0]∪[1,∞)? <span>Corrección: producto ≤0 con raíces −1,0,1 y alternancia: [−1,0] ∪ [1,∞) no es correcto para ≤0; revisar: signos: (−∞,−1)[−][+,], etc. Resultado: [−1,0] ∪ [1,∞) es para ≥0; para ≤0 es (−∞,−1] ∪ [0,1].</span></details></li>
+        <li><details><summary>(x−2)(x+1) ≥ 0</summary>(−∞,−1] ∪ [2,∞).</details></li>
+        <li><details><summary>(x+3)/(x−1) &lt; 0</summary>(−∞,−3) ∪ (−3,1).</details></li>
+        <li><details><summary>(x²−1)/(x+1) ≥ 0</summary>Simplifica a x−1 con x≠−1 ⇒ [1,∞)\{−1}.</details></li>
+        <li><details><summary>(x²+1)/(x−2) ≤ 0</summary>Numerador siempre ≥1 ⇒ la fracción ≤0 cuando x−2&lt;0 ⇒ (−∞,2).</details></li>
+      </ol></div>
+
+      <h2 id="b6">6) Parámetros</h2>
+      <p>Un parámetro altera el número de soluciones o la región solución. Se estudian casos según discriminante, dominio o rangos.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>x²−(k+1)x+k=0</summary>D=(k+1)²−4k=k²−2k+1=(k−1)² ⇒ siempre ≥0; raíz doble si k=1.</details></li>
+        <li><details><summary>|x−k|≤2</summary>Intervalo [k−2,k+2].</details></li>
+        <li><details><summary>(k−1)x=3</summary>Si k≠1 ⇒ x=3/(k−1); si k=1 ⇒ incompatible.</details></li>
+        <li><details><summary>(x−1)/(x−k) ≥ 0</summary>Puntos 1 y k; tabla según orden relativo de 1 y k.</details></li>
+        <li><details><summary>log(x−k) definido</summary>x&gt;k.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Estructura, convexidad y métodos generales</h1>
+      <p class="lead">Pasamos de recetas a <strong>principios</strong>: existencia/uniquidad, estabilidad y formas vectoriales. Desigualdades = descripción de conjuntos; ecuaciones = problemas de punto fijo, optimización o geometría.</p>
+      <div class="toc">
+        <a href="#u1">1) AX=b, rango y Rouché–Frobenius</a>
+        <a href="#u2">2) Gauss, condicionamiento y estabilidad</a>
+        <a href="#u3">3) Mínimos cuadrados y QR</a>
+        <a href="#u4">4) Fourier–Motzkin y Farkas</a>
+        <a href="#u5">5) Programación lineal y dualidad</a>
+        <a href="#u6">6) No lineales: Newton, contracciones e implícita</a>
+      </div>
+
+      <h2 id="u1">1) AX=b, rango y Rouché–Frobenius</h2>
+      <p>Compatibilidad ⇔ rang(A)=rang([A|b]). Si rang(A)=n hay unicidad; si &lt;n, un afín de dimensión n−rang(A). El espacio nulo N(A) describe las direcciones de no unicidad.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Compatibilidad</summary>rang(A)=rang([A|b]) ⇒ hay solución.</details></li>
+        <li><details><summary>No unicidad</summary>Si rang(A)=r&lt;n, conjunto solución = x₀ + N(A).</details></li>
+        <li><details><summary>Geometría</summary>Hiperplanos que se cortan en un afín.</details></li>
+        <li><details><summary>Inversa</summary>A invertible ⇔ rang n ⇔ det ≠ 0.</details></li>
+        <li><details><summary>Pseudoinversa</summary>x^⋆ = A^+ b minimiza ||Ax−b|| y tiene mínima norma.</details></li>
+      </ol></div>
+
+      <h2 id="u2">2) Eliminación de Gauss, condicionamiento</h2>
+      <p>Complejidad O(n³); pivoteo parcial para estabilidad. Número de condición κ(A) mide sensibilidad de la solución; valores grandes vuelven el problema mal condicionado.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>κ(A) grande</summary>Pequeñas perturbaciones en b causan grandes variaciones en x.</details></li>
+        <li><details><summary>Pivotar</summary>Intercambiar filas para maximizar el pivote reduce errores.</details></li>
+        <li><details><summary>Detección de singularidad</summary>Si aparece pivote 0 insalvable, A es singular.</details></li>
+        <li><details><summary>Factorización LU</summary>A=LU acelera múltiples resoluciones con mismas A.</details></li>
+        <li><details><summary>Escalado</summary>Normalizar columnas/filas puede mejorar κ(A).</details></li>
+      </ol></div>
+
+      <h2 id="u3">3) Mínimos cuadrados y QR</h2>
+      <p>Resolver min ||Ax−b||². Ecuaciones normales A^TAx=A^Tb; mejor usar QR para estabilidad numérica. La solución proyecta b sobre el subespacio generado por columnas de A.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Ajuste lineal</summary>Formar A=[x_i,1], resolver con QR.</details></li>
+        <li><details><summary>Residuo ortogonal</summary>r=b−Ax ⟂ Col(A).</details></li>
+        <li><details><summary>Regularización Ridge</summary>(A^TA+λI)x=A^Tb.</details></li>
+        <li><details><summary>Colinealidad</summary>Si columnas dependientes, infinitas soluciones de mínima norma (usar A^+).</details></li>
+        <li><details><summary>Pérdida de precisión en A^TA</summary>Dobla el condicionamiento; por eso se prefiere QR.</details></li>
+      </ol></div>
+
+      <h2 id="u4">4) Fourier–Motzkin y lema de Farkas</h2>
+      <p><strong>Fourier–Motzkin</strong> elimina variables de Ax≤b combinando desigualdades; produce una descripción en menos variables (y posibles redundancias). <strong>Farkas</strong> da certificados de infactibilidad: o existe x con Ax≤b, o existe y≥0 con A^Ty=0 y b^Ty&lt;0.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Eliminar x de {x≤2, −x≤1}</summary>Se obtiene intervalo [−1,2] para x; en problemas grandes, se iteran combinaciones.</details></li>
+        <li><details><summary>Ax≤b sin solución</summary>Farkas produce y≥0 con A^Ty=0 y b^Ty&lt;0 ⇒ certificado.</details></li>
+        <li><details><summary>Redundancia</summary>Al eliminar, pueden aparecer desigualdades redundantes; se simplifica por dominancia.</details></li>
+        <li><details><summary>Proyección</summary>Fourier–Motzkin es una proyección del poliedro sobre menos coordenadas.</details></li>
+        <li><details><summary>Dualidad geométrica</summary>Conos polares y separación de Hahn–Banach motivan Farkas.</details></li>
+      </ol></div>
+
+      <h2 id="u5">5) Programación lineal (PL) y dualidad</h2>
+      <p>Max/min c^Tx s.a. Ax≤b. Simplex recorre vértices; puntos interiores siguen el centro. Dualidad fuerte: bajo hipótesis suaves, el óptimo primal = óptimo dual, con holgura complementaria.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Dual de max c^Tx s.a. Ax≤b, x≥0</summary>min b^Ty s.a. A^Ty ≥ c, y ≥ 0.</details></li>
+        <li><details><summary>Certificado de optimalidad</summary>Soluciones primal y dual que satisfacen holgura complementaria.</details></li>
+        <li><details><summary>Infeasible vs. Inacotado</summary>Farkas certifica infeasibilidad; un rayo factible con c^Td&gt;0 certifica inacotación.</details></li>
+        <li><details><summary>Base</summary>Solución básica factible = intersección de n hiperplanos activos.</details></li>
+        <li><details><summary>Puntos interiores</summary>Barreras logarítmicas y trayectoria central.</details></li>
+      </ol></div>
+
+      <h2 id="u6">6) No lineales: Newton, contracciones e implícita</h2>
+      <p>Para f(x)=0, Newton usa derivadas: x_{k+1}=x_k−f/f'. Bisección garantiza convergencia si hay cambio de signo. <strong>Banach</strong> asegura punto fijo si T es contracción. <strong>Implícita</strong>: si F(x,y)=0 y ∂F/∂y ≠ 0, existe y(x) local.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Bisección en [a,b]</summary>Pasos ≈ log₂((b−a)/ε).</details></li>
+        <li><details><summary>Newton en √2</summary>x_{k+1}=0.5(x_k+2/x_k).</details></li>
+      <li><details><summary>Contracción</summary>|T(x)−T(y)|≤q|x−y| con q&lt;1 ⇒ único punto fijo.</details></li>
+        <li><details><summary>Implícita</summary>F(x,y)=y−x² ⇒ ∂F/∂y=1 ≠ 0 ⇒ y=x² localmente.</details></li>
+        <li><details><summary>Inecuaciones convexas</summary>Minimizar f convexa s.a. g_i(x)≤0 resuelto por KKT bajo cualificaciones.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Desigualdades profundas y conic optimization</h1>
+      <p class="lead">Panorámica de desigualdades funcionales y optimización en conos: herramientas que dominan la forma de los conjuntos solución y certificar óptimos.</p>
+      <div class="toc">
+        <a href="#p1">1) Clásicas: AM–GM, Cauchy–Schwarz, Jensen, Hölder</a>
+        <a href="#p2">2) Conos convexos: SDP y SOCP</a>
+        <a href="#p3">3) Dualidad lagrangiana y KKT</a>
+        <a href="#p4">4) Eliminación y proyecciones en desigualdades</a>
+        <a href="#p5">5) Concentración (Markov, Chebyshev, Hoeffding)</a>
+      </div>
+
+      <h2 id="p1">1) Desigualdades clásicas</h2>
+      <p><strong>AM–GM</strong>: media aritmética ≥ media geométrica. <strong>Cauchy–Schwarz</strong>: |⟨x,y⟩| ≤ ||x||·||y||. <strong>Jensen</strong> caracteriza convexidad: φ(θx+(1−θ)y) ≤ θφ(x)+(1−θ)φ(y). <strong>Hölder</strong> generaliza Cauchy–Schwarz.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>AM–GM en dos números</summary>(a+b)/2 ≥ √(ab), igualdad si a=b.</details></li>
+        <li><details><summary>Cauchy para series</summary>(∑a_ib_i)² ≤ (∑a_i²)(∑b_i²).</details></li>
+        <li><details><summary>Jensen con φ(t)=e^t</summary>e^{θx+(1−θ)y} ≤ θe^x+(1−θ)e^y.</details></li>
+        <li><details><summary>Hölder p=q=2</summary>Recupera Cauchy–Schwarz.</details></li>
+        <li><details><summary>Optimización con AM–GM</summary>Maximizar x(10−x) en x∈[0,10] ⇒ ≤ ((x+(10−x))/2)²=25 ⇒ máximo 25.</details></li>
+      </ol></div>
+
+      <h2 id="p2">2) Conos convexos y programación semidefinida</h2>
+      <p>Una desigualdad matricial X ≽ 0 (semidefinida positiva) define un cono. <strong>SDP</strong>: min c•X s.a. A_i•X=b_i, X≽0. <strong>SOCP</strong>: restricciones de norma ||Ax+b||₂ ≤ c^Tx+d. Ambos generalizan la PL y tienen dualidad fuerte bajo Slater.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Condición de convexidad</summary>f es convexa ⇔ su Hessiana H(x) ≽ 0.</details></li>
+        <li><details><summary>Reformulación como SDP</summary>Minimizar t con |a^Tx|≤t ⇔ \\(\\begin{bmatrix} t & a^Tx \\\\ x^Ta & tI \\end{bmatrix} ≽ 0\\).</details></li>
+        <li><details><summary>SOCP de mínimos cuadrados con cota</summary>min ||Ax−b||₂ s.a. ||x||₂ ≤ R.</details></li>
+        <li><details><summary>Dual de SDP</summary>Maximiza ∑ b_i y_i s.a. ∑ y_i A_i ≼ C.</details></li>
+        <li><details><summary>Slater</summary>Factibilidad estricta ⇒ dualidad fuerte y no hay brecha dual.</details></li>
+      </ol></div>
+
+      <h2 id="p3">3) Dualidad lagrangiana y KKT</h2>
+      <p>Para min f(x) s.a. g_i(x)≤0, h_j(x)=0, el Lagrangiano L=f+∑λ_i g_i+∑μ_j h_j. KKT: estacionariedad, primal/dual factibles y holgura complementaria. Bajo convexidad y regularidad (Slater), son necesarias y suficientes.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Proyección en una bola</summary>min ||x−a||² s.a. ||x||≤R ⇒ solución: x= a·min(1, R/||a||).</details></li>
+        <li><details><summary>Box constraints</summary>min f(x) s.a. l≤x≤u ⇒ condiciones KKT dan saturación de componentes.</details></li>
+        <li><details><summary>Dual simple</summary>min x² s.a. x≥1 ⇒ L=x²+λ(1−x); KKT ⇒ x=1, λ=2.</details></li>
+        <li><details><summary>Complementariedad</summary>λ_i g_i(x)=0 en el óptimo.</details></li>
+        <li><details><summary>Convexidad estricta</summary>Garantiza unicidad del óptimo.</details></li>
+      </ol></div>
+
+      <h2 id="p4">4) Eliminación y proyecciones</h2>
+      <p>Fourier–Motzkin como caso lineal; para no lineales se usan subniveles y proyecciones convexas. La proyección de un convexo es convexo; esto preserva estructura en desigualdades proyectadas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Proyección de un poliedro</summary>Eliminar variables mantiene convexidad.</details></li>
+        <li><details><summary>Relajaciones</summary>Reemplazar restricciones complicadas por otras más fuertes pero manejables (SDP/SOCP).</details></li>
+        <li><details><summary>Chequeo de redundancias</summary>Una desigualdad es redundante si su eliminación no cambia el conjunto.</details></li>
+        <li><details><summary>Separación</summary>Si x∉C convexo, existe hiperplano que separa x de C.</details></li>
+        <li><details><summary>Interiores</summary>Puntos estrictamente factibles permiten métodos de barrera.</details></li>
+      </ol></div>
+
+      <h2 id="p5">5) Concentración de medida (vistazo)</h2>
+      <p>Desigualdades que acotan la probabilidad de desviaciones grandes: <strong>Markov</strong>, <strong>Chebyshev</strong>, <strong>Hoeffding</strong>. Aunque probabilísticas, son herramientas transversales en análisis e inequaciones.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Markov</summary>Para X≥0, P(X≥a) ≤ E[X]/a.</details></li>
+        <li><details><summary>Chebyshev</summary>P(|X−μ|≥kσ) ≤ 1/k².</details></li>
+        <li><details><summary>Hoeffding</summary>Media de variables acotadas concentra exponencialmente.</details></li>
+        <li><details><summary>Aplicación rápida</summary>Controlar error de estimación con pocas cuentas.</details></li>
+        <li><details><summary>Relación con convexidad</summary>Funciones convexas y exponentes (Chernoff) conectan con Jensen.</details></li>
+      </ol></div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs
+    const map = { eso:'#sec-eso', bach:'#sec-bach', uni:'#sec-uni', phd:'#sec-phd' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level=\"${k}\"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-ec-ineq', key);
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-ec-ineq');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'eso'), false);
+
+    // Progress + Top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+"""
+path = "/mnt/data/ecuaciones_desigualdades_eso_bach_uni_phd.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(html)
+path
+

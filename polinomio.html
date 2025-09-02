@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Polinomios — Teoría y ejercicios (ESO y Bachillerato)</title>
+<meta name="color-scheme" content="light dark" />
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+      --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  /* === Bloques de ejemplos/ejercicios === */
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  code.kbd{background:color-mix(in oklab,var(--paper) 82%, transparent); padding:2px 6px; border-radius:8px; font-weight:800}
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px}
+  .gen{display:flex; gap:6px; flex-wrap:wrap}
+  input[type="number"], input[type="text"]{padding:8px 10px; border:1px solid var(--border); border-radius:10px; background:var(--paper); color:inherit; width:120px}
+  .ok{color:color-mix(in oklab, var(--accent2) 80%, var(--ink))}
+  .bad{color:#ef4444}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">𝒫</span><span class="brand-title">Polinomios — Teoría por niveles</span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" title="Reducir letra">A−</button>
+        <button class="btn small" id="fs-up" title="Aumentar letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
+        <button class="btn small" id="width-up" title="Ampliar ancho de lectura">⇥</button>
+        <button class="btn" id="theme-toggle" title="Modo claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="eso" role="tab" aria-selected="true">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level" data-active>
+      <h1>ESO — Polinomios: conceptos y operaciones</h1>
+      <p class="lead">Construimos polinomios, los ordenamos por grado y practicamos suma, resta, multiplicación y factorización básica. Todo con <em>muchos</em> ejemplos.</p>
+
+      <div class="toc">
+        <a href="#e-def">Definición, términos y grado</a>
+        <a href="#e-operar">Suma, resta y multiplicación</a>
+        <a href="#e-identidades">Identidades notables</a>
+        <a href="#e-factor">Factorización básica</a>
+        <a href="#e-evaluar">Evaluación y raíces</a>
+        <a href="#e-practica">Generador de práctica</a>
+      </div>
+
+      <h2 id="e-def">Definición, términos y grado</h2>
+      <p>Un <strong>polinomio</strong> en <em>x</em> es una expresión de la forma <em>a<sub>n</sub>x<sup>n</sup> + a<sub>n−1</sub>x<sup>n−1</sup> + … + a<sub>1</sub>x + a<sub>0</sub></em>, con coeficientes <em>a<sub>i</sub></em> reales (o racionales) y exponente <em>n</em> entero no negativo. El <strong>grado</strong> es el exponente mayor con coeficiente no nulo. El <strong>coeficiente principal</strong> es <em>a<sub>n</sub></em>. Se escribe en <em>forma estándar</em> ordenando de mayor a menor grado.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (10)</h4>
+        <ol>
+          <li><details><summary>Identifica grado y coeficiente principal en 5x³ − 2x + 7.</summary>Grado 3; coeficiente principal 5.</details></li>
+          <li><details><summary>¿Es 3x<sup>−2</sup> + 1 un polinomio?</summary>No; los exponentes deben ser enteros <em>no negativos</em>.</details></li>
+          <li><details><summary>Escribe en forma estándar: 4 − x + 2x³ + x².</summary>2x³ + x² − x + 4.</details></li>
+          <li><details><summary>Cuenta términos en −3x² + 6x − 1.</summary>Tres términos (trinomio).</details></li>
+          <li><details><summary>Monomio de grado 0.</summary>Cualquier constante ≠ 0; p.ej., 9.</details></li>
+          <li><details><summary>¿Qué polinomio tiene grado indefinido?</summary>El polinomio nulo (todos coeficientes 0).</details></li>
+          <li><details><summary>Completa: 7x² + __x + 5 tiene 2 raíces reales si…</summary>…su discriminante b²−4ac &gt; 0; aquí a=7, c=5.</details></li>
+          <li><details><summary>Coeficiente de x en 9 − 4x + x³.</summary>−4.</details></li>
+          <li><details><summary>¿Qué término falta en 6x³ + 0x² + 5?</summary>El término en x (coeficiente 0).</details></li>
+          <li><details><summary>Clasifica: 8x − 3.</summary>Binomio de grado 1 (lineal).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="e-operar">Suma, resta y multiplicación</h2>
+      <p>Para <strong>sumar o restar</strong> se combinan <em>términos semejantes</em> (misma potencia de x). Para <strong>multiplicar</strong> se usa distributiva y, si procede, <span class="nowrap">producto notable</span>.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (10)</h4>
+        <ol>
+          <li><details><summary>(3x² + x − 4) + (−x² + 5x + 7)</summary>2x² + 6x + 3.</details></li>
+          <li><details><summary>(2x³ − x + 1) − (x³ + 3x − 5)</summary>x³ − 4x + 6.</details></li>
+          <li><details><summary>(x + 2)(x + 5)</summary>x² + 7x + 10.</details></li>
+          <li><details><summary>(2x − 3)(x − 4)</summary>2x² − 11x + 12.</details></li>
+          <li><details><summary>(x − 6)²</summary>x² − 12x + 36.</details></li>
+          <li><details><summary>(x + 3)(x² − x + 2)</summary>x³ + 2x² − x + 6.</details></li>
+          <li><details><summary>(2x + 1)(3x² − x + 4)</summary>6x³ + x² + 7x + 4.</details></li>
+          <li><details><summary>Ordena y simplifica: 4x − 3 + 2x² − x + 5</summary>2x² + 3x + 2.</details></li>
+          <li><details><summary>(x − 1)(x + 1)</summary>x² − 1 (diferencia de cuadrados).</details></li>
+          <li><details><summary>Producto de un monomio: 3x(2x² − x + 5)</summary>6x³ − 3x² + 15x.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="e-identidades">Identidades notables</h2>
+      <p>Recetas útiles: <strong>(a±b)² = a² ± 2ab + b²</strong>, <strong>a² − b² = (a−b)(a+b)</strong>, <strong>(a±b)³ = a³ ± 3a²b + 3ab² ± b³</strong>.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (6)</h4>
+        <ol>
+          <li><details><summary>Expande (3x − 2)²</summary>9x² − 12x + 4.</details></li>
+          <li><details><summary>Factoriza x² − 49</summary>(x − 7)(x + 7).</details></li>
+          <li><details><summary>Expande (x + 4)³</summary>x³ + 12x² + 48x + 64.</details></li>
+          <li><details><summary>Factoriza 9x² − 24x + 16</summary>(3x − 4)².</details></li>
+          <li><details><summary>Simplifica (x + 2)² − (x − 2)²</summary>4x·2 = 8x (por a²−b²).</details></li>
+          <li><details><summary>Completa cuadrado: x² + 6x + 5</summary>(x + 3)² − 4.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="e-factor">Factorización básica</h2>
+      <p>Claves: <strong>factor común</strong>, <strong>agrupación</strong>, y usar identidades. Las <em>raíces</em> de un polinomio indican factores lineales: si r es raíz de p(x), entonces (x − r) divide p(x).</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (8)</h4>
+        <ol>
+          <li><details><summary>3x² + 6x</summary>3x(x + 2) (factor común).</details></li>
+          <li><details><summary>ax + ay</summary>a(x + y).</details></li>
+          <li><details><summary>x² + 5x + 6</summary>(x + 2)(x + 3) (buscar dos números con suma 5 y producto 6).</details></li>
+          <li><details><summary>2x² + 7x + 3</summary>(2x + 1)(x + 3).</details></li>
+          <li><details><summary>x³ + 3x² + x + 3</summary>Grupo: (x³ + 3x²) + (x + 3) = x²(x + 3) + 1(x + 3) = (x + 3)(x² + 1).</details></li>
+          <li><details><summary>4x² − 25</summary>(2x − 5)(2x + 5).</details></li>
+          <li><details><summary>x² − 10x + 25</summary>(x − 5)².</details></li>
+          <li><details><summary>x³ − x</summary>x(x − 1)(x + 1).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="e-evaluar">Evaluación y raíces</h2>
+      <p>Para evaluar p(x) en x=a sustituimos y calculamos. <strong>r es raíz</strong> si p(r)=0. La multiplicidad de una raíz es cuántas veces se repite el factor (x−r).</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (6)</h4>
+        <ol>
+          <li><details><summary>p(x)=x² − 4x + 3. Calcula p(2).</summary>4 − 8 + 3 = −1.</details></li>
+          <li><details><summary>¿Es 3 raíz de x² − 5x + 6?</summary>9 − 15 + 6 = 0 ⇒ sí; factor (x − 3).</details></li>
+          <li><details><summary>Raíces de x² − 9</summary>±3.</details></li>
+          <li><details><summary>Multiplicidad de la raíz 2 en (x − 2)²(x + 1)</summary>2 tiene multiplicidad 2.</details></li>
+          <li><details><summary>¿Cuántas raíces reales puede tener un polinomio cúbico?</summary>1 o 3 (contando multiplicidades siempre 3 complejas).</details></li>
+          <li><details><summary>Grafica mentalmente y= (x − 1)²</summary>Toca el eje x en x=1 (mínimo) y no lo atraviesa.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="e-practica">Generador de práctica (ESO)</h2>
+      <p>Elige un tipo y genera ejercicios con solución. Escribe la respuesta en forma simplificada.</p>
+      <div class="grid2">
+        <div class="paper" style="margin:0">
+          <h3>Sumar/restar polinomios</h3>
+          <div class="gen">
+            <button class="btn small" onclick="genSuma()">Nuevo</button>
+            <span id="sumExp" style="font-weight:800"></span>
+          </div>
+          <div class="gen" style="margin-top:8px">
+            <input id="sumAns" type="text" placeholder="Respuesta" />
+            <button class="btn small" onclick="checkSuma()">Comprobar</button>
+            <span id="sumOk"></span>
+          </div>
+          <details style="margin-top:8px"><summary>Ver solución</summary><div id="sumSol"></div></details>
+        </div>
+        <div class="paper" style="margin:0">
+          <h3>Producto (binomio × binomio)</h3>
+          <div class="gen">
+            <button class="btn small" onclick="genProd()">Nuevo</button>
+            <span id="prodExp" style="font-weight:800"></span>
+          </div>
+          <div class="gen" style="margin-top:8px">
+            <input id="prodAns" type="text" placeholder="Respuesta" />
+            <button class="btn small" onclick="checkProd()">Comprobar</button>
+            <span id="prodOk"></span>
+          </div>
+          <details style="margin-top:8px"><summary>Ver solución</summary><div id="prodSol"></div></details>
+        </div>
+      </div>
+
+      <div class="examples">
+        <h4>Ejercicios propuestos (20) — con solución</h4>
+        <ol>
+          <li><details><summary>Simplifica: (2x² − 3x + 1) + (x² + 5x − 4)</summary>3x² + 2x − 3.</details></li>
+          <li><details><summary>Multiplica: (x − 7)(x + 2)</summary>x² − 5x − 14.</details></li>
+          <li><details><summary>Factoriza: x² + x − 12</summary>(x + 4)(x − 3).</details></li>
+          <li><details><summary>Evalúa p(−1) para p(x)=2x² + x − 3</summary>2(1) − 1 − 3 = −2.</details></li>
+          <li><details><summary>Escribe en forma estándar: 6 − 4x + x³ + x</summary>x³ − 3x + 6.</details></li>
+          <li><details><summary>Producto: (2x − 5)²</summary>4x² − 20x + 25.</details></li>
+          <li><details><summary>Factoriza por grupos: x³ − 4x² + x − 4</summary>(x − 4)(x² + 1).</details></li>
+          <li><details><summary>Indica el grado de 7 − 2x⁵ + x⁴</summary>5.</details></li>
+          <li><details><summary>Raíces de x² − 6x + 9</summary>3 (doble).</details></li>
+          <li><details><summary>Completa cuadrado: x² − 8x + 5</summary>(x − 4)² − 11.</details></li>
+          <li><details><summary>Multiplica: (x + 1)(x² + x + 1)</summary>x³ + 2x² + 2x + 1.</details></li>
+          <li><details><summary>Simplifica: 5x − (3x − 4)</summary>2x + 4.</details></li>
+          <li><details><summary>Factoriza: 6x² − 21x</summary>3x(2x − 7).</details></li>
+          <li><details><summary>Producto: (3x + 2)(x − 4)</summary>3x² − 10x − 8.</details></li>
+          <li><details><summary>¿x=−2 anula p(x)=x²+4x+4?</summary>Sí, p(−2)=0; (x+2)².</details></li>
+          <li><details><summary>Expande: (x − 3)(x² + 3x + 9)</summary>x³ − 27 (cubo de binomio).</details></li>
+          <li><details><summary>Factoriza: 25x² − 1</summary>(5x − 1)(5x + 1).</details></li>
+          <li><details><summary>Multiplica: (2x − 1)(x + 6)</summary>2x² + 11x − 6.</details></li>
+          <li><details><summary>Reduce: (x − 2)³</summary>x³ − 6x² + 12x − 8.</details></li>
+          <li><details><summary>Evalúa p(3) si p(x)=x³ − x</summary>27 − 3 = 24.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Profundización en polinomios</h1>
+      <p class="lead">Ampliamos con <strong>división polinómica</strong>, <strong>Ruffini</strong>, <strong>teorema del resto y del factor</strong>, <strong>factorización avanzada</strong>, <strong>raíces y multiplicidad</strong>, <strong>ecuaciones e inecuaciones</strong> y <strong>esbozo de gráficas</strong>.</p>
+
+      <div class="toc">
+        <a href="#b-division">División y algoritmo</a>
+        <a href="#b-ruffini">Ruffini / División sintética</a>
+        <a href="#b-resto">Teoremas del resto y del factor</a>
+        <a href="#b-racionales">Búsqueda de raíces racionales</a>
+        <a href="#b-factoriza">Factorización avanzada</a>
+        <a href="#b-ecuaciones">Ecuaciones e inecuaciones</a>
+        <a href="#b-grafica">Comportamiento y esbozos</a>
+        <a href="#b-practica">Generadores y test</a>
+      </div>
+
+      <h2 id="b-division">División polinómica y algoritmo de Euclides</h2>
+      <p>Dados p(x) (dividendo) y d(x)≠0 (divisor), existen únicos q(x) (cociente) y r(x) (resto) tales que <strong>p = dq + r</strong> con <em>grado(r) &lt; grado(d)</em>. Esto permite simplificar fracciones algebraicas y preparar factorizaciones.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (8)</h4>
+        <ol>
+          <li><details><summary>Divide x³ − 6x² + 11x − 6 entre x − 1</summary>Cociente x² − 5x + 6; resto 0 (porque 1 es raíz).</details></li>
+          <li><details><summary>Divide 2x³ + 3x² − x + 5 entre x + 2</summary>Cociente 2x² − x + 1; resto 3.</details></li>
+          <li><details><summary>Comprueba grados: deg(r) &lt; deg(d)</summary>En los casos anteriores, r es constante (grado 0) y d es lineal (grado 1).</details></li>
+          <li><details><summary>Euclides para polinomios: mcd(x² − 1, x² − x)</summary>mcd = x − 1.</details></li>
+          <li><details><summary>Divide x⁴ − 1 entre x² − 1</summary>q = x² + 1, r = 0.</details></li>
+          <li><details><summary>Divide x³ + 2x² − x − 2 entre x + 1</summary>q = x² + x − 2, r = 0.</details></li>
+          <li><details><summary>Usa la división para simplificar (x³ − 1)/(x − 1)</summary>Resultado x² + x + 1.</details></li>
+          <li><details><summary>Divide 3x³ − 5x + 2 entre x − 2</summary>q = 3x² + 6x + 7, r = 16 (vía Ruffini).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-ruffini">Regla de Ruffini (división sintética)</h2>
+      <p>Para dividir entre (x − r), copiamos coeficientes y <em>bajamos–multiplicamos–sumamos</em>. El último número es el resto p(r).</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (8)</h4>
+        <ol>
+          <li><details><summary>Ruffini de p(x)=x³ − 4x² + x + 6 con r=2</summary>Cociente x² − 2x − 3; resto 0 ⇒ (x − 2)(x² − 2x − 3).</details></li>
+          <li><details><summary>Ruffini con huecos: p(x)=2x³ + 0x² − x + 1, r=−1</summary>Cociente 2x² − 2x + 1; resto 0.</details></li>
+          <li><details><summary>Interpreta el resto</summary>Siempre es p(r), por el teorema del resto.</details></li>
+          <li><details><summary>Extrae otro factor: x³ − 6x² + 11x − 6</summary>Ruffini con r=1,2,3 → factores (x−1)(x−2)(x−3).</details></li>
+          <li><details><summary>Si el resto no es 0…</summary>El divisor no es factor; prueba con otro r o usa división larga.</details></li>
+          <li><details><summary>Ruffini con r=0</summary>Equivale a separar el término independiente: resto p(0) es el término independiente.</details></li>
+          <li><details><summary>Ruffini con fracciones (opcional)</summary>Se puede usar r=p/q (racional) con más cuidado en los productos.</details></li>
+          <li><details><summary>Ruffini y multiplicidad</summary>Si al dividir por (x − r) el resto es 0 repetidas veces, la multiplicidad de r aumenta.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-resto">Teoremas del resto y del factor</h2>
+      <p><strong>Resto:</strong> si dividimos p(x) entre (x − a), el resto es p(a). <strong>Factor:</strong> (x − a) es factor de p(x) ⇔ p(a)=0. Consecuencia: las raíces determinan factores lineales.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (6)</h4>
+        <ol>
+          <li><details><summary>Calcula el resto de dividir p(x)=2x³ − x² + 4x − 7 entre (x − 2)</summary>p(2)=2·8 − 4 + 8 − 7 = 13.</details></li>
+          <li><details><summary>Comprueba si (x − 3) divide x² − 5x + 6</summary>p(3)=9 − 15 + 6 = 0 ⇒ sí.</details></li>
+          <li><details><summary>Si p(−1)=0, ¿qué factor tiene p?</summary>(x + 1).</details></li>
+          <li><details><summary>Encuentra k para que x − 1 sea factor de x³ + kx² − 5x + 2</summary>p(1)=1 + k − 5 + 2 = 0 ⇒ k=2.</details></li>
+          <li><details><summary>Halla a tal que el resto de dividir por (x − a) sea 5</summary>p(a)=5 (usa la definición del resto).</details></li>
+          <li><details><summary>Si p(x) tiene raíces 1 y −2, escribe factores</summary>(x − 1)(x + 2)·q(x).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-racionales">Búsqueda de raíces racionales</h2>
+      <p>Para polinomios con coeficientes enteros, los candidatos a raíz racional <em>p/q</em> (en forma irreducible) deben verificar: <em>p | término independiente</em> y <em>q | coeficiente principal</em>. (Criterio de raíces racionales).</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (6)</h4>
+        <ol>
+          <li><details><summary>p(x)=x³ − 4x² − 7x + 10</summary>Candidatos ±1,±2,±5,±10. Probando: p(−1)=0 ⇒ (x + 1)(x² − 5x + 10).</details></li>
+          <li><details><summary>p(x)=2x³ + x² − 8x − 4</summary>candidatos ±1,±2,±4,±1/2,±1/4,±2 ⇒ r=1 es raíz ⇒ reduce por Ruffini.</details></li>
+          <li><details><summary>¿Y si ningún candidato vale?</summary>No hay raíces racionales; usa otros métodos (gráfica, numéricos) o factoriza sobre ℝ con cuadráticas.</details></li>
+          <li><details><summary>Relación con coeficiente principal ≠1</summary>Incluye divisores de ese coeficiente en los denominadores.</details></li>
+          <li><details><summary>Si el término independiente es 0</summary>x=0 es raíz; factoriza x.</details></li>
+          <li><details><summary>Comprobación final</summary>Multiplica los factores para verificar.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-factoriza">Factorización avanzada</h2>
+      <p>Combinamos todos los recursos: buscar raíces racionales, Ruffini repetida, completar cuadrado y reconocer irreducibles cuadráticos.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (10)</h4>
+        <ol>
+          <li><details><summary>x³ − 6x² + 11x − 6</summary>(x − 1)(x − 2)(x − 3).</details></li>
+          <li><details><summary>2x³ − 3x² − 8x + 12</summary>Racional r=2 ⇒ (x − 2)(2x² + x − 6) ⇒ (x − 2)(2x − 3)(x + 2).</details></li>
+          <li><details><summary>x⁴ − 5x² + 4</summary>Truco: t=x² ⇒ t² − 5t + 4 = (t − 1)(t − 4) ⇒ (x² − 1)(x² − 4) ⇒ (x − 1)(x + 1)(x − 2)(x + 2).</details></li>
+          <li><details><summary>3x⁴ + 6x³ − 3x²</summary>3x²(x² + 2x − 1).</details></li>
+          <li><details><summary>x³ + x² − 4x − 4</summary>Grupo: x²(x + 1) − 4(x + 1) = (x + 1)(x² − 4) ⇒ (x + 1)(x − 2)(x + 2).</details></li>
+          <li><details><summary>x⁴ + 4x³ + 6x² + 4x + 1</summary>(x + 1)⁴ (binomio de Newton).</details></li>
+          <li><details><summary>2x⁴ − 18x² + 32</summary>2(x⁴ − 9x² + 16) ⇒ intenta t=x²: t² − 9t + 16=(t−1)(t−8) ⇒ 2(x²−1)(x²−8).</details></li>
+          <li><details><summary>x³ − 9x</summary>x(x − 3)(x + 3).</details></li>
+          <li><details><summary>x⁵ − x³</summary>x³(x² − 1)=x³(x − 1)(x + 1).</details></li>
+          <li><details><summary>4x³ − 12x² + 9x</summary>x(2x − 3)².</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-ecuaciones">Ecuaciones e inecuaciones polinómicas</h2>
+      <p>Resolver <em>p(x)=0</em> equivale a factorizar y anular cada factor. Para inecuaciones usamos el <strong>método de signos</strong>: eje real marcado por las raíces y el signo de cada intervalo.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (8)</h4>
+        <ol>
+          <li><details><summary>Resuelve x³ − 4x² − x + 4 = 0</summary>Factoriza por grupos: (x²(x − 4) − 1(x − 4))=(x − 4)(x² − 1) ⇒ raíces 4, ±1.</details></li>
+          <li><details><summary>Resuelve 2x³ + x² − 8x − 4 = 0</summary>r=1 ⇒ divide ⇒ 2x² + 3x − 4 ⇒ raíces 1, (−3±√(9+32))/4 = (−3±√41)/4.</details></li>
+          <li><details><summary>Resuelve (x − 2)²(x + 3) ≥ 0</summary>Signos: raíz doble en 2 (cambia? no), simple en −3. Sol: (−∞,−3] ∪ {2} ∪ [2,∞).</details></li>
+          <li><details><summary>Encuentra k para que x=2 sea raíz doble de x³ + kx² + x + 2</summary>p(2)=0 y p′(2)=0 ⇒ resuelve sistema para k=−5.</details></li>
+          <li><details><summary>Resuelve x⁴ − 5x² + 4 ≤ 0</summary>(x² − 1)(x² − 4) ≤ 0 ⇒ intervalos: [−2,−1] ∪ [1,2].</details></li>
+          <li><details><summary>Resuelve x³ − 6x² + 9x = 0</summary>x(x − 3)²=0 ⇒ x=0, 3 (con 3 doble).</details></li>
+          <li><details><summary>Encuentra el polinomio mínimo grado con raíces 1 (doble) y −2</summary>(x − 1)²(x + 2).</details></li>
+          <li><details><summary>Halla parámetros a,b si x=1 y x=−2 anulan x³ + ax² + bx + 6</summary>p(1)=0 ⇒ 1+a+b+6=0; p(−2)=0 ⇒ −8+4a−2b+6=0 ⇒ resuelve: a=−1, b=−6.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-grafica">Comportamiento de gráficas</h2>
+      <p>Para grandes |x|, domina el término de mayor grado: <em>comportamiento al infinito</em>. Si el grado es par y coeficiente principal &gt;0, y→+∞ en ambos extremos; si es impar y coeficiente principal &gt;0, y→−∞ a la izquierda y y→+∞ a la derecha. La <strong>multiplicidad</strong> indica si la curva <em>atraviesa</em> (impar) o <em>toca</em> (par) el eje en esa raíz.</p>
+      <div class="examples">
+        <h4>Ejemplos rápidos (5)</h4>
+        <ol>
+          <li><details><summary>Esboza y = (x − 1)(x − 3)</summary>Parábola (abre hacia arriba); corta en x=1 y x=3; vértice en x=2.</details></li>
+          <li><details><summary>y = −2x³ + x</summary>Grado impar, coeficiente principal negativo ⇒ sube a la izquierda y baja a la derecha; corta en x=0, ±√(1/2).</details></li>
+          <li><details><summary>y = (x + 2)²(x − 1)</summary>Toca en −2 (doble) y atraviesa en 1.</details></li>
+          <li><details><summary>¿Cuántos cortes puede tener con el eje x un polinomio de grado n?</summary>Como máximo n cortes reales (contando multiplicidad).</details></li>
+          <li><details><summary>Signo de (x − 2)³ para x &lt; 2</summary>Negativo (potencia impar de un negativo).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-practica">Generadores (Bach) y test de autoevaluación</h2>
+      <div class="grid2">
+        <div class="paper" style="margin:0">
+          <h3>Ruffini / Resto</h3>
+          <div class="gen">
+            <button class="btn small" onclick="genRuffini()">Nuevo</button>
+            <span id="ruffExp" style="font-weight:800"></span>
+          </div>
+          <div class="gen" style="margin-top:8px">
+            <input id="ruffAns" type="text" placeholder="Resto p(r)" />
+            <button class="btn small" onclick="checkRuffini()">Comprobar</button>
+            <span id="ruffOk"></span>
+          </div>
+          <details style="margin-top:8px"><summary>Ver desarrollo</summary><div id="ruffSol"></div></details>
+        </div>
+        <div class="paper" style="margin:0">
+          <h3>Factorización guiada</h3>
+          <div class="gen">
+            <button class="btn small" onclick="genFact()">Nuevo</button>
+            <span id="factExp" style="font-weight:800"></span>
+          </div>
+          <details style="margin-top:8px"><summary>Ver una posible solución</summary><div id="factSol"></div></details>
+        </div>
+      </div>
+
+      <div class="examples">
+        <h4>Test rápido (5 preguntas)</h4>
+        <ol id="quizList"></ol>
+        <div class="gen"><button class="btn" onclick="startQuiz()">Generar test</button><span id="quizScore" style="font-weight:800"></span></div>
+      </div>
+
+      <div class="examples">
+        <h4>Ejercicios propuestos (25) — con solución detallada</h4>
+        <ol>
+          <li><details><summary>Divide x³ − 2x² − x + 2 entre x − 1</summary>q=x² − x − 2, r=0 ⇒ (x − 1)(x² − x − 2).</details></li>
+          <li><details><summary>Usa el teorema del resto para calcular p(2) si p(x)=3x³ − x² + 4x − 5</summary>p(2)=24 − 4 + 8 − 5 = 23.</details></li>
+          <li><details><summary>Encuentra todas las raíces de x³ − 3x² − 4x + 12</summary>r=3 ⇒ divide ⇒ x² − 4 ⇒ raíces 3, ±2.</details></li>
+          <li><details><summary>Halla k para que (x − 2) divida x³ + kx² − 5x + 6</summary>p(2)=8 + 4k − 10 + 6 = 0 ⇒ k=−1.</details></li>
+          <li><details><summary>Factoriza x⁴ − 5x² + 6</summary>(x² − 2)(x² − 3).</details></li>
+          <li><details><summary>Resuelve (x − 1)(x + 2)(x − 3) ≥ 0</summary>Intervalos: (−∞,−2] ∪ [1,3] ∪ [3,∞).</details></li>
+          <li><details><summary>Determina m para que x=−1 sea raíz doble de x³ + mx² + x + m</summary>p(−1)=0 y p′(−1)=0 ⇒ m=0.</details></li>
+          <li><details><summary>Aplica Euclides: mcd(x³ − x, x² − 1)</summary>x² − 1.</details></li>
+          <li><details><summary>Factoriza 6x³ − x² − 12x + 2</summary>r=1/2 ⇒ (2x − 1)(3x² + x − 2) ⇒ (2x − 1)(3x − 2)(x + 1).</details></li>
+          <li><details><summary>Esboza y = −x³ + 4x</summary>Cortes: x=0, ±2; sube izq., baja dcha. Máx/Mín relativos en ±√(4/3).</details></li>
+          <li><details><summary>Encuentra el polinomio de menor grado con raíces −2 (doble) y 3</summary>(x + 2)²(x − 3).</details></li>
+          <li><details><summary>Comprueba si x+2 es factor de x³ + 5x² + 8x + 4</summary>p(−2)=−8+20−16+4=0 ⇒ sí.</details></li>
+          <li><details><summary>Divide 2x⁴ − 3x³ + x − 5 entre x² − x + 1</summary>q=2x² − x − 1, r=−x − 4.</details></li>
+          <li><details><summary>Resuelve x⁴ − 7x² + 10 = 0</summary>t=x² ⇒ (t − 5)(t − 2)=0 ⇒ x=±√5, ±√2.</details></li>
+          <li><details><summary>Señala el signo de p(x)=(x−1)²(x+4) para x∈(−4,1)</summary>Negativo (factor simple x+4&lt;0, doble no cambia signo).</details></li>
+          <li><details><summary>Construye p(x) de grado 3 con coef. principal 2 y raíces −1, 2 y 3</summary>p(x)=2(x+1)(x−2)(x−3).</details></li>
+          <li><details><summary>Determina a para que el resto de dividir x³ + ax² + 1 entre (x − 1) sea 5</summary>p(1)=1 + a + 1 = 5 ⇒ a=3.</details></li>
+          <li><details><summary>Factoriza x⁶ − 1</summary>(x³ − 1)(x³ + 1) = (x − 1)(x² + x + 1)(x + 1)(x² − x + 1).</details></li>
+          <li><details><summary>Resuelve (x² − 4)(x − 1) &lt; 0</summary>Intervalos por signos: (−∞,−2)∪(−2,1)∪(1,2)∪(2,∞) ⇒ solución (−2,1) ∪ (2,∞).</details></li>
+          <li><details><summary>Calcula p′(x) de p(x)=(x − 2)³(x + 1)</summary>p′(x) = (x − 2)²[3(x + 1) + (x − 2)] = (x − 2)²(4x + 1) (útil para mínimos/máximos).</details></li>
+          <li><details><summary>Si p(x)=x³ − ax² + bx − 8 tiene raíz 2, halla relación entre a y b</summary>p(2)=8 − 4a + 2b − 8 = 0 ⇒ 2b = 4a ⇒ b=2a.</details></li>
+          <li><details><summary>Encuentra todas las raíces de 2x³ − 5x² − 4x + 12</summary>r=2 ⇒ divide ⇒ 2x² − x − 6 ⇒ raíces 2, 2, −3/2? (corrige): 2x² − x − 6=(2x+3)(x−2) ⇒ raíces 2 (doble), −3/2.</details></li>
+          <li><details><summary>Factoriza x⁴ + 2x³ − x − 2</summary>Grupo: x³(x+2) − 1(x+2) = (x+2)(x³ − 1) ⇒ (x+2)(x − 1)(x² + x + 1).</details></li>
+          <li><details><summary>Determina la multiplicidad de x=0 en p(x)=x⁵ − 3x³ + 2x</summary>Extrae x ⇒ p=x(x⁴ − 3x² + 2) ⇒ multiplicidad 1 (las otras raíces vienen de la cuadrática en x²).</details></li>
+          <li><details><summary>Esboza y=(x−1)⁴</summary>Grado par, toca el eje en x=1 con aplanamiento (raíz de multiplicidad 4).</details></li>
+          <li><details><summary>Resto de dividir 5x⁴ − x³ + 4x − 7 entre (x + 1)</summary>p(−1)=−5 − 1 − 4 − 7 = −17.</details></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    // Utilidades DOM
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs (solo ESO y Bachillerato)
+    const map = { eso:'#sec-eso', bach:'#sec-bach' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level="${k}"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-polinomios', key);
+        window.scrollTo({top:0, behavior:'smooth'});
+      }
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-polinomios');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'eso'), false);
+
+    // Progress bar + top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+
+    // Reader controls (A− A+ ancho)
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.min(val+1, 24)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.min(num+8, 100)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+
+    // Tema claro/oscuro (toggle variables)
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+      if(light){
+        root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+        root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+      }else{
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+        root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      }
+    });
+
+    // Top button
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // ===== Generadores ESO =====
+    function polyToString(coefs){ // coefs from high to low
+      const n = coefs.length - 1; let out = [];
+      for(let i=0;i<coefs.length;i++){
+        const a = coefs[i]; const p = n - i; if(Math.abs(a) < 1e-12) continue;
+        const sign = (a>=0 && out.length>0) ? ' + ' : (a<0 ? (out.length>0?' − ':'−') : '');
+        const abs = Math.abs(a);
+        let term = '';
+        if(p===0){ term = abs.toString(); }
+        else if(p===1){ term = (abs===1? 'x' : abs+'x'); }
+        else{ term = (abs===1? 'x' : abs+'x') + '^' + p; }
+        out.push(sign + term);
+      }
+      return out.length? out.join('') : '0';
+    }
+    function parseAns(txt){ // naive normalizer: remove spaces, replace − with -
+      return txt.replace(/\s+/g,'').replace(/−/g,'-').toLowerCase();
+    }
+
+    // Suma/resta
+    let sumState=null;
+    function genPoly(deg,maxC){
+      const coefs=[]; for(let i=deg;i>=0;i--){ let v = Math.floor((Math.random()*2-1)*maxC); if(i===deg && v===0) v=1; coefs.push(v); }
+      return coefs; // high->low already
+    }
+    function addCoefs(a,b){ const n=Math.max(a.length,b.length); const A=[...Array(n)].map((_,i)=>a[a.length-n+i]||0); const B=[...Array(n)].map((_,i)=>b[b.length-n+i]||0); return A.map((v,i)=>v+B[i]); }
+    function genSuma(){
+      const A = genPoly(2,7), B = genPoly(2,7); sumState = {A,B};
+      $('#sumExp').textContent = polyToString(A) + '  +  ' + polyToString(B);
+      $('#sumSol').textContent = polyToString(addCoefs(A,B));
+      $('#sumAns').value=''; $('#sumOk').textContent='';
+    }
+    function checkSuma(){
+      if(!sumState) return; const want=$('#sumSol').textContent; const got=parseAns($('#sumAns').value);
+      $('#sumOk').textContent = (parseAns(want)===got)? '✔️ Correcto' : '✖️ Revisa (solución en "Ver solución")';
+      $('#sumOk').className = (parseAns(want)===got)? 'ok' : 'bad';
+    }
+
+    // Producto binomio×binomio
+    let prodState=null;
+    function genProd(){
+      function bin(){ const a=Math.floor(Math.random()*7)+1, b=Math.floor(Math.random()*9)-4; return [a,b]; }
+      const [a,b]=bin(), [c,d]=bin(); prodState={a,b,c,d};
+      $('#prodExp').textContent = `(${a}x ${b>=0?'+':'−'} ${Math.abs(b)})(${c}x ${d>=0?'+':'−'} ${Math.abs(d)})`;
+      const A=a*c, B=a*d + b*c, C=b*d; const sol = [A, B, C];
+      const txt = polyToString([A, B, C]);
+      $('#prodSol').textContent = txt; $('#prodAns').value=''; $('#prodOk').textContent='';
+    }
+    function checkProd(){ const want=$('#prodSol').textContent; const got=parseAns($('#prodAns').value); $('#prodOk').textContent=(parseAns(want)===got)?'✔️ Correcto':'✖️'; $('#prodOk').className=(parseAns(want)===got)?'ok':'bad'; }
+
+    // ===== Generadores Bach =====
+    // Ruffini: p(x) contra (x - r)
+    let ruffState=null;
+    function genRuffini(){
+      // degree 3 with integer coefficients and integer r in [-4,4]\{0}
+      const r = [ -4,-3,-2,-1,1,2,3,4 ][Math.floor(Math.random()*8)];
+      // build q(x) degree 2 random, then p=(x-r)q to ensure resto=0 sometimes; sometimes shift constant to change resto
+      const q=[ Math.floor(Math.random()*5)+1, Math.floor(Math.random()*9)-4, Math.floor(Math.random()*9)-4 ]; // ax^2+bx+c
+      // multiply: (x − r)(ax² + bx + c) = ax³ + (b−ar)x² + (c−br)x − cr
+      const a=q[0], b=q[1], c=q[2];
+      let p=[ a, b - a*r, c - b*r, -c*r ];
+      // with 50% probability, tweak constant to make nonzero remainder
+      let resto = 0;
+      if(Math.random()<0.5){ const tweak = Math.floor(Math.random()*9)-4; p[3]+=tweak; resto = tweak; }
+      else{ resto = 0; }
+      ruffState={p,r,resto};
+      $('#ruffExp').textContent = `Dividir p(x)=${polyToString(p)} entre (x − ${r})`;
+      $('#ruffSol').innerHTML = `Resto = p(${r}) = ${resto}.<br/>Coeficientes: ${p.join(', ')} → Ruffini con ${r}.`;
+      $('#ruffAns').value=''; $('#ruffOk').textContent='';
+    }
+    function checkRuffini(){ if(!ruffState) return; const want = String(ruffState.resto); const got = $('#ruffAns').value.trim(); const ok = (want===got); $('#ruffOk').textContent = ok? '✔️ Correcto' : `✖️ Resto esperado: ${want}`; $('#ruffOk').className = ok? 'ok':'bad'; }
+
+    // Factorización guiada: genera polinomio con raíces pequeñas
+    function genFact(){
+      const roots = [];
+      const pool = [-3,-2,-1,0,1,2,3,4];
+      const n = 2 + Math.floor(Math.random()*2); // 2 o 3 raíces (con repeticiones)
+      for(let i=0;i<n;i++){ roots.push(pool[Math.floor(Math.random()*pool.length)]); }
+      // construir polinomio desde raíces
+      let coefs=[1]; // grado 0: 1
+      roots.forEach(r=>{
+        // multiply coefs by (x - r)
+        const nc = new Array(coefs.length+1).fill(0);
+        for(let i=0;i<coefs.length;i++){ nc[i] += coefs[i]; nc[i+1] += -r*coefs[i]; }
+        coefs = nc;
+      });
+      // coefs now high->low
+      $('#factExp').textContent = `Factoriza p(x)=${polyToString(coefs)}`;
+      $('#factSol').textContent = 'Una factorización: ' + roots.map(r=>`(x ${r>=0? '−' : '+'} ${Math.abs(r)})`).join('');
+    }
+
+    // Quiz
+    const QUIZ_BANK = [
+      {q:'El resto de dividir p(x) entre (x − a) es…', a:['p(a)','p\'(a)','a','el término independiente'], c:0},
+      {q:'(x + 5)(x − 5) es igual a…', a:['x² − 25','x² + 25','x² − 10x + 25','x² + 10x − 25'], c:0},
+      {q:'Si 2 es raíz doble, entonces…', a:['(x − 2)² divide p(x)','(x − 2) divide p(x) pero una vez','p(2)≠0','p′(2)≠0'], c:0},
+      {q:'Grado de (x² + 1)(x − 3)', a:['3','2','1','4'], c:0},
+      {q:'Candidatos a raíces racionales de 2x³ − 5x² + x − 2', a:['±1, ±2, ±1/2','±1, ±2','±1/2, ±1/4','Ninguno'], c:0},
+      {q:'Signo de (x − 1)² para x &lt; 1', a:['≥0','≤0','&lt;0','>0 y &lt;0 alternando'], c:0},
+      {q:'Si p(0)=0, entonces…', a:['x es factor de p(x)','(x − 1) es factor','grado de p es 0','p tiene raíz 1'], c:0},
+    ];
+    let quizSel=[];
+    function startQuiz(){
+      quizSel = [...QUIZ_BANK].sort(()=>Math.random()-0.5).slice(0,5);
+      const ol = $('#quizList'); ol.innerHTML='';
+      quizSel.forEach((it,idx)=>{
+        const li = document.createElement('li');
+        const q = document.createElement('div'); q.textContent = it.q; q.style.fontWeight='800'; li.appendChild(q);
+        it.a.forEach((opt,i)=>{
+          const id = `q${idx}_${i}`;
+          const lab = document.createElement('label');
+          lab.style.display='block';
+          lab.innerHTML = `<input type="radio" name="q${idx}" value="${i}"> ${opt}`;
+          li.appendChild(lab);
+        });
+        ol.appendChild(li);
+      });
+      const btn = document.createElement('button'); btn.className='btn small'; btn.textContent='Corregir'; btn.onclick=gradeQuiz; ol.appendChild(document.createElement('br')); ol.appendChild(btn);
+      $('#quizScore').textContent='';
+    }
+    function gradeQuiz(){
+      let score=0; quizSel.forEach((it,idx)=>{
+        const checked = document.querySelector(`input[name="q${idx}"]:checked`);
+        if(checked && Number(checked.value)===it.c) score++;
+      });
+      $('#quizScore').textContent = `Puntuación: ${score}/5`;
+    }
+  </script>
+</body>
+</html>
+

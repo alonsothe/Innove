@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Álgebra básica — Teoría por niveles (lectura cómoda)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+      --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:rgba(255,255,255,.75); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  @media (prefers-color-scheme: dark){ .topbar{ background:rgba(16,26,52,.65); } }
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),rgba(255,255,255,.25));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:rgba(255,255,255,.5)}
+  @media (prefers-color-scheme: dark){ .reader{ background:rgba(16,26,52,.35);} }
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:#fff;color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  @media (prefers-color-scheme: dark){ .pill{ background:#101a34;}}
+  .pill[aria-selected="true"]{background:#2563eb;border-color:#1e40af;color:#fff;box-shadow:0 10px 22px rgba(37,99,235,.2)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:rgba(0,0,0,.02);border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:rgba(0,0,0,.03);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:#2563eb}
+  section.level{display:none}
+  section.level.active{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  details>summary{cursor:pointer;font-weight:800;margin:.6em 0}
+  .ex{background:rgba(0,0,0,.03);border:1px dashed var(--border);border-radius:12px;padding:10px 12px;margin:.6em 0}
+  code,kbd,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .tag{display:inline-block;background:rgba(37,99,235,.1);border:1px solid var(--border);border-radius:8px;padding:2px 8px;margin-left:6px;font-size:.9em}
+  noscript{display:block;max-width:74ch;margin:16px auto;color:#b91c1c;background:#fee2e2;border:1px solid #fecaca;border-radius:12px;padding:12px}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">α</span><span class="brand-title">Álgebra básica — Teoría por niveles</span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" type="button">A−</button>
+        <button class="btn small" id="fs-up" type="button">A+</button>
+        <button class="btn small" id="width-down" type="button">⇤</button>
+        <button class="btn small" id="width-up" type="button">⇥</button>
+        <button class="btn" id="theme-toggle" type="button">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="primaria" role="tab" aria-selected="true" type="button">Pre-Álgebra</button>
+        <button class="pill" data-level="eso" role="tab" aria-selected="false" type="button">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false" type="button">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false" type="button">Universidad</button>
+        <button class="pill" data-level="master" role="tab" aria-selected="false" type="button">Máster</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false" type="button">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== PRE-ÁLGEBRA ===== -->
+    <section id="sec-primaria" class="paper level active">
+      <h1>Pre-Álgebra — Ideas que preparan el terreno</h1>
+      <p class="lead">Aquí introduces letras para representar números, construyes expresiones y resuelves ecuaciones de uno o dos pasos. El objetivo es comprender <em>qué significa</em> operar con incógnitas y por qué las reglas funcionan.</p>
+      <div class="toc">
+        <a href="#p-variables">¿Qué es una variable?</a>
+        <a href="#p-expresiones">Expresiones y evaluación</a>
+        <a href="#p-distributiva">Distributiva y simplificación</a>
+        <a href="#p-ecuaciones1">Ecuaciones de un paso</a>
+        <a href="#p-coordenadas">Coordenadas, patrones y reglas</a>
+      </div>
+
+      <h2 id="p-variables">¿Qué es una variable? <span class="tag">concepto</span></h2>
+      <p>Una <strong>variable</strong> es un símbolo (como x o y) que representa un número que puede cambiar o que aún no conocemos. Una <strong>constante</strong> es un número fijo. Una <strong>expresión</strong> combina variables, números y operaciones (por ejemplo, 3x + 2).</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> “Tengo el triple de canicas que tú. Si tú tienes 5, ¿cuántas tengo yo?”</p>
+        <ol>
+          <li>Sea <em>x</em> la cantidad que tienes tú. Entonces yo tengo <em>3x</em>.</li>
+          <li>Sustituye x=5 → 3·5 = 15.</li>
+          <li><strong>Respuesta:</strong> 15 canicas.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Si una caja pesa 2 kg y el relleno pesa x kg, escribe la masa total.</li>
+        <li>Escribe un modelo para “el doble de un número menos 7”.</li>
+        <li>Evalúa 4x−3 para x=6.</li>
+        <li>Si y es la edad de Ana, expresa la edad de su hermano que es 3 años menor.</li>
+        <li>Traduce “cinco más la mitad de un número n”.</li>
+      </ol>
+
+      <h2 id="p-expresiones">Expresiones y evaluación <span class="tag">orden de operaciones</span></h2>
+      <p>Para evaluar una expresión: sustituye la variable y aplica el <strong>orden de operaciones</strong> (paréntesis, potencias, multiplicación/división, suma/resta). Simplificar significa combinar términos semejantes (los que tienen la misma variable y exponente).</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> Evalúa 2(3a−1)+4 para a=2.</p>
+        <ol>
+          <li>Sustituye a=2 → 2(3·2−1)+4 = 2(6−1)+4.</li>
+          <li>Paréntesis primero → 2·5 + 4 = 10 + 4.</li>
+          <li>Resultado → <strong>14</strong>.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Simplifica 5x + 3x − 2.</li>
+        <li>Evalúa 3(2y+1) para y=4.</li>
+        <li>¿Cuánto vale 7−(2z−3) si z=5?</li>
+        <li>Simplifica 2a + 4 − a + 3.</li>
+        <li>Evalúa 4(t−2)+t para t=9.</li>
+      </ol>
+
+      <h2 id="p-distributiva">Distributiva y simplificación <span class="tag">propiedades</span></h2>
+      <p>La <strong>propiedad distributiva</strong> dice que a(b+c)=ab+ac. Permite quitar paréntesis y también <em>factorizar</em> sacando factor común: ab+ac=a(b+c).</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> Simplifica 4(x+3)−2(x−1).</p>
+        <ol>
+          <li>Aplica distributiva: 4x+12 − 2x+2.</li>
+          <li>Combina semejantes: (4x−2x)+(12+2)=2x+14.</li>
+          <li><strong>Resultado:</strong> 2x+14.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Simplifica 3(y−2)+2(y+5).</li>
+        <li>Factoriza 6x+12.</li>
+        <li>Simplifica 5(a+4)−(a−3).</li>
+        <li>Factoriza 9t−12.</li>
+        <li>Simplifica 2m−3(m−1).</li>
+      </ol>
+
+      <h2 id="p-ecuaciones1">Ecuaciones de un paso <span class="tag">resolver</span></h2>
+      <p>Resolver una ecuación es encontrar el valor que hace verdadera la igualdad. En ecuaciones de un paso, “deshaces” la operación aplicada a la variable usando la operación inversa.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong>  x + 7 = 15</p>
+        <ol>
+          <li>Resta 7 en ambos lados: x = 15 − 7.</li>
+          <li>Calcula: x = 8.</li>
+          <li>Comprueba: 8 + 7 = 15 ✅</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>x−5=9</li>
+        <li>y/3=4</li>
+        <li>4z=28</li>
+        <li>t+12=19</li>
+        <li>m−9=−2</li>
+      </ol>
+
+      <h2 id="p-coordenadas">Coordenadas, patrones y reglas <span class="tag">funciones</span></h2>
+      <p>Un <strong>patrón</strong> describe cómo cambia una cantidad al variar otra. Se puede escribir con una <strong>regla</strong> (fórmula). En el plano, un punto se escribe (x,y). Muchas reglas en pre-álgebra son lineales, del tipo y=mx+b.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> Una tarifa cobra 3 € por entrada más 2 € por cada hora de uso. Escribe y evalúa la regla para 5 horas.</p>
+        <ol>
+          <li>Coste fijo: 3. Coste variable: 2 por hora h → y=3+2h.</li>
+          <li>Sustituye h=5 → y=3+2·5=13.</li>
+          <li><strong>Resultado:</strong> 13 €.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Escribe una regla para “empiezo con 10 y quito 3 por cada día”.</li>
+        <li>Evalúa y=5+4x para x=3.</li>
+        <li>Da dos puntos que satisfacen y=2x+1.</li>
+        <li>Si y=7x, ¿qué ocurre al duplicar x?</li>
+        <li>Completa la tabla para y=3x: x=1,2,4,7.</li>
+      </ol>
+    </section>
+
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level">
+      <h1>ESO — Álgebra elemental con polinomios y ecuaciones</h1>
+      <p class="lead">Dominas la manipulación de expresiones, productos notables, factorización, ecuaciones y sistemas. Introduces la recta como función: pendiente e intersección.</p>
+      <div class="toc">
+        <a href="#e-polinomios">Polinomios: suma, resta y producto</a>
+        <a href="#e-notables">Productos notables</a>
+        <a href="#e-factor">Factorización básica</a>
+        <a href="#e-ecuaciones">Ecuaciones de primer grado con paréntesis</a>
+        <a href="#e-sistemas">Sistemas lineales 2×2</a>
+        <a href="#e-lineales">Funciones lineales: pendiente y ordenada</a>
+      </div>
+
+      <h2 id="e-polinomios">Polinomios: suma, resta y producto <span class="tag">operaciones</span></h2>
+      <p>Un <strong>polinomio</strong> es una suma de monomios (coeficiente · variable^exponente entero ≥ 0). Para sumar/restar, combina términos semejantes. Para multiplicar, distribuye término a término y vuelve a combinar.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> (3x^2−2x+5) + (x^2+4x−1) y (2x−3)(x+4)</p>
+        <ol>
+          <li>Suma: (3x^2+x^2) + (−2x+4x) + (5−1) = 4x^2 + 2x + 4.</li>
+          <li>Producto: (2x)(x) + (2x)(4) + (−3)(x) + (−3)(4) = 2x^2 + 8x − 3x − 12 = 2x^2 + 5x − 12.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Simplifica: (5x^2−x+7) − (2x^2+3x−4).</li>
+        <li>Multiplica: (x+2)(x+5).</li>
+        <li>Multiplica: (3x−1)(x−4).</li>
+        <li>Multiplica: (x+3)^2.</li>
+        <li>Simplifica: (2x^2+3x) + (x^2−5x+1).</li>
+      </ol>
+
+      <h2 id="e-notables">Productos notables <span class="tag">patrones</span></h2>
+      <p>Patrones útiles: (a+b)^2=a^2+2ab+b^2; (a−b)^2=a^2−2ab+b^2; (a+b)(a−b)=a^2−b^2.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> Expande (2x−3)^2 y (3y+1)(3y−1).</p>
+        <ol>
+          <li>(2x−3)^2 = 4x^2 − 12x + 9.</li>
+          <li>(3y+1)(3y−1) = 9y^2 − 1.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Expande (x+5)^2.</li>
+        <li>Expande (4a−2)^2.</li>
+        <li>Simplifica (2m+3)(2m−3).</li>
+        <li>Expande (3t+4)^2.</li>
+        <li>Simplifica (x−7)(x+7).</li>
+      </ol>
+
+      <h2 id="e-factor">Factorización básica <span class="tag">factor común • trinomio</span></h2>
+      <p>Empieza por <strong>factor común</strong>. En trinomios x^2+bx+c, busca dos números que sumen b y multipliquen c.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> Factoriza 6x+12 y x^2+5x+6.</p>
+        <ol>
+          <li>6x+12 = 6(x+2).</li>
+          <li>x^2+5x+6 → 2 y 3 → (x+2)(x+3).</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Factoriza 8y−12.</li>
+        <li>Factoriza x^2+7x+10.</li>
+        <li>Factoriza x^2−x−6.</li>
+        <li>Factoriza 10a^2+15a.</li>
+        <li>Factoriza 9t^2−25.</li>
+      </ol>
+
+      <h2 id="e-ecuaciones">Ecuaciones de primer grado con paréntesis <span class="tag">pasos</span></h2>
+      <p>Estrategia: (1) distributiva, (2) combina, (3) variable a un lado, (4) despeja.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> 2(x−3)+x=9.</p>
+        <ol>
+          <li>2x−6 + x = 9.</li>
+          <li>3x−6=9.</li>
+          <li>3x=15 → x=5.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>3(y+2)−y=10</li>
+        <li>5−2(t−1)=1</li>
+        <li>4m−(m+3)=8</li>
+        <li>7(x−1)+x=23</li>
+        <li>2(3a−1)=a+8</li>
+      </ol>
+
+      <h2 id="e-sistemas">Sistemas lineales 2×2 <span class="tag">sustitución • reducción</span></h2>
+      <p>Métodos: <strong>sustitución</strong> y <strong>reducción</strong>.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> { x + y = 7 ; 2x − y = 1 }</p>
+        <ol>
+          <li>Suma → 3x = 8 → x = 8/3.</li>
+          <li>y = 7 − 8/3 = 13/3.</li>
+          <li>Sol.: (8/3, 13/3).</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>{ x + 2y = 10 ; x − y = 1 }</li>
+        <li>{ 3a − b = 5 ; a + b = 7 }</li>
+        <li>{ 2m + n = 9 ; m − n = 1 }</li>
+        <li>{ x − y = 4 ; 2x + y = 11 }</li>
+        <li>{ 3t + 2s = 12 ; t − s = 2 }</li>
+      </ol>
+
+      <h2 id="e-lineales">Funciones lineales: pendiente y ordenada <span class="tag">y=mx+b</span></h2>
+      <p>Recta: y=mx+b. m pendiente, b intersección en y.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex">
+        <p><strong>Problema:</strong> Pasa por (2,3) con m=4.</p>
+        <ol>
+          <li>y−3=4(x−2) → y=4x−5.</li>
+        </ol>
+      </div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>m entre (1,2) y (5,10).</li>
+        <li>Ecuación con m=−2 y b=1.</li>
+        <li>Halla b si y=3x+b pasa por (−1,4).</li>
+        <li>Recta por (0,−2) y (3,4).</li>
+        <li>y en x=7 para y=−0,5x+6.</li>
+      </ol>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Cuadráticas, fracciones algebraicas e inecuaciones</h1>
+      <p class="lead">Ecuaciones de segundo grado, factorización avanzada, inecuaciones, fracciones algebraicas y funciones cuadráticas.</p>
+      <div class="toc">
+        <a href="#b-cuadraticas">Ecuaciones cuadráticas</a>
+        <a href="#b-ruffini">Factorización por Ruffini</a>
+        <a href="#b-inecuaciones">Inecuaciones</a>
+        <a href="#b-fracc">Fracciones algebraicas</a>
+        <a href="#b-radicales">Radicales y racionalización</a>
+        <a href="#b-cuad-funcion">Función cuadrática</a>
+      </div>
+
+      <h2 id="b-cuadraticas">Ecuaciones cuadráticas <span class="tag">fórmula general</span></h2>
+      <p>ax^2+bx+c=0 → x=[−b ± √(b^2−4ac)]/(2a). Δ=b^2−4ac guía el tipo de raíces.</p>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex"><ol>
+        <li>2x^2−x−3=0 → Δ=25 → x=(1±5)/4 → 3/2, −1.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>x^2−5x+6=0</li><li>3x^2+2x−8=0</li><li>4t^2−4t+1=0</li><li>2m^2+7m+3=0</li><li>x^2+4x+13=0</li>
+      </ol>
+
+      <h2 id="b-ruffini">Factorización por Ruffini <span class="tag">teorema del resto</span></h2>
+      <h3>Ejemplo resuelto</h3>
+      <div class="ex"><ol>
+        <li>P(x)=x^3−4x^2−x+4, P(1)=0 ⇒ (x−1). Cociente x^2−3x−4=(x−4)(x+1).</li>
+        <li>Resultado: (x−1)(x−4)(x+1).</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>x^3−6x^2+11x−6</li><li>2x^3+x^2−8x−4</li><li>x^3+2x^2−x−2</li><li>x^3−x^2−4x+4</li><li>3x^3−7x^2−x+3</li>
+      </ol>
+
+      <h2 id="b-inecuaciones">Inecuaciones <span class="tag">intervalos</span></h2>
+      <div class="ex"><ol>
+        <li>x^2−5x+6 ≥ 0 → (x−2)(x−3) ≥ 0 → (−∞,2]∪[3,∞).</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>3x−7 &lt; 2x+5</li><li>−2y+4 ≥ 6</li><li>x^2−x−6 &gt; 0</li><li>2t^2+3t−2 ≤ 0</li><li>(x−1)(x+4) &lt; 0</li>
+      </ol>
+
+      <h2 id="b-fracc">Fracciones algebraicas <span class="tag">operar</span></h2>
+      <div class="ex"><ol>
+        <li>(x^2−9)/(x^2−x−6) → (x+3)/(x+2), x≠3,−2.</li>
+        <li>1/(x+2)+1/(x−1) → (2x+1)/(x^2+x−2).</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>(x^2−4)/(x^2+3x+2)</li><li>(3x^2+6x)/(9x)</li><li>2/(x−3)+1/(x+3)</li><li>(x+1)/x − 2/(x−1)</li><li>(x/(x−2))·((x−2)/x^2)</li>
+      </ol>
+
+      <h2 id="b-radicales">Radicales y racionalización <span class="tag">raíces</span></h2>
+      <div class="ex"><ol>
+        <li>√50 = 5√2; 3/(√5−1)·(√5+1)/(√5+1)=(3√5+3)/4.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>√72</li><li>5/√3</li><li>2/(√7+2)</li><li>√(18x^2)</li><li>(√2)/(√2−1)</li>
+      </ol>
+
+      <h2 id="b-cuad-funcion">Función cuadrática <span class="tag">forma canónica</span></h2>
+      <div class="ex"><ol>
+        <li>y=x^2−4x+1 = (x−2)^2−3 → vértice (2,−3).</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>y=x^2+6x+5</li><li>y=2x^2−8x+3</li><li>vértice de y=−x^2+4x+1</li><li>vértice de y=3x^2+12x−7</li><li>dirección de y=−2x^2+5x−1</li>
+      </ol>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Álgebra lineal básica</h1>
+      <p class="lead">Matrices, determinantes y sistemas; primera mirada a espacios vectoriales.</p>
+      <div class="toc">
+        <a href="#u-matrices">Matrices y operaciones</a>
+        <a href="#u-determinante">Determinante e inversa 2×2</a>
+        <a href="#u-sistemas">Sistemas Ax=b</a>
+        <a href="#u-espacios">Espacios vectoriales</a>
+      </div>
+
+      <h2 id="u-matrices">Matrices y operaciones <span class="tag">suma • producto</span></h2>
+      <div class="ex"><ol>
+        <li>A=[[1,2],[0,−1]], B=[[3,0],[4,1]] → AB=[[11,2],[-4,-1]].</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>[[2,−1],[3,0]]+[[1,4],[-2,5]]</li><li>[[1,0,2],[-1,3,1]]·[[2],[-1],[4]]</li><li>¿Cuándo existe AB?</li><li>(A+B)^T para 2×2</li><li>Comprueba (AB)^T=B^T A^T</li>
+      </ol>
+
+      <h2 id="u-determinante">Determinante e inversa 2×2 <span class="tag">fórmulas</span></h2>
+      <div class="ex"><ol>
+        <li>det⎡2 1; 3 2⎤=1 → inversa ⎡2 −1; −3 2⎤.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>det⎡1 4; 2 5⎤</li><li>¿Es invertible ⎡1 2; 2 4⎤?</li><li>inversa de ⎡3 0; 1 2⎤</li><li>Resuelve A x = b (2×2)</li><li>2×2 con det=−3</li>
+      </ol>
+
+      <h2 id="u-sistemas">Sistemas Ax=b <span class="tag">Gauss</span></h2>
+      <div class="ex"><ol>
+        <li>{ x+2y+z=4; 2x+3y+z=7; x+y+2z=5 } → (x,y,z)=(12,−3,−2).</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Sistema 2×2 por Gauss</li><li>Operaciones elementales</li><li>Clasifica un sistema (CD/CI/I)</li><li>{ 2x−y=1 ; 4x−2y=2 }</li><li>Un 3×3 sencillo</li>
+      </ol>
+
+      <h2 id="u-espacios">Espacios vectoriales (ℝ^2, ℝ^3) <span class="tag">base • dimensión</span></h2>
+      <div class="ex"><ol>
+        <li>{(1,0),(1,1)} base de ℝ^2: sí, LI y generan todo.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>¿{(1,2,0),(0,1,1),(1,0,1)} es base?</li><li>(2,4) y (−1,−2): LI o LD</li><li>(3,5) como combinación de {(1,0),(1,1)}</li><li>Base de ⟨(1,1,1),(2,2,2)⟩</li><li>dim { (x,y,z): x+y+z=0 }</li>
+      </ol>
+    </section>
+
+    <!-- ===== MÁSTER ===== -->
+    <section id="sec-master" class="paper level">
+      <h1>Máster — Puente hacia álgebra abstracta</h1>
+      <p class="lead">Grupos y anillos para entender por qué funcionan las reglas.</p>
+      <div class="toc">
+        <a href="#m-grupos">Grupos</a>
+        <a href="#m-anillos">Anillos y homomorfismos</a>
+      </div>
+
+      <h2 id="m-grupos">Grupos <span class="tag">axiomas</span></h2>
+      <div class="ex"><ol>
+        <li>Unicidad del inverso: si a·b=e y a·c=e ⇒ b=c.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>3 ejemplos de grupos</li><li>¿(ℕ,+) es grupo?</li><li>En un grupo, resuelve a·x=b</li><li>¿(ℝ\{0},·) es abeliano?</li><li>Ley de cancelación</li>
+      </ol>
+
+      <h2 id="m-anillos">Anillos y homomorfismos <span class="tag">estructura</span></h2>
+      <div class="ex"><ol>
+        <li>φ:ℝ[x]→ℝ, φ(P)=P(1) es homomorfismo.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Otro homomorfismo</li><li>Núcleo de φ</li><li>ℤ/nℤ como anillo</li><li>Ideal propio en ℤ</li><li>Dominio de integridad</li>
+      </ol>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Curiosidad y problemas abiertos</h1>
+      <p class="lead">Rutas de exploración para conectar álgebra con otras áreas.</p>
+      <div class="toc">
+        <a href="#d-noether">Anillos noetherianos</a>
+        <a href="#d-galois">Esbozo de teoría de Galois</a>
+      </div>
+
+      <h2 id="d-noether">Anillos noetherianos <span class="tag">cadenas ascendentes</span></h2>
+      <div class="ex"><ol>
+        <li>ℤ es noetheriano: todo ideal (n), cadenas se estabilizan.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Cadena ascendente en ℤ[x]</li><li>¿ℚ[x] noetheriano?</li><li>Ideales que contienen (12)</li><li>Subanillos de noetherianos</li><li>Idea del teorema de Hilbert</li>
+      </ol>
+
+      <h2 id="d-galois">Esbozo de teoría de Galois <span class="tag">simetrías</span></h2>
+      <div class="ex"><ol>
+        <li>x^5−x−1 irreducible sobre ℚ; grupo puede ser S₅ ⇒ no resoluble por radicales.</li>
+      </ol></div>
+      <h3>Ejercicios (5)</h3>
+      <ol>
+        <li>Define grupo de Galois</li><li>Ejemplo cíclico (grado 2)</li><li>Normal y separable</li><li>Aut(ℚ(√2,√3))</li><li>Idea de Ruffini–Abel</li>
+      </ol>
+
+      <p class="callout">Más allá de teoremas, la intuición y los ejemplos sostienen el buen álgebra.</p>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba" type="button">↑</button>
+
+  <noscript>Este documento necesita JavaScript para cambiar de pestañas. Activa JavaScript o abre solo la sección “Pre-Álgebra”, que aparece por defecto.</noscript>
+
+  <!-- SCRIPT: pestañas robustas, progreso y controles -->
+  <script>
+  (function(){
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => r.querySelectorAll(s);
+
+    const map = {
+      primaria:'#sec-primaria',
+      eso:'#sec-eso',
+      bach:'#sec-bach',
+      uni:'#sec-uni',
+      master:'#sec-master',
+      phd:'#sec-phd'
+    };
+
+    function safeSetActive(key){
+      // Aplica clase .active a la sección elegida y aria-selected al botón
+      Object.entries(map).forEach(([k, sel])=>{
+        const sec = $(sel);
+        if(sec){
+          if(k===key){ sec.classList.add('active'); }
+          else{ sec.classList.remove('active'); }
+        }
+        const btn = document.querySelector('.pill[data-level="'+k+'"]');
+        if(btn) btn.setAttribute('aria-selected', String(k===key));
+      });
+    }
+
+    function persistKey(key){
+      // Guarda en hash y localStorage sin romper navegadores antiguos
+      try{
+        location.hash = 'nivel='+key;
+      }catch(e){}
+      try{
+        localStorage.setItem('nivel-algebra', key);
+      }catch(e){}
+    }
+
+    function readInitialKey(){
+      // 1) ?nivel=...  2) #nivel=...  3) localStorage  4) 'primaria'
+      let k = 'primaria';
+      try{
+        const p = new URLSearchParams(location.search).get('nivel');
+        if(p && map[p]) return p;
+      }catch(e){}
+      try{
+        if(location.hash && location.hash.includes('nivel=')){
+          const h = location.hash.split('nivel=')[1].split('&')[0];
+          if(map[h]) return h;
+        }
+      }catch(e){}
+      try{
+        const saved = localStorage.getItem('nivel-algebra');
+        if(saved && map[saved]) return saved;
+      }catch(e){}
+      return k;
+    }
+
+    function showLevel(key, push=true){
+      safeSetActive(key);
+      if(push) persistKey(key);
+      // Asegura scroll arriba
+      try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+    }
+
+    // Barra de progreso + botón subir
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop || 0;
+      const max = (h.scrollHeight - h.clientHeight) || 1;
+      const p = Math.max(0, Math.min(100, (sc/max)*100));
+      const bar = $('#progress');
+      if(bar) bar.style.width = p + '%';
+      const topbtn = $('#topbtn');
+      if(topbtn) topbtn.classList.toggle('show', sc>600);
+    }
+
+    // Controles de lector
+    function bindReaderControls(){
+      const root = document.documentElement;
+      const up = $('#fs-up'), down = $('#fs-down');
+      const wup = $('#width-up'), wdown = $('#width-down');
+      const theme = $('#theme-toggle');
+
+      up && up.addEventListener('click', ()=>{
+        const val = parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18;
+        root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+      });
+      down && down.addEventListener('click', ()=>{
+        const val = parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18;
+        root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+      });
+      wup && wup.addEventListener('click', ()=>{
+        const w = getComputedStyle(root).getPropertyValue('--maxw')||'74ch';
+        const num = parseInt(w);
+        root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+      });
+      wdown && wdown.addEventListener('click', ()=>{
+        const w = getComputedStyle(root).getPropertyValue('--maxw')||'74ch';
+        const num = parseInt(w);
+        root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+      });
+      theme && theme.addEventListener('click', ()=>{
+        // Toggle simple: si base es claro, pasa a oscuro y viceversa
+        const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+        if(light){
+          root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+          root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+          root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+        }else{
+          root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+          root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+          root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+        }
+      });
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', ()=>{
+      // Pestañas
+      $$('.pill').forEach(b => b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+
+      // Nivel inicial
+      const start = readInitialKey();
+      showLevel(start, false);
+
+      // Progreso + botón subir
+      addEventListener('scroll', updateProgress, {passive:true});
+      updateProgress();
+      const topbtn = $('#topbtn');
+      topbtn && topbtn.addEventListener('click', ()=> {
+        try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
+      });
+
+      // Controles
+      bindReaderControls();
+    });
+  })();
+  </script>
+</body>
+</html>

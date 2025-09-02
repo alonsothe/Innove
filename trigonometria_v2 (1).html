@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trigonometría </title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+      --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff; font-weight:900}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:22px clamp(18px,3vw,28px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .theorem{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border);
+    border-left:6px solid var(--accent2); padding:12px 14px; border-radius:12px; margin:12px 0}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);
+    border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:14px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .note{color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">ƒ</span><span class="brand-title">Trigonometría </span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down">A−</button>
+        <button class="btn small" id="fs-up">A+</button>
+        <button class="btn small" id="width-down">⟵</button>
+        <button class="btn small" id="width-up">⟶</button>
+        <button class="btn" id="theme-toggle">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="eso" role="tab" aria-selected="true">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level" data-active>
+      <h1>ESO — Trigonometría útil con ideas claras</h1>
+      <p class="lead">Medidas angulares (grados y radianes), triángulo rectángulo, círculo trigonométrico básico y problemas reales. Es lo esencial para que todo lo demás tenga sentido.</p>
+      <div class="toc">
+        <a href="#e-medidas">1) Grados ↔ radianes y arcos</a>
+        <a href="#e-rect">2) Seno, coseno y tangente</a>
+        <a href="#e-circ">3) Círculo trigonométrico</a>
+        <a href="#e-prob">4) Alturas, sombras y distancias</a>
+      </div>
+
+      <h2 id="e-medidas">1) Grados ↔ radianes y arcos</h2>
+      <p>Una vuelta completa = 360° = 2π rad. Conversión: <span class="note">x° → x·π/180 rad</span>, <span class="note">θ rad → θ·180/π °</span>. Longitud de arco s=rθ (con θ en radianes); área de sector A=(1/2)r²θ.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>150° en rad</summary>150·π/180=5π/6.</details></li>
+        <li><details><summary>−π/3 en grados</summary>−60°.</details></li>
+        <li><details><summary>Arco en r=4 y θ=π/5</summary>s=4·π/5.</details></li>
+        <li><details><summary>Sector r=7 y θ=0,8</summary>A= (1/2)·49·0,8 = 19,6.</details></li>
+        <li><details><summary>Frecuencia y periodo</summary>ω=2πf ⇒ si f=5 Hz, ω=10π rad/s; T=1/f=0,2 s.</details></li>
+      </ol></div>
+
+      <h2 id="e-rect">2) Seno, coseno y tangente</h2>
+      <p>En triángulo rectángulo: <strong>sen θ</strong>=opuesto/hipotenusa, <strong>cos θ</strong>=adyacente/hipotenusa, <strong>tan θ</strong>=opuesto/adyacente. Identidad clave: sen²θ+cos²θ=1.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>θ=45° con h=10</summary>Cateto opuesto = 10·√2/2 = 5√2.</details></li>
+        <li><details><summary>tan 30°</summary>1/√3.</details></li>
+        <li><details><summary>cos 60°</summary>1/2.</details></li>
+        <li><details><summary>Comprobar sen²+cos²</summary>Con 30°: (1/2)²+(√3/2)²=1.</details></li>
+        <li><details><summary>Ángulo si tan θ=2</summary>θ≈63,43°.</details></li>
+      </ol></div>
+
+      <h2 id="e-circ">3) Círculo trigonométrico</h2>
+      <p>En el círculo unidad, el punto de ángulo θ es (cos θ, sen θ). Según el cuadrante, sen/cos cambian de signo. Período 2π: sen(θ+2π)=sen θ; cos(θ+2π)=cos θ.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>sen(−θ)</summary>−sen θ (impar); cos(−θ)=cos θ (par).</details></li>
+        <li><details><summary>cos π</summary>−1.</details></li>
+        <li><details><summary>Ángulos de referencia</summary>π/6, π/4, π/3.</details></li>
+        <li><details><summary>tan θ y cos θ=0</summary>tan indefinida donde cos θ=0 (±π/2 + kπ).</details></li>
+        <li><details><summary>Cotas</summary>−1≤sen,cos≤1.</details></li>
+      </ol></div>
+
+      <h2 id="e-prob">4) Alturas, sombras y distancias</h2>
+      <p>Usar la tangente para altura/distancia horizontal; seno o coseno si conocemos la hipotenusa (cuerda, rampa).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Sombras</summary>Poste 3 m; Sol 40° ⇒ L=3/ tan40°≈3,58 m.</details></li>
+        <li><details><summary>Altura con distancia 60 m y 28°</summary>≈60·tan28°≈31,9 m.</details></li>
+        <li><details><summary>Rampa 10 m a 12°</summary>Altura=10·sen12°≈2,08 m.</details></li>
+        <li><details><summary>Desnivel carretera 6%</summary>tan θ≈0,06 ⇒ θ≈3,43°.</details></li>
+        <li><details><summary>Distancia oblicua</summary>Catetos 4 y 9 ⇒ 9,85 m.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Identidades potentes, ecuaciones y gráficas</h1>
+      <p class="lead">Todo lo necesario para dominar trigonometría: identidades (suma/diferencia, dobles/mitades, productos↔sumas, cofunciones), ecuaciones y desigualdades periódicas, modelos A·sen(ωx+φ)+k, triángulos oblicuángulos (Leyes del Seno/Coseno) y reexpresión A sen + B cos = R sen(·+φ).</p>
+      <div class="toc">
+        <a href="#b-ids">1) Identidades fundamentales y cofunciones</a>
+        <a href="#b-sumdiff">2) Suma/diferencia, dobles y mitades</a>
+        <a href="#b-prod">3) Producto↔suma y suma↔producto</a>
+        <a href="#b-eq">4) Ecuaciones trigonométricas (métodos + general)</a>
+        <a href="#b-graph">5) Modelos y esbozo de gráficas</a>
+        <a href="#b-tri">6) Triángulos oblicuángulos y área</a>
+        <a href="#b-rewrite">7) A sen + B cos = R sen(·+φ)</a>
+        <a href="#b-ineq">8) Desigualdades trigonométricas</a>
+      </div>
+
+      <h2 id="b-ids">1) Identidades y cofunciones</h2>
+      <p>Claves: sen²x+cos²x=1; 1+tan²x=sec²x; 1+cot²x=csc²x. Cofunciones: sen(π/2−x)=cos x, cos(π/2−x)=sen x, tan(π/4−x)=(1−tan x)/(1+tan x) cuando tiene sentido.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>sec²x−tan²x</summary>1.</details></li>
+        <li><details><summary>cos(90°−θ)</summary>sen θ.</details></li>
+        <li><details><summary>Identidad con tan</summary>tan²x = sec²x−1.</details></li>
+        <li><details><summary>Expresar en sen/cos</summary>tan x = sen x / cos x, sec x = 1/ cos x.</details></li>
+        <li><details><summary>Rango de arcsen</summary>[−π/2, π/2].</details></li>
+      </ol></div>
+
+      <h2 id="b-sumdiff">2) Suma/diferencia, dobles y mitades</h2>
+      <p>sen(a±b)=sen a cos b ± cos a sen b; cos(a±b)=cos a cos b ∓ sen a sen b; tan(a±b)=(tan a±tan b)/(1∓tan a tan b). Dobles: sen2x=2sen x cos x; cos2x=cos²x−sen²x=1−2sen²x=2cos²x−1. Mitades: sen²(x/2)=(1−cos x)/2; cos²(x/2)=(1+cos x)/2.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>cos 15°</summary>cos(45°−30°)=(√2/2)(√3/2)+(√2/2)(1/2)= (√6+√2)/4.</details></li>
+        <li><details><summary>sen 3x</summary>3sen x−4sen³x.</details></li>
+        <li><details><summary>cos 3x</summary>4cos³x−3cos x.</details></li>
+        <li><details><summary>tan 2x</summary>2tan x/(1−tan²x).</details></li>
+        <li><details><summary>sen²(x/2)</summary>(1−cos x)/2.</details></li>
+      </ol></div>
+
+      <h2 id="b-prod">3) Producto↔suma y suma↔producto</h2>
+      <p>sen a cos b = [sen(a+b)+sen(a−b)]/2; cos a cos b = [cos(a+b)+cos(a−b)]/2; sen a sen b = [cos(a−b)−cos(a+b)]/2. Útil para integrar o resolver ecuaciones.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>2sen a cos a</summary>sen 2a.</details></li>
+        <li><details><summary>cos a − cos b</summary>−2 sen((a+b)/2) sen((a−b)/2).</details></li>
+        <li><details><summary>sen a − sen b</summary>2 cos((a+b)/2) sen((a−b)/2).</details></li>
+        <li><details><summary>cos a + cos b</summary>2 cos((a+b)/2) cos((a−b)/2).</details></li>
+        <li><details><summary>Frecuencias cercanas</summary>Suma de senos con frecuencias ~ iguales ⇒ batidos (envolvente lenta).</details></li>
+      </ol></div>
+
+      <h2 id="b-eq">4) Ecuaciones trigonométricas</h2>
+      <p>Estrategia: (i) reducir a una función (p.ej., tan); (ii) usar identidades; (iii) t=tan(x/2); (iv) buscar soluciones en un período y extender con periodicidad. Cuidado con dominios.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>sen x = 0,6</summary>x=arcsen 0,6 + 2kπ o x=π−arcsen 0,6 + 2kπ.</details></li>
+        <li><details><summary>2cos²x−3cos x+1=0</summary>cos x=1 o cos x=1/2 ⇒ x=2kπ o x=±π/3+2kπ.</details></li>
+        <li><details><summary>tan x = tan(2x)</summary>tan x−tan 2x=0 ⇒ usar fórmula o periodicidad ⇒ x=0, π, … o soluciones adicionales donde 2x= x + kπ ⇒ x=kπ.</details></li>
+        <li><details><summary>sen x + cos x = 1</summary>√2 sen(x+π/4)=1 ⇒ x=π/4 + 2kπ ± arctan(…)? <span class="note">Directo: √2 sen(x+π/4)=1 ⇒ x=π/4 + (−1)^n arcsen(1/√2) + nπ ⇒ x=0 + nπ o x=π/2 + nπ.</span></details></li>
+        <li><details><summary>General: A sen(ωx)+B cos(ωx)=C</summary>Reescribir como R sen(ωx+φ)=C y resolver.</details></li>
+      </ol></div>
+
+      <h2 id="b-graph">5) Modelos y gráficas</h2>
+      <p>y = A·sen(ωx+φ)+k: amplitud |A|, periodo T=2π/ω, desfase −φ/ω, línea media y=k. Tangente: periodo π/ω con asíntotas donde cos(ωx+φ)=0.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>y=2sen(3x−π/6)+1</summary>A=2, T=2π/3, desfase +π/18, media 1.</details></li>
+        <li><details><summary>Fase a pico</summary>pico en (x₀,f(x₀)) donde ωx₀+φ=π/2 + 2kπ.</details></li>
+        <li><details><summary>tan(2x+π/4)</summary>Periodo π/2, asíntotas en 2x+π/4=π/2+kπ ⇒ x=π/8+kπ/2.</details></li>
+        <li><details><summary>|sen x|</summary>Pliega la parte negativa; periodo π.</details></li>
+        <li><details><summary>Modelo de temperatura diaria</summary>Ajustar A, ω=2π/24, φ y k con media y semirango.</details></li>
+      </ol></div>
+
+      <h2 id="b-tri">6) Triángulos oblicuángulos</h2>
+      <p>Ley de los Senos: a/sen A=b/sen B=c/sen C=2R. Ley de los Cosenos: c²=a²+b²−2ab cos C. Área: (1/2)ab sen C = (abc)/(4R) = rs (r: inradio, s: semiperímetro).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Resolver ASA</summary>Dados A,B y a ⇒ hallar C=π−A−B; b=a·sen B/sen A; c=a·sen C/sen A.</details></li>
+        <li><details><summary>SSS con Ley de Cosenos</summary>c²=a²+b²−2ab cos C ⇒ hallar C, luego Senos para el resto.</details></li>
+        <li><details><summary>Ambigüedad SSA</summary>Si a/sen A &gt; b ⇒ único; si a/sen A = b ⇒ recto; si a/sen A &lt; b ⇒ dos o ninguna.</details></li>
+        <li><details><summary>Radio R</summary>R=a/(2 sen A).</details></li>
+        <li><details><summary>Área con dos lados</summary>(1/2)ab sen C.</details></li>
+      </ol></div>
+
+      <h2 id="b-rewrite">7) Reescritura A sen + B cos</h2>
+      <p>Para A sen(ωx) + B cos(ωx) = R sen(ωx+φ), toma R=√(A²+B²) y φ con cos φ = A/R, sen φ = B/R (o φ=arctan2(B,A)). Permite resolver ecuaciones y leer amplitud/fase rápidamente.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>3sen x + 4cos x</summary>R=5; φ=arctan2(4,3) ⇒ 3sen x + 4cos x = 5 sen(x+φ).</details></li>
+        <li><details><summary>Resolver 3sen x + 4cos x = 2</summary>5 sen(x+φ)=2 ⇒ sen(x+φ)=0,4 ⇒ x+φ = (−1)^k arcsen 0,4 + kπ.</details></li>
+        <li><details><summary>Máximo y mínimo</summary>|A sen + B cos| ≤ √(A²+B²) ⇒ cota inmediata.</details></li>
+        <li><details><summary>Fase de pico</summary>x_{pico} = (π/2 − φ)/ω + kT.</details></li>
+        <li><details><summary>Modelo armónico forzado</summary>Rescribir suma facilita comparar con medida.</details></li>
+      </ol></div>
+
+      <h2 id="b-ineq">8) Desigualdades trigonométricas</h2>
+      <p>Usar periodicidad y monotonicidad en arcos principales. Ejemplos típicos: sen x ≥ α, cos x ≤ β, tan x &gt; γ. Para expresiones, reducir a una sola función o reescribir como R sen(·+φ).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>cos x ≥ 0</summary>x∈[−π/2, π/2] + 2kπ.</details></li>
+        <li><details><summary>sen x ≥ 1/2</summary>x∈[π/6, 5π/6] + 2kπ.</details></li>
+        <li><details><summary>|sen x| ≤ 0,6</summary>x en bandas alrededor de kπ con arcos principales ±arcsen 0,6.</details></li>
+        <li><details><summary>3sen x + 4cos x ≥ 2</summary>5 sen(x+φ) ≥ 2 ⇒ sen(x+φ) ≥ 0,4 ⇒ intervalos periódicos.</details></li>
+        <li><details><summary>tan x &gt; 1</summary>x∈(π/4, π/2)+kπ.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Fundamentos analíticos y aplicaciones</h1>
+      <p class="lead">Trigonometría desde series y complejos, cálculo integral (potencias y sustituciones), oscilaciones y fasores, series de Fourier y números complejos (De Moivre y raíces).</p>
+      <div class="toc">
+        <a href="#u-euler">1) Euler y definiciones analíticas</a>
+        <a href="#u-ident">2) Identidades desde e^{ix}</a>
+        <a href="#u-eq">3) Ecuaciones avanzadas y t=tan(x/2)</a>
+        <a href="#u-int">4) Integrales trigonométricas y sustituciones</a>
+        <a href="#u-ode">5) Oscilador armónico y fasores</a>
+        <a href="#u-fourier">6) Series de Fourier y ortogonalidad</a>
+        <a href="#u-complex">7) De Moivre, raíces y Chebyshev</a>
+      </div>
+
+      <h2 id="u-euler">1) Euler y definiciones</h2>
+      <p>e^{ix}=cos x + i sen x; sen x = (e^{ix}−e^{−ix})/(2i); cos x = (e^{ix}+e^{−ix})/2. Series: sen x = ∑(−1)^k x^{2k+1}/(2k+1)!, cos x = ∑(−1)^k x^{2k}/(2k)!.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>(sen x)' y (cos x)'</summary>Derivar las expresiones exponenciales ⇒ cos x y −sen x.</details></li>
+        <li><details><summary>sen²+cos²=1</summary>De e^{ix} e^{−ix}=1.</details></li>
+        <li><details><summary>sen(a±b), cos(a±b)</summary>De e^{i(a±b)}=e^{ia}e^{ib}.</details></li>
+        <li><details><summary>lim (sen x)/x</summary>=1 por series.</details></li>
+        <li><details><summary>Paridad</summary>cos es par, sen es impar por series.</details></li>
+      </ol></div>
+
+      <h2 id="u-ident">2) Identidades con complejos</h2>
+      <p>Producto→suma y suma→producto se derivan con exponenciales. También: cos nx + i sen nx = (cos x + i sen x)^n.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>cos 3x y sen 3x</summary>4cos³x−3cos x; 3sen x−4sen³x.</details></li>
+        <li><details><summary>Fórmulas de Werner</summary>cos a cos b = (cos(a−b)+cos(a+b))/2, etc.</details></li>
+        <li><details><summary>Identidad de prostapéresis</summary>sen a ± sen b = 2 sen((a±b)/2) cos((a∓b)/2).</details></li>
+        <li><details><summary>Sumas finitas</summary>∑_{k=0}^{n−1} cos(x+kθ) = Re( e^{ix} (1−e^{inθ})/(1−e^{iθ}) ).</details></li>
+        <li><details><summary>Ortogonalidad</summary>∫_{−π}^{π} e^{inx} e^{−imx} dx = 2π δ_{nm}.</details></li>
+      </ol></div>
+
+      <h2 id="u-eq">3) Ecuaciones avanzadas y t=tan(x/2)</h2>
+      <p>Con t=tan(x/2): sen x = 2t/(1+t²), cos x = (1−t²)/(1+t²), tan x = 2t/(1−t²). Reduce ecuaciones trigonométricas a racionales en t, luego x=2 arctan t.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>A sen x + B cos x = C</summary>Pasar a R sen(x+φ)=C con R=√(A²+B²), φ=arctan2(B,A).</details></li>
+        <li><details><summary>cos x = a</summary>(1−t²)/(1+t²)=a ⇒ t²=(1−a)/(1+a), x=±2 arctan √((1−a)/(1+a))+2kπ.</details></li>
+        <li><details><summary>sen x = sen 3x</summary>2 cos 2x · sen x = 0 ⇒ x=kπ o x=π/4 + kπ/2.</details></li>
+        <li><details><summary>tan 3x = 0</summary>3x=kπ ⇒ x=kπ/3.</details></li>
+        <li><details><summary>Restricciones</summary>Excluir puntos donde 1+t²=0 (no reales) o 1−t²=0 para tan.</details></li>
+      </ol></div>
+
+      <h2 id="u-int">4) Integrales y sustituciones</h2>
+      <p>Patrones: (i) potencias impares de sen/cos ⇒ separar un factor y usar 1−cos² o 1−sen²; (ii) potencias pares ⇒ identidades de ángulo doble; (iii) tan/sec y cot/csc con identidades; (iv) sustituciones trigonométricas para raíces cuadráticas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>∫ sen^5 x dx</summary>Separar sen x(1−cos²x)² y usar u=cos x.</details></li>
+        <li><details><summary>∫ cos^4 x dx</summary>Usar cos²x=(1+cos2x)/2 y expandir.</details></li>
+        <li><details><summary>∫ sec^3 x dx</summary>Integración por partes o fórmula estándar.</details></li>
+        <li><details><summary>√(a²−x²)</summary>x=a sen θ ⇒ dx=a cos θ dθ.</details></li>
+        <li><details><summary>√(x²−a²)</summary>x=a sec θ ⇒ dx=a sec θ tan θ dθ.</details></li>
+      </ol></div>
+
+      <h2 id="u-ode">5) Oscilador y fasores</h2>
+      <p>y''+ω² y=0 ⇒ y=A cos ωt + B sen ωt. Con amortiguamiento y''+2ζω y' + ω² y=0 ⇒ e^{−ζω t}(C cos ω_d t + D sen ω_d t), ω_d=ω√(1−ζ²). Forzado sinusoidal: usar fasores y números complejos para amplitud y desfase.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Periodo</summary>T=2π/ω.</details></li>
+        <li><details><summary>Resonancia</summary>Amplitud grande cuando ω≈ω₀ en forzado débilmente amortiguado.</details></li>
+        <li><details><summary>Fase</summary>φ=arctan(Im/Re) en respuesta compleja.</details></li>
+        <li><details><summary>Superposición</summary>Suma de soluciones es solución en sistemas lineales.</details></li>
+        <li><details><summary>Envolturas</summary>Batidos: |A sen ω₁t + A sen ω₂t| ≈ 2A cos((ω₁−ω₂)t/2) sen((ω₁+ω₂)t/2).</details></li>
+      </ol></div>
+
+      <h2 id="u-fourier">6) Series de Fourier</h2>
+      <p>f(x) ~ a_0/2 + ∑_{n≥1} (a_n cos nx + b_n sen nx). Coeficientes por ortogonalidad. Convergencia puntual al promedio en discontinuidades (Gibbs).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>f impar</summary>Solo senos (a_n=0).</details></li>
+        <li><details><summary>f par</summary>Solo cosenos (b_n=0).</details></li>
+        <li><details><summary>Parseval</summary>Energía = suma de cuadrados de coeficientes.</details></li>
+        <li><details><summary>Filtro</summary>Truncar N elimina altas frecuencias.</details></li>
+        <li><details><summary>Reconstrucción</summary>Cómo afecta N a la forma de la curva.</details></li>
+      </ol></div>
+
+      <h2 id="u-complex">7) De Moivre y Chebyshev</h2>
+      <p>(cos x + i sen x)^n = cos nx + i sen nx. Raíces de z^n = 1: e^{i 2kπ/n}. Polinomios de Chebyshev: T_n(t)=cos(n arccos t) con propiedades de aproximación.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Identidad cos 5x</summary>De Moivre ⇒ polinomio en cos x.</details></li>
+        <li><details><summary>Raíces 6-ésimas de 1</summary>e^{i kπ/3}, k=0..5.</details></li>
+        <li><details><summary>Chebyshev</summary>Recurrencia T_{n+1}=2t T_n − T_{n−1}.</details></li>
+        <li><details><summary>Cos(n arccos t)</summary>Expansión polinómica útil.</details></li>
+        <li><details><summary>Geometría de raíces</summary>Regularidad en el círculo unidad.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Trigonometría en análisis moderno (panorama breve)</h1>
+      <p class="lead">Trigonométricas como base ortonormal en L², núcleos de Fejér/Dirichlet, Riemann–Lebesgue, aproximación por trigonométricos, armónicos esféricos y conexiones con PDE.</p>
+      <div class="toc">
+        <a href="#p-orto">1) Ortogonalidad y Plancherel</a>
+        <a href="#p-kernels">2) Núcleos de Dirichlet y Fejér</a>
+        <a href="#p-rl">3) Lema de Riemann–Lebesgue</a>
+        <a href="#p-approx">4) Aproximación y DCT</a>
+        <a href="#p-sph">5) Armónicos esféricos</a>
+      </div>
+
+      <h2 id="p-orto">1) Ortogonalidad y Plancherel</h2>
+      <p>En L²(−π,π), {1, cos nx, sen nx} forma una familia ortonormal. Plancherel: ||f||² = a_0²/2 + ∑(a_n²+b_n²).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Proyección</summary>a_n = (1/π)∫ f cos nx; b_n = (1/π)∫ f sen nx.</details></li>
+        <li><details><summary>Base completa</summary>Los parciales aproximan en L².</details></li>
+        <li><details><summary>Parseval</summary>Identidad de energía.</details></li>
+        <li><details><summary>Convergencia</summary>Uniforme no garantizada con Dirichlet.</details></li>
+        <li><details><summary>Visualización</summary>Errores por truncado (Gibbs).</details></li>
+      </ol></div>
+
+      <h2 id="p-kernels">2) Dirichlet y Fejér</h2>
+      <p>El núcleo de Dirichlet produce oscilaciones cerca de saltos; Fejér (promedios de Cesàro) suaviza y siempre converge para continuas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Cesàro</summary>σ_N f converge uniformemente si f es continua 2π–periódica.</details></li>
+        <li><details><summary>Filtro</summary>Convolución con F_N ≡ suavizado.</details></li>
+        <li><details><summary>Dirichlet</summary>Parciales S_N no uniformes cerca de saltos.</details></li>
+        <li><details><summary>Gibbs</summary>Sobreoscilación ~9%.</details></li>
+        <li><details><summary>Aplicación</summary>Reconstrucción de señales e imágenes.</details></li>
+      </ol></div>
+
+      <h2 id="p-rl">3) Riemann–Lebesgue</h2>
+      <p>Si f∈L¹, entonces a_n,b_n→0. Intuición: oscilaciones rápidas cancelan área.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Indicatriz</summary>Coeficientes ~ sin(nx)/n.</details></li>
+        <li><details><summary>FT continua</summary>La transformada de Fourier tiende a 0 en infinito.</details></li>
+        <li><details><summary>Contrastes</summary>Funciones con decaimiento lento.</details></li>
+        <li><details><summary>Comparación</summary>L² vs L¹ en convergencia.</details></li>
+        <li><details><summary>Interpretación geométrica</summary>Áreas positivas/negativas que se cancelan.</details></li>
+      </ol></div>
+
+      <h2 id="p-approx">4) Aproximación y DCT</h2>
+      <p>Polinomios trigonométricos aproximan funciones continuas (Weierstrass–Stone). Transformada coseno discreta (DCT) en compresión (JPEG) es “solo cosenos”.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>DCT</summary>Bloques de imagen como sumas de cosenos.</details></li>
+        <li><details><summary>Ventaneo</summary>Reducir ringing con ventanas suaves.</details></li>
+        <li><details><summary>Aliasing</summary>Muestreo insuficiente distorsiona.</details></li>
+        <li><details><summary>Chebyshev</summary>cos(n arccos x) minimiza el error máximo en [−1,1].</details></li>
+        <li><details><summary>Uniforme vs L²</summary>Control de supremo frente a energía media.</details></li>
+      </ol></div>
+
+      <h2 id="p-sph">5) Armónicos esféricos</h2>
+      <p>Ondas sobre la esfera S²: Y^m_ℓ(θ,φ), ortogonales. Aparecen en física (Laplace/Helmholtz) y gráficos 3D.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Separación de variables</summary>La parte angular da ecuaciones en θ,φ con sen y cos.</details></li>
+        <li><details><summary>Ortonormalidad</summary>Integrales en la esfera.</details></li>
+        <li><details><summary>Visual</summary>Armónicos bajos = formas suaves (iluminación).</details></li>
+        <li><details><summary>Polos</summary>Condiciones de regularidad en θ=0,π.</details></li>
+        <li><details><summary>Relación con 1D</summary>Para ℓ=0,1 aparecen senos/cosenos puros en φ.</details></li>
+      </ol></div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs
+    const map = { eso:'#sec-eso', bach:'#sec-bach', uni:'#sec-uni', phd:'#sec-phd' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level="${k}"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-trigo-v2', key);
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-trigo-v2');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'eso'), false);
+
+    // Progress + Top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Reader controls (A-/A+ and width left/right and theme)
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+      if(light){
+        root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+        root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+      }else{
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+        root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      }
+    });
+  </script>
+</body>
+</html>

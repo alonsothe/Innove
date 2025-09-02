@@ -1,0 +1,2715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cálculo Diferencial — Límites, Derivadas y Aplicaciones (v3)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{ --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+         --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+         --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+         --radius:16px; --maxw:78ch; --base:18px; --lh:1.9; }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+            --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399; --border:#203054; }
+  }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+        font-size:var(--base); line-height:var(--lh); color:var(--ink);
+        background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+                   radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff; font-weight:900}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:22px clamp(18px,3vw,28px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .theory{display:grid; gap:12px; margin:14px 0}
+  .tbox{border:1px solid var(--border); border-left:6px solid var(--accent); border-radius:12px; padding:12px 14px; background:color-mix(in oklab,var(--paper) 90%, var(--bg))}
+  .tbox h3{margin-top:0}
+  .controls{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:10px 0}
+  .switch{display:inline-flex; align-items:center; gap:8px}
+  .card{border:1px dashed var(--border); border-radius:14px; padding:12px; background:color-mix(in oklab,var(--paper) 96%, transparent); margin:10px 0}
+  .card-h{display:flex; align-items:center; justify-content:space-between; font-weight:800}
+  .chip{padding:.2rem .6rem; border-radius:999px; border:1px solid var(--border); background:color-mix(in oklab,var(--paper) 80%, var(--bg)); font-size:.9em}
+  .chip.límite{}
+  .num{opacity:.6}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dotted var(--border); border-radius:10px; padding:8px 10px; margin:8px 0}
+  summary{cursor:pointer; font-weight:800}
+  .steps{margin:.5em 0 .2em 1.2em}
+  .result{border-left:4px solid var(--accent2); padding-left:10px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:10px}
+  .bar{height:1px; background:var(--border); margin:10px 0}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">∂</span><span class="brand-title">Cálculo Diferencial — Límites, Derivadas y Aplicaciones</span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down">A−</button>
+        <button class="btn small" id="fs-up">A+</button>
+        <button class="btn small" id="width-down">⇤</button>
+        <button class="btn small" id="width-up">⇥</button>
+        <button class="btn" id="theme-toggle">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="eso" role="tab" aria-selected="true">ESO (intro)</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ESO -->
+    <section id="sec-eso" class="paper level" data-active>
+      <h1>ESO — Introducción muy breve</h1>
+      <p class="lead">Límite = “a dónde se acerca” la función; Derivada = “pendiente instantánea”.</p>
+      <div class="grid">
+        <div class="tbox"><h3>¿Qué es un límite?</h3><p>Es un número que describe el comportamiento de <em>f(x)</em> cuando <em>x</em> se acerca a <em>a</em>. Aunque f(a) no exista, el límite puede existir.</p></div>
+        <div class="tbox"><h3>¿Qué es la derivada?</h3><p>La derivada en <em>a</em> es la pendiente de la recta tangente a la gráfica en ese punto. Señala si la función sube, baja o se aplana.</p></div>
+        <div class="tbox"><h3>Usos cotidianos</h3><p>Velocidad instantánea, máximos/mínimos (optimización) y aproximaciones locales.</p></div>
+      </div>
+    </section>
+
+    <!-- Bachillerato -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Teoría clara + 100 ejercicios guiados</h1>
+      <div class="theory">
+        <div class="tbox">
+          <h3>Teoría de límites (resumen práctico)</h3>
+          <ul>
+            <li><strong>Notables:</strong> sin u / u → 1; (1 − cos u)/u² → 1/2.</li>
+            <li><strong>Al infinito:</strong> compara grados; si son iguales, el límite es el cociente de coeficientes líderes.</li>
+            <li><strong>Trucos:</strong> factorizar, multiplicar por el conjugado, sustituir u=kx, cambio t=1/x.</li>
+          </ul>
+        </div>
+        <div class="tbox">
+          <h3>Derivadas (reglas que siempre usas)</h3>
+          <ul>
+            <li><strong>Potencias:</strong> (xⁿ)' = n·xⁿ⁻¹; <strong>ln:</strong> (ln x)'=1/x; <strong>e^{ax}:</strong> a·e^{ax}.</li>
+            <li><strong>Trig:</strong> (sen x)'=cos x; (cos x)'=−sen x.</li>
+            <li><strong>Producto/Cociente:</strong> (uv)'=u'v+uv'; (u/v)'=(u'v−uv')/v².</li>
+            <li><strong>Cadena:</strong> (f∘g)'=(f'∘g)·g'.</li>
+          </ul>
+        </div>
+        <div class="tbox">
+          <h3>Estudio de funciones</h3>
+          <ul>
+            <li>Signo de f' ⇒ crecimiento/decrecimiento.</li>
+            <li>Signo de f'' ⇒ concavidad e inflexión.</li>
+            <li>Extremos: f'=0 y cambio de signo; comprueba con f''.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn small" id="expand-bach">▶︎ Mostrar todo</button>
+        <button class="btn small" id="collapse-bach">▾ Ocultar todo</button>
+      </div>
+      <div id="bach-ex">
+        
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">01</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(1x)/(1x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 1x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">02</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(2x)/(2x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 2x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">03</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(3x)/(3x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 3x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">04</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(4x)/(4x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 4x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">05</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(5x)/(5x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 5x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">06</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(6x)/(6x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 6x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">07</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(7x)/(7x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 7x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">08</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(8x)/(8x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 8x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">09</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(9x)/(9x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 9x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">10</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula el límite cuando x→0 de sin(10x)/(10x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Reconoce el límite notable sin u / u → 1 cuando u→0.</li><li>Haz u = 10x; al tender x→0 también u→0.</li><li>Concluye que el cociente tiende a 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">11</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula lim (x→0) [1 − cos(1x)] / x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la equivalencia 1−cos u ~ u²/2 para u pequeño.</li><li>Toma u=1x ⇒ 1−cos(1x) ~ (1x)²/2 = 1/2 · x².</li><li>Divide por x² y toma el límite.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 0.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">12</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula lim (x→0) [1 − cos(2x)] / x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la equivalencia 1−cos u ~ u²/2 para u pequeño.</li><li>Toma u=2x ⇒ 1−cos(2x) ~ (2x)²/2 = 4/2 · x².</li><li>Divide por x² y toma el límite.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">13</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula lim (x→0) [1 − cos(3x)] / x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la equivalencia 1−cos u ~ u²/2 para u pequeño.</li><li>Toma u=3x ⇒ 1−cos(3x) ~ (3x)²/2 = 9/2 · x².</li><li>Divide por x² y toma el límite.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 4.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">14</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula lim (x→0) [1 − cos(4x)] / x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la equivalencia 1−cos u ~ u²/2 para u pequeño.</li><li>Toma u=4x ⇒ 1−cos(4x) ~ (4x)²/2 = 16/2 · x².</li><li>Divide por x² y toma el límite.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 8.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">15</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula lim (x→0) [1 − cos(5x)] / x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la equivalencia 1−cos u ~ u²/2 para u pequeño.</li><li>Toma u=5x ⇒ 1−cos(5x) ~ (5x)²/2 = 25/2 · x².</li><li>Divide por x² y toma el límite.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 12.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">16</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Calcula lim (x→0) [1 − cos(6x)] / x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la equivalencia 1−cos u ~ u²/2 para u pequeño.</li><li>Toma u=6x ⇒ 1−cos(6x) ~ (6x)²/2 = 36/2 · x².</li><li>Divide por x² y toma el límite.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 18.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">17</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→1) (x² − 1²)/(x − 1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Factoriza x² − 1² = (x − 1)(x + 1).</li><li>Cancela el factor (x − a) y evalúa el límite sustituyendo x=a.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">18</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→2) (x² − 2²)/(x − 2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Factoriza x² − 2² = (x − 2)(x + 2).</li><li>Cancela el factor (x − a) y evalúa el límite sustituyendo x=a.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 4</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">19</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→3) (x² − 3²)/(x − 3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Factoriza x² − 3² = (x − 3)(x + 3).</li><li>Cancela el factor (x − a) y evalúa el límite sustituyendo x=a.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 6</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">20</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→4) (x² − 4²)/(x − 4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Factoriza x² − 4² = (x − 4)(x + 4).</li><li>Cancela el factor (x − a) y evalúa el límite sustituyendo x=a.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 8</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">21</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→5) (x² − 5²)/(x − 5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Factoriza x² − 5² = (x − 5)(x + 5).</li><li>Cancela el factor (x − a) y evalúa el límite sustituyendo x=a.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 10</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">22</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→6) (x² − 6²)/(x − 6).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Factoriza x² − 6² = (x − 6)(x + 6).</li><li>Cancela el factor (x − a) y evalúa el límite sustituyendo x=a.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 12</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip infinito">Infinito</span><span class="num">23</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (x^3+2)/(x^2+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>El numerador tiene mayor grado ⇒ la fracción crece sin cota (diverge en valor absoluto).</li></ol>
+          <p class="result"><strong>Resultado:</strong> ∞ con el signo de los coeficientes líderes</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip infinito">Infinito</span><span class="num">24</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (x^2+2)/(x^3+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>El denominador tiene mayor grado ⇒ el cociente tiende a 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip infinito">Infinito</span><span class="num">25</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (x^5+2)/(x^5+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Compara grados: iguales ⇒ el límite es el cociente de coeficientes líderes.</li><li>Aquí: 1/1 = 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip infinito">Infinito</span><span class="num">26</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (x^1+2)/(x^4+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>El denominador tiene mayor grado ⇒ el cociente tiende a 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip infinito">Infinito</span><span class="num">27</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (x^4+2)/(x^1+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>El numerador tiene mayor grado ⇒ la fracción crece sin cota (diverge en valor absoluto).</li></ol>
+          <p class="result"><strong>Resultado:</strong> ∞ con el signo de los coeficientes líderes</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip infinito">Infinito</span><span class="num">28</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (x^6+2)/(x^2+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>El numerador tiene mayor grado ⇒ la fracción crece sin cota (diverge en valor absoluto).</li></ol>
+          <p class="result"><strong>Resultado:</strong> ∞ con el signo de los coeficientes líderes</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">29</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (√(x²+1x) − x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Multiplica y divide por el conjugado √(x²+ax)+x.</li><li>El numerador se convierte en (x²+ax) − x² = ax.</li><li>El denominador ~ √(x²+ax)+x ~ 2x ⇒ el límite es a/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 0.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">30</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (√(x²+2x) − x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Multiplica y divide por el conjugado √(x²+ax)+x.</li><li>El numerador se convierte en (x²+ax) − x² = ax.</li><li>El denominador ~ √(x²+ax)+x ~ 2x ⇒ el límite es a/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">31</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (√(x²+4x) − x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Multiplica y divide por el conjugado √(x²+ax)+x.</li><li>El numerador se convierte en (x²+ax) − x² = ax.</li><li>El denominador ~ √(x²+ax)+x ~ 2x ⇒ el límite es a/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">32</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (√(x²+6x) − x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Multiplica y divide por el conjugado √(x²+ax)+x.</li><li>El numerador se convierte en (x²+ax) − x² = ax.</li><li>El denominador ~ √(x²+ax)+x ~ 2x ⇒ el límite es a/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 3.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">33</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) (√(x²+8x) − x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Multiplica y divide por el conjugado √(x²+ax)+x.</li><li>El numerador se convierte en (x²+ax) − x² = ax.</li><li>El denominador ~ √(x²+ax)+x ~ 2x ⇒ el límite es a/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 4.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">34</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) ln(1+1x)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la derivada de ln en 1 o serie: ln(1+u) ~ u.</li><li>Con u=1x resulta 1x/x.</li><li>El límite vale la pendiente en 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">35</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) ln(1+2x)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la derivada de ln en 1 o serie: ln(1+u) ~ u.</li><li>Con u=2x resulta 2x/x.</li><li>El límite vale la pendiente en 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">36</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) ln(1+3x)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la derivada de ln en 1 o serie: ln(1+u) ~ u.</li><li>Con u=3x resulta 3x/x.</li><li>El límite vale la pendiente en 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">37</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) ln(1+5x)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la derivada de ln en 1 o serie: ln(1+u) ~ u.</li><li>Con u=5x resulta 5x/x.</li><li>El límite vale la pendiente en 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip continuidad">Continuidad</span><span class="num">38</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia continuidad de f(x)=(x²−1)/(x−1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Detecta la posible discontinuidad en x=1.</li><li>Comprueba si x²−1 comparte factor (x−c); si lo comparte, es removible al simplificar.</li><li>Concluye: continua salvo en el punto problemático si no hay cancelación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Discontinua en x=1; removible solo si (x−1) divide al numerador.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip continuidad">Continuidad</span><span class="num">39</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia continuidad de f(x)=(x²−1)/(x−2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Detecta la posible discontinuidad en x=2.</li><li>Comprueba si x²−1 comparte factor (x−c); si lo comparte, es removible al simplificar.</li><li>Concluye: continua salvo en el punto problemático si no hay cancelación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Discontinua en x=2; removible solo si (x−2) divide al numerador.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip continuidad">Continuidad</span><span class="num">40</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia continuidad de f(x)=(x²−1)/(x−3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Detecta la posible discontinuidad en x=3.</li><li>Comprueba si x²−1 comparte factor (x−c); si lo comparte, es removible al simplificar.</li><li>Concluye: continua salvo en el punto problemático si no hay cancelación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Discontinua en x=3; removible solo si (x−3) divide al numerador.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip continuidad">Continuidad</span><span class="num">41</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia continuidad de f(x)=(x²−1)/(x−4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Detecta la posible discontinuidad en x=4.</li><li>Comprueba si x²−1 comparte factor (x−c); si lo comparte, es removible al simplificar.</li><li>Concluye: continua salvo en el punto problemático si no hay cancelación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Discontinua en x=4; removible solo si (x−4) divide al numerador.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip continuidad">Continuidad</span><span class="num">42</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia continuidad de f(x)=(x²−1)/(x−5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Detecta la posible discontinuidad en x=5.</li><li>Comprueba si x²−1 comparte factor (x−c); si lo comparte, es removible al simplificar.</li><li>Concluye: continua salvo en el punto problemático si no hay cancelación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Discontinua en x=5; removible solo si (x−5) divide al numerador.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip asíntota">Asíntota</span><span class="num">43</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Asímptotas de f(x)=(x^1+1)/(x^1−1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Verticales: ceros de x^q − 1.</li><li>En infinito: compara grados p y q para decidir horizontal/oblicua o 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Verticales: raíces 1-ésimas de 1. Infinito: horizontal y=1.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip asíntota">Asíntota</span><span class="num">44</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Asímptotas de f(x)=(x^2+1)/(x^1−1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Verticales: ceros de x^q − 1.</li><li>En infinito: compara grados p y q para decidir horizontal/oblicua o 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Verticales: raíces 1-ésimas de 1. Infinito: oblicua si p=q+1.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip asíntota">Asíntota</span><span class="num">45</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Asímptotas de f(x)=(x^1+1)/(x^2−1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Verticales: ceros de x^q − 1.</li><li>En infinito: compara grados p y q para decidir horizontal/oblicua o 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Verticales: raíces 2-ésimas de 1. Infinito: horizontal y=0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip asíntota">Asíntota</span><span class="num">46</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Asímptotas de f(x)=(x^3+1)/(x^2−1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Verticales: ceros de x^q − 1.</li><li>En infinito: compara grados p y q para decidir horizontal/oblicua o 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Verticales: raíces 2-ésimas de 1. Infinito: oblicua si p=q+1.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip asíntota">Asíntota</span><span class="num">47</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Asímptotas de f(x)=(x^2+1)/(x^3−1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Verticales: ceros de x^q − 1.</li><li>En infinito: compara grados p y q para decidir horizontal/oblicua o 0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Verticales: raíces 3-ésimas de 1. Infinito: horizontal y=0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">48</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^1.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 1·x^0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">49</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^2.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2·x^1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">50</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^3.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 3·x^2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">51</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^4.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 4·x^3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">52</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^5.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 5·x^4</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">53</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^6.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 6·x^5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">54</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^7.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 7·x^6</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">55</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^8.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 8·x^7</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">56</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^9.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 9·x^8</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">57</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=x^10.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa la regla de potencias: (x^n)&#x27; = n·x^{n−1}.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 10·x^9</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip producto">Producto</span><span class="num">58</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=e^1^x · sin(1x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto: (uv)&#x27;=u&#x27;v+uv&#x27;.</li><li>Cadena en ambos factores.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 1e^1^x sin(1x) + 1e^1^x cos(1x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip producto">Producto</span><span class="num">59</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=e^2^x · sin(2x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto: (uv)&#x27;=u&#x27;v+uv&#x27;.</li><li>Cadena en ambos factores.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2e^2^x sin(2x) + 2e^2^x cos(2x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip producto">Producto</span><span class="num">60</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=e^3^x · sin(3x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto: (uv)&#x27;=u&#x27;v+uv&#x27;.</li><li>Cadena en ambos factores.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 3e^3^x sin(3x) + 3e^3^x cos(3x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip producto">Producto</span><span class="num">61</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=e^4^x · sin(4x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto: (uv)&#x27;=u&#x27;v+uv&#x27;.</li><li>Cadena en ambos factores.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 4e^4^x sin(4x) + 4e^4^x cos(4x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip producto">Producto</span><span class="num">62</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=e^5^x · sin(5x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto: (uv)&#x27;=u&#x27;v+uv&#x27;.</li><li>Cadena en ambos factores.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 5e^5^x sin(5x) + 5e^5^x cos(5x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">63</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=ln(x²+1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ln g(x): g&#x27;/g.</li><li>g&#x27;=2x.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2x/(x²+1)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">64</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=ln(x²+2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ln g(x): g&#x27;/g.</li><li>g&#x27;=2x.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2x/(x²+2)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">65</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=ln(x²+3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ln g(x): g&#x27;/g.</li><li>g&#x27;=2x.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2x/(x²+3)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">66</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=ln(x²+4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ln g(x): g&#x27;/g.</li><li>g&#x27;=2x.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2x/(x²+4)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">67</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=ln(x²+5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ln g(x): g&#x27;/g.</li><li>g&#x27;=2x.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f'(x) = 2x/(x²+5)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip implícita">Implícita</span><span class="num">68</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> En x² + y² = 1, halla dy/dx.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ambos lados respecto de x.</li><li>2x + 2y·y&#x27; = 0.</li><li>Despeja y&#x27; = −x/y (si y≠0).</li></ol>
+          <p class="result"><strong>Resultado:</strong> y' = −x/y</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip implícita">Implícita</span><span class="num">69</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> En x² + y² = 4, halla dy/dx.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ambos lados respecto de x.</li><li>2x + 2y·y&#x27; = 0.</li><li>Despeja y&#x27; = −x/y (si y≠0).</li></ol>
+          <p class="result"><strong>Resultado:</strong> y' = −x/y</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip implícita">Implícita</span><span class="num">70</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> En x² + y² = 9, halla dy/dx.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ambos lados respecto de x.</li><li>2x + 2y·y&#x27; = 0.</li><li>Despeja y&#x27; = −x/y (si y≠0).</li></ol>
+          <p class="result"><strong>Resultado:</strong> y' = −x/y</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip implícita">Implícita</span><span class="num">71</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> En x² + y² = 16, halla dy/dx.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ambos lados respecto de x.</li><li>2x + 2y·y&#x27; = 0.</li><li>Despeja y&#x27; = −x/y (si y≠0).</li></ol>
+          <p class="result"><strong>Resultado:</strong> y' = −x/y</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip implícita">Implícita</span><span class="num">72</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> En x² + y² = 25, halla dy/dx.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva ambos lados respecto de x.</li><li>2x + 2y·y&#x27; = 0.</li><li>Despeja y&#x27; = −x/y (si y≠0).</li></ol>
+          <p class="result"><strong>Resultado:</strong> y' = −x/y</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">73</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 31x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">74</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 32x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">75</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 33x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">76</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 34x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">77</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 35x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">78</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 36x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">79</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 37x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip extremos">Extremos</span><span class="num">80</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Extremos de f(x)=x³ − 38x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: f&#x27; = 3x² − 3a = 0 ⇒ x = ±√a.</li><li>Segunda derivada: f&#x27;&#x27;=6x ⇒ clasifica mín/máx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín en x=−√a; Máx en x=√a.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">81</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 21x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">82</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 22x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">83</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 23x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">84</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 24x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">85</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 25x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">86</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 26x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">87</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 27x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">88</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Estudia f(x)=x⁴ − 28x² (críticos y concavidad).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 4x³ − 4b x = 4x(x² − b).</li><li>Críticos: x=0, ±√b.</li><li>f&#x27;&#x27; = 12x² − 4b ⇒ concavidad y clasificación.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Extremos en 0, ±√b según el signo de f''; inflexiones cuando f'' cambia de signo.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">89</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 1x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/1.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">90</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 2x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/2.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">91</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 3x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/3.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">92</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 4x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/4.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">93</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 5x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">94</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 6x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/6.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">95</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x) = 7x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27; = a − 1/x = 0 ⇒ x = 1/a.</li><li>g&#x27;&#x27; = 1/x² &gt; 0 ⇒ mínimo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/7.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip misceláneo">Misceláneo</span><span class="num">96</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la pendiente de y=ln x en x=1.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>(ln x)&#x27;=1/x</li><li>Evalúa en x=1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip misceláneo">Misceláneo</span><span class="num">97</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Determina dónde crece f(x)=x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27; = 3x² ≥ 0; solo se anula en x=0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Creciente en todo ℝ.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip misceláneo">Misceláneo</span><span class="num">98</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la tangente a y=√x en x=4.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;(x)=1/(2√x)</li><li>Pendiente en 4: 1/4; punto (4,2).</li></ol>
+          <p class="result"><strong>Resultado:</strong> y−2 = (1/4)(x−4).</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip misceláneo">Misceláneo</span><span class="num">99</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Comprueba si y=|x| es derivable en 0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Laterales: f&#x27;−(0)=−1, f&#x27;+(0)=1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> No derivable en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip misceláneo">Misceláneo</span><span class="num">100</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Resuelve crecimiento de f(x)=x/(1+x²).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=(1+x²−2x²)/(1+x²)²=(1−x²)/(1+x²)².</li></ol>
+          <p class="result"><strong>Resultado:</strong> Crece en (−1,1); decrece fuera.</p>
+        </details>
+      </div>
+    </article>
+    
+      </div>
+    </section>
+
+    <!-- Universidad -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Teoría y rigor + 100 ejercicios guiados</h1>
+      <div class="theory">
+        <div class="tbox">
+          <h3>Definición ε–δ (sin dolor)</h3>
+          <p>Decimos que lim<sub>x→a</sub> f(x)=L si podemos hacer |f(x)−L| tan pequeño como queramos eligiendo |x−a| suficientemente pequeño (pero x≠a).</p>
+        </div>
+        <div class="tbox">
+          <h3>Teoremas que ordenan todo</h3>
+          <ul>
+            <li><strong>IVT:</strong> continuas no “saltan”: toman todos los valores intermedios.</li>
+            <li><strong>EVT:</strong> en [a,b] continuo ⇒ hay mínimo y máximo.</li>
+            <li><strong>MVT:</strong> existe una pendiente instantánea igual a la media.</li>
+          </ul>
+        </div>
+        <div class="tbox">
+          <h3>L’Hôpital y series</h3>
+          <ul>
+            <li>En 0/0 o ∞/∞, puedes derivar numerador y denominador (si se cumplen las hipótesis).</li>
+            <li>Las series de Taylor permiten reemplazar funciones por polinomios cerca de un punto.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn small" id="expand-uni">▶︎ Mostrar todo</button>
+        <button class="btn small" id="collapse-uni">▾ Ocultar todo</button>
+      </div>
+      <div id="uni-ex">
+        
+    <article class="card">
+      <header class="card-h"><span class="chip ε–δ">ε–δ</span><span class="num">01</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Prueba lim (x→3) (2x+1)=7.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dado ε&gt;0, elige δ=ε/2.</li><li>Si |x−3|&lt;δ ⇒ |(2x+1)−7|=2|x−3|&lt;ε.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Demostrado.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip ivt">IVT</span><span class="num">02</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Demuestra que x³−x−1=0 tiene raíz en (1,2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f(1)=-1, f(2)=5; f es continua.</li><li>Por IVT, existe c∈(1,2) con f(c)=0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Existe al menos una raíz en (1,2).</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip evt">EVT</span><span class="num">03</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Aplica EVT a f(x)=x² en [−1,2].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Intervalo cerrado ⇒ alcanza extremos.</li><li>Min: 0 en x=0; Max: 4 en x=2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mín=0; Máx=4.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mvt">MVT</span><span class="num">04</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Aplica MVT a ln x en [1,e].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Hay c con (ln e − ln 1)/(e−1)=1/c.</li><li>Concluye c=e−1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Existe c=e−1.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">05</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^1^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">06</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^2^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">07</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^3^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">08</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^4^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 4</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">09</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^5^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">10</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^6^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 6</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">11</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^7^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 7</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">12</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^8^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 8</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">13</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^9^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 9</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip límite">Límite</span><span class="num">14</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (e^10^x − 1)/x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Forma 0/0.</li><li>Deriva arriba y abajo (L’Hôpital) o usa series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 10</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">15</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [ln(1+1x) − 1x]/x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>ln(1+u)=u − u²/2 + …</li><li>Con u=1x ⇒ término 2º = −(1x)²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −0.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">16</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [ln(1+2x) − 2x]/x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>ln(1+u)=u − u²/2 + …</li><li>Con u=2x ⇒ término 2º = −(2x)²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −2.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">17</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [ln(1+3x) − 3x]/x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>ln(1+u)=u − u²/2 + …</li><li>Con u=3x ⇒ término 2º = −(3x)²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −4.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">18</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [ln(1+4x) − 4x]/x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>ln(1+u)=u − u²/2 + …</li><li>Con u=4x ⇒ término 2º = −(4x)²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −8.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">19</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [ln(1+5x) − 5x]/x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>ln(1+u)=u − u²/2 + …</li><li>Con u=5x ⇒ término 2º = −(5x)²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −12.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">20</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [sin(1x) − 1x]/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin({a}x) = {a}x − ({a}x)³/3! + …</li><li>Cancela el lineal; divide por x³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −0.16666666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">21</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [sin(2x) − 2x]/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin({a}x) = {a}x − ({a}x)³/3! + …</li><li>Cancela el lineal; divide por x³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −1.3333333333333333</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">22</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [sin(3x) − 3x]/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin({a}x) = {a}x − ({a}x)³/3! + …</li><li>Cancela el lineal; divide por x³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −4.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">23</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [sin(4x) − 4x]/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin({a}x) = {a}x − ({a}x)³/3! + …</li><li>Cancela el lineal; divide por x³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −10.666666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip serie">Serie</span><span class="num">24</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [sin(5x) − 5x]/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin({a}x) = {a}x − ({a}x)³/3! + …</li><li>Cancela el lineal; divide por x³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> −20.833333333333332</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">25</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva f(x)=e^{x²}·ln(1+x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto y cadena en ambos factores.</li></ol>
+          <p class="result"><strong>Resultado:</strong> f' = e^{x²}(2x)ln(1+x) + e^{x²}/(1+x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">26</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva g(x)=arctan(x/(1−x)).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>u=x/(1−x) ⇒ u&#x27;=1/(1−x)².</li><li>g&#x27; = u&#x27;/(1+u²)=1/((1−x)²+x²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> g' = 1/((1−x)²+x²)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">27</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva h(x)=ln(cos(1x)).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>(ln v)&#x27;=v&#x27;/v</li><li>v&#x27; = −a sin(ax)</li></ol>
+          <p class="result"><strong>Resultado:</strong> h' = −1 tan(1x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">28</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva h(x)=ln(cos(2x)).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>(ln v)&#x27;=v&#x27;/v</li><li>v&#x27; = −a sin(ax)</li></ol>
+          <p class="result"><strong>Resultado:</strong> h' = −2 tan(2x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">29</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva h(x)=ln(cos(3x)).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>(ln v)&#x27;=v&#x27;/v</li><li>v&#x27; = −a sin(ax)</li></ol>
+          <p class="result"><strong>Resultado:</strong> h' = −3 tan(3x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">30</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva h(x)=ln(cos(4x)).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>(ln v)&#x27;=v&#x27;/v</li><li>v&#x27; = −a sin(ax)</li></ol>
+          <p class="result"><strong>Resultado:</strong> h' = −4 tan(4x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">31</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva h(x)=ln(cos(5x)).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>(ln v)&#x27;=v&#x27;/v</li><li>v&#x27; = −a sin(ax)</li></ol>
+          <p class="result"><strong>Resultado:</strong> h' = −5 tan(5x)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">32</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva q(x)=e^(1·sin x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Cadena: (e^{u})&#x27; = u&#x27;·e^{u}</li></ol>
+          <p class="result"><strong>Resultado:</strong> q' = 1 e^(1·sin x)·cos x</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">33</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva q(x)=e^(2·sin x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Cadena: (e^{u})&#x27; = u&#x27;·e^{u}</li></ol>
+          <p class="result"><strong>Resultado:</strong> q' = 2 e^(2·sin x)·cos x</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">34</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva q(x)=e^(3·sin x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Cadena: (e^{u})&#x27; = u&#x27;·e^{u}</li></ol>
+          <p class="result"><strong>Resultado:</strong> q' = 3 e^(3·sin x)·cos x</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">35</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva q(x)=e^(4·sin x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Cadena: (e^{u})&#x27; = u&#x27;·e^{u}</li></ol>
+          <p class="result"><strong>Resultado:</strong> q' = 4 e^(4·sin x)·cos x</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip derivada">Derivada</span><span class="num">36</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Deriva q(x)=e^(5·sin x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Cadena: (e^{u})&#x27; = u&#x27;·e^{u}</li></ol>
+          <p class="result"><strong>Resultado:</strong> q' = 5 e^(5·sin x)·cos x</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip implícita">Implícita</span><span class="num">37</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> En x³+y³=3axy, halla y'.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Deriva: 3x² + 3y²y&#x27; = 3a(y + xy&#x27;)</li><li>Despeja y&#x27;.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y' = (ay − x²)/(y² − ax)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip inversa">Inversa</span><span class="num">38</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Demuestra (f^{-1})'(y)=1/f'(x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>De f(f^{-1}(y))=y ⇒ deriva.</li><li>Aplica la regla de la cadena.</li></ol>
+          <p class="result"><strong>Resultado:</strong> (f^{-1})'(y)=1/f'(f^{-1}(y))</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tfi">TFI</span><span class="num">39</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Inversa local de h(x)=x+1 sin x en 0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>h&#x27;(0)=1 ≠ 0 ⇒ por el TFI existe inversa local.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Existe inversa local y es C¹ cerca de 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tfi">TFI</span><span class="num">40</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Inversa local de h(x)=x+2 sin x en 0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>h&#x27;(0)=1 ≠ 0 ⇒ por el TFI existe inversa local.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Existe inversa local y es C¹ cerca de 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tfi">TFI</span><span class="num">41</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Inversa local de h(x)=x+3 sin x en 0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>h&#x27;(0)=1 ≠ 0 ⇒ por el TFI existe inversa local.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Existe inversa local y es C¹ cerca de 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tfi">TFI</span><span class="num">42</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Inversa local de h(x)=x+4 sin x en 0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>h&#x27;(0)=1 ≠ 0 ⇒ por el TFI existe inversa local.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Existe inversa local y es C¹ cerca de 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">43</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 31x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">44</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 32x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">45</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 33x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">46</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 34x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">47</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 35x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">48</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 36x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">49</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 37x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">50</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 38x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">51</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 39x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip curva">Curva</span><span class="num">52</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Analiza f(x)=x³ − 310x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=3x²−3a ⇒ críticos ±√a.</li><li>f&#x27;&#x27;=6x ⇒ clasifica.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máx en √a, mín en −√a; inflexión en 0.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">53</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x)=1x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27;={a} − 1/x = 0 ⇒ x=1/{a}.</li><li>g&#x27;&#x27;=1/x²&gt;0 ⇒ mínimo global.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/1.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">54</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x)=2x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27;={a} − 1/x = 0 ⇒ x=1/{a}.</li><li>g&#x27;&#x27;=1/x²&gt;0 ⇒ mínimo global.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/2.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">55</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x)=3x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27;={a} − 1/x = 0 ⇒ x=1/{a}.</li><li>g&#x27;&#x27;=1/x²&gt;0 ⇒ mínimo global.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/3.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">56</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x)=4x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27;={a} − 1/x = 0 ⇒ x=1/{a}.</li><li>g&#x27;&#x27;=1/x²&gt;0 ⇒ mínimo global.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/4.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">57</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Minimiza g(x)=5x − ln x, x>0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>g&#x27;={a} − 1/x = 0 ⇒ x=1/{a}.</li><li>g&#x27;&#x27;=1/x²&gt;0 ⇒ mínimo global.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en x=1/5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">58</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Maximiza A(x)=x(10−x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A&#x27;=10−2x ⇒ anula en x=5; A&#x27;&#x27;=−2&lt;0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máximo A=25 en x=5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">59</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Maximiza A(x)=x(10−x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A&#x27;=10−2x ⇒ anula en x=5; A&#x27;&#x27;=−2&lt;0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máximo A=25 en x=5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">60</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Maximiza A(x)=x(10−x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A&#x27;=10−2x ⇒ anula en x=5; A&#x27;&#x27;=−2&lt;0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máximo A=25 en x=5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">61</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Maximiza A(x)=x(10−x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A&#x27;=10−2x ⇒ anula en x=5; A&#x27;&#x27;=−2&lt;0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máximo A=25 en x=5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip optimización">Optimización</span><span class="num">62</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Maximiza A(x)=x(10−x).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A&#x27;=10−2x ⇒ anula en x=5; A&#x27;&#x27;=−2&lt;0.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Máximo A=25 en x=5.</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">63</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Aproxima √(1+h) para |h|≪1.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Expande: (1+h)^{1/2} ≈ 1 + h/2 − h²/8.</li></ol>
+          <p class="result"><strong>Resultado:</strong> √(1+h) ≈ 1 + h/2 − h²/8</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">64</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de ln(1+x) (orden 3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>ln(1+x)=x − x²/2 + x³/3 + o(x³).</li></ol>
+          <p class="result"><strong>Resultado:</strong> x − x²/2 + x³/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">65</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de e^x (orden 4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>e^x=1 + x + x²/2 + x³/6 + x⁴/24 + o(x⁴).</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1 + x + x²/2 + x³/6 + x⁴/24</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">66</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de sin(1x) (orden 5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin(1x) ≈ 1x − (1x)³/3! + (1x)⁵/5!.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1x − (1x)³/6 + (1x)⁵/120</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">67</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de sin(2x) (orden 5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin(2x) ≈ 2x − (2x)³/3! + (2x)⁵/5!.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2x − (2x)³/6 + (2x)⁵/120</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">68</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de sin(3x) (orden 5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin(3x) ≈ 3x − (3x)³/3! + (3x)⁵/5!.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 3x − (3x)³/6 + (3x)⁵/120</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">69</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de sin(4x) (orden 5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin(4x) ≈ 4x − (4x)³/3! + (4x)⁵/5!.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 4x − (4x)³/6 + (4x)⁵/120</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip taylor">Taylor</span><span class="num">70</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Serie de sin(5x) (orden 5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>sin(5x) ≈ 5x − (5x)³/3! + (5x)⁵/5!.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 5x − (5x)³/6 + (5x)⁵/120</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">71</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=1.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(1) + (1/1)(x − 1)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">72</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=2.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(2) + (1/2)(x − 2)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">73</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=3.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(3) + (1/3)(x − 3)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">74</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=4.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(4) + (1/4)(x − 4)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">75</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=5.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(5) + (1/5)(x − 5)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">76</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=6.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(6) + (1/6)(x − 6)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">77</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=7.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(7) + (1/7)(x − 7)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip tangente">Tangente</span><span class="num">78</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Recta tangente a y=ln x en x=8.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente = 1/x0.</li><li>Ecuación punto-pendiente.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = ln(8) + (1/8)(x − 8)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">79</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (tan x − x)/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Serie de tan: x + x³/3 + …</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">80</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) (sin x − x cos x)/x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Expandir sin y cos; simplificar.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">81</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→∞) x(e^{1/x} − 1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>t=1/x→0 ⇒ (e^t − 1)/t → 1.</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">82</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [ln(1+x) − sin x]/x².</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Series: (x − x²/2 + …) − (x − x³/6 + …).</li></ol>
+          <p class="result"><strong>Resultado:</strong> −1/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">83</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> lim (x→0) [1 − cos x − x²/2]/x⁴.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Serie de cos: 1 − x²/2 + x⁴/24 − …</li></ol>
+          <p class="result"><strong>Resultado:</strong> 1/24</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">84</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Comprueba convexidad de e^x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Segunda derivada e^x &gt; 0</li></ol>
+          <p class="result"><strong>Resultado:</strong> Convexa en ℝ</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">85</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra inflexión de x³.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;&#x27;=6x: se anula en 0 y cambia de signo.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Inflexión en 0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">86</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Clasifica extremos de x⁴.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>f&#x27;=4x³=0 ⇒ x=0; f&#x27;&#x27;=12x²≥0</li></ol>
+          <p class="result"><strong>Resultado:</strong> Mínimo en 0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">87</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> L’Hôpital: lim (x→0) (ln(1+2x))/sin x.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>0/0 ⇒ derivar: 2/(cos x) → 2</li></ol>
+          <p class="result"><strong>Resultado:</strong> 2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip mixto">Mixto</span><span class="num">88</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Cota |sin x| ≤ |x|.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Se ve por convexidad de |·| o por series.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Cierta para todo x</p>
+        </details>
+      </div>
+    </article>
+    
+      </div>
+    </section>
+
+    <!-- Doctorado -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Panorama breve</h1>
+      <div class="theory">
+        <div class="tbox">
+          <h3>Resto de Taylor</h3>
+          <p>Cuantifica el error de aproximar con un polinomio. Útil para acotar algoritmos (p.ej., Newton).</p>
+        </div>
+        <div class="tbox">
+          <h3>Convexidad y óptimo</h3>
+          <p>Si f''≥0, todo crítico es mínimo global. En varias variables: Hessiano y condiciones KKT.</p>
+        </div>
+        <div class="tbox">
+          <h3>Diferenciabilidad (Fréchet)</h3>
+          <p>La mejor aproximación lineal en espacios normados. Base para análisis numérico y optimización.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs
+    const map = { eso:'#sec-eso', bach:'#sec-bach', uni:'#sec-uni', phd:'#sec-phd' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level="${k}"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-calculo-v3', key);
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-calculo-v3');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'eso'), false);
+
+    // Progress + Top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Reader controls
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+      if(light){
+        root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+        root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+      }else{
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+        root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      }
+    });
+
+    // Expand/Collapse all
+    function setAllDetails(container, open){
+      $$(container+' details').forEach(d=> d.open = open);
+    }
+    $('#expand-bach').addEventListener('click', ()=> setAllDetails('#bach-ex', true));
+    $('#collapse-bach').addEventListener('click', ()=> setAllDetails('#bach-ex', false));
+    $('#expand-uni').addEventListener('click', ()=> setAllDetails('#uni-ex', true));
+    $('#collapse-uni').addEventListener('click', ()=> setAllDetails('#uni-ex', false));
+  </script>
+</body>
+</html>

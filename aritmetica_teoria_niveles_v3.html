@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aritmética — Teoría por niveles (versión extendida con ejemplos)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+      --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  /* === Bloques de ejemplos === */
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">Σ</span><span class="brand-title">Aritmética — Teoría por niveles</span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down">A−</button>
+        <button class="btn small" id="fs-up">A+</button>
+        <button class="btn small" id="width-down">⇤</button>
+        <button class="btn small" id="width-up">⇥</button>
+        <button class="btn" id="theme-toggle">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="primaria" role="tab" aria-selected="true">Primaria</button>
+        <button class="pill" data-level="eso" role="tab" aria-selected="false">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="master" role="tab" aria-selected="false">Máster</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== PRIMARIA ===== -->
+    <section id="sec-primaria" class="paper level" data-active>
+      <h1>Primaria — Fundamentos para entender los números</h1>
+      <p class="lead">Los números dejan de ser símbolos y pasan a tener significado: qué representan, cómo funciona el sistema decimal y por qué las operaciones hacen exactamente lo que dicen sus nombres: juntar, quitar, repetir y repartir.</p>
+      <div class="toc">
+        <a href="#p-numero">¿Qué es un número?</a>
+        <a href="#p-posicional">Valor posicional</a>
+        <a href="#p-operaciones">Las cuatro operaciones</a>
+        <a href="#p-fracciones">Fracciones y decimales</a>
+        <a href="#p-divisibilidad">Divisibilidad y primos</a>
+        <a href="#p-estrategias">Estrategias y estimación</a>
+      </div>
+
+      <h2 id="p-numero">¿Qué es un número?</h2>
+      <p>Un número natural es un contador de unidades. Al contar establecemos una correspondencia entre objetos y la secuencia 1,2,3,…; el último número pronunciado es el tamaño del conjunto. Con los números medimos (comparando cuántas veces cabe la unidad en una magnitud) y ordenamos (primer, segundo…). Distinguir cantidad de posición evita errores al resolver problemas.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>¿Cuántos lápices hay si contamos 1,2,3,4,5,6?</summary>Seis; el último número dicho indica el cardinal del conjunto.</details></li>
+          <li><details><summary>Un bus llega cada 10 minutos. ¿Cuántos llegan en una hora?</summary>60÷10=6 buses; medimos tiempo con la unidad “10 minutos”.</details></li>
+          <li><details><summary>Ordena 7º, 5º, 9º de menor a mayor.</summary>5º &lt; 7º &lt; 9º; son posiciones, no cantidades para sumar.</details></li>
+          <li><details><summary>¿Es correcto decir que un número de teléfono “más 3” es mayor?</summary>No; el teléfono es un código, no una cantidad aritmética.</details></li>
+          <li><details><summary>¿Qué significa el cero al contar?</summary>Representa ausencia de elementos; es el neutro de la suma.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="p-posicional">Valor posicional y base 10</h2>
+      <p>El valor de una cifra depende del lugar que ocupa. En 7&nbsp;532, el 2 son unidades, el 3 decenas (30), el 5 centenas (500) y el 7 millares (7000). La coma decimal prolonga el patrón hacia la derecha: décimas (0,1), centésimas (0,01)… Esta arquitectura explica los algoritmos de “llevar” y “pedir prestado”.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>Descompón 3&nbsp;406.</summary>3×10³ + 4×10² + 0×10¹ + 6×10⁰ = 3000 + 400 + 0 + 6.</details></li>
+          <li><details><summary>¿Qué vale el 7 en 27,5?</summary>7 decenas = 70; el valor depende de la posición.</details></li>
+          <li><details><summary>Redondea 8&nbsp;749 a centenas.</summary>8&nbsp;700 (porque 49&lt;50) o 8&nbsp;700; a 8&nbsp;700 exacto.</details></li>
+          <li><details><summary>Escribe 5,08 como fracción decimal.</summary>508/100 = 127/25 tras simplificar.</details></li>
+          <li><details><summary>¿Cuál es la siguiente unidad tras el millar?</summary>Decena de millar (10&nbsp;000), luego centena de millar (100&nbsp;000).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="p-operaciones">Suma, resta, multiplicación y división</h2>
+      <p><strong>Sumar</strong> es reunir; <strong>restar</strong> es quitar o comparar; <strong>multiplicar</strong> es sumar varias veces la misma cantidad; <strong>dividir</strong> es repartir o medir cuántas veces cabe un número en otro. La suma y la multiplicación son conmutativas y asociativas; la distributiva conecta ambas.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>357 + 286</summary>357+286 = (300+50+7)+(200+80+6)=600+130+13=743.</details></li>
+          <li><details><summary>904 − 587</summary>904−587 = (900−500)+(0−80 “pido” 1 centena)+(4−7 “pido” 1 decena) = 317.</details></li>
+          <li><details><summary>25 × 16</summary>25×(10+6)=250+150=400.</details></li>
+          <li><details><summary>84 ÷ 6</summary>6 cabe 14 veces en 84; 84÷6=14.</details></li>
+          <li><details><summary>¿Por qué 3×(a+b)=3a+3b?</summary>Porque “tres grupos de a+b” son “tres a” y “tres b”. Distributiva.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="p-fracciones">Fracciones y decimales</h2>
+      <p>Una fracción a/b representa a partes de un todo dividido en b partes iguales. Fracciones distintas pueden equivaler (1/2 = 2/4). Sumar/restar exige denominador común; multiplicar y dividir se hace componente a componente o con el inverso. Los decimales son fracciones con 10^n en el denominador.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>1/3 + 1/6</summary>1/3=2/6, así que 2/6+1/6=3/6=1/2.</details></li>
+          <li><details><summary>2/5 × 3/4</summary>6/20=3/10 tras simplificar entre 2.</details></li>
+          <li><details><summary>(7/8) ÷ (7/2)</summary>(7/8)×(2/7)=2/8=1/4.</details></li>
+          <li><details><summary>0,375 como fracción</summary>375/1000=3/8.</details></li>
+          <li><details><summary>¿Son equivalentes 6/9 y 2/3?</summary>Sí, porque 6/9=(6÷3)/(9÷3)=2/3.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="p-divisibilidad">Múltiplos, divisores y números primos</h2>
+      <p>Decimos que d|n si existe k con n=d·k. Criterios: divisible por 2 si termina en cifra par; por 5 si termina en 0 o 5; por 3 o 9 si la suma de cifras es múltiplo de 3 o 9. Un primo tiene exactamente dos divisores. Todo entero &gt;1 se factoriza de forma única en primos.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>¿153 es múltiplo de 3?</summary>Suma de cifras 1+5+3=9, múltiplo de 3 ⇒ sí.</details></li>
+          <li><details><summary>Factoriza 84</summary>84=2×2×3×7=2²·3·7.</details></li>
+          <li><details><summary>¿47 es primo?</summary>No tiene divisores hasta √47≈6,8 salvo 1 y 47 ⇒ primo.</details></li>
+          <li><details><summary>Determina todos los divisores de 36</summary>36=2²·3² ⇒ divisores=(2+1)(2+1)=9 en total: 1,2,3,4,6,9,12,18,36.</details></li>
+          <li><details><summary>m.c.d.(24,36)</summary>24=2³·3, 36=2²·3² ⇒ m.c.d.=2²·3=12.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="p-estrategias">Estrategias y estimación</h2>
+      <p>Recomponer, usar la distributiva y estimar orden de magnitud acelera y reduce errores. La estimación da una “red de seguridad”: si el resultado final no encaja con el tamaño esperado, revisamos el cálculo.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>99 + 37</summary>(100−1)+37 = 136.</details></li>
+          <li><details><summary>25 × 48</summary>25×(50−2)=1250−50=1200.</details></li>
+          <li><details><summary>¿Es razonable que 19×52=988?</summary>Sí; 20×50=1000, muy cerca.</details></li>
+          <li><details><summary>Estimación de 398+603+201</summary>≈400+600+200=1200; exacto 1202.</details></li>
+          <li><details><summary>Calcular 12×(9+11) mentalmente</summary>12×20=240 usando distributiva.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level">
+      <h1>ESO — Consolidación y nuevas herramientas</h1>
+      <p class="lead">Se domina el cálculo con fracciones y decimales, se introducen potencias y raíces, porcentajes, m.c.d./m.c.m. y notación científica. El objetivo es precisión, sentido y flexibilidad.</p>
+      <div class="toc">
+        <a href="#e-fracciones">Operar con fracciones</a>
+        <a href="#e-porcentajes">Proporcionalidad y porcentajes</a>
+        <a href="#e-potencias">Potencias, raíces y notación científica</a>
+        <a href="#e-mcdmcm">m.c.d. y m.c.m.</a>
+        <a href="#e-enteros">Enteros y reglas de signo</a>
+        <a href="#e-decimales">Decimales, redondeo y cifras significativas</a>
+      </div>
+
+      <h2 id="e-fracciones">Operaciones con fracciones</h2>
+      <p>Para sumar/restar, busca denominador común; para multiplicar, numeradores y denominadores se combinan directamente; dividir equivale a multiplicar por el inverso. Simplificar reduce el tamaño de los números y los errores.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>3/4 + 2/5</summary>15/20 + 8/20 = 23/20 = 1 + 3/20.</details></li>
+        <li><details><summary>5/6 − 1/8</summary>20/24 − 3/24 = 17/24.</details></li>
+        <li><details><summary>(9/10) × (25/27)</summary>Cancelar 9 con 27 ⇒ (1/3); 25/10 = 5/2 ⇒ resultado (5/2)×(1/3)=5/6.</details></li>
+        <li><details><summary>(7/12) ÷ (14/9)</summary>(7/12)×(9/14) = (1/2)×(9/12) = 9/24 = 3/8.</details></li>
+        <li><details><summary>Convierte 0,16 periódico a fracción</summary>x=0,1616… ⇒ 100x=16,16… ⇒ 99x=16 ⇒ x=16/99.</details></li>
+      </ol></div>
+
+      <h2 id="e-porcentajes">Proporcionalidad y porcentajes</h2>
+      <p>Dos magnitudes son directamente proporcionales si su razón es constante. Un porcentaje es una razón por 100. Es clave distinguir bases distintas en subidas y bajadas sucesivas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Un precio de 80€ sube un 15&nbsp;%.</summary>80×1,15 = 92€.</details></li>
+        <li><details><summary>Sube 20&nbsp;% y luego baja 20&nbsp;%.</summary>100→120→96: no vuelve a 100 porque la base cambió.</details></li>
+        <li><details><summary>Regla de tres: 5 camisetas cuestan 45€. ¿7 camisetas?</summary>Coste unitario 9€ ⇒ 7×9=63€.</details></li>
+        <li><details><summary>IVA 21&nbsp;% sobre 140€.</summary>140×1,21=169,40€.</details></li>
+        <li><details><summary>Descuento del 35&nbsp;% sobre 260€.</summary>260×0,65=169€.</details></li>
+      </ol></div>
+
+      <h2 id="e-potencias">Potencias, raíces y notación científica</h2>
+      <p>La potencia a^n resume multiplicaciones; las reglas a^m·a^n=a^{m+n}, (a^m)^n=a^{mn}, a^{−n}=1/a^n, etc. La raíz es la inversa: √a. La notación científica usa potencias de 10 para escalar.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Simplifica 2^3 · 2^5</summary>2^{3+5}=2^8=256.</details></li>
+        <li><details><summary>(3^2)^4</summary>3^{8}=6561.</details></li>
+        <li><details><summary>27^{1/3}</summary>Raíz cúbica de 27 = 3.</details></li>
+        <li><details><summary>0,00045 en notación científica</summary>4,5×10^{−4}.</details></li>
+        <li><details><summary>Multiplica (3×10^5)·(2×10^−3)</summary>6×10^{2} = 600.</details></li>
+      </ol></div>
+
+      <h2 id="e-mcdmcm">Máximo común divisor y mínimo común múltiplo</h2>
+      <p>El m.c.d. es el mayor divisor común; el m.c.m., el menor múltiplo común. Pueden calcularse con factorización en primos o con el algoritmo de Euclides.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>m.c.d.(84,126)</summary>84=2²·3·7; 126=2·3²·7 ⇒ m.c.d.=2·3·7=42.</details></li>
+        <li><details><summary>m.c.m.(12,18)</summary>12=2²·3; 18=2·3² ⇒ m.c.m.=2²·3²=36.</details></li>
+        <li><details><summary>Euclides para (119,34)</summary>119=3·34+17; 34=2·17+0 ⇒ m.c.d.=17.</details></li>
+        <li><details><summary>Relación mcd·mcm</summary>Para 12 y 18: 6×36 = 432 = 12×18.</details></li>
+        <li><details><summary>Simplifica 84/126 con el m.c.d.</summary>÷42 ⇒ 2/3.</details></li>
+      </ol></div>
+
+      <h2 id="e-enteros">Enteros y reglas de signo</h2>
+      <p>Los enteros incluyen negativos. Sumar un negativo es moverse a la izquierda en la recta numérica; multiplicar por −1 refleja respecto al 0. “Menos por menos es más” porque revertir el sentido dos veces recupera el positivo.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>(−8)+13</summary>5.</details></li>
+        <li><details><summary>7−(−4)</summary>7+4=11.</details></li>
+        <li><details><summary>(−3)×(−5)</summary>15.</details></li>
+        <li><details><summary>(−24)÷6</summary>−4.</details></li>
+        <li><details><summary>|−12|</summary>12 (valor absoluto).</details></li>
+      </ol></div>
+
+      <h2 id="e-decimales">Decimales, redondeo y cifras significativas</h2>
+      <p>Decimales finitos, periódicos e infinitos no periódicos. Redondear consiste en mirar la cifra siguiente; las cifras significativas reflejan la precisión de la medida.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Redondea 3,146 a centésimas</summary>3,15.</details></li>
+        <li><details><summary>0,333… como fracción</summary>1/3.</details></li>
+        <li><details><summary>¿Cuántas cifras significativas tiene 0,02340?</summary>4 (2,3,4,0 final).</details></li>
+        <li><details><summary>Trunca 5,987 a una cifra decimal</summary>5,9.</details></li>
+        <li><details><summary>¿Es racional 0,1010010001…?</summary>No; no es periódico, por tanto irracional.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Aritmética avanzada y teoría de números elemental</h1>
+      <p class="lead">Se trabaja con congruencias, teoremas de Fermat y Euler, progresiones, logaritmos y una primera mirada criptográfica.</p>
+      <div class="toc">
+        <a href="#b-modular">Congruencias</a>
+        <a href="#b-euclides">Bézout y algoritmo extendido</a>
+        <a href="#b-fermat">Fermat y Euler</a>
+        <a href="#b-progresiones">Progresiones</a>
+        <a href="#b-logs">Exponentes y logaritmos</a>
+        <a href="#b-cripto">Criptografía</a>
+      </div>
+
+      <h2 id="b-modular">Congruencias y aritmética modular</h2>
+      <p>Dos enteros a y b son congruentes módulo n si a−b es múltiplo de n. Las clases residuales permiten trabajar “con restos” de forma coherente.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>38+47 (mod 12)</summary>2+11≡1 (mod 12).</details></li>
+        <li><details><summary>3×17 (mod 5)</summary>3×2≡6≡1 (mod 5).</details></li>
+        <li><details><summary>¿Es 2 invertible mod 8?</summary>No; mcd(2,8)≠1.</details></li>
+        <li><details><summary>Inverso de 3 mod 7</summary>3×5=15≡1 ⇒ 3⁻¹≡5.</details></li>
+        <li><details><summary>Resolver x≡2 (mod 5), x≡3 (mod 7)</summary>Solución única mod 35: x=17.</details></li>
+      </ol></div>
+
+      <h2 id="b-euclides">Bézout y algoritmo extendido</h2>
+      <p>El algoritmo extendido computa x,y con ax+by=mcd(a,b). Permite decidir solvencia de congruencias lineales y hallar inversos.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>mcd(99,78)</summary>99=1·78+21; 78=3·21+15; 21=1·15+6; 15=2·6+3; 6=2·3+0 ⇒ mcd=3.</details></li>
+        <li><details><summary>Coeficientes de Bézout para (99,78)</summary>3=99−1·78−3(78−1·21)−… ⇒ 3=11·99−14·78.</details></li>
+        <li><details><summary>Inverso de 11 mod 26</summary>11·19=209≡1 ⇒ 11⁻¹≡19 (mod 26).</details></li>
+        <li><details><summary>Resolver 14x≡8 (mod 20)</summary>mcd(14,20)=2 divide 8 ⇒ soluciones: x≡? ⇒ dividir por 2: 7x≡4 (mod 10) ⇒ x≡? 7≡−3 ⇒ −3x≡4 ⇒ 3x≡−4≡6 ⇒ x≡2 (mod 10). Dos clases: 2 y 7 (mod 10) levantadas a mod 20: x≡2,12.</details></li>
+        <li><details><summary>mcd(240,46) y representación</summary>mcd=2; 2=240−5·46.</details></li>
+      </ol></div>
+
+      <h2 id="b-fermat">Pequeño teorema de Fermat y teorema de Euler</h2>
+      <p>Para primo p y a no múltiplo de p, a^{p−1}≡1 (mod p). Para n general y a coprimo con n, a^{φ(n)}≡1 (mod n).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>7^{100} (mod 5)</summary>7≡2 ⇒ 2^{100}≡(2^4)^{25}≡1.</details></li>
+        <li><details><summary>3^{172} (mod 11)</summary>φ(11)=10 ⇒ 3^{170}≡1 ⇒ 3^{172}≡3^2≡9.</details></li>
+        <li><details><summary>φ(36)</summary>36=2^2·3^2 ⇒ φ=36(1−1/2)(1−1/3)=12.</details></li>
+        <li><details><summary>Inverso de 7 mod 15 usando Euler</summary>7^{φ(15)−1}=7^7 (mod 15) ≡ 13 ⇒ 7⁻¹≡13.</details></li>
+        <li><details><summary>Prueba rápida de no primalidad</summary>Si a^{p−1}≢1 (mod p) para algún a, p es compuesto (contrapositiva).</details></li>
+      </ol></div>
+
+      <h2 id="b-progresiones">Progresiones aritméticas y geométricas</h2>
+      <p>Modelos fundamentales de crecimiento aditivo y multiplicativo. Sus sumas se obtienen por fórmulas cerradas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Suma 5+8+11+…+29</summary>n=((29−5)/3)+1=9; promedio=(5+29)/2=17 ⇒ suma=9·17=153.</details></li>
+        <li><details><summary>Suma geométrica a=3, r=2, n=6</summary>3(1−2^6)/(1−2)=3(63)=189.</details></li>
+        <li><details><summary>Término 12 de PA con a1=4, d=7</summary>a12=4+11·7=81.</details></li>
+        <li><details><summary>Término 8 de PG con a1=5, r=3</summary>a8=5·3^7=5·2187=10 935.</details></li>
+        <li><details><summary>Razón de una PG si a3=18 y a6=486</summary>r^3=486/18=27 ⇒ r=3.</details></li>
+      </ol></div>
+
+      <h2 id="b-logs">Exponentes racionales y logaritmos</h2>
+      <p>a^{m/n} es la raíz n-ésima de a^m (a≥0). Los logaritmos convierten productos en sumas y facilitan estimaciones de órdenes de magnitud.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>8^{2/3}</summary>(√[3]{8})^2 = 2^2 = 4.</details></li>
+        <li><details><summary>log₁₀(10 000)</summary>4.</details></li>
+        <li><details><summary>log₁₀(2·10^7)</summary>log₂(2)+7 = 1+7 = 8.</details></li>
+        <li><details><summary>ln(e^{3/2})</summary>3/2.</details></li>
+        <li><details><summary>logₐ(xy)</summary>logₐx + logₐy (propiedad básica).</details></li>
+      </ol></div>
+
+      <h2 id="b-cripto">Criptografía: idea de RSA</h2>
+      <p>Se eligen primos p,q, se calcula n=pq y φ(n)=(p−1)(q−1). Se escoge e coprimo con φ(n) y se halla d con ed≡1 (mod φ(n)). Cifrar: c≡m^e (mod n). Descifrar: m≡c^d (mod n).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>p=11, q=13 ⇒ n, φ(n)</summary>n=143, φ=120.</details></li>
+        <li><details><summary>Elige e=7. Halla d</summary>7d≡1 (mod 120) ⇒ d=103.</details></li>
+        <li><details><summary>Cifra m=9</summary>9^7 (mod 143) ≡ 48.</details></li>
+        <li><details><summary>Descifra c=48</summary>48^{103} (mod 143) ≡ 9 (propiedad de RSA).</details></li>
+        <li><details><summary>¿Por qué funciona?</summary>Porque e·d≡1 (mod φ(n)) y a^{φ(n)}≡1 (mod n) para a coprimo con n.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Estructuras, cocientes y teorema chino</h1>
+      <p class="lead">Se formaliza el comportamiento de los enteros con el lenguaje de anillos y se estudian los cocientes ℤ/nℤ. El teorema chino del resto y las funciones aritméticas organizan patrones profundos.</p>
+      <div class="toc">
+        <a href="#u-anillo">ℤ como anillo</a>
+        <a href="#u-ideales">Ideales y mcd</a>
+        <a href="#u-cociente">Cocientes y cuerpos finitos</a>
+        <a href="#u-chino">Teorema chino del resto</a>
+        <a href="#u-funciones">Funciones aritméticas</a>
+      </div>
+
+      <h2 id="u-anillo">ℤ como anillo conmutativo</h2>
+      <p>Con la suma y el producto usuales, ℤ es un anillo conmutativo con unidad: (ℤ,+) es grupo abeliano, el producto es asociativo y conmutativo, y se distribuye sobre la suma. Este marco explica y generaliza propiedades aritméticas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Demuestra que (ℤ,+) es abeliano</summary>Por definición de suma de enteros: asociativa, conmutativa, neutro 0 y opuesto −a para todo a.</details></li>
+        <li><details><summary>Distributividad</summary>Para a(b+c)=ab+ac, se verifica con propiedades del producto de enteros y definición de suma repetida.</details></li>
+        <li><details><summary>¿Existe inverso multiplicativo para todo a∈ℤ?</summary>No; solo ±1.</details></li>
+        <li><details><summary>Unidades en ℤ</summary>Elementos con inverso multiplicativo: 1 y −1.</details></li>
+        <li><details><summary>Cero divisor</summary>En ℤ no hay divisores de cero: si ab=0 ⇒ a=0 o b=0.</details></li>
+      </ol></div>
+
+      <h2 id="u-ideales">Ideales y el mcd</h2>
+      <p>En ℤ todo ideal es principal (forma (d)). El m.c.d. de a y b es el mínimo generador positivo del ideal (a,b) y puede escribirse como combinación lineal: ax+by=d.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Ideal generado por 6 y 15</summary>(6,15)=(3); mcd(6,15)=3.</details></li>
+        <li><details><summary>Representa 1 como combinación de 7 y 20</summary>3·7 − 1·20 = 1 ⇒ 1∈(7,20).</details></li>
+        <li><details><summary>¿Cuándo (a,b)=(1)?</summary>Cuando mcd(a,b)=1 (coprimos).</details></li>
+        <li><details><summary>¿(4,10)=(2)?</summary>Sí; 4ℤ+10ℤ = 2ℤ.</details></li>
+        <li><details><summary>¿(a)⊂(b)?</summary>Sí iff b|a (los generadores se invierten).</details></li>
+      </ol></div>
+
+      <h2 id="u-cociente">Cocientes y cuerpos finitos</h2>
+      <p>ℤ/nℤ se construye identificando enteros que difieren en múltiplos de n. Si n es primo, ℤ/pℤ es cuerpo: todo elemento ≠0 tiene inverso. Si n es compuesto, aparecen divisores de cero.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Inverso de 5 en ℤ/11ℤ</summary>5×?≡1 ⇒ 5×9=45≡1 ⇒ 5⁻¹≡9.</details></li>
+        <li><details><summary>Divisor de cero en ℤ/12ℤ</summary>3×4≡0 (mod 12) con 3,4≠0 ⇒ hay divisores de cero.</details></li>
+        <li><details><summary>¿Es ℤ/7ℤ un cuerpo?</summary>Sí, 7 primo.</details></li>
+        <li><details><summary>Resuelve 2x≡3 (mod 7)</summary>x≡3·2⁻¹≡3·4≡12≡5.</details></li>
+        <li><details><summary>¿Cuántas clases residuales hay en ℤ/15ℤ?</summary>15 clases: 0,1,…,14.</details></li>
+      </ol></div>
+
+      <h2 id="u-chino">Teorema chino del resto</h2>
+      <p>Para m y k coprimos, el sistema x≡a (mod m), x≡b (mod k) tiene solución única módulo mk. Se construye con coeficientes que anulan uno de los módulos.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>x≡2 (mod 3), x≡1 (mod 5)</summary>Resultado: x≡11 (mod 15).</details></li>
+        <li><details><summary>x≡4 (mod 7), x≡3 (mod 8)</summary>Solución: x≡? ⇒ 4 mod 7 ⇒ candidatos 4,11,18,… probando mod 8 ⇒ 11≡3 ⇒ x≡11 (mod 56).</details></li>
+        <li><details><summary>x≡0 (mod 4), x≡1 (mod 9)</summary>x≡? ⇒ 9k+1 ≡0 (mod 4) ⇒ 9k≡−1≡3 ⇒ k≡? 9≡1 ⇒ k≡3 ⇒ x=28+1=37 ≡ 37 (mod 36).</details></li>
+        <li><details><summary>¿Es necesaria la coprimalidad?</summary>Sí; si no, puede no haber solución o no ser única.</details></li>
+        <li><details><summary>Construcción explícita</summary>Con M=mk, tomar e₁=M/m, e₂=M/k y sus inversos para combinar: x=a·e₁·e₁⁻¹ + b·e₂·e₂⁻¹.</details></li>
+      </ol></div>
+
+      <h2 id="u-funciones">Funciones aritméticas</h2>
+      <p>d(n) cuenta divisores; σ(n) los suma; φ(n) cuenta coprimos con n. Son multiplicativas cuando a y b son coprimos, lo que permite calcularlas desde la factorización.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>d(72)</summary>72=2^3·3^2 ⇒ d=(3+1)(2+1)=12.</details></li>
+        <li><details><summary>σ(72)</summary>(1+2+2^2+2^3)(1+3+3^2)=(15)(13)=195.</details></li>
+        <li><details><summary>φ(72)</summary>72(1−1/2)(1−1/3)=72·(1/2)·(2/3)=24.</details></li>
+        <li><details><summary>Multiplicatividad de φ en 8 y 9</summary>φ(72)=φ(8)φ(9)=4·6=24.</details></li>
+        <li><details><summary>Conteo de fracciones irreducibles con denominador ≤5</summary>Sumar φ(1)+…+φ(5)=1+1+2+2+4=10.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== MÁSTER ===== -->
+    <section id="sec-master" class="paper level">
+      <h1>Máster — Teoría analítica y algebraica de números (panorama profesional)</h1>
+      <p class="lead">Se combinan análisis complejo (funciones L, cribas) y álgebra (enteros algebraicos, p-ádicos) para responder preguntas finas sobre primos y congruencias.</p>
+      <h2>Zeta de Riemann y distribución de primos</h2>
+      <p>La identidad de Euler ζ(s)=∏_{p}(1−p^{−s})^{−1} traduce factorizar en multiplicar series. El teorema de los números primos afirma π(x)∼x/log x; correcciones dependen de la ubicación de los ceros de ζ(s).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Estima cuántos primos ≤10^6</summary>x/log x ⇒ 10^6 / log(10^6) ≈ 10^6/13,815 ≈ 72 382.</details></li>
+        <li><details><summary>Producto de Euler para s=2</summary>∏_{p}(1−p^{−2})^{−1} = ζ(2) = π^2/6.</details></li>
+        <li><details><summary>Comparar π(10^4) con x/log x</summary>x/log x ≈ 10 000/9,21 ≈ 1085; valor real 1229 (mejoran con términos de error).</details></li>
+        <li><details><summary>¿Por qué importa la parte real 1/2?</summary>Controla el término de error en la aproximación de π(x).</details></li>
+        <li><details><summary>Convergencia de ζ(s)</summary>La serie ∑ n^{−s} converge si Re(s)&gt;1.</details></li>
+      </ol></div>
+      <h2>Cribas y métodos de conteo</h2>
+      <p>Las cribas cuentan enteros que evitan divisores de un conjunto. La criba de Selberg combina inclusiones-exclusiones con pesos óptimos para obtener cotas ajustadas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Cuenta impares ≤N que no son múltiplos de 3</summary>≈ N/2 − N/6 = N/3 (estimación gruesa).</details></li>
+        <li><details><summary>Números ≤100 sin factores 2 ni 5</summary>Usando inclusión-exclusión: 100−⌊50⌋−⌊20⌋+⌊10⌋=40.</details></li>
+        <li><details><summary>Criba de Eratóstenes hasta 50</summary>Eliminar múltiplos de 2,3,5 y 7 deja 15 primos.</details></li>
+        <li><details><summary>Idea de “peso” en una criba</summary>Asignar pesos a condiciones para balancear el error.</details></li>
+        <li><details><summary>¿Por qué las cribas dan cotas y no exactitud?</summary>Porque reemplazan condiciones duras por aproximaciones controladas.</details></li>
+      </ol></div>
+      <h2>Enteros algebraicos e ideales</h2>
+      <p>En ℤ[√−5] la factorización única falla: 6=2·3=(1+√−5)(1−√−5). Los ideales restauran unicidad a nivel estructural; el número de clase mide la desviación.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Muestra que 6 tiene dos factorizaciones no equivalentes en ℤ[√−5]</summary>No hay unidades que transformen 2·3 en (1+√−5)(1−√−5); por tanto no es UFD.</details></li>
+        <li><details><summary>¿Qué es un ideal primo?</summary>Aquel cuyo cociente forma un anillo íntegro.</details></li>
+        <li><details><summary>Ejemplo de ideal en ℤ[√−5]</summary>(2, 1+√−5).</details></li>
+        <li><details><summary>Interpretación del número de clase</summary>Tamaño del grupo de clases de ideales.</details></li>
+        <li><details><summary>Relación con formas cuadráticas</summary>Clases de ideales ↔ clases de formas binarias con mismo discriminante.</details></li>
+      </ol></div>
+      <h2>p-ádicos y lema de Hensel</h2>
+      <p>La norma p-ádica mide cuántas potencias de p dividen las diferencias. El lema de Hensel “levanta” raíces mod p a raíces mod p^k si se cumple una condición de derivada.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Resuelve x^2≡2 (mod 5)</summary>x≡±? 3^2=9≡4; 2 no es cuadrado mod 5 ⇒ sin solución.</details></li>
+        <li><details><summary>Levanta raíz de x^2−2≡0 (mod 7)</summary>3^2=9≡2 ⇒ f(3)≡0, f'(x)=2x ≠0 mod 7 ⇒ por Hensel hay raíces en 7^k.</details></li>
+        <li><details><summary>Distancia 5-ádica entre 1 y 26</summary>|26−1|₅=|25|₅=5^{−2} (muy “cercanos” p-ádicamente).</details></li>
+        <li><details><summary>Serie geométrica p-ádica</summary>Con |r|ₚ&lt;1, ∑ r^n = 1/(1−r) también en ℚₚ.</details></li>
+        <li><details><summary>Interpretación de congruencias</summary>Una congruencia es igualdad en el anillo cociente; Hensel traslada a límites p-ádicos.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Fronteras de investigación</h1>
+      <p class="lead">Formas modulares, funciones L, teoría de Iwasawa y aritmética computacional marcan líneas activas de trabajo.</p>
+      <h2>Formas modulares y funciones L</h2>
+      <p>Las formas modulares transforman con una acción de SL₂(ℤ) y poseen coeficientes de Fourier con significado aritmético; sus funciones L codifican esta información en series y productos ejes de conjeturas profundas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Producto Euleriano de una L</summary>L(f,s)=∏_{p}(1−a_p p^{−s}+ε(p)p^{k−1−2s})^{−1} para una forma de peso k.</details></li>
+        <li><details><summary>Modularidad de curvas elípticas</summary>Cada curva elíptica sobre ℚ corresponde a una forma modular de peso 2.</details></li>
+        <li><details><summary>Coeficientes τ(n) de Ramanujan</summary>Aparecen en Δ(q)=q∏(1−q^n)^{24} y satisfacen recursiones multiplicativas.</details></li>
+        <li><details><summary>¿Para qué sirven las funciones L?</summary>Relacionan conteos aritméticos con propiedades analíticas (ceros, polos, valores especiales).</details></li>
+        <li><details><summary>Ejemplo numérico sencillo</summary>ζ(2)=π^2/6; L(χ,s) para un carácter de Dirichlet alterna signos en la serie.</details></li>
+      </ol></div>
+      <h2>Conjeturas profundas</h2>
+      <p>Conectan análisis y álgebra: Birch–Swinnerton-Dyer (BSD), Bloch–Kato, Riemann generalizada, etc. Proveen predicciones precisas sobre rangos, reguladores y números de clase.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Enunciado de BSD (esquema)</summary>El rango del grupo de puntos racionales de una curva elíptica coincide con el orden de anulación de L(E,s) en s=1.</details></li>
+        <li><details><summary>Predicción de Riemann para π(x)</summary>Mejora el error de x/log x a ≈O(x^{1/2} log x).</details></li>
+        <li><details><summary>Número de clase</summary>BSD y Stark relacionan valores especiales de L con números de clase.</details></li>
+        <li><details><summary>Motivos</summary>Bloch–Kato conecta valores de L con grupos de cohomología.</details></li>
+        <li><details><summary>Verificación numérica</summary>Pequeños casos de L(E,1)=0 correlacionan con presencia de puntos de orden infinito.</details></li>
+      </ol></div>
+      <h2>Teoría de Iwasawa</h2>
+      <p>Estudia cómo crecen invariantes aritméticos en torres ciclotómicas; parámetros (λ, μ, ν) controlan el crecimiento de números de clase o rangos de curvas.</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Torre ciclotómica de ℚ</summary>ℚ⊂ℚ(ζ_{p})⊂ℚ(ζ_{p^2})⊂… con Galois isomorfo a ℤₚ^×.</details></li>
+        <li><details><summary>Crecimiento del número de clase</summary>Generalmente del tipo p^{λn+μp^n+ν} en el nivel n.</details></li>
+        <li><details><summary>Medida p-ádica</summary>Permite interpolar valores de L en familias.</details></li>
+        <li><details><summary>Kummer y p-regularidad</summary>Vincula Bernoulli con divisibilidad por p y anula μ en ciertos casos.</details></li>
+        <li><details><summary>L-funciones p-ádicas</summary>Extienden L a un entorno p-ádico con propiedades analíticas.</details></li>
+      </ol></div>
+      <h2>Aritmética computacional y cripto poscuántica</h2>
+      <p>Integra primalidad eficiente, factorización y nuevas familias criptográficas resistentes a cuántica (retículas, códigos, isogenias).</p>
+      <div class="examples"><h4>Ejemplos resueltos (5)</h4><ol>
+        <li><details><summary>Primalidad AKS</summary>Decide primalidad en tiempo polinómico sin aleatoriedad.</details></li>
+        <li><details><summary>Criba número-campo</summary>Método práctico más rápido para factorizar enteros grandes clásicos.</details></li>
+        <li><details><summary>ECM (curvas elípticas)</summary>Eficaz para números con factores medianos.</details></li>
+        <li><details><summary>Retículas (LWE)</summary>Seguridad basada en problemas de aproximación en retículas de alta dimensión.</details></li>
+        <li><details><summary>Isogenias</summary>Basadas en grafos de isogenias entre curvas; candidatas poscuánticas.</details></li>
+      </ol></div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs
+    const map = { primaria:'#sec-primaria', eso:'#sec-eso', bach:'#sec-bach', uni:'#sec-uni', master:'#sec-master', phd:'#sec-phd' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level="${k}"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-aritmetica', key);
+        window.scrollTo({top:0, behavior:'smooth'});
+      }
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-aritmetica');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'primaria'), false);
+
+    // Progress bar + top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+
+    // Reader controls
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+      if(light){
+        root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+        root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+      }else{
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+        root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      }
+    });
+
+    // Top button
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Funciones y Gráficas — ESO · Bachillerato · Universidad · Doctorado</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399; --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35); }
+  }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%), radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70; background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff; font-weight:900}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:22px clamp(18px,3vw,28px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:14px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .note{color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">ƒ</span><span class="brand-title">Funciones y Gráficas — ESO · Bachillerato · Universidad · Doctorado</span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down">A−</button>
+        <button class="btn small" id="fs-up">A+</button>
+        <button class="btn small" id="width-down">⇤</button>
+        <button class="btn small" id="width-up">⇥</button>
+        <button class="btn" id="theme-toggle">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="eso" role="tab" aria-selected="true">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level" data-active>
+      <h1>ESO — Introducción breve</h1>
+      <p class="lead">Qué es una función, cómo leer su gráfica y transformaciones básicas.</p>
+      <div class="toc">
+        <a href="#e1">1) Definición</a>
+        <a href="#e2">2) Lineales</a>
+        <a href="#e3">3) Lectura de gráficas</a>
+        <a href="#e4">4) Transformaciones</a>
+      </div>
+      <h2 id="e1">1) Definición</h2>
+      <p>Una función f asigna a cada x un único f(x). Dominio: entradas permitidas; imagen: salidas obtenidas. Punto (x,f(x)) pertenece a la gráfica.</p>
+      <div class="examples"><h4>Ejemplos</h4><ol>
+        <li><details><summary>Dom f(x)=√(x−1)</summary>x≥1.</details></li>
+        <li><details><summary>¿Es función x↦±√x?</summary>No, dos salidas para una entrada.</details></li>
+        <li><details><summary>f(−2) si f(x)=x²−1</summary>3.</details></li>
+      </ol></div>
+      <h2 id="e2">2) Lineales</h2>
+      <p>y=mx+b: m es pendiente, b es corte con eje y.</p>
+      <div class="examples"><h4>Ejemplos</h4><ol>
+        <li><details><summary>Pendiente entre (1,2) y (3,6)</summary>2.</details></li>
+        <li><details><summary>y con m=−1 y (0,5)</summary>y=−x+5.</details></li>
+        <li><details><summary>Corte con x de y=2x−8</summary>x=4.</details></li>
+      </ol></div>
+      <h2 id="e3">3) Lectura</h2>
+      <p>Crecimiento/decrecimiento, máximos y mínimos, intersecciones con ejes.</p>
+      <div class="examples"><h4>Ejemplos</h4><ol>
+        <li><details><summary>Tramo horizontal</summary>Pendiente 0.</details></li>
+        <li><details><summary>Prueba de recta vertical</summary>Si la corta más de una vez, no es función.</details></li>
+        <li><details><summary>Punto (0,f(0))</summary>Intersección con eje y.</details></li>
+      </ol></div>
+      <h2 id="e4">4) Transformaciones</h2>
+      <p>f(x)+k sube/baja; f(x−h) desplaza; a·f(x) estira vertical; f(bx) comprime horizontal; −f(x) refleja.</p>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Método completo de análisis y esbozo</h1>
+      <p class="lead">Dominio, simetrías, asíntotas, crecimiento, extremos y concavidad para polinómicas, racionales, exponenciales/logarítmicas y trigonométricas, además de a trozos, composición e inversa.</p>
+      <div class="toc">
+        <a href="#b1">1) Método general</a>
+        <a href="#b2">2) Polinómicas</a>
+        <a href="#b3">3) Racionales</a>
+        <a href="#b4">4) Exponenciales y log</a>
+        <a href="#b5">5) Trigonométricas</a>
+        <a href="#b6">6) A trozos y continuidad</a>
+        <a href="#b7">7) Composición e inversa</a>
+        <a href="#b8">8) Desigualdades con gráficas</a>
+      </div>
+      <h2 id="b1">1) Método general</h2>
+      <p>Pasos: dominio → ejes → simetrías → límites/asíntotas → f' (crecimiento/extremos) → f'' (concavidad/inflexiones) → unir.</p>
+      <h2 id="b2">2) Polinómicas</h2>
+      <p>El grado marca el infinito. Raíces y multiplicidad indican si cruza (impar) o toca (par) el eje x.</p>
+      <div class="examples"><h4>Ejemplos</h4><ol>
+        <li><details><summary>y=(x−1)(x+2)</summary>Raíces −2 y 1; abre arriba.</details></li>
+        <li><details><summary>Extremos de x³−3x</summary>x=±1; máx en (−1,2), mín en (1,−2).</details></li>
+        <li><details><summary>Desigualdad x³−3x≥0</summary>Por el esbozo: (−∞,−1]∪{0}∪[1,∞).</details></li>
+      </ol></div>
+      <h2 id="b3">3) Racionales</h2>
+      <p>Factorizar P y Q; cancelar (huecos); ceros de Q no cancelados ⇒ asíntotas verticales; horizontales/oblicuas según grados.</p>
+      <div class="examples"><h4>Ejemplos</h4><ol>
+        <li><details><summary>(x²−1)/(x−1)</summary>=x+1 con hueco en x=1.</details></li>
+        <li><details><summary>(2x+1)/(x−3)</summary>Asíntota x=3; horizontal y=2.</details></li>
+        <li><details><summary>(x²+1)/x</summary>Asíntota x=0 y oblicua y=x.</details></li>
+      </ol></div>
+      <h2 id="b4">4) Exponenciales y log</h2>
+      <p>a^x (a&gt;0, ≠1) y log_a x son inversas (simetría y=x). a&gt;1 ⇒ crecimiento; 0&lt;a&lt;1 ⇒ decrecimiento.</p>
+      <h2 id="b5">5) Trigonométricas</h2>
+      <p>y=A·sen(ωx+φ)+k: amplitud A, periodo 2π/ω, desfase φ, elevación k.</p>
+      <h2 id="b6">6) A trozos y continuidad</h2>
+      <p>Comprobar límites laterales e igualdad con f(a) para continuidad. Hueco si hay límite pero f(a) no coincide.</p>
+      <h2 id="b7">7) Composición e inversa</h2>
+      <p>Inversa existe si es biyectiva (monotonía estricta suele bastar). Gráficamente es el reflejo respecto a y=x.</p>
+      <h2 id="b8">8) Desigualdades con gráficas</h2>
+      <p>Resolver f(x)≥g(x) mirando dónde f queda por encima de g; equivalente a estudiar h=f−g y sus signos.</p>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Formalismo y técnicas avanzadas</h1>
+      <p class="lead">Funciones como aplicaciones entre espacios; límite ε–δ, continuidad, derivadas y Taylor; curvas paramétricas/polares; multivariable y optimización (Lagrange).</p>
+      <div class="toc">
+        <a href="#u1">1) Inyectividad/suprayectividad</a>
+        <a href="#u2">2) Límite y continuidad (IVT/EVT)</a>
+        <a href="#u3">3) Derivadas, MVT y Taylor</a>
+        <a href="#u4">4) Paramétricas y polares</a>
+        <a href="#u5">5) Multivariable: gradiente y Hessiano</a>
+        <a href="#u6">6) Lagrange y convexidad</a>
+      </div>
+      <h2 id="u1">1) Inyectiva/sobreyectiva</h2>
+      <p>f^{-1} existe ⇔ biyectiva. Monotonía estricta ⇒ inyectividad. Composición preserva continuidad.</p>
+      <h2 id="u2">2) Límite y continuidad</h2>
+      <p>ε–δ; IVT: una continua en [a,b] toma todos los valores intermedios; EVT: alcanza máximos y mínimos.</p>
+      <h2 id="u3">3) Derivadas, MVT, Taylor</h2>
+      <p>f'(a) es la pendiente instantánea; MVT garantiza un punto con pendiente media; Taylor aproxima localmente.</p>
+      <h2 id="u4">4) Paramétricas y polares</h2>
+      <p>r(t)=(x(t),y(t)); dy/dx=(dy/dt)/(dx/dt). En polares r=r(θ) con x=r cosθ, y=r sinθ.</p>
+      <h2 id="u5">5) Multivariable</h2>
+      <p>Curvas de nivel f(x,y)=c; ∇f apunta al máximo aumento; Hessiano clasifica críticos.</p>
+      <h2 id="u6">6) Optimización</h2>
+      <p>Sin restricciones: ∇f=0 y prueba de 2ª derivada. Con g(x)=c: ∇f=λ∇g (Lagrange). Convexidad ⇒ unicidad.</p>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Panorama breve</h1>
+      <p class="lead">Espacios de funciones (L^p, Sobolev), Fourier y suavidad, convexidad y subgradientes, implícita/difeomorfismos.</p>
+      <h2>Notas rápidas</h2>
+      <ul>
+        <li>En L^p se miden “tamaños” de funciones con normas; en Sobolev se controla también la suavidad.</li>
+        <li>Coeficientes de Fourier que decaen rápido ⇒ gráfica muy suave.</li>
+        <li>Convexidad: toda secante por encima de la gráfica; subgradiente generaliza la derivada donde no existe.</li>
+        <li>Implícita: F(x,y)=0 describe y(x) si ∂F/∂y≠0 en el punto.</li>
+      </ul>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+    // Tabs
+    const map = { eso:'#sec-eso', bach:'#sec-bach', uni:'#sec-uni', phd:'#sec-phd' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level="${k}"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-funciones', key);
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-funciones');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'eso'), false);
+    // Progress + Top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+    // Reader controls
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+      if(light){
+        root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+        root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+      }else{
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+        root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      }
+    });
+  </script>
+</body>
+</html>
