@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark" data-theme="planetado">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innove — Laboratorio</title>
+  <meta name="description" content="Laboratorio estudiantil con IA: temas visuales, modo blanco y negro, alto contraste y accesibilidad." />
+  <link rel="icon" type="image/png" href="innoveAI.png" />
+  <style>
+    /* ===== TOKENS ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    :root{
+      --bg:#0a0f1f; --text:#e6f0ff; --muted:#a9b9db;
+      --glass: rgba(255,255,255,0.10); --glass-strong: rgba(255,255,255,0.20); --border: rgba(255,255,255,0.22);
+      --ring: rgba(96,165,250,0.7);
+      --accent:#60a5fa; --accent-2:#a78bfa; --accent-3:#34d399; --accent-4:#f472b6; --accent-5:#fbbf24;
+      --shadow: 0 14px 44px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+      --radius-2xl:24px; --radius-3xl:30px; --radius-max:999px;
+      --card-text:#0b1020; --card-muted:#334155;
+    }
+    html[data-scheme="light"]{
+      --bg:#f7f9ff; --text:#0b1020; --muted:#334155;
+      --glass: rgba(255,255,255,0.80); --glass-strong: rgba(255,255,255,0.92); --border: rgba(8,47,73,0.14);
+    }
+    /* Temas (paletas) */
+    html[data-theme="planetado"]{
+      --accent:#60a5fa; --accent-2:#a78bfa; --accent-3:#34d399; --accent-4:#f472b6; --accent-5:#fbbf24;
+      --bg:#0a0f1f;
+    }
+    html[data-theme="neon"]{
+      --accent:#22d3ee; --accent-2:#a78bfa; --accent-3:#14b8a6; --accent-4:#f0abfc; --accent-5:#60a5fa;
+      --bg:#0a0f1a;
+    }
+    html[data-theme="aurora"]{
+      --accent:#34d399; --accent-2:#7dd3fc; --accent-3:#a78bfa; --accent-4:#22d3ee; --accent-5:#60a5fa;
+    }
+    html[data-theme="hoja"]{
+      --accent:#22c55e; --accent-2:#a3e635; --accent-3:#16a34a; --accent-4:#86efac; --accent-5:#65a30d;
+      --bg:#0b1a14;
+    }
+    html[data-theme="plateado"]{
+      --bg:#0e1116; --text:#e5e7eb; --muted:#cbd5e1;
+      --glass: rgba(255,255,255,0.12); --glass-strong: rgba(255,255,255,0.22); --border: rgba(255,255,255,0.24);
+      --accent:#d1d5db; --accent-2:#9ca3af; --accent-3:#cbd5e1; --accent-4:#f3f4f6; --accent-5:#94a3b8;
+    }
+    html[data-theme="mar"]{
+      --accent:#93c5fd; --accent-2:#38bdf8; --accent-3:#0ea5e9; --accent-4:#60a5fa; --accent-5:#7dd3fc;
+      --bg:#071426;
+    }
+    /* Modo Blanco & Negro (grises) */
+    html[data-tone="bn"]{
+      --bg:#ffffff; --text:#111111; --muted:#2e2e2e;
+      --glass:#ffffff; --glass-strong:#ffffff; --border:#00000020;
+      --accent:#111; --accent-2:#222; --accent-3:#333; --accent-4:#444; --accent-5:#555;
+      filter: grayscale(1) contrast(1.05);
+    }
+    /* Alto Contraste */
+    html.hc{
+      --border:#000;
+      outline-color:#000;
+    }
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      line-height:1.55; overflow-x:hidden;
+    }
+
+    /* ===== BACKGROUNDS ===== */
+    #particles-js{ position: fixed; inset:0; z-index:-2; }
+    .aurora{ position:fixed; inset:-20% -10% auto -10%; height:60vh; z-index:-3;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.18), rgba(196,181,253,.2), rgba(52,211,153,.18), rgba(125,211,252,.18));
+      filter: blur(84px) saturate(120%); animation: drift 18s ease-in-out infinite; opacity:.75; display:none;
+    }
+    @keyframes drift { 50%{ transform: translateY(-20px) translateX(20px) scale(1.04); } }
+    html[data-theme="aurora"] .aurora{ display:block; }
+
+    /* ===== COMPONENTES ===== */
+    .panel{ background:var(--glass); backdrop-filter: blur(18px) saturate(170%); border:1px solid var(--border); border-radius:var(--radius-3xl); box-shadow:var(--shadow); }
+    .nav{
+      position: sticky; top: 16px; z-index: 50; display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 22px; margin: 16px; background:var(--glass-strong);
+    }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; }
+    .brand .logo{
+      width:34px; height:34px; border-radius:10px;
+      background: conic-gradient(from 120deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent-4), var(--accent-5));
+      box-shadow: 0 0 28px rgba(96,165,250,0.5);
+      animation: spin 8s linear infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg);} }
+    .nav a{ color:var(--text); text-decoration:none; padding:10px 14px; border-radius:12px; border:1px solid transparent; transition:200ms ease; }
+    .nav a:hover{ border-color:var(--border); background:var(--glass); transform: translateY(-1px); }
+    .nav-cta{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .btn{ border:1px solid var(--border); background:var(--glass); color:var(--text); padding:8px 12px; border-radius:12px; cursor:pointer; font-weight:700; }
+    .btn[aria-pressed="true"]{ outline:2px solid var(--ring); box-shadow:0 0 0 6px rgba(96,165,250,.16); }
+
+    .hero{ max-width:1200px; margin: 56px auto 18px; padding: 0 24px; display:grid; gap:24px; grid-template-columns: 1.2fr 1fr; align-items:center; }
+    @media (max-width: 1000px){ .hero{ grid-template-columns: 1fr; } }
+    .hero h1{ font-size: clamp(30px, 5vw, 58px); margin:0; background:linear-gradient(90deg,var(--accent), var(--accent-2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero p{ color:var(--muted); margin:6px 0 0; }
+
+    .tools{ max-width:1200px; margin: 10px auto 0; padding: 0 24px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .search{ display:flex; gap:8px; align-items:center; flex:1; min-width:260px; }
+    .search input{ flex:1; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); }
+    .toggle-row{ display:flex; gap:8px; flex-wrap:wrap; }
+
+    .grid{ max-width: 1200px; margin: 18px auto 80px; padding: 0 24px;
+      display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .card{ position:relative; padding:18px; min-height:190px; text-decoration:none; color:inherit; display:flex; flex-direction:column; transition: transform .2s ease, box-shadow .2s ease; }
+    .card:hover{ transform: translateY(-6px) scale(1.03); box-shadow: 0 24px 48px rgba(0,0,0,0.45); }
+    .card .title{ display:flex; align-items:center; gap:10px; font-weight:800; }
+    .chip{ font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); background:rgba(255,255,255,.08); }
+    .desc{ color:var(--muted); font-size:14px; margin-top:8px; }
+    .topics{ margin-top:10px; padding-left:18px; display:none; color:var(--muted); }
+    .card button.show-topics{ margin-top:auto; align-self:flex-start; }
+
+    /* Variantes por materia (colores sutiles) */
+    .card--quimica{ background: linear-gradient(180deg, rgba(96,165,250,.18), rgba(96,165,250,.08)); }
+    .card--fisica{ background: linear-gradient(180deg, rgba(167,139,250,.18), rgba(167,139,250,.08)); }
+    .card--mates{ background: linear-gradient(180deg, rgba(251,191,36,.22), rgba(251,191,36,.1)); }
+    .card--info{ background: linear-gradient(180deg, rgba(59,130,246,.22), rgba(59,130,246,.1)); }
+    .card--inge{ background: linear-gradient(180deg, rgba(34,197,94,.22), rgba(34,197,94,.1)); }
+    .card--med{  background: linear-gradient(180deg, rgba(244,114,182,.22), rgba(244,114,182,.1)); }
+    .card--eco{  background: linear-gradient(180deg, rgba(163,230,53,.22), rgba(163,230,53,.1)); }
+
+    footer{ max-width:1200px; margin: 40px auto 80px; padding: 0 24px; text-align:center; color:var(--muted); }
+
+    /* Tema panel (bottom) */
+    .theme-panel{
+      position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 60;
+      display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+      padding:8px 10px; background: var(--glass-strong); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow);
+    }
+    .theme-pill{ display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border);
+                 background:var(--glass); border-radius:14px; cursor:pointer; font-weight:700; }
+    .theme-pill .swatch{ width:14px; height:14px; border-radius:50%; border:1px solid var(--border); }
+    .theme-pill[aria-pressed="true"]{ outline:2px solid var(--ring); box-shadow:0 0 0 6px rgba(96,165,250,.14); }
+    #showThemesBtn{ position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 59; display:none; }
+
+    /* Print amigable */
+    @media print{
+      html{ filter:none !important; }
+      body{ background:#fff; color:#000; }
+      .panel, .card{ background:#fff !important; border:1px solid #000 !important; box-shadow:none !important; }
+      .nav, .theme-panel, #showThemesBtn, #particles-js, .aurora{ display:none !important; }
+      a{ color:#000; text-decoration:underline; }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js" aria-hidden="true"></div>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="nav panel" role="navigation" aria-label="Principal">
+    <div class="brand"><div class="logo" aria-hidden="true"></div> <span>Laboratorio</span></div>
+    <div class="nav-cta">
+      <a href="index.html">Inicio</a>
+      <a href="Innove AI.html">Asistente IA</a>
+      <a href="contacto.html">Contacto</a>
+      <button id="schemeBtn" class="btn" aria-pressed="false" aria-label="Cambiar claro/oscuro">🌓</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <h1>Aprendizaje con Estilo</h1>
+      <p>Temas visuales, modo <b>blanco y negro</b>, alto contraste y listas de <b>temas por curso</b>.</p>
+    </div>
+    <div class="panel" style="padding:16px;">
+      <div class="tools">
+        <div class="toggle-row" role="group" aria-label="Apariencia">
+          <button id="bnBtn" class="btn" type="button" aria-pressed="false" title="Blanco y negro">B/N</button>
+          <button id="hcBtn" class="btn" type="button" aria-pressed="false" title="Alto contraste">Alto contraste</button>
+          <button id="printBtn" class="btn" type="button" title="Versión para imprimir">Imprimir</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- GRID MATERIAS -->
+  <main>
+    <section id="materias" class="grid" aria-label="Materias">
+      <a href="QuimicaLAB.html" class="card panel card--quimica" data-tags="quimica reacciones tabla estequiometria atomos enlaces acidos bases">
+        <div class="title">🔬 Química <span class="chip">Reacciones · Tabla</span></div>
+        <p class="desc">Modelos moleculares, estequiometría y simulaciones seguras.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-quimica">Temas</button>
+        <ul id="topics-quimica" class="topics">
+          <li>Tabla periódica y grupos</li>
+          <li>Estequiometría y reactivo limitante</li>
+          <li>Ácidos, bases y pH</li>
+          <li>Enlaces: iónico, covalente y polaridad</li>
+          <li>Gases ideales (PV = nRT)</li>
+        </ul>
+      </a>
+
+      <a href="fisicaLAB.html" class="card panel card--fisica" data-tags="fisica ondas mecanica optica electricidad magnetismo cinemática dinamica energia">
+        <div class="title">⚙️ Física <span class="chip">Ondas · Mecánica</span></div>
+        <p class="desc">Simulador de fuerzas, óptica y electricidad.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-fisica">Temas</button>
+        <ul id="topics-fisica" class="topics">
+          <li>Cinemática (MRU, MRUA)</li>
+          <li>Dinámica (Leyes de Newton)</li>
+          <li>Trabajo y energía</li>
+          <li>Óptica y ondas</li>
+          <li>Electricidad (V = I·R)</li>
+        </ul>
+      </a>
+
+      <a href="matematicaLAB.html" class="card panel card--mates" data-tags="matematicas calculo algebra trigonometria estadistica limites derivadas integrales matrices">
+        <div class="title">📐 Matemáticas <span class="chip">Cálculo · Álgebra</span></div>
+        <p class="desc">Demostraciones paso a paso y generador de problemas.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-mates">Temas</button>
+        <ul id="topics-mates" class="topics">
+          <li>Límites y continuidad</li>
+          <li>Derivadas y aplicaciones</li>
+          <li>Integrales y áreas</li>
+          <li>Álgebra lineal (matrices y determinantes)</li>
+          <li>Probabilidad y estadística</li>
+        </ul>
+      </a>
+
+      <a href="informaticaLAB.html" class="card panel card--info" data-tags="informatica algoritmos programacion estructuras datos complejidad ia web">
+        <div class="title">💻 Informática <span class="chip">Algoritmos · IA</span></div>
+        <p class="desc">Entorno de código, retos y teoría de algoritmos.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-info">Temas</button>
+        <ul id="topics-info" class="topics">
+          <li>Algoritmos y complejidad</li>
+          <li>Estructuras de datos</li>
+          <li>Programación web</li>
+          <li>Redes y seguridad</li>
+          <li>Introducción a IA</li>
+        </ul>
+      </a>
+
+      <a href="ingenieriaLAB.html" class="card panel card--inge" data-tags="ingenieria estructuras materiales resistencia cargas cad">
+        <div class="title">🏗️ Ingeniería <span class="chip">Estructuras · CAD</span></div>
+        <p class="desc">Cálculo de cargas, materiales y diseño asistido por IA.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-inge">Temas</button>
+        <ul id="topics-inge" class="topics">
+          <li>Estática y equilibrio</li>
+          <li>Esfuerzos (σ = F/A) y deformaciones</li>
+          <li>Materiales y propiedades</li>
+          <li>Fundamentos de CAD</li>
+          <li>Optimización básica</li>
+        </ul>
+      </a>
+
+      <a href="medicinaLAB.html" class="card panel card--med" data-tags="medicina anatomia fisiologia patologias clinica salud">
+        <div class="title">🩺 Medicina <span class="chip">Anatomía · Fisio</span></div>
+        <p class="desc">Atlas anatómico, casos clínicos y flashcards inteligentes.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-med">Temas</button>
+        <ul id="topics-med" class="topics">
+          <li>Anatomía por sistemas</li>
+          <li>Fisiología básica</li>
+          <li>Farmacología intro</li>
+          <li>Interpretación clínica</li>
+          <li>Primeros auxilios</li>
+        </ul>
+      </a>
+
+      <a href="economiaLAB.html" class="card panel card--eco" data-tags="economia micro macro finanzas mercados crecimiento elasticidad oferta demanda">
+        <div class="title">💹 Economía <span class="chip">Micro · Macro</span></div>
+        <p class="desc">Teoría económica, mercados y finanzas.</p>
+        <button class="btn show-topics" type="button" aria-expanded="false" aria-controls="topics-eco">Temas</button>
+        <ul id="topics-eco" class="topics">
+          <li>Oferta, demanda y equilibrio</li>
+          <li>Elasticidades</li>
+          <li>Política fiscal y monetaria</li>
+          <li>Indicadores macro</li>
+          <li>Finanzas personales</li>
+        </ul>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Innove. Hecho con ❤ para estudiantes.</p>
+  </footer>
+
+  <!-- THEME PANEL -->
+  <div class="theme-panel" role="toolbar" aria-label="Selección de tema">
+    <button class="theme-pill" data-theme-option="planetado" aria-pressed="true" title="Planetado">
+      <span class="swatch" style="background:radial-gradient(circle, #7dd3fc, #0ea5e9);"></span><span>Planetado</span>
+    </button>
+    <button class="theme-pill" data-theme-option="neon" aria-pressed="false" title="Neón">
+      <span class="swatch" style="background:linear-gradient(45deg,#22d3ee,#a78bfa);"></span><span>Neón</span>
+    </button>
+    <button class="theme-pill" data-theme-option="aurora" aria-pressed="false" title="Aurora">
+      <span class="swatch" style="background:linear-gradient(45deg,#34d399,#7dd3fc);"></span><span>Aurora</span>
+    </button>
+    <button class="theme-pill" data-theme-option="hoja" aria-pressed="false" title="Hoja">
+      <span class="swatch" style="background:linear-gradient(45deg,#22c55e,#a3e635);"></span><span>Hoja</span>
+    </button>
+    <button class="theme-pill" data-theme-option="plateado" aria-pressed="false" title="Plateado">
+      <span class="swatch" style="background:#e5e7eb;"></span><span>Plateado</span>
+    </button>
+    <button class="theme-pill" data-theme-option="mar" aria-pressed="false" title="Mar">
+      <span class="swatch" style="background:#93c5fd;"></span><span>Mar</span>
+    </button>
+    <button id="hideThemesBtn" class="theme-pill" data-hide role="button" aria-label="Ocultar panel de temas">
+      <span class="swatch" style="background:transparent;"></span><span>×</span>
+    </button>
+  </div>
+  <button id="showThemesBtn" class="btn" aria-label="Mostrar panel de temas">Temas</button>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    /* Partículas (solo color si NO está en B/N) */
+    /* Partículas (paletas por tema y B/N) */
+    function getPalette(){
+      const tone = document.documentElement.getAttribute('data-tone');
+      if(tone === 'bn') return '#9aa1a8';
+      const t = document.documentElement.getAttribute('data-theme');
+      switch(t){
+        case 'neon': return ['#22d3ee','#a78bfa','#14b8a6','#f0abfc','#60a5fa'];
+        case 'aurora': return ['#34d399','#7dd3fc','#a78bfa'];
+        case 'hoja': return ['#22c55e','#a3e635','#16a34a','#86efac'];
+        case 'plateado': return ['#cbd5e1','#94a3b8','#e5e7eb'];
+        case 'mar': return ['#93c5fd','#38bdf8','#0ea5e9','#60a5fa'];
+        default: return ['#60a5fa','#a78bfa','#34d399','#f472b6','#fbbf24'];
+      }
+    }
+    function initParticles(){
+      const color = getPalette();
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: color },
+          shape: { type: 'circle' },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: true, distance: 150, color: '#8ab4f8', opacity: 0.28, width: 1 },
+          move: { enable: true, speed: 2, out_mode: 'out' }
+        },
+        interactivity: {
+          events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+          modes: { repulse: { distance: 120 }, push: { particles_nb: 4 } }
+        },
+        retina_detect: true
+      });
+    }
+    initParticles();
+
+    /* Persistencia de esquema claro/oscuro */
+    const schemeBtn = document.getElementById('schemeBtn');
+    function setScheme(next){
+      document.documentElement.setAttribute('data-scheme', next);
+      localStorage.setItem('lab-scheme', next);
+      schemeBtn.setAttribute('aria-pressed', String(next==='light'));
+    }
+    const savedScheme = localStorage.getItem('lab-scheme');
+    setScheme(savedScheme || document.documentElement.getAttribute('data-scheme') || 'dark');
+    schemeBtn.addEventListener('click', ()=> setScheme(document.documentElement.getAttribute('data-scheme')==='light' ? 'dark' : 'light'));
+
+    /* Temas */
+    const themeBtns = document.querySelectorAll('.theme-panel .theme-pill');
+    function setTheme(name){
+      document.documentElement.setAttribute('data-theme', name);
+      localStorage.setItem('lab-theme', name);
+      themeBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeOption === name)));
+      document.getElementById('particles-js').innerHTML = '';
+      initParticles();
+    }
+    const savedTheme = localStorage.getItem('lab-theme'); setTheme(savedTheme || 'planetado');
+    themeBtns.forEach(btn => {
+      if(btn.hasAttribute('data-hide')) return;
+      btn.addEventListener('click', ()=> setTheme(btn.dataset.themeOption));
+    });
+
+    /* Ocultar/mostrar panel temas */
+    const hideThemesBtn = document.getElementById('hideThemesBtn');
+    const showThemesBtn = document.getElementById('showThemesBtn');
+    const themePanel = document.querySelector('.theme-panel');
+    if(localStorage.getItem('lab-themePanelHidden') === 'true'){
+      themePanel.style.display = 'none'; showThemesBtn.style.display = 'block';
+    }
+    hideThemesBtn?.addEventListener('click', ()=>{
+      themePanel.style.display = 'none'; showThemesBtn.style.display = 'block';
+      localStorage.setItem('lab-themePanelHidden','true');
+    });
+    showThemesBtn?.addEventListener('click', ()=>{
+      themePanel.style.display = ''; showThemesBtn.style.display = 'none';
+      localStorage.removeItem('lab-themePanelHidden');
+    });
+
+    /* B/N, Alto Contraste, Imprimir */
+    const bnBtn = document.getElementById('bnBtn');
+    const hcBtn = document.getElementById('hcBtn');
+    const printBtn = document.getElementById('printBtn');
+    function setBN(active){
+      if(active){
+        document.documentElement.setAttribute('data-tone','bn');
+      }else{
+        document.documentElement.removeAttribute('data-tone');
+      }
+      bnBtn.setAttribute('aria-pressed', String(active));
+      /* Reiniciar partículas para color/gris */
+      document.getElementById('particles-js').innerHTML = '';
+      initParticles();
+      localStorage.setItem('lab-bn', String(active));
+    }
+    function setHC(active){
+      document.documentElement.classList.toggle('hc', active);
+      hcBtn.setAttribute('aria-pressed', String(active));
+      localStorage.setItem('lab-hc', String(active));
+    }
+    setBN(localStorage.getItem('lab-bn') === 'true');
+    setHC(localStorage.getItem('lab-hc') === 'true');
+    bnBtn.addEventListener('click', ()=> setBN(bnBtn.getAttribute('aria-pressed') !== 'true'));
+    hcBtn.addEventListener('click', ()=> setHC(hcBtn.getAttribute('aria-pressed') !== 'true'));
+    printBtn.addEventListener('click', ()=> window.print());
+
+    /* Temas desplegables por tarjeta */
+    document.querySelectorAll('.show-topics').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('aria-controls');
+        const list = document.getElementById(id);
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        list.style.display = expanded ? 'none' : 'block';
+      });
+    });
+
+    /* Arreglos de rutas antiguas comunes */
+    document.querySelectorAll('a[href="fisica.lab.html"]').forEach(a => a.setAttribute('href','fisicaLAB.html'));
+    document.querySelectorAll('a[href="ingeneriaLAB.html"]').forEach(a => a.setAttribute('href','ingenieriaLAB.html'));
+    document.querySelectorAll('a[href="economia.html"]').forEach(a => a.setAttribute('href','economiaLAB.html'));
+  </script>
+</body>
+</html>
