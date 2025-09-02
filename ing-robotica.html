@@ -1,0 +1,266 @@
+<html lang="es" data-scheme="dark" data-theme="planetado">
+<head>
+  <title>Robótica — Innove</title>
+  
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="color-scheme" content="dark light"/>
+  <meta name="theme-color" content="#0e1430" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#f6f8ff" media="(prefers-color-scheme: light)"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --bg:#0e1430; --bg2:#101a3b; --text:#eaf2ff; --muted:#b6c4e6;
+      --glass:rgba(255,255,255,.14); --glass-strong:rgba(255,255,255,.22); --border:rgba(255,255,255,.18);
+      --shadow:0 18px 48px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+      --ink:#7dd3fc; --inkGlow:rgba(125,211,252,.18);
+      --r-2xl:22px; --r-3xl:28px;
+      --maxw:1200px; --narrow:900px;
+      --appH:72px; --themeBarH:64px;
+      --card-text:#0f1324; --card-muted:#2c3652;
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+    }
+    html[data-scheme="light"]{
+      --bg:#f6f8ff; --bg2:#eef2ff; --text:#0f1423; --muted:#4a5875;
+      --glass:#ffffffd9; --glass-strong:#fff; --border:#0b102022;
+      --ink:#2563eb; --inkGlow:#2563eb22; --card-text:#0d1120; --card-muted:#334155;
+    }
+    html[data-scheme="dark"]{
+      --bg:#0e1430; --bg2:#101a3b; --text:#eaf2ff; --muted:#b6c4e6;
+      --glass:rgba(255,255,255,.14); --glass-strong:rgba(255,255,255,.22); --border:rgba(255,255,255,.18);
+      --ink:#7dd3fc; --inkGlow:rgba(125,211,252,.18); --card-text:#0f1324; --card-muted:#2c3652;
+    }
+    html{background:var(--bg)}
+    body{
+      margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1400px 900px at 70% -10%, var(--bg2), transparent 60%),
+        radial-gradient(1200px 800px at 10% 110%, #132256, transparent 65%),
+        var(--bg);
+      line-height:1.55; overflow-x:hidden; min-height:100svh;
+      padding-bottom: calc(var(--themeBarH) + var(--safeBottom) + 20px);
+    }
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+    .panel{background:var(--glass); backdrop-filter: blur(16px) saturate(170%); border:1px solid var(--border); border-radius:var(--r-3xl); box-shadow:var(--shadow)}
+    .bg-layer{position:fixed; inset:0; z-index:-3; pointer-events:none; display:none}
+    .bg-planetado-aurora{position:fixed; inset:-22% -10% auto -10%; height:58vh; filter:blur(80px) saturate(120%); animation:drift 18s ease-in-out infinite; opacity:.92}
+    .bg-planetado-aurora{background:conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.18), rgba(196,181,253,.26), rgba(52,211,153,.18), rgba(125,211,252,.18))}
+    .bg-planetado-grid{opacity:.20; background:
+      linear-gradient(transparent 0 98%, rgba(124,58,237,.35) 98%) 0 0/100% 44px,
+      linear-gradient(90deg, transparent 0 98%, rgba(56,189,248,.35) 98%) 0 0/44px 100%;
+      transform:perspective(900px) rotateX(58deg) translateY(-34%); animation:pan 22s linear infinite; mask-image:radial-gradient(62% 52% at 50% 30%,#000 60%,transparent 100%)}
+    .bg-neon{background:
+      radial-gradient(600px 400px at 80% 20%, rgba(3,105,161,.45), transparent 60%),
+      radial-gradient(600px 400px at 20% 80%, rgba(190,24,93,.45), transparent 60%);
+      filter:saturate(130%) blur(2px); opacity:.75}
+    .bg-aurora{background:conic-gradient(from 90deg at 50% 50%, rgba(16,185,129,.22), rgba(59,130,246,.22), rgba(20,184,166,.22), rgba(16,185,129,.22)); filter:blur(90px) saturate(140%); animation:drift 18s ease-in-out infinite; opacity:.9}
+    .bg-hoja{background:
+      radial-gradient(800px 500px at 20% -10%, rgba(34,197,94,.18), transparent 60%),
+      radial-gradient(700px 500px at 90% 120%, rgba(34,197,94,.12), transparent 60%),
+      repeating-linear-gradient(180deg, rgba(15,76,59,.08), rgba(15,76,59,.08) 1px, transparent 1px, transparent 28px);}
+    .bg-plateado{background:
+      radial-gradient(800px 800px at 50% 50%, rgba(255,255,255,0.32), rgba(224,224,224,0.08) 60%, transparent 80%),
+      linear-gradient(180deg, #fafafa, #d5d6db); opacity:.8}
+    .bg-mar{background:
+      radial-gradient(600px 400px at 80% 20%, rgba(2,132,199,.35), transparent 60%),
+      radial-gradient(600px 400px at 20% 80%, rgba(14,165,233,.35), transparent 60%),
+      linear-gradient(180deg, #cffafe, #bae6fd); opacity:.78}
+    html[data-theme="planetado"] .bg-planetado-aurora,
+    html[data-theme="planetado"] .bg-planetado-grid{display:block}
+    html[data-theme="neon"] .bg-neon{display:block}
+    html[data-theme="aurora"] .bg-aurora{display:block}
+    html[data-theme="hoja"] .bg-hoja{display:block}
+    html[data-theme="plateado"] .bg-plateado{display:block}
+    html[data-theme="mar"] .bg-mar{display:block}
+    @keyframes drift{50%{transform:translateY(-14px) translateX(14px) scale(1.03)}}
+    @keyframes pan{to{background-position:0 44px,44px 0}}
+    #bgParticles{position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.85}
+
+    .appbar-wrap{position:sticky; top:0; z-index:90}
+    .appbar{height:var(--appH); display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; margin:10px auto; padding:10px 12px; border-radius:18px; background:linear-gradient(180deg, var(--glass-strong), rgba(255,255,255,.12)); border:1px solid var(--border); box-shadow:var(--shadow); position:relative; overflow:hidden;}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:800; letter-spacing:.3px}
+    .logo{--tx:0px; --ty:0px; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; position:relative; transform:translate3d(var(--tx),var(--ty),0); transition:transform .15s ease}
+    .logo::before{content:""; position:absolute; inset:-2px; border-radius:50%; padding:2px; background: conic-gradient(from 140deg,#7dd3fc,#c4b5fd,#34d399,#fbbf24,#7dd3fc); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation: spin 8s linear infinite; filter: drop-shadow(0 0 12px rgba(125,211,252,.52));}
+    .logo .core{width:74%; height:74%; border-radius:50%; background:radial-gradient(circle at 35% 35%, #fff 8%, rgba(125,211,252,.9) 22%, rgba(196,181,253,.85) 46%, rgba(52,211,153,.4) 70%, transparent 76%); animation:wobble 6s ease-in-out infinite}
+    @keyframes spin{to{transform:rotate(360deg)}} @keyframes wobble{50%{transform:scale(1.06) translateY(-1px)}}
+
+    .tabs{position:relative; display:flex; align-items:center; gap:8px; overflow:auto; scrollbar-width:thin; padding:4px}
+    .tabs::-webkit-scrollbar{height:6px}
+    .pill{display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:14px; border:1px solid var(--border); background:transparent; color:var(--text); font-weight:800; cursor:pointer; white-space:nowrap; font-size:1rem; transition:background .2s ease, transform .15s ease}
+    .pill:hover{background:var(--glass); transform:translateY(-1px)}
+    .pill[aria-selected="true"]{background:var(--glass)}
+    .ink{position:absolute; height:3px; background:var(--ink); bottom:2px; left:0; width:0; border-radius:2px; transition:transform .25s ease,width .25s ease; box-shadow:0 0 0 6px var(--inkGlow)}
+    .ink-dot{position:absolute; bottom:7px; width:8px; height:8px; border-radius:50%; background:var(--ink); box-shadow:0 0 12px var(--ink); transform:translateX(0); transition:transform .25s ease}
+
+    .controls{display:flex; align-items:center; gap:8px}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); font-weight:700; cursor:pointer}
+    .btn:hover{background:var(--glass-strong)}
+
+    .hero{margin:14px auto 6px; padding:10px 0}
+    .hero h1{margin:0; font-size: clamp(28px,4.4vw,58px); letter-spacing:-.02em}
+    .hero p{color:var(--muted); margin:8px 0 0}
+    .ticker{margin-top:8px; overflow:hidden; mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)}
+    .ticker-row{display:flex; gap:28px; white-space:nowrap; animation:ticker 28s linear infinite}
+    .ticker span{opacity:.85}
+    @keyframes ticker{to{transform:translateX(-50%)}}
+
+    @property --fy { syntax:"<length>"; inherits:false; initial-value:0px }
+    @property --rx { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    @property --ry { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:18px}
+    .card{position:relative; overflow:hidden; padding:18px; border-radius:20px; isolation:isolate; background:var(--glass); border:1px solid var(--border); transform:translateY(var(--fy)) rotateY(var(--ry)) rotateX(var(--rx)); animation:float 9s ease-in-out infinite; text-decoration:none; color:inherit; transition:transform .15s ease}
+    @keyframes float{0%,100%{--fy:0px} 50%{--fy:-6px}}
+    .card .title{display:flex; align-items:center; gap:10px; font-weight:800; color:var(--card-text)}
+    .card .desc{color:var(--card-muted); margin-top:6px}
+    .card::before{content:""; position:absolute; inset:-1px; z-index:-2; border-radius:inherit; padding:1px; background: conic-gradient(from 220deg, rgba(255,255,255,.10), rgba(255,255,255,0) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,.10)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:.45; animation:borderSweep 6s linear infinite}
+    @keyframes borderSweep{to{transform:rotate(360deg)}}
+    .card::after{content:""; position:absolute; inset:-1px; z-index:-1; pointer-events:none; background:radial-gradient(160px 120px at calc(var(--px,.5)*100%) calc(var(--py,.5)*100%), rgba(255,255,255,.35), transparent 60%)}
+    .card .title>span:first-child{display:inline-block; animation:emoji-bounce 5s ease-in-out infinite}
+    @keyframes emoji-bounce{0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)}}
+    .emoji-bg{position:absolute; inset:auto 8px 8px auto; font-size:120px; line-height:1; opacity:.15; filter:blur(1px); pointer-events:none; user-select:none; z-index:0; animation:floatDecor 12s ease-in-out infinite}
+    @keyframes floatDecor{0%,100%{transform:translate(4px,2px) scale(1)} 50%{transform:translate(-6px,-4px) scale(1.04)}}
+
+    .v-kinematica{background:linear-gradient(180deg, rgba(196,181,253,.26), rgba(196,181,253,.14)), var(--glass)}
+    .v-movcir{background:linear-gradient(180deg, rgba(125,211,252,.26), rgba(125,211,252,.14)), var(--glass)}
+    .v-vectores{background:linear-gradient(180deg, rgba(74,222,128,.26), rgba(74,222,128,.14)), var(--glass)}
+    .v-newton{background:linear-gradient(180deg, rgba(251,146,60,.26), rgba(251,146,60,.14)), var(--glass)}
+    .v-energia{background:linear-gradient(180deg, rgba(234,179,8,.26), rgba(234,179,8,.14)), var(--glass)}
+    .v-impulso{background:linear-gradient(180deg, rgba(248,113,113,.26), rgba(248,113,113,.14)), var(--glass)}
+    .v-choques{background:linear-gradient(180deg, rgba(163,230,53,.26), rgba(163,230,53,.14)), var(--glass)}
+    .v-estatica{background:linear-gradient(180deg, rgba(99,102,241,.28), rgba(99,102,241,.16)), var(--glass)}
+    .v-gravitacion{background:linear-gradient(180deg, rgba(59,130,246,.26), rgba(59,130,246,.14)), var(--glass)}
+    .v-oscilaciones{background:linear-gradient(180deg, rgba(244,114,182,.26), rgba(244,114,182,.14)), var(--glass)}
+    .v-ondas{background:linear-gradient(180deg, rgba(56,189,248,.26), rgba(56,189,248,.14)), var(--glass)}
+    .v-hidros{background:linear-gradient(180deg, rgba(34,197,94,.26), rgba(34,197,94,.14)), var(--glass)}
+    .v-bernoulli{background:linear-gradient(180deg, rgba(15,118,110,.26), rgba(15,118,110,.14)), var(--glass)}
+    .v-termo1{background:linear-gradient(180deg, rgba(251,191,36,.26), rgba(251,191,36,.14)), var(--glass)}
+    .v-termo2{background:linear-gradient(180deg, rgba(217,119,6,.26), rgba(217,119,6,.14)), var(--glass)}
+    .v-optgeom{background:linear-gradient(180deg, rgba(2,132,199,.26), rgba(2,132,199,.14)), var(--glass)}
+    .v-optfis{background:linear-gradient(180deg, rgba(14,165,233,.26), rgba(14,165,233,.14)), var(--glass)}
+    .v-electricidad{background:linear-gradient(180deg, rgba(99,102,241,.28), rgba(99,102,241,.16)), var(--glass)}
+    .v-circuitos{background:linear-gradient(180deg, rgba(147,197,253,.26), rgba(147,197,253,.14)), var(--glass)}
+    .v-magnetismo{background:linear-gradient(180deg, rgba(52,211,153,.26), rgba(52,211,153,.14)), var(--glass)}
+
+    /* Branch selector bar */
+    .branchbar{margin:8px 0 0; display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .branch-chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; border:1px solid var(--border); background:var(--glass); color:var(--text); font-weight:700; text-decoration:none}
+    .branch-chip:hover{background:var(--glass-strong)}
+    .branch-select{margin-top:8px; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); font-weight:700}
+    @media (max-width:600px){ .branchbar{gap:6px} .branch-chip{padding:8px 10px; font-size:.95rem} }
+  </style>
+
+</head>
+<body>
+  <canvas id="bgParticles"></canvas>
+  <div class="bg-layer bg-planetado-aurora"></div>
+  <div class="bg-layer bg-planetado-grid"></div>
+  <div class="bg-layer bg-neon"></div>
+  <div class="bg-layer bg-aurora"></div>
+  <div class="bg-layer bg-hoja"></div>
+  <div class="bg-layer bg-plateado"></div>
+  <div class="bg-layer bg-mar"></div>
+
+  <header class="appbar-wrap">
+    <div class="appbar container panel">
+      <a href="index.html" class="brand" aria-label="Inicio">
+        <span class="logo" id="brandLogo" aria-hidden="true"><span class="core"></span></span>
+        <span class="txt">Innove</span>
+      </a>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Secciones">
+        <button class="pill" role="tab" aria-selected="true" data-tab="teoria" id="tab-teoria">Teoría</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="ejercicios" id="tab-ejercicios">Ejercicios</button>
+        <span class="ink" id="ink" aria-hidden="true"></span>
+        <span class="ink-dot" id="inkDot" aria-hidden="true"></span>
+      </div>
+      <div class="controls">
+        <button id="schemeToggle" class="btn" title="Oscuro/Claro" aria-pressed="true">🌙 Oscuro</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero container">
+    <h1>Ingeniería robótica</h1>
+    <p>Cinemática, control y SLAM.</p>
+    <div class="ticker" aria-hidden="true"><div class="ticker-row">
+      <span>T=∏ᵢA_i</span><span>ẋ=J(q) q̇</span><span>τ=M(q)q̈+C(q,q̇)q̇+g(q)</span><span>u=K_p e+K_d ė</span><span>ICP, RANSAC</span><span>A* vs D*</span>
+    </div></div>
+  </section>
+
+  <main class="container" id="content">
+    <section id="teoria" role="tabpanel" aria-labelledby="tab-teoria" data-active>
+      <h2>Teoría — 10 temas</h2>
+      <div class="grid">
+        <a class="card v-kinematica" href="teoria/cinematica-y-dinamica.html"><div class="title"><span style="font-size:1.6em">🦾</span><span>Cinemática y dinámica</span></div><p class="desc">DH, Jacobianos y dinámica.</p><span class="emoji-bg">🦾</span></a>
+        <a class="card v-movcir" href="teoria/planificacion-de-movimiento.html"><div class="title"><span style="font-size:1.6em">🗺️</span><span>Planificación de movimiento</span></div><p class="desc">RRT*, A* y trayectorias.</p><span class="emoji-bg">🗺️</span></a>
+        <a class="card v-vectores" href="teoria/control-de-robots.html"><div class="title"><span style="font-size:1.6em">🎛️</span><span>Control de robots</span></div><p class="desc">PD, PID, computed torque.</p><span class="emoji-bg">🎛️</span></a>
+        <a class="card v-newton" href="teoria/percepcion-y-vision.html"><div class="title"><span style="font-size:1.6em">👁️</span><span>Percepción y visión</span></div><p class="desc">Cámaras y 3D.</p><span class="emoji-bg">👁️</span></a>
+        <a class="card v-energia" href="teoria/localizacion-y-slam.html"><div class="title"><span style="font-size:1.6em">🧭</span><span>Localización y SLAM</span></div><p class="desc">EKF/Graph-SLAM.</p><span class="emoji-bg">🧭</span></a>
+        <a class="card v-impulso" href="teoria/manipulacion.html"><div class="title"><span style="font-size:1.6em">✋</span><span>Manipulación</span></div><p class="desc">Pinzas, contacto y fuerzas.</p><span class="emoji-bg">✋</span></a>
+        <a class="card v-choques" href="teoria/robotica-movil.html"><div class="title"><span style="font-size:1.6em">🚗</span><span>Robótica móvil</span></div><p class="desc">Bases y navegación.</p><span class="emoji-bg">🚗</span></a>
+        <a class="card v-estatica" href="teoria/aprendizaje-en-robotica.html"><div class="title"><span style="font-size:1.6em">🧠</span><span>Aprendizaje en robótica</span></div><p class="desc">RL e IMU learning.</p><span class="emoji-bg">🧠</span></a>
+        <a class="card v-gravitacion" href="teoria/ros-ros2.html"><div class="title"><span style="font-size:1.6em">🧰</span><span>ROS/ROS2</span></div><p class="desc">Nodos, topics y launch.</p><span class="emoji-bg">🧰</span></a>
+        <a class="card v-oscilaciones" href="teoria/actuadores-y-sensores.html"><div class="title"><span style="font-size:1.6em">🔌</span><span>Actuadores y sensores</span></div><p class="desc">Motores, drivers y feedback.</p><span class="emoji-bg">🔌</span></a>
+      </div>
+    </section>
+    <section id="ejercicios" role="tabpanel" aria-labelledby="tab-ejercicios" hidden>
+      <h2>Ejercicios</h2>
+      <div class="grid">
+        <a class="card v-kinematica" href="ejercicios/cinematica.html"><div class="title"><span style="font-size:1.6em">🦾</span><span>Cinemática</span></div><p class="desc">Inversa y Jacobianos.</p><span class="emoji-bg">🦾</span></a>
+        <a class="card v-movcir" href="ejercicios/control.html"><div class="title"><span style="font-size:1.6em">🎛️</span><span>Control</span></div><p class="desc">Seguimiento y rechazo.</p><span class="emoji-bg">🎛️</span></a>
+        <a class="card v-vectores" href="ejercicios/vision.html"><div class="title"><span style="font-size:1.6em">👁️</span><span>Visión</span></div><p class="desc">Calibración y detección.</p><span class="emoji-bg">👁️</span></a>
+        <a class="card v-newton" href="ejercicios/slam.html"><div class="title"><span style="font-size:1.6em">🧭</span><span>SLAM</span></div><p class="desc">Mapeado y loop closure.</p><span class="emoji-bg">🧭</span></a>
+        <a class="card v-energia" href="ejercicios/movil.html"><div class="title"><span style="font-size:1.6em">🚗</span><span>Móvil</span></div><p class="desc">Planificación y obstáculos.</p><span class="emoji-bg">🚗</span></a>
+      </div>
+    </section>
+  </main>
+  
+  
+  <script>
+    const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+    // Scheme (dark/light)
+    const schemeBtn = document.getElementById('schemeToggle');
+    function setScheme(mode){document.documentElement.setAttribute('data-scheme',mode);localStorage.setItem('innove-scheme',mode);schemeBtn.textContent=(mode==='dark')?'🌙 Oscuro':'☀️ Claro';schemeBtn.setAttribute('aria-pressed', String(mode==='dark'));}
+    setScheme(localStorage.getItem('innove-scheme') || (matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+    schemeBtn.addEventListener('click',()=>setScheme(document.documentElement.getAttribute('data-scheme')==='dark'?'light':'dark'));
+
+    // Tabs + ink
+    const tabs=$('#tabs'), ink=$('#ink'), dot=$('#inkDot'); const sections={teoria:$('#teoria'), ejercicios:$('#ejercicios')};
+    function positionInk(btn){const c=tabs.getBoundingClientRect(), b=btn.getBoundingClientRect(); const left=b.left-c.left+tabs.scrollLeft+4; ink.style.width=(b.width-8)+'px'; ink.style.transform=`translateX(${left}px)`; dot.style.transform=`translateX(${left+(b.width-8)-4}px)`;}
+    function showTab(name){Object.keys(sections).forEach(k=>{const s=sections[k]; const a=(k===name); s.hidden=!a; a?s.setAttribute('data-active',''):s.removeAttribute('data-active')}); $$('.pill').forEach(p=>p.setAttribute('aria-selected', String(p.dataset.tab===name))); const btn=tabs.querySelector(`.pill[data-tab="${name}"]`); if(btn){btn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'}); positionInk(btn);} history.replaceState(null,'',`?tab=${encodeURIComponent(name)}`);}
+    $$('.pill').forEach(p=>p.addEventListener('click',()=>showTab(p.dataset.tab))); const initTab=new URLSearchParams(location.search).get('tab'); const firstBtn=$('.pill[data-tab="teoria"]'); positionInk(initTab && sections[initTab]?tabs.querySelector(`.pill[data-tab="${initTab}"]`)||firstBtn:firstBtn); showTab(initTab && sections[initTab]?initTab:'teoria'); addEventListener('resize',()=>positionInk($('.pill[aria-selected="true"]')||firstBtn)); tabs.addEventListener('scroll',()=>positionInk($('.pill[aria-selected="true"]')||firstBtn));
+
+    // Emoji background dup
+    (function(){$$('.card').forEach(c=>{ if(c.querySelector('.emoji-bg')) return; const e=c.querySelector('.title > span:first-child'); if(!e) return; const bg=document.createElement('span'); bg.className='emoji-bg'; bg.textContent=e.textContent.trim(); c.appendChild(bg);});})();
+
+    // Card tilt + white glow that follows cursor (fix)
+    $$('.card').forEach(card=>{
+      let rect;
+      card.addEventListener('pointermove',e=>{
+        rect=rect||card.getBoundingClientRect();
+        const x=(e.clientX-rect.left)/rect.width - .5, y=(e.clientY-rect.top)/rect.height - .5;
+        card.style.setProperty('--ry',(x*10)+'deg');
+        card.style.setProperty('--rx',(-y*10)+'deg');
+        card.style.setProperty('--px',(x+.5).toFixed(3));
+        card.style.setProperty('--py',(y+.5).toFixed(3));
+      });
+      card.addEventListener('pointerleave',()=>{
+        rect=null; card.style.removeProperty('--ry'); card.style.removeProperty('--rx'); card.style.removeProperty('--px'); card.style.removeProperty('--py');
+      });
+    });
+
+    // Particles
+    const canvas=document.getElementById('bgParticles'), ctx=canvas.getContext('2d'); let W=0,H=0,DPR=Math.min(devicePixelRatio||1,2),particles=[],mouse={x:-9999,y:-9999}; const PA={planetado:['#7dd3fc','#c4b5fd','#34d399']};
+    function resize(){W=canvas.width=Math.floor(innerWidth*DPR);H=canvas.height=Math.floor(innerHeight*DPR);canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';spawn();}
+    function rnd(a,b){return a+Math.random()*(b-a)}
+    function spawn(){const n=Math.floor(Math.min(140,70+(innerWidth*innerHeight)/50000)); particles=[]; for(let i=0;i<n;i++){const c=PA.planetado[i%3]; particles.push({x:rnd(0,W),y:rnd(0,H),vx:rnd(-0.08,0.08)*DPR,vy:rnd(-0.08,0.08)*DPR,r:rnd(0.7,2.2)*DPR,c,a:rnd(0.35,0.8)})}}
+    function toRGBA(hex,a){const h=hex.slice(1);return `rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`}
+    let raf; function loop(){ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lighter'; for(const p of particles){const dx=mouse.x-p.x,dy=mouse.y-p.y,d2=dx*dx+dy*dy; if(d2< (120*DPR)*(120*DPR)){p.vx-=dx*0.000003; p.vy-=dy*0.000003;} p.x+=p.vx; p.y+=p.vy; if(p.x<-10)p.x=W+10; else if(p.x>W+10)p.x=-10; if(p.y<-10)p.y=H+10; else if(p.y>H+10)p.y=-10; ctx.beginPath(); ctx.fillStyle=toRGBA(p.c,p.a); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); } ctx.globalCompositeOperation='source-over'; raf=requestAnimationFrame(loop);}
+    const pr=matchMedia('(prefers-reduced-motion: reduce)'); function start(){cancelAnimationFrame(raf); resize(); loop();}
+    if(!pr.matches) start(); pr.addEventListener?.('change',e=>{ if(e.matches){cancelAnimationFrame(raf); ctx.clearRect(0,0,W,H);} else start(); });
+    addEventListener('resize', ()=>{ if(!pr.matches) resize(); }, {passive:true}); addEventListener('pointermove', e=>{mouse.x=e.clientX*DPR; mouse.y=e.clientY*DPR;}); addEventListener('pointerleave', ()=>{mouse.x=-9999; mouse.y=-9999;});
+  </script>
+
+</body>
+</html>
