@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/png" href="innoveAI.png"
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Currículum — Innove</title>
+  <meta name="description" content="CV online serio y moderno. Estudiante peruano (18) rumbo a UPC Terrassa — Ingeniería Química. Programación, innovación educativa, arte, 3D y edición de video." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --ink: #0f172a;         /* gris azulado profundo */
+      --muted: #475569;       /* gris intermedio */
+      --line: #e2e8f0;        /* bordes suaves */
+      --accent: #2563eb;      /* azul profesional */
+      --accent-2: #0ea5e9;    /* cian sutil */
+      --radius: 16px;
+      --shadow: 0 8px 24px rgba(2, 6, 23, .06);
+      --maxw: 1040px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0b1220; --card:#0e1526; --ink:#e6edf7; --muted:#9fb0c8; --line:#1f2a44; --shadow:0 10px 26px rgba(0,0,0,.45) }
+      .head::after{ opacity:.18 }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased}
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:28px 18px 60px}
+
+    /* Header serio con detalles sutiles */
+    .head{position:relative; background:var(--card); border:1px solid var(--line); border-radius:24px; padding:28px; box-shadow:var(--shadow);}
+    .head::after{content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none; background:
+      radial-gradient(1200px 240px at 40% 0%, color-mix(in oklab, var(--accent) 20%, transparent), transparent),
+      linear-gradient(180deg, rgba(37,99,235,.06), transparent 35%);
+      z-index:0; opacity:.12}
+    .head-inner{position:relative; z-index:1; display:grid; grid-template-columns: 1fr auto; gap:20px; align-items:center}
+    .name{font-family:Merriweather, Georgia, serif; font-weight:700; font-size:clamp(28px, 4.2vw, 40px); letter-spacing:.2px; margin:0}
+    .role{margin:6px 0 0; color:var(--muted)}
+    .tags{margin-top:12px; display:flex; gap:8px; flex-wrap:wrap}
+    .chip{border:1px solid var(--line); border-radius:999px; padding:6px 10px; font-size:13px; color:var(--muted); background:linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.6));}
+    @media (prefers-color-scheme: dark){ .chip{ background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)) } }
+
+    .btn{display:inline-flex; align-items:center; gap:8px; border-radius:12px; padding:10px 14px; font-weight:700; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow)}
+    .btn:hover{transform:translateY(-1px)}
+
+    /* Layout principal */
+    .grid{display:grid; grid-template-columns: 1.1fr 0.9fr; gap:18px; margin-top:18px}
+    @media (max-width: 900px){ .grid{ grid-template-columns:1fr } }
+    .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow)}
+    .card h2{margin:0 0 14px; font-size:18px; letter-spacing:.2px}
+    .muted{color:var(--muted)}
+
+    /* Línea de tiempo */
+    .timeline{position:relative; padding-left:18px; border-left:2px solid var(--line)}
+    .tl-item{position:relative; margin:0 0 14px 0}
+    .tl-item::before{content:""; position:absolute; left:-10px; top:.35em; width:10px; height:10px; border-radius:999px; background:var(--accent)}
+    .tl-title{font-weight:700}
+    .tl-meta{font-size:13px; color:var(--muted)}
+
+    /* Lista de skills */
+    .skills{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
+    @media (max-width: 600px){ .skills{ grid-template-columns:1fr } }
+    .skill{display:flex; align-items:center; justify-content:space-between; border:1px solid var(--line); border-radius:12px; padding:10px 12px}
+    .pill{font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+
+    /* Proyectos */
+    .project{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:start; border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:10px}
+    .project strong{display:block; margin-bottom:6px}
+
+    /* Intereses */
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+
+    /* Footer */
+    footer{margin:22px 0 0; color:var(--muted); text-align:center}
+
+    /* Print / PDF friendly */
+    @media print{
+      body{background:#fff}
+      .btn{display:none}
+      .wrap{padding:0}
+      .head, .card{box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap" aria-labelledby="nombre">
+    <header class="head" role="banner">
+      <div class="head-inner">
+        <div>
+          <h1 id="nombre" class="name">Innove — Portafolio / CV</h1>
+          <p class="role">Estudiante peruano (18) · UPC — Campus Terrassa · Ingeniería Química</p>
+          <div class="tags" aria-label="etiquetas">
+            <span class="chip">Programación</span>
+            <span class="chip">Innovación educativa</span>
+            <span class="chip">Arte & 3D</span>
+            <span class="chip">Edición de video</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end">
+          <a class="btn" href="#contacto" aria-label="Ir a contacto">Contacto</a>
+          <a class="btn" href="cv.pdf" download aria-label="Descargar CV en PDF">Descargar PDF</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="contenido principal">
+      <!-- Columna izquierda -->
+      <section class="card" aria-labelledby="sobre">
+        <h2 id="sobre">Sobre mí</h2>
+        <p class="muted">Soy un estudiante peruano de 18 años que iniciará Ingeniería Química en la UPC (Terrassa). Me interesa unir la ciencia con el software para construir herramientas que mejoren el aprendizaje y creen nuevas experiencias de entretenimiento. Este enfoque lo llamo <strong>INNOVE</strong>.</p>
+        <div class="chips" style="margin-top:10px">
+          <span class="pill">⚗️ Ingeniería Química</span>
+          <span class="pill">💻 Desarrollo web</span>
+          <span class="pill">🧠 IA (en progreso)</span>
+          <span class="pill">🎬 Video & Motion</span>
+          <span class="pill">🎨 Dibujo & 3D</span>
+        </div>
+      </section>
+
+      <aside class="card" aria-labelledby="datos">
+        <h2 id="datos">Datos rápidos</h2>
+        <ul class="muted" style="margin:0; padding-left:18px; line-height:1.7">
+          <li>Nacionalidad: Peruano</li>
+          <li>Edad: 18</li>
+          <li>Ciudad destino: Terrassa (UPC)</li>
+          <li>Idiomas: Español (nativo) · (añade otros)</li>
+          <li>Email: <em>(añadir)</em></li>
+        </ul>
+      </aside>
+
+      <!-- Columna izquierda -->
+      <section class="card" aria-labelledby="educ">
+        <h2 id="educ">Educación & Objetivo</h2>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-title">UPC — Universitat Politècnica de Catalunya (Campus Terrassa)</div>
+            <div class="tl-meta">Ingeniería Química · Inicio: 2025</div>
+            <p class="muted">Objetivo: integrar programación y química para crear simuladores, apps educativas y herramientas con IA.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="skills">
+        <h2 id="skills">Habilidades</h2>
+        <div class="skills">
+          <div class="skill"><span>HTML · CSS · JavaScript</span><span class="pill">Intermedio</span></div>
+          <div class="skill"><span>Python</span><span class="pill">Básico–Intermedio</span></div>
+          <div class="skill"><span>IA / Algoritmos</span><span class="pill">En progreso</span></div>
+          <div class="skill"><span>Edición de video</span><span class="pill">Intermedio</span></div>
+          <div class="skill"><span>Arte digital / 3D (Blender)</span><span class="pill">Intermedio</span></div>
+          <div class="skill"><span>Comunicación / Trabajo en equipo</span><span class="pill">Fuerte</span></div>
+        </div>
+      </section>
+
+      <!-- Columna izquierda -->
+      <section class="card" aria-labelledby="proy">
+        <h2 id="proy">Proyectos</h2>
+        <article class="project" aria-label="Innove">
+          <div>
+            <strong>INNOVE — Laboratorio de aprendizaje</strong>
+            <p class="muted">Plataforma propia para crear apps educativas (IA), minijuegos STEM y piezas audiovisuales. Meta: un MVP público con simuladores de química básica y quizzes inteligentes.</p>
+          </div>
+          <div><a class="btn" href="#" aria-disabled="true" title="Demo próximamente">Ver demo</a></div>
+        </article>
+        <article class="project">
+          <div>
+            <strong>Portafolio audiovisual</strong>
+            <p class="muted">Edición de video, motion básico y animación 3D (clips y renders). Próximamente galería pública.</p>
+          </div>
+          <div><a class="btn" href="#" aria-disabled="true">Ver clips</a></div>
+        </article>
+      </section>
+
+      <section class="card" aria-labelledby="intereses">
+        <h2 id="intereses">Intereses</h2>
+        <div class="chips">
+          <span class="pill">🏋️‍♂️ Gym</span>
+          <span class="pill">🥊 Boxeo</span>
+          <span class="pill">🏃 Atletismo</span>
+          <span class="pill">🏆 Powerlifting</span>
+          <span class="pill">✏️ Dibujo</span>
+          <span class="pill">🎨 Arte</span>
+          <span class="pill">🧊 Animación 3D</span>
+          <span class="pill">🎬 Grabación & Edición</span>
+        </div>
+      </section>
+
+      <section id="contacto" class="card" aria-labelledby="contact">
+        <h2 id="contact">Contacto & Redes</h2>
+        <p class="muted">Agrega tus enlaces cuando los tengas. Los botones están listos para pegar URL.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <a class="btn" href="#" title="YouTube (añadir)" aria-label="YouTube">YouTube</a>
+          <a class="btn" href="#" title="TikTok (añadir)" aria-label="TikTok">TikTok</a>
+          <a class="btn" href="#" title="Instagram (añadir)" aria-label="Instagram">Instagram</a>
+          <a class="btn" href="#" title="LinkedIn (añadir)" aria-label="LinkedIn">LinkedIn</a>
+          <a class="btn" href="#" title="Sitio web (añadir)" aria-label="Sitio web">Sitio</a>
+          <a class="btn" href="cv.pdf" download aria-label="Descargar CV en PDF">Descargar PDF</a>
+        </div>
+      </section>
+    </section>
+
+    <footer>
+      <p>© 2025 · Innove — Currículum online. Estilo serio, limpio y moderno.</p>
+    </footer>
+  </main>
+</body>
+</html>
+
