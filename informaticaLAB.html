@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InformáticaLab — 45+ temas y 5 lenguajes básicos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0e16; --panel:rgba(255,255,255,.06); --text:#eaf1ff; --muted:#9db0d7;
+      --b:#1f2a44; --acc:#14b8a6; --acc2:#4f46e5; --radius:10px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
+    a{color:var(--acc)}
+    .wrap{max-width:1250px; margin:0 auto; padding:24px}
+    .panel{background:var(--panel); border:1px solid #203051; border-radius:var(--radius); padding:16px; backdrop-filter: blur(10px)}
+    header.panel{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand{font-weight:800; letter-spacing:.4px}
+    .hint{color:var(--muted); font-size:13px}
+    .btn{padding:9px 12px; border:1px solid #203051; background:rgba(255,255,255,.04); border-radius:8px; color:inherit; cursor:pointer}
+    .btn:hover{filter:brightness(1.1)}
+    input, select, textarea{width:100%; padding:10px 12px; border-radius:8px; border:1px solid #203051; background:rgba(255,255,255,.05); color:inherit}
+    .grid{display:grid; gap:14px}
+    .g12{grid-template-columns: 1fr 1fr}
+    @media (max-width: 900px){ .g12{grid-template-columns:1fr} }
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid #203051}
+    .tab{padding:10px 12px; background:transparent; border:none; color:var(--muted); font-weight:700; cursor:pointer; position:relative}
+    .tab.active{color:#fff}
+    .tab.active::after{content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:linear-gradient(90deg,var(--acc),var(--acc2))}
+    .view{display:none}
+    .view.active{display:block}
+
+    /* Topic list */
+    .topic{border:1px solid #203051; border-radius:10px; padding:12px; background:rgba(0,0,0,.18)}
+    .topic h4{margin:0 0 6px 0}
+    .topic small{color:var(--muted)}
+
+    /* Code blocks */
+    pre{background:rgba(0,0,0,.25); border:1px solid #203051; border-radius:8px; padding:10px; overflow:auto}
+    code{font-family:"Roboto Mono",ui-monospace,Menlo,Monaco,Consolas,monospace; font-size:.95em}
+    .runbar{display:flex; gap:8px; align-items:center; margin:8px 0}
+
+    /* Playground */
+    .split{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    @media (max-width: 900px){ .split{grid-template-columns:1fr} }
+    iframe{width:100%; height:320px; border:1px solid #203051; border-radius:8px; background:#0b1120}
+
+    /* Widgets */
+    .widget{border:1px solid #203051; border-radius:10px; padding:12px; background:rgba(255,255,255,.04)}
+    .result{padding:10px; background:rgba(255,255,255,.06); border:1px solid #203051; border-radius:8px; min-height:40px; font-family:"Roboto Mono",monospace}
+
+    .footer{color:#95a4c7; text-align:center; margin-top:18px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="panel">
+      <div>
+        <div class="brand">💻 InformáticaLab</div>
+        <div class="hint">45+ temas • 5 lenguajes básicos • HTML puro (CSS/JS embebidos)</div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center">
+        <input id="search" placeholder="Buscar tema (por nombre o palabra clave)…" style="width:280px">
+        <button class="btn" id="compact">Modo compacto</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-id="t-intro">Inicio</button>
+        <button class="tab" data-id="t-topics">Temas (45+)</button>
+        <button class="tab" data-id="t-demos">Demos interactivas</button>
+        <button class="tab" data-id="t-langs">Lenguajes (5)</button>
+        <button class="tab" data-id="t-gloss">Glosario</button>
+      </div>
+
+      <!-- Intro -->
+      <div id="t-intro" class="view active">
+        <div class="grid g12">
+          <div class="widget">
+            <h3>Qué es esto</h3>
+            <p>Un mini-laboratorio web de <b>informática</b> con más de 40 temas breves y 5 lenguajes base. Todo corre en tu navegador, sin librerías externas.</p>
+            <ul>
+              <li>Filtra temas con la búsqueda de arriba.</li>
+              <li>Prueba las <b>demos</b>: convertidor binario/hex, visualizador de ordenamiento, tester de regex, sandbox JS, y más.</li>
+              <li>Explora los <b>lenguajes</b>: JavaScript, Python, C, Java y SQL (sintaxis esencial y ejemplos).</li>
+            </ul>
+          </div>
+          <div class="widget">
+            <h3>Progreso</h3>
+            <p class="hint">Marca un tema como visto para llevar registro. Se guarda en tu navegador.</p>
+            <div class="result" id="progressBox">0 / 45 completados</div>
+            <div style="margin-top:8px"><button class="btn" id="resetProg">Reiniciar progreso</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topics -->
+      <div id="t-topics" class="view">
+        <div id="topics" class="grid g12"></div>
+      </div>
+
+      <!-- Demos -->
+      <div id="t-demos" class="view">
+        <div class="grid g12">
+          <div class="widget">
+            <h4>1) Conversor binario/decimal/hex</h4>
+            <div class="grid g12">
+              <input id="numIn" placeholder="Número (ej: 42 o 0x2A o 0b101010)">
+              <select id="baseSel"><option value="auto">auto</option><option value="10">dec</option><option value="2">bin</option><option value="16">hex</option></select>
+            </div>
+            <button class="btn" id="convBtn">Convertir</button>
+            <div class="result" id="convOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>2) Subnet mini (IPv4 CIDR)</h4>
+            <div class="grid g12">
+              <input id="cidr" value="192.168.1.0/24">
+              <button class="btn" id="cidrBtn">Calcular</button>
+            </div>
+            <div class="result" id="cidrOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>3) Visualizador de ordenamiento</h4>
+            <div class="grid g12">
+              <input id="arr" value="5,1,4,2,8,3,7">
+              <select id="alg"><option>Bubble</option><option>Selection</option><option>Insertion</option></select>
+            </div>
+            <button class="btn" id="sortBtn">Ordenar</button>
+            <div class="result" id="sortOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>4) Tester de RegEx</h4>
+            <input id="re" value="^\\w+@\\w+\\.\\w+$">
+            <input id="reStr" value="usuario@mail.com">
+            <button class="btn" id="reBtn">Probar</button>
+            <div class="result" id="reOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>5) Hash rápido (SHA-256)</h4>
+            <input id="hashStr" value="hola mundo">
+            <button class="btn" id="hashBtn">Hashear</button>
+            <div class="result" id="hashOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>6) Codificador Base64</h4>
+            <input id="b64Str" value="texto de prueba">
+            <button class="btn" id="b64Enc">Codificar</button>
+            <button class="btn" id="b64Dec">Decodificar</button>
+            <div class="result" id="b64Out"></div>
+          </div>
+
+          <div class="widget">
+            <h4>7) JSON validador</h4>
+            <textarea id="jsonTxt" rows="6">{"ok": true, "x": [1,2,3]}</textarea>
+            <button class="btn" id="jsonBtn">Validar</button>
+            <div class="result" id="jsonOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>8) Mini SQL en arrays</h4>
+            <textarea id="sqlData" rows="4">id,name,age\n1,Ana,22\n2,Luis,31\n3,Maria,19</textarea>
+            <input id="sqlQuery" value="SELECT name,age WHERE age >= 21 ORDER BY age DESC">
+            <button class="btn" id="sqlBtn">Ejecutar</button>
+            <div class="result" id="sqlOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>9) Sandbox JS</h4>
+            <div class="split">
+              <div>
+                <div class="runbar">
+                  <button class="btn" id="runJs">▶ Ejecutar</button>
+                  <button class="btn" id="clearJs">Limpiar</button>
+                </div>
+<textarea id="jsCode" rows="12">// Escribe JS. console.log aparece a la derecha
+function fib(n){ return n<=1?n:fib(n-1)+fib(n-2); }
+console.log('fib(10)=', fib(10));
+</textarea>
+              </div>
+              <iframe id="jsOut"></iframe>
+            </div>
+          </div>
+
+          <div class="widget">
+            <h4>10) Cronómetro y event loop</h4>
+            <button class="btn" id="loopBtn">Iniciar demo</button>
+            <div class="result" id="loopOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>11) Compresor simple (RLE)</h4>
+            <input id="rleStr" value="aaabbbbcccccc">
+            <button class="btn" id="rleEnc">Comprimir</button>
+            <button class="btn" id="rleDec">Descomprimir</button>
+            <div class="result" id="rleOut"></div>
+          </div>
+
+          <div class="widget">
+            <h4>12) Árbol binario (BST)</h4>
+            <input id="bstArr" value="7,3,9,1,5,8,10">
+            <button class="btn" id="bstBtn">Construir y recorrer</button>
+            <div class="result" id="bstOut"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div id="t-langs" class="view">
+        <div class="grid g12">
+          <div class="widget">
+            <h3>JavaScript</h3>
+            <small>Tipado dinámico • prototipos • DOM • asincronía (promesas/async)</small>
+<pre><code>// Variables y funciones
+let x = 3; const y = 4;
+function suma(a,b){ return a+b; }
+console.log(suma(x,y));
+
+// Async/await
+async function getData(){
+  return await (await fetch('data.json')).json();
+}
+</code></pre>
+          </div>
+
+          <div class="widget">
+            <h3>Python</h3>
+            <small>Lectible • tipado dinámico • gran ecosistema</small>
+<pre><code># Listas y diccionarios
+nums = [1,2,3]
+cuadrados = [n*n for n in nums]
+info = {"nombre": "Ana", "edad": 23}
+
+# Funciones y clases
+def saluda(n):
+    return f"Hola {n}"
+
+class Punto:
+    def __init__(self,x,y):
+        self.x,self.y = x,y
+</code></pre>
+          </div>
+
+          <div class="widget">
+            <h3>C</h3>
+            <small>Lenguaje de sistemas • punteros • control manual de memoria</small>
+<pre><code>#include &lt;stdio.h&gt;
+int main(){
+  int n = 5; int s = 0;
+  for(int i=1;i<=n;i++){ s+=i; }
+  printf("suma=%d\n", s);
+  return 0;
+}
+</code></pre>
+          </div>
+
+          <div class="widget">
+            <h3>Java</h3>
+            <small>OOP fuerte • JVM • ecosistema empresarial</small>
+<pre><code>public class Hola{
+  public static void main(String[]args){
+    System.out.println("Hola Java");
+  }
+}
+</code></pre>
+          </div>
+
+          <div class="widget">
+            <h3>SQL</h3>
+            <small>Consulta de bases de datos relacionales</small>
+<pre><code>-- Selección con filtro y orden
+SELECT nombre, edad
+FROM personas
+WHERE edad &gt;= 21
+ORDER BY edad DESC;
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Glossary -->
+      <div id="t-gloss" class="view">
+        <div class="grid g12" id="gloss"></div>
+      </div>
+
+    </section>
+
+    <p class="footer">InformáticaLab © 2025 · Hecho con HTML (CSS/JS embebidos).</p>
+  </div>
+
+<script>
+// ======= Datos de temas (45+) =======
+const TOPICS = [
+  {id:1,  name:'Arquitectura de computadoras', key:'cpu alu registros pipeline caché'},
+  {id:2,  name:'Sistemas operativos: procesos e hilos', key:'scheduler kernel concurrencia'},
+  {id:3,  name:'Memoria: RAM, virtual y paginación', key:'mmu swap tlb'},
+  {id:4,  name:'File systems y E/S', key:'inode journaling fs'},
+  {id:5,  name:'Redes: modelo TCP/IP', key:'ip tcp udp osi'},
+  {id:6,  name:'HTTP, HTTPS y DNS', key:'web tls ssl http2 http3'},
+  {id:7,  name:'Direccionamiento IPv4/IPv6 y subredes', key:'cidr netmask routing'},
+  {id:8,  name:'Criptografía básica', key:'hash sha aes rsa clave pública'},
+  {id:9,  name:'Ciberseguridad y OWASP Top 10', key:'xss sqli csrf auth'},
+  {id:10, name:'Algoritmos y complejidad', key:'big-o notación'},
+  {id:11, name:'Estructuras de datos', key:'lista pila cola árbol grafo heap'},
+  {id:12, name:'Algoritmos de ordenamiento', key:'bubble quick merge selection insertion'},
+  {id:13, name:'Búsqueda y grafos', key:'bfs dfs dijkstra a*'},
+  {id:14, name:'Bases de datos relacionales', key:'sql normalización joins'},
+  {id:15, name:'Bases NoSQL', key:'documentos clave-valor columna grafos'},
+  {id:16, name:'Diseño de APIs REST', key:'http json recursos verbs'},
+  {id:17, name:'GraphQL y APIs modernas', key:'resolvers esquema'},
+  {id:18, name:'Microservicios', key:'comunicación resiliencia circuit breaker'},
+  {id:19, name:'DevOps y CI/CD', key:'pipeline build test deploy'},
+  {id:20, name:'Contenedores (Docker)', key:'imagen contenedor registry'},
+  {id:21, name:'Orquestación (Kubernetes)', key:'pods services deployments'},
+  {id:22, name:'Cloud computing', key:'iaas paas saas serverless'},
+  {id:23, name:'Infra como código', key:'terraform ansible'},
+  {id:24, name:'Control de versiones (Git)', key:'commit branch merge rebase'},
+  {id:25, name:'Testing (unitario/integración)', key:'tdd mocks cobertura'},
+  {id:26, name:'Patrones de diseño', key:'factory singleton observer'},
+  {id:27, name:'Paradigmas de programación', key:'imperativo funcional oop'},
+  {id:28, name:'UML básica', key:'diagrama clases secuencia'},
+  {id:29, name:'UX/UI y accesibilidad', key:'a11y wcag diseño interfaces'},
+  {id:30, name:'HTML y CSS esenciales', key:'semántica responsive flex grid'},
+  {id:31, name:'JavaScript en el navegador', key:'dom eventos fetch'},
+  {id:32, name:'CLI y shell (Bash)', key:'pipes redirecciones grep sed awk'},
+  {id:33, name:'Expresiones regulares', key:'regex quantifiers grupos'},
+  {id:34, name:'Automatización y scripts', key:'tareas cron make'},
+  {id:35, name:'Compiladores e intérpretes', key:'tokens ast bytecode'},
+  {id:36, name:'Paralelismo y concurrencia', key:'locks colas atomics race'},
+  {id:37, name:'Sistemas distribuidos', key:'consistencia partición consenso'},
+  {id:38, name:'Big Data y flujos', key:'mapreduce streaming kafka'},
+  {id:39, name:'Ciencia de datos', key:'pandas numpy visualización'},
+  {id:40, name:'Aprendizaje automático', key:'supervisado redes overfitting'},
+  {id:41, name:'Ética y privacidad', key:'rgpd sesgos'},
+  {id:42, name:'Seguridad de redes', key:'vpn firewall ids ips'},
+  {id:43, name:'Seguridad web', key:'csp cors csrf headers'},
+  {id:44, name:'Móvil y apps', key:'android ios nativo híbrido'},
+  {id:45, name:'IoT y embebidos', key:'microcontroladores mqtt sensores'}
+];
+
+// Resumen para glosario (12 términos)
+const GLOSS = [
+  ['Algoritmo','Secuencia finita de pasos para resolver un problema.'],
+  ['Big-O','Cota asintótica del crecimiento del costo de un algoritmo.'],
+  ['API','Interfaz para que sistemas se comuniquen.'],
+  ['Contenedor','Paquete ligero con binarios/dep para ejecutar una app.'],
+  ['Hash','Función unidireccional que mapea datos a un resumen.'],
+  ['Clave pública','Esquema criptográfico con par pública/privada.'],
+  ['Transacción','Unidad atómica de trabajo en BD.'],
+  ['Normalización','Proceso de diseño para reducir redundancia en BD.'],
+  ['Proceso','Programa en ejecución con espacio de memoria.'],
+  ['Hilo','Unidad de ejecución dentro de un proceso.'],
+  ['TLS','Protocolo criptográfico que asegura HTTP (HTTPS).'],
+  ['CIDR','Notación de prefijo para redes IP.']
+];
+
+// Render de temas
+const topicsEl = document.getElementById('topics');
+const progressBox = document.getElementById('progressBox');
+function loadProgress(){ try{ return JSON.parse(localStorage.getItem('infLabProg')||'{}'); }catch{ return {}; } }
+function saveProgress(p){ localStorage.setItem('infLabProg', JSON.stringify(p)); }
+let PROG = loadProgress();
+
+function updateProgress(){ const total=TOPICS.length; const done=Object.values(PROG).filter(Boolean).length; progressBox.textContent = `${done} / ${total} completados`; }
+
+function renderTopics(filter=''){
+  topicsEl.innerHTML='';
+  const q = filter.trim().toLowerCase();
+  TOPICS.filter(t => !q || t.name.toLowerCase().includes(q) || t.key.includes(q)).forEach(t=>{
+    const d=document.createElement('div'); d.className='topic';
+    d.innerHTML = `<h4>${t.id}. ${t.name}</h4>
+      <small>${t.key}</small>
+      <p style="margin:8px 0">${brief(t)}</p>
+      <label style="display:flex; gap:8px; align-items:center"><input type="checkbox" ${PROG[t.id]? 'checked':''} data-id="${t.id}"> Marcar como visto</label>`;
+    topicsEl.appendChild(d);
+  });
+}
+
+function brief(t){
+  const map = {
+    1:'CPU, ALU, registros y jerarquía de memorias. Cómo se ejecutan instrucciones.',
+    2:'Estados de proceso, planificación, context switching y sincronización.',
+    3:'Páginas, marcos, TLB y fallos de página. Espacio virtual.',
+    4:'Directorios, inodos, buffers, journaling y cachés.',
+    5:'Capas IP/TCP/UDP, puertos, sockets y enrutamiento básico.',
+    6:'Ciclo peticiones, TLS/handshake, certificados y HTTP/2-3.',
+    7:'Cálculo de rangos, máscaras y prefijos. Subneteo.',
+    8:'Hash vs cifrado simétrico/asimétrico, firmas y HMAC.',
+    9:'Riesgos comunes y mitigaciones (validación, sanitización, tokens).',
+    10:'Análisis de complejidad temporal/espacial y recursión.',
+    11:'Cuándo usar arrays, listas, pilas/colas, árboles, grafos, hash maps.',
+    12:'Comparación de ordenamientos y su complejidad.',
+    13:'Recorridos BFS/DFS y rutas más cortas.',
+    14:'Modelo relacional, claves, ACID y SQL básico.',
+    15:'Modelos documento/columna/grafo y casos de uso.',
+    16:'Diseño de recursos, status codes, idempotencia.',
+    17:'Consultas tipadas, resolvers y composición.',
+    18:'Desacoplo, comunicación y observabilidad.',
+    19:'Pipelines automatizados: build, test, deploy.',
+    20:'Imágenes, contenedores y registros.',
+    21:'Despliegue y servicios, configuración y escalado.',
+    22:'Modelos de servicio y coste, regiones y zonas.',
+    23:'Declarar infra reproducible con plantillas.',
+    24:'Flujos Git, merge vs rebase y conflictos.',
+    25:'Pirámide de tests, mocks y cobertura.',
+    26:'Soluciones recurrentes para problemas comunes.',
+    27:'OOP vs funcional vs reactivo.',
+    28:'Diagramas para comunicar arquitectura.',
+    29:'Usabilidad, diseño inclusivo y WCAG.',
+    30:'Estructura semántica y diseño responsive.',
+    31:'Manipulación del DOM y eventos, fetch.',
+    32:'Comandos, tuberías, scripts y automatización.',
+    33:'Patrones de coincidencia y validación.',
+    34:'Automatizar tareas repetitivas.',
+    35:'De código fuente a ejecutable: análisis y generación.',
+    36:'Modelos de paralelismo, sincronización y deadlocks.',
+    37:'CAP, consenso y tolerancia a fallos.',
+    38:'Procesamiento a gran escala por lotes y en streaming.',
+    39:'Ciclo de un proyecto de datos y herramientas.',
+    40:'Tipos de aprendizaje, evaluación y sesgos.',
+    41:'Diseño ético, privacidad y cumplimiento.',
+    42:'Segmentación, firewalls, VPN y monitorización.',
+    43:'Cabeceras de seguridad, CORS y tokens.',
+    44:'Stacks móviles y publicación.',
+    45:'Sensores, redes de dispositivos y middleware.'
+  };
+  return map[t.id] || '';
+}
+
+// Render glosario
+const glossEl = document.getElementById('gloss');
+function renderGloss(){ glossEl.innerHTML=''; GLOSS.forEach(([k,v])=>{ const d=document.createElement('div'); d.className='topic'; d.innerHTML=`<h4>${k}</h4><p>${v}</p>`; glossEl.appendChild(d); }); }
+
+// Eventos UI
+const tabs = document.getElementById('tabs');
+const views = document.querySelectorAll('.view');
+tabs.addEventListener('click', (e)=>{
+  if(!e.target.classList.contains('tab')) return; document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active')); e.target.classList.add('active');
+  views.forEach(v=>v.classList.remove('active')); document.getElementById(e.target.dataset.id).classList.add('active');
+  if(e.target.dataset.id==='t-topics'){ renderTopics(document.getElementById('search').value); }
+});
+
+// Buscar
+document.getElementById('search').addEventListener('input', (e)=> renderTopics(e.target.value));
+document.getElementById('compact').addEventListener('click', ()=>{
+  document.body.classList.toggle('compact');
+  if(document.body.classList.contains('compact')){
+    document.querySelectorAll('.topic').forEach(t=> t.style.padding='8px');
+  } else {
+    document.querySelectorAll('.topic').forEach(t=> t.style.padding='12px');
+  }
+});
+
+// Progreso
+document.getElementById('resetProg').addEventListener('click', ()=>{ PROG={}; saveProgress(PROG); updateProgress(); renderTopics(document.getElementById('search').value); });
+
+topicsEl.addEventListener('change', (e)=>{
+  if(e.target.type==='checkbox'){
+    const id=e.target.getAttribute('data-id'); PROG[id]=e.target.checked; saveProgress(PROG); updateProgress();
+  }
+});
+
+// Demos ======
+function parseNumAuto(s, base){
+  s = s.trim();
+  if(base==='10') return parseInt(s,10);
+  if(base==='2') return parseInt(s.replace(/^0b/i,''),2);
+  if(base==='16') return parseInt(s.replace(/^0x/i,''),16);
+  if(/^0x/i.test(s)) return parseInt(s,16);
+  if(/^0b/i.test(s)) return parseInt(s,2);
+  return parseInt(s,10);
+}
+
+// 1) conversor
+const convBtn=document.getElementById('convBtn');
+convBtn.addEventListener('click', ()=>{
+  const val = document.getElementById('numIn').value; const base=document.getElementById('baseSel').value;
+  const n = parseNumAuto(val, base);
+  if(Number.isNaN(n)){ document.getElementById('convOut').textContent='Entrada inválida'; return; }
+  document.getElementById('convOut').textContent = `dec=${n} | bin=${(n>>>0).toString(2)} | hex=0x${(n>>>0).toString(16).toUpperCase()}`;
+});
+
+// 2) subnet
+function ipToInt(ip){ return ip.split('.').reduce((a,b)=> (a<<8) + (+b), 0)>>>0; }
+function intToIp(n){ return [24,16,8,0].map(s=> (n>>>s)&255).join('.'); }
+document.getElementById('cidrBtn').addEventListener('click',()=>{
+  const s=document.getElementById('cidr').value.trim(); const [ip,pfx] = s.split('/'); const p=parseInt(pfx,10);
+  const base=ipToInt(ip); const mask = p===0?0: 0xFFFFFFFF << (32-p) >>> 0; const network = base & mask; const broadcast = network | (~mask>>>0);
+  const hosts = (p===32||p===31)? 0 : Math.max(0, (2**(32-p))-2);
+  document.getElementById('cidrOut').textContent = `network=${intToIp(network)} mask=${intToIp(mask)} broadcast=${intToIp(broadcast)} hosts=${hosts}`;
+});
+
+// 3) sort visual
+function bubble(a){ let arr=[...a]; for(let i=0;i<arr.length;i++){ for(let j=0;j<arr.length-1-i;j++){ if(arr[j]>arr[j+1]) [arr[j],arr[j+1]]=[arr[j+1],arr[j]]; } } return arr; }
+function selection(a){ let arr=[...a]; for(let i=0;i<arr.length;i++){ let m=i; for(let j=i+1;j<arr.length;j++) if(arr[j]<arr[m]) m=j; [arr[i],arr[m]]=[arr[m],arr[i]]; } return arr; }
+function insertion(a){ let arr=[...a]; for(let i=1;i<arr.length;i++){ let x=arr[i], j=i-1; while(j>=0 && arr[j]>x){ arr[j+1]=arr[j]; j--; } arr[j+1]=x; } return arr; }
+const sortOut=document.getElementById('sortOut');
+document.getElementById('sortBtn').addEventListener('click',()=>{
+  const arr = document.getElementById('arr').value.split(',').map(x=>+x.trim()).filter(x=>!Number.isNaN(x));
+  const alg = document.getElementById('alg').value;
+  const steps=[]; let A=[...arr];
+  if(alg==='Bubble'){
+    for(let i=0;i<A.length;i++){
+      for(let j=0;j<A.length-1-i;j++){
+        steps.push([...A]);
+        if(A[j]>A[j+1]) [A[j],A[j+1]]=[A[j+1],A[j]];
+      }
+    }
+  } else if(alg==='Selection'){
+    for(let i=0;i<A.length;i++){
+      let m=i; for(let j=i+1;j<A.length;j++) if(A[j]<A[m]) m=j; steps.push([...A]); [A[i],A[m]]=[A[m],A[i]];
+    }
+  } else { // Insertion
+    for(let i=1;i<A.length;i++){
+      let x=A[i], j=i-1; while(j>=0 && A[j]>x){ steps.push([...A]); A[j+1]=A[j]; j--; } A[j+1]=x; steps.push([...A]);
+    }
+  }
+  // reproducir
+  sortOut.textContent=''; let k=0; const timer=setInterval(()=>{
+    if(k>=steps.length){ clearInterval(timer); sortOut.textContent = `Resultado: [${A.join(', ')}]`; return; }
+    sortOut.textContent = `[${steps[k++].join(', ')}]`;
+  }, 120);
+});
+
+// 4) regex
+const reBtn=document.getElementById('reBtn');
+reBtn.addEventListener('click',()=>{
+  try{
+    const r = new RegExp(document.getElementById('re').value);
+    const s = document.getElementById('reStr').value;
+    document.getElementById('reOut').textContent = r.test(s) ? '✔ match' : '✖ no match';
+  }catch(e){ document.getElementById('reOut').textContent = 'Regex inválida'; }
+});
+
+// 5) hash
+async function sha256(msg){ const enc=new TextEncoder().encode(msg); const buf=await crypto.subtle.digest('SHA-256', enc); return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
+document.getElementById('hashBtn').addEventListener('click',async()=>{
+  document.getElementById('hashOut').textContent = await sha256(document.getElementById('hashStr').value);
+});
+
+// 6) base64
+const b64Out=document.getElementById('b64Out');
+document.getElementById('b64Enc').addEventListener('click',()=>{ b64Out.textContent = btoa(unescape(encodeURIComponent(document.getElementById('b64Str').value))); });
+document.getElementById('b64Dec').addEventListener('click',()=>{ try{ b64Out.textContent = decodeURIComponent(escape(atob(document.getElementById('b64Str').value))); }catch{ b64Out.textContent='Cadena inválida'; } });
+
+// 7) JSON
+const jsonBtn=document.getElementById('jsonBtn');
+jsonBtn.addEventListener('click',()=>{
+  try{ const obj=JSON.parse(document.getElementById('jsonTxt').value); document.getElementById('jsonOut').textContent = 'OK: '+ JSON.stringify(obj,null,2); }
+  catch(e){ document.getElementById('jsonOut').textContent = 'Error: '+ e.message; }
+});
+
+// 8) mini SQL
+function parseCSV(text){ const [h,...rows]=text.trim().split(/\n+/); const headers=h.split(','); return rows.map(r=>{ const cols=r.split(','); const o={}; headers.forEach((k,i)=> o[k.trim()]= (isNaN(cols[i])? cols[i].trim(): +cols[i])); return o; }); }
+function miniSQL(rows,q){ // formato: SELECT a,b WHERE cond ORDER BY key DESC
+  const m=q.match(/^SELECT\s+([^\s]+(?:\s*,\s*[^\s]+)*)\s*(WHERE\s+([^O]+))?\s*(ORDER BY\s+([^\s]+)\s*(DESC)?)?$/i);
+  if(!m) return {error:'Consulta inválida'}; const fields=m[1].split(',').map(s=>s.trim()); const cond=m[3]; const order=m[5]; const desc=!!m[6];
+  let rs=[...rows];
+  if(cond){ rs = rs.filter(row=>{ try{ with(row){ return eval(cond); } }catch{ return false; } }); }
+  if(order){ rs.sort((a,b)=> a[order]>b[order]?1:-1); if(desc) rs.reverse(); }
+  return rs.map(r=> fields.map(f=> r[f]).join(', '));
+}
+document.getElementById('sqlBtn').addEventListener('click',()=>{
+  const rows = parseCSV(document.getElementById('sqlData').value);
+  const out = miniSQL(rows, document.getElementById('sqlQuery').value);
+  document.getElementById('sqlOut').textContent = out.error || out.join('\n');
+});
+
+// 9) JS sandbox
+const jsFrame=document.getElementById('jsOut');
+const jsDoc = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"><style>body{margin:0;background:#0b1120;color:#e5edff;font:13px ui-monospace,monospace}#log{white-space:pre-wrap;padding:10px}</style></head><body><div id=log></div><script>const log=document.getElementById('log'); const _log=console.log; console.log=(...a)=>{ _log(...a); log.textContent+=a.join(' ')+"\n"; };<\/script></body></html>`;
+jsFrame.srcdoc = jsDoc;
+document.getElementById('runJs').addEventListener('click',()=>{
+  const code = document.getElementById('jsCode').value;
+  jsFrame.contentWindow.postMessage({type:'exec', code}, '*');
+});
+document.getElementById('clearJs').addEventListener('click',()=>{ jsFrame.srcdoc = jsDoc; });
+window.addEventListener('message', (e)=>{
+  if(e.source !== jsFrame.contentWindow) return;
+});
+// inyectar ejecutor una vez el iframe cargue
+jsFrame.addEventListener('load',()=>{
+  jsFrame.contentWindow.eval(`window.addEventListener('message', (e)=>{ if(e.data && e.data.type==='exec'){ try{ eval(e.data.code); }catch(err){ console.log('Error:', err.message); } } });`);
+});
+
+// 10) event loop demo
+let loopTimer=null; document.getElementById('loopBtn').addEventListener('click',()=>{
+  const out=document.getElementById('loopOut'); out.textContent='';
+  out.textContent += 'Inicio\n';
+  setTimeout(()=> out.textContent += 'macrotarea (setTimeout)\n', 0);
+  Promise.resolve().then(()=> out.textContent += 'microtarea (Promise.then)\n');
+  out.textContent += 'Fin inmediato\n';
+});
+
+// 11) RLE
+function rleEnc(s){ let out='', i=0; while(i<s.length){ let j=i; while(j<s.length && s[j]===s[i]) j++; out+= s[i]+(j-i); i=j; } return out; }
+function rleDec(s){ let out='', i=0; while(i<s.length){ const ch=s[i++]; let num=''; while(i<s.length && /\d/.test(s[i])) num+=s[i++]; out+= ch.repeat(parseInt(num||'1')); } return out; }
+document.getElementById('rleEnc').addEventListener('click',()=>{ document.getElementById('rleOut').textContent = rleEnc(document.getElementById('rleStr').value); });
+document.getElementById('rleDec').addEventListener('click',()=>{ document.getElementById('rleOut').textContent = rleDec(document.getElementById('rleStr').value); });
+
+// 12) BST
+function bstInsert(node, v){ if(!node) return {v,left:null,right:null}; if(v<node.v) node.left=bstInsert(node.left,v); else node.right=bstInsert(node.right,v); return node; }
+function bstIn(node, arr){ if(!node) return; bstIn(node.left,arr); arr.push(node.v); bstIn(node.right,arr); }
+document.getElementById('bstBtn').addEventListener('click',()=>{
+  const arr = document.getElementById('bstArr').value.split(',').map(x=>+x.trim()).filter(x=>!Number.isNaN(x));
+  let root=null; arr.forEach(v=> root=bstInsert(root,v));
+  const seq=[]; bstIn(root,seq); document.getElementById('bstOut').textContent = 'In-order: '+ seq.join(', ');
+});
+
+// Init
+function init(){ renderTopics(); renderGloss(); updateProgress(); }
+init();
+</script>
+</body>
+</html>
+
