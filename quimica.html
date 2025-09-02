@@ -1,0 +1,594 @@
+
+<html lang="es" data-scheme="dark" data-theme="planetado">
+<head>
+      <link rel="icon" type="image/png" href="innoveAI.png" />
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Química — Innove</title>
+  <meta name="color-scheme" content="dark light"/>
+  <meta name="theme-color" content="#0e1430" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#f6f8ff" media="(prefers-color-scheme: light)"/>
+  <style>
+    /* ================= TOKENS ================= */
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      
+      --bg:#0e1430; --bg2:#101a3b; --text:#eaf2ff; --muted:#b6c4e6;
+      --glass:rgba(255,255,255,.14); --glass-strong:rgba(255,255,255,.22); --border:rgba(255,255,255,.18);
+      --shadow:0 18px 48px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+      --ink:#7dd3fc; --inkGlow:rgba(125,211,252,.18);
+      --r-2xl:22px; --r-3xl:28px;
+      --maxw:1200px; --narrow:900px;
+      --appH:72px; --themeBarH:64px;
+      --card-text:#0f1324; --card-muted:#2c3652;
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+    }
+    /*
+      Modo claro y oscuro controlados mediante el atributo data-scheme en la
+      etiqueta <html>. Estas reglas sobrescriben las variables base cuando
+      corresponde. Al utilizar selectores de atributo en lugar de
+      prefers-color-scheme se permite que el botón de alternancia funcione
+      correctamente independientemente de la configuración del sistema.
+    */
+    html[data-scheme="light"]{
+      --bg:#f6f8ff;
+      --bg2:#eef2ff;
+      --text:#0f1423;
+      --muted:#4a5875;
+      --glass:#ffffffd9;
+      --glass-strong:#fff;
+      --border:#0b102022;
+      --ink:#2563eb;
+      --inkGlow:#2563eb22;
+      --card-text:#0d1120;
+      --card-muted:#334155;
+    }
+    html[data-scheme="dark"]{
+      /* valores idénticos a los de :root para mayor claridad */
+      --bg:#0e1430;
+      --bg2:#101a3b;
+      --text:#eaf2ff;
+      --muted:#b6c4e6;
+      --glass:rgba(255,255,255,.14);
+      --glass-strong:rgba(255,255,255,.22);
+      --border:rgba(255,255,255,.18);
+      --ink:#7dd3fc;
+      --inkGlow:rgba(125,211,252,.18);
+      --card-text:#0f1324;
+      --card-muted:#2c3652;
+    }
+    html{background:var(--bg)}
+    body{
+      margin:0;
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1400px 900px at 70% -10%, var(--bg2), transparent 60%),
+        radial-gradient(1200px 800px at 10% 110%, #132256, transparent 65%),
+        var(--bg);
+      line-height:1.55;
+      overflow-x:hidden;
+      min-height:100svh;
+      /* Espacio inferior dinámico para que el contenido no quede oculto tras la barra de temas.
+         Se usa --themeBarH calculado por JS. */
+      padding-bottom: calc(var(--themeBarH) + var(--safeBottom) + 20px);
+    }
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+    .panel{background:var(--glass); backdrop-filter: blur(16px) saturate(170%); border:1px solid var(--border); border-radius:var(--r-3xl); box-shadow:var(--shadow)}
+
+    /* ===== BACKGROUNDS by THEME (capas) ===== */
+    .bg-layer{position:fixed; inset:0; z-index:-3; pointer-events:none; display:none}
+    /* Planetado */
+    .bg-planetado-aurora{position:fixed; inset:-22% -10% auto -10%; height:58vh; filter:blur(80px) saturate(120%); animation:drift 18s ease-in-out infinite; opacity:.92}
+    .bg-planetado-aurora{background:conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.18), rgba(196,181,253,.26), rgba(52,211,153,.18), rgba(125,211,252,.18))}
+    .bg-planetado-grid{opacity:.20; background:
+      linear-gradient(transparent 0 98%, rgba(124,58,237,.35) 98%) 0 0/100% 44px,
+      linear-gradient(90deg, transparent 0 98%, rgba(56,189,248,.35) 98%) 0 0/44px 100%;
+      transform:perspective(900px) rotateX(58deg) translateY(-34%); animation:pan 22s linear infinite; mask-image:radial-gradient(62% 52% at 50% 30%,#000 60%,transparent 100%)}
+    /* Neón */
+    .bg-neon{background:
+      radial-gradient(600px 400px at 80% 20%, rgba(3,105,161,.45), transparent 60%),
+      radial-gradient(600px 400px at 20% 80%, rgba(190,24,93,.45), transparent 60%);
+      filter:saturate(130%) blur(2px); opacity:.75}
+    /* Aurora */
+    .bg-aurora{background:conic-gradient(from 90deg at 50% 50%, rgba(16,185,129,.22), rgba(59,130,246,.22), rgba(20,184,166,.22), rgba(16,185,129,.22)); filter:blur(90px) saturate(140%); animation:drift 18s ease-in-out infinite; opacity:.9}
+    /* Hoja */
+    .bg-hoja{background:
+      radial-gradient(800px 500px at 20% -10%, rgba(34,197,94,.18), transparent 60%),
+      radial-gradient(700px 500px at 90% 120%, rgba(34,197,94,.12), transparent 60%),
+      repeating-linear-gradient(180deg, rgba(15,76,59,.08), rgba(15,76,59,.08) 1px, transparent 1px, transparent 28px);}
+    /* Plateado */
+    .bg-plateado{background:
+      radial-gradient(800px 800px at 50% 50%, rgba(255,255,255,0.32), rgba(224,224,224,0.08) 60%, transparent 80%),
+      linear-gradient(180deg, #fafafa, #d5d6db); opacity:.8}
+    /* Mar */
+    .bg-mar{background:
+      radial-gradient(600px 400px at 80% 20%, rgba(2,132,199,.35), transparent 60%),
+      radial-gradient(600px 400px at 20% 80%, rgba(14,165,233,.35), transparent 60%),
+      linear-gradient(180deg, #cffafe, #bae6fd); opacity:.78}
+
+    /* Mostrar por tema */
+    html[data-theme="planetado"] .bg-planetado-aurora,
+    html[data-theme="planetado"] .bg-planetado-grid{display:block}
+    html[data-theme="neon"] .bg-neon{display:block}
+    html[data-theme="aurora"] .bg-aurora{display:block}
+    html[data-theme="hoja"] .bg-hoja{display:block}
+    html[data-theme="plateado"] .bg-plateado{display:block}
+    html[data-theme="mar"] .bg-mar{display:block}
+
+    @keyframes drift{50%{transform:translateY(-14px) translateX(14px) scale(1.03)}}
+    @keyframes pan{to{background-position:0 44px,44px 0}}
+
+    /* ===== Canvas de partículas ===== */
+    #bgParticles{position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.85}
+
+    /* ===== NAVBAR ÚNICO ===== */
+    .appbar-wrap{position:sticky; top:0; z-index:90}
+    .appbar{
+      height:var(--appH);
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+      margin:10px auto; padding:10px 12px;
+      border-radius:18px; background:linear-gradient(180deg, var(--glass-strong), rgba(255,255,255,.12));
+      border:1px solid var(--border); box-shadow:var(--shadow); position:relative; overflow:hidden;
+    }
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:800; letter-spacing:.3px}
+    .logo{--tx:0px; --ty:0px; width:44px; height:44px; display:grid; place-items:center; border-radius:50%; position:relative; transform:translate3d(var(--tx),var(--ty),0); transition:transform .15s ease}
+    .logo::before{
+      content:""; position:absolute; inset:-2px; border-radius:50%; padding:2px;
+      background: conic-gradient(from 140deg,#7dd3fc,#c4b5fd,#34d399,#fbbf24,#7dd3fc);
+      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+      animation: spin 8s linear infinite; filter: drop-shadow(0 0 12px rgba(125,211,252,.52));
+    }
+    .logo .core{width:74%; height:74%; border-radius:50%; background:radial-gradient(circle at 35% 35%, #fff 8%, rgba(125,211,252,.9) 22%, rgba(196,181,253,.85) 46%, rgba(52,211,153,.4) 70%, transparent 76%); animation:wobble 6s ease-in-out infinite}
+    @keyframes spin{to{transform:rotate(360deg)}} @keyframes wobble{50%{transform:scale(1.06) translateY(-1px)}}
+
+    .tabs{position:relative; display:flex; align-items:center; gap:8px; overflow:auto; scrollbar-width:thin; padding:4px}
+    .tabs::-webkit-scrollbar{height:6px}
+    .pill{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
+      border-radius:14px; border:1px solid var(--border); background:transparent; color:var(--text);
+      font-weight:800; cursor:pointer; white-space:nowrap; font-size:1rem; transition:background .2s ease, transform .15s ease;
+    }
+    .pill:hover{background:var(--glass); transform:translateY(-1px)}
+    .pill[aria-selected="true"]{background:var(--glass)}
+    .ink{position:absolute; height:3px; background:var(--ink); bottom:2px; left:0; width:0; border-radius:2px; transition:transform .25s ease,width .25s ease; box-shadow:0 0 0 6px var(--inkGlow)}
+    .ink-dot{position:absolute; bottom:7px; width:8px; height:8px; border-radius:50%; background:var(--ink); box-shadow:0 0 12px var(--ink); transform:translateX(0); transition:transform .25s ease}
+
+    /* ===== Controles (Oscuro/Claro) ===== */
+    .controls{display:flex; align-items:center; gap:8px}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); font-weight:700; cursor:pointer}
+    .btn:hover{background:var(--glass-strong)}
+
+    /* ===== HERO ===== */
+    .hero{margin:14px auto 6px; padding:10px 0}
+    .hero h1{margin:0; font-size: clamp(28px,4.4vw,58px); letter-spacing:-.02em}
+    .hero p{color:var(--muted); margin:8px 0 0}
+    .ticker{margin-top:8px; overflow:hidden; mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)}
+    .ticker-row{display:flex; gap:28px; white-space:nowrap; animation:ticker 28s linear infinite}
+    .ticker span{opacity:.85}
+    @keyframes ticker{to{transform:translateX(-50%)}}
+
+    /* ===== GRID / CARDS ===== */
+    @property --fy { syntax:"<length>"; inherits:false; initial-value:0px }
+    @property --rx { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    @property --ry { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:18px}
+    .card{position:relative; overflow:hidden; padding:18px; border-radius:20px; isolation:isolate; background:var(--glass); border:1px solid var(--border); transform:translateY(var(--fy)) rotateY(var(--ry)) rotateX(var(--rx)); animation:float 9s ease-in-out infinite; text-decoration:none; color:inherit}
+    @keyframes float{0%,100%{--fy:0px} 50%{--fy:-6px}}
+    .card .title{display:flex; align-items:center; gap:10px; font-weight:800; color:var(--card-text)}
+    .card .desc{color:var(--card-muted); margin-top:6px}
+    .card::before{content:""; position:absolute; inset:-1px; z-index:-2; border-radius:inherit; padding:1px; background: conic-gradient(from 220deg, rgba(255,255,255,.10), rgba(255,255,255,0) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,.10)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:.45; animation:borderSweep 6s linear infinite}
+    @keyframes borderSweep{to{transform:rotate(360deg)}}
+    .card::after{content:""; position:absolute; inset:-1px; z-index:-1; pointer-events:none; background:radial-gradient(160px 120px at calc(var(--px,.5)*100%) calc(var(--py,.5)*100%), rgba(255,255,255,.35), transparent 60%)}
+    .card .title>span:first-child{display:inline-block; animation:emoji-bounce 5s ease-in-out infinite}
+    @keyframes emoji-bounce{0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)}}
+    .emoji-bg{position:absolute; inset:auto 8px 8px auto; font-size:120px; line-height:1; opacity:.15; filter:blur(1px); pointer-events:none; user-select:none; z-index:0; animation:floatDecor 12s ease-in-out infinite}
+    @keyframes floatDecor{0%,100%{transform:translate(4px,2px) scale(1)} 50%{transform:translate(-6px,-4px) scale(1.04)}}
+
+    /* ===== VARIANTES COLOR TARJETAS ===== */
+    .v-kinematica{background:linear-gradient(180deg, rgba(196,181,253,.26), rgba(196,181,253,.14)), var(--glass)}
+    .v-movcir{background:linear-gradient(180deg, rgba(125,211,252,.26), rgba(125,211,252,.14)), var(--glass)}
+    .v-vectores{background:linear-gradient(180deg, rgba(74,222,128,.26), rgba(74,222,128,.14)), var(--glass)}
+    .v-newton{background:linear-gradient(180deg, rgba(251,146,60,.26), rgba(251,146,60,.14)), var(--glass)}
+    .v-energia{background:linear-gradient(180deg, rgba(234,179,8,.26), rgba(234,179,8,.14)), var(--glass)}
+    .v-impulso{background:linear-gradient(180deg, rgba(248,113,113,.26), rgba(248,113,113,.14)), var(--glass)}
+    .v-choques{background:linear-gradient(180deg, rgba(163,230,53,.26), rgba(163,230,53,.14)), var(--glass)}
+    .v-estatica{background:linear-gradient(180deg, rgba(99,102,241,.28), rgba(99,102,241,.16)), var(--glass)}
+    .v-gravitacion{background:linear-gradient(180deg, rgba(59,130,246,.26), rgba(59,130,246,.14)), var(--glass)}
+    .v-oscilaciones{background:linear-gradient(180deg, rgba(244,114,182,.26), rgba(244,114,182,.14)), var(--glass)}
+    .v-ondas{background:linear-gradient(180deg, rgba(56,189,248,.26), rgba(56,189,248,.14)), var(--glass)}
+    .v-hidros{background:linear-gradient(180deg, rgba(34,197,94,.26), rgba(34,197,94,.14)), var(--glass)}
+    .v-bernoulli{background:linear-gradient(180deg, rgba(15,118,110,.26), rgba(15,118,110,.14)), var(--glass)}
+    .v-termo1{background:linear-gradient(180deg, rgba(251,191,36,.26), rgba(251,191,36,.14)), var(--glass)}
+    .v-termo2{background:linear-gradient(180deg, rgba(217,119,6,.26), rgba(217,119,6,.14)), var(--glass)}
+    .v-optgeom{background:linear-gradient(180deg, rgba(2,132,199,.26), rgba(2,132,199,.14)), var(--glass)}
+    .v-optfis{background:linear-gradient(180deg, rgba(14,165,233,.26), rgba(14,165,233,.14)), var(--glass)}
+    .v-electricidad{background:linear-gradient(180deg, rgba(99,102,241,.28), rgba(99,102,241,.16)), var(--glass)}
+    .v-circuitos{background:linear-gradient(180deg, rgba(147,197,253,.26), rgba(147,197,253,.14)), var(--glass)}
+    .v-magnetismo{background:linear-gradient(180deg, rgba(52,211,153,.26), rgba(52,211,153,.14)), var(--glass)}
+
+    /* ===== FOOTER: Selector de TEMAS (barra flotante) ===== */
+    .theme-footer{
+      /* Convertimos la barra inferior en un panel flotante centrado en la página. */
+      position:fixed;
+      /* Centramos horizontalmente y lo situamos encima del borde inferior para que no tape el contenido. */
+      left:50%;
+      bottom:24px;
+      transform:translateX(-50%);
+      z-index:88;
+      width:90%;
+      max-width:620px;
+      padding:12px 16px;
+      border-radius:26px;
+      backdrop-filter: blur(20px) saturate(180%);
+      background:var(--glass-strong);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+    }
+    .theme-row{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      /* Centramos el contenido horizontalmente dentro del panel. */
+      justify-content:center;
+      max-width:100%;
+      margin:0 auto;
+      flex-wrap:wrap;
+    }
+    /* Ocultamos el título "Temas" ya que el panel se explica por sí mismo. */
+    .theme-title{display:none}
+    .theme-scroller{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      scrollbar-width:thin;
+      padding-bottom:4px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .theme-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--glass);
+      color:var(--text);
+      font-weight:700;
+      white-space:nowrap;
+      cursor:pointer;
+      user-select:none;
+      flex:0 0 auto;
+      transition:background .2s ease, transform .15s ease;
+    }
+    .theme-chip:hover{background:var(--glass-strong); transform:translateY(-2px)}
+    .theme-chip[aria-pressed="true"]{
+      outline:2px solid var(--ink);
+      box-shadow:0 0 0 6px var(--inkGlow);
+    }
+    .swatch{width:14px; height:14px; border-radius:50%; border:1px solid var(--border)}
+    /* Botón para cerrar la barra de temas */
+    .theme-close{
+      border:none;
+      background:var(--glass);
+      color:var(--text);
+      border-radius:50%;
+      width:34px;
+      height:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      flex-shrink:0;
+      transition:background .2s ease;
+      font-size:1.2rem;
+      line-height:1;
+      /* Posicionamos el botón en la esquina superior derecha del panel */
+      position:absolute;
+      top:50%;
+      right:12px;
+      transform:translateY(-50%);
+    }
+    .theme-close:hover{background:var(--glass-strong)}
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width:980px){ .appbar{grid-template-columns:auto 1fr auto} .tabs{justify-self:stretch} }
+    @media (max-width:660px){ .brand span.txt{display:none} .pill{padding:10px 12px; font-size:.96rem} .theme-title{display:none} }
+    @media (prefers-reduced-motion:reduce){
+      .bg-planetado-aurora,.bg-planetado-grid,.bg-neon,.bg-aurora{animation:none!important}
+      .ticker,.card,.emoji-bg{animation:none!important} .card{transform:none!important}
+    }
+  </style>
+</head>
+<body>
+  <!-- BACKGROUNDS -->
+  <canvas id="bgParticles"></canvas>
+  <div class="bg-layer bg-planetado-aurora"></div>
+  <div class="bg-layer bg-planetado-grid"></div>
+  <div class="bg-layer bg-neon"></div>
+  <div class="bg-layer bg-aurora"></div>
+  <div class="bg-layer bg-hoja"></div>
+  <div class="bg-layer bg-plateado"></div>
+  <div class="bg-layer bg-mar"></div>
+
+  <!-- NAVBAR ÚNICO -->
+  <header class="appbar-wrap">
+    <div class="appbar container panel">
+      <a href="index.html" class="brand" aria-label="Inicio">
+        <span class="logo" id="brandLogo" aria-hidden="true"><span class="core"></span></span>
+        <span class="txt">Innove</span>
+      </a>
+
+      <!-- Tabs -->
+      <div class="tabs" id="tabs" role="tablist" aria-label="Secciones">
+        <button class="pill" role="tab" aria-selected="true" data-tab="teoria" id="tab-teoria">Teoría</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="ejercicios" id="tab-ejercicios">Ejercicios</button>
+        <span class="ink" id="ink" aria-hidden="true"></span>
+        <span class="ink-dot" id="inkDot" aria-hidden="true"></span>
+      </div>
+
+      <!-- Oscuro/Claro -->
+      <div class="controls">
+        <button id="schemeToggle" class="btn" title="Oscuro/Claro" aria-pressed="true">🌙 Oscuro</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero container">
+    <h1>Química</h1>
+    <p>Teoría y ejercicios con temas visuales (abajo), partículas animadas y diseño responsive.</p>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-row">
+        <span>PV = nRT</span><span> ΔG = ΔH − TΔS</span><span> K = [C]^c[D]^d / [A]^a[B]^b</span><span> pH = −log[H⁺]</span>
+        <span> r = k[A]^m[B]^n</span><span> E°₍celda₎ = E°₍cát₎ − E°₍án₎</span><span> A = εℓc</span><span> ΔU = q + w</span>
+        <span> 2H₂ + O₂ → 2H₂O</span><span> pH = pKₐ + log([A⁻]/[HA])</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENIDO -->
+  <main class="container" id="content">
+    <!-- TEORÍA (20) -->
+    <section id="teoria" role="tabpanel" aria-labelledby="tab-teoria" data-active>
+      <h2>Teoría — 20 temas</h2>
+      <div class="grid">
+        <a class="card v-kinematica" href="atomo.html"><div class="title"><span style="font-size:1.6em">⚛️</span><span>Estructura atómica</span></div><p class="desc">Modelo cuántico, orbitales.</p><span class="emoji-bg">⚛️</span></a>
+        <a class="card v-movcir" href="tabla_periodica_niveles.html"><div class="title"><span style="font-size:1.6em">🧪</span><span>Tabla periódica y periodicidad</span></div><p class="desc">Z, radio, IE, EA.</p><span class="emoji-bg">🧪</span></a>
+        <a class="card v-vectores" href="enlace_quimico_niveles.html"><div class="title"><span style="font-size:1.6em">🔗</span><span>Enlace químico</span></div><p class="desc">Iónico, covalente, metálico.</p><span class="emoji-bg">🔗</span></a>
+        <a class="card v-newton" href=inorganica_niveles.html"><div class="title"><span style="font-size:1.6em">🏷️</span><span>Nomenclatura inorgánica</span></div><p class="desc">Stock, tradicional, IUPAC.</p><span class="emoji-bg">🏷️</span></a>
+        <a class="card v-energia" href="estequiometria_niveles.html"><div class="title"><span style="font-size:1.6em">🧮</span><span>Estequiometría</span></div><p class="desc">Moles, rendimientos, LR.</p><span class="emoji-bg">🧮</span></a>
+        <a class="card v-impulso" href="gases (2).html"><div class="title"><span style="font-size:1.6em">🌬️</span><span>Gases: ideal y real</span></div><p class="desc">PV=nRT, compresibilidad.</p><span class="emoji-bg">🌬️</span></a>
+        <a class="card v-choques" href="termodinamica.html"><div class="title"><span style="font-size:1.6em">🔥</span><span>Termoquímica</span></div><p class="desc">ΔH, Hess, calorimetría.</p><span class="emoji-bg">🔥</span></a>
+        <a class="card v-estatica" href="teoria/equilibrio-quimico.html"><div class="title"><span style="font-size:1.6em">⚖️</span><span>Equilibrio químico</span></div><p class="desc">Kc, Kp, Le Châtelier.</p><span class="emoji-bg">⚖️</span></a>
+        <a class="card v-gravitacion" href="teoria/acido-base.html"><div class="title"><span style="font-size:1.6em">🧪</span><span>Ácido–base</span></div><p class="desc">Brønsted–Lowry, pH y pOH.</p><span class="emoji-bg">🧪</span></a>
+        <a class="card v-oscilaciones" href="teoria/redox-electroquimica.html"><div class="title"><span style="font-size:1.6em">🔋</span><span>Redox y electroquímica</span></div><p class="desc">Celdas, E°, Nernst.</p><span class="emoji-bg">🔋</span></a>
+        <a class="card v-ondas" href="teoria/cinetica-quimica.html"><div class="title"><span style="font-size:1.6em">⏱️</span><span>Cinética química</span></div><p class="desc">Velocidad, mecanismos, Ea.</p><span class="emoji-bg">⏱️</span></a>
+        <a class="card v-hidros" href="teoria/soluciones.html"><div class="title"><span style="font-size:1.6em">💧</span><span>Soluciones</span></div><p class="desc">Concentraciones y coligativas.</p><span class="emoji-bg">💧</span></a>
+        <a class="card v-bernoulli" href="teoria/solubilidad.html"><div class="title"><span style="font-size:1.6em">🧊</span><span>Solubilidad y Kps</span></div><p class="desc">Equilibrios heterogéneos.</p><span class="emoji-bg">🧊</span></a>
+        <a class="card v-termo1" href="nomenclatura_organica_niveles.html"><div class="title"><span style="font-size:1.6em">🧬</span><span>Química orgánica: bases</span></div><p class="desc">Hidrocarburos, FG, IUPAC.</p><span class="emoji-bg">🧬</span></a>
+        <a class="card v-termo2" href="teoria/estereoquimica.html"><div class="title"><span style="font-size:1.6em">🔀</span><span>Isomería y estereoquímica</span></div><p class="desc">R/S, E/Z, conformaciones.</p><span class="emoji-bg">🔀</span></a>
+        <a class="card v-optgeom" href="teoria/reacciones-organicas.html"><div class="title"><span style="font-size:1.6em">🔁</span><span>Reacciones orgánicas</span></div><p class="desc">Sustitución, adición, eliminación.</p><span class="emoji-bg">🔁</span></a>
+        <a class="card v-optfis" href="teoria/polimeros.html"><div class="title"><span style="font-size:1.6em">🧶</span><span>Polímeros</span></div><p class="desc">Poliadición y policondensación.</p><span class="emoji-bg">🧶</span></a>
+        <a class="card v-electricidad" href="teoria/bioquimica.html"><div class="title"><span style="font-size:1.6em">🧫</span><span>Bioquímica básica</span></div><p class="desc">Aminoácidos, azúcares, lípidos.</p><span class="emoji-bg">🧫</span></a>
+        <a class="card v-circuitos" href="teoria/ambiental.html"><div class="title"><span style="font-size:1.6em">🌿</span><span>Química ambiental</span></div><p class="desc">Contaminantes y ciclos.</p><span class="emoji-bg">🌿</span></a>
+        <a class="card v-magnetismo" href="teoria/analisis-instrumental.html"><div class="title"><span style="font-size:1.6em">🔬</span><span>Análisis instrumental</span></div><p class="desc">Espectroscopía y cromatografía.</p><span class="emoji-bg">🔬</span></a>
+      </div>
+    </section>
+
+    <!-- EJERCICIOS (5) -->
+    <section id="ejercicios" role="tabpanel" aria-labelledby="tab-ejercicios" hidden>
+      <h2>Ejercicios</h2>
+      <div class="grid">
+        <a class="card v-kinematica" href="ejercicios/estequiometria.html"><div class="title"><span style="font-size:1.6em">📝</span><span>Estequiometría</span></div><p class="desc">10 problemas de moles y LR.</p><span class="emoji-bg">📝</span></a>
+        <a class="card v-newton" href="ejercicios/equilibrio.html"><div class="title"><span style="font-size:1.6em">⚖️</span><span>Equilibrio</span></div><p class="desc">Kc, Kp y desplazamientos.</p><span class="emoji-bg">⚖️</span></a>
+        <a class="card v-energia" href="ejercicios/ph-titulaciones.html"><div class="title"><span style="font-size:1.6em">🧪</span><span>pH y titulaciones</span></div><p class="desc">Ácidos, bases y buffers.</p><span class="emoji-bg">🧪</span></a>
+        <a class="card v-circuitos" href="ejercicios/redox-celdas.html"><div class="title"><span style="font-size:1.6em">🔋</span><span>Redox y celdas</span></div><p class="desc">Balanceo y E° de celda.</p><span class="emoji-bg">🔋</span></a>
+        <a class="card v-optgeom" href="ejercicios/cinetica.html"><div class="title"><span style="font-size:1.6em">⏱️</span><span>Cinética</span></div><p class="desc">Ley de velocidad y k.</p><span class="emoji-bg">⏱️</span></a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* ===== Helpers ===== */
+    const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+    /* ===== Dark/Light ===== */
+    const schemeToggle = $('#schemeToggle');
+    function setScheme(mode){ // 'dark' | 'light'
+      document.documentElement.setAttribute('data-scheme', mode);
+      localStorage.setItem('innove-scheme', mode);
+      schemeToggle.textContent = (mode==='dark') ? '🌙 Oscuro' : '☀️ Claro';
+      schemeToggle.setAttribute('aria-pressed', String(mode==='dark'));
+    }
+    const pref = localStorage.getItem('innove-scheme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setScheme(pref);
+    schemeToggle.addEventListener('click',()=> setScheme(document.documentElement.getAttribute('data-scheme')==='dark' ? 'light' : 'dark'));
+
+    /* ===== Tabs + ink ===== */
+    const tabs=$('#tabs'), ink=$('#ink'), dot=$('#inkDot');
+    const sections={ teoria:$('#teoria'), ejercicios:$('#ejercicios') };
+    function positionInk(btn){
+      const c=tabs.getBoundingClientRect(), b=btn.getBoundingClientRect();
+      const left=b.left - c.left + tabs.scrollLeft + 4;
+      ink.style.width=(b.width-8)+'px';
+      ink.style.transform=`translateX(${left}px)`;
+      dot.style.transform=`translateX(${left + (b.width-8) - 4}px)`;
+    }
+    function showTab(name){
+      Object.keys(sections).forEach(k=>{
+        const s=sections[k]; const active=(k===name);
+        s.hidden=!active; active ? s.setAttribute('data-active','') : s.removeAttribute('data-active');
+      });
+      $$('.pill').forEach(p=>p.setAttribute('aria-selected', String(p.dataset.tab===name)));
+      const btn=tabs.querySelector(`.pill[data-tab="${name}"]`);
+      if(btn){ btn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'}); positionInk(btn); }
+      history.replaceState(null, '', `?tab=${encodeURIComponent(name)}`);
+    }
+    $$('.pill').forEach(p=> p.addEventListener('click',()=> showTab(p.dataset.tab)));
+    const initialTab=new URLSearchParams(location.search).get('tab');
+    const firstBtn=$('.pill[data-tab="teoria"]');
+    positionInk(initialTab && sections[initialTab] ? tabs.querySelector(`.pill[data-tab="${initialTab}"]`)||firstBtn : firstBtn);
+    showTab(initialTab && sections[initialTab] ? initialTab : 'teoria');
+    addEventListener('resize',()=> positionInk($('.pill[aria-selected="true"]')||firstBtn));
+    tabs.addEventListener('scroll',()=> positionInk($('.pill[aria-selected="true"]')||firstBtn));
+
+    /* ===== Emoji-bg auto ===== */
+    (function(){ $$('.card').forEach(c=>{ if(c.querySelector('.emoji-bg')) return; const e=c.querySelector('.title > span:first-child'); if(!e) return; const bg=document.createElement('span'); bg.className='emoji-bg'; bg.textContent=e.textContent.trim(); c.appendChild(bg); }); })();
+
+    /* ===== TEMAS (barra inferior) ===== */
+    const themeBtns=$$('.theme-chip');
+    function setTheme(name){
+      document.documentElement.setAttribute('data-theme', name);
+      localStorage.setItem('innove-theme', name);
+      themeBtns.forEach(b=> b.setAttribute('aria-pressed', String(b.dataset.theme===name)));
+      // Recolorea partículas
+      initParticlesPalette(name);
+    }
+    setTheme(localStorage.getItem('innove-theme') || 'planetado');
+    themeBtns.forEach(b=> b.addEventListener('click',()=> setTheme(b.dataset.theme)));
+
+    /* Ajusta padding inferior según altura real de la barra de temas */
+    function adjustThemeBarPadding(){
+      const bar = document.querySelector('.theme-footer');
+      if(!bar) return;
+      const h = Math.round(bar.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--themeBarH', h+'px');
+    }
+    adjustThemeBarPadding(); addEventListener('resize', adjustThemeBarPadding);
+
+    /* ===== Cerrar barra de temas ===== */
+    const themeBar = document.querySelector('.theme-footer');
+    const themeCloseBtn = document.getElementById('themeClose');
+    if(themeCloseBtn){
+      themeCloseBtn.addEventListener('click', () => {
+        // Ocultamos la barra cuando se pulsa la X
+        themeBar.style.display = 'none';
+        // Eliminamos el espacio adicional en el cuerpo si existiera
+        document.documentElement.style.setProperty('--themeBarH', '0px');
+      });
+    }
+
+    /* ===== LOGO Parallax ===== */
+    const logo=$('#brandLogo');
+    if(logo){
+      const move=e=>{
+        const r=logo.getBoundingClientRect();
+        logo.style.setProperty('--tx', ((e.clientX-(r.left+r.width/2))/7).toFixed(1)+'px');
+        logo.style.setProperty('--ty', ((e.clientY-(r.top+r.height/2))/7).toFixed(1)+'px');
+      };
+      logo.addEventListener('pointerenter',()=>addEventListener('pointermove',move));
+      logo.addEventListener('pointerleave',()=>{removeEventListener('pointermove',move);logo.style.setProperty('--tx','0px');logo.style.setProperty('--ty','0px');});
+    }
+
+    /* ===== TARJETAS Tilt + glow ===== */
+    $$('.card').forEach(card=>{
+      let rect;
+      function move(x,y){ card.style.setProperty('--ry',(x*10)+'deg'); card.style.setProperty('--rx',(-y*10)+'deg'); }
+      card.addEventListener('pointermove',e=>{
+        rect=rect||card.getBoundingClientRect();
+        const x=(e.clientX-rect.left)/rect.width - .5, y=(e.clientY-rect.top)/rect.height - .5;
+        move(x,y); card.style.setProperty('--px',(x+.5).toFixed(3)); card.style.setProperty('--py',(y+.5).toFixed(3));
+      });
+      card.addEventListener('pointerleave',()=>{card.style.removeProperty('--ry');card.style.removeProperty('--rx');rect=null;card.style.removeProperty('--px');card.style.removeProperty('--py');});
+    });
+
+    /* ================== PARTÍCULAS ANIMADAS ================== */
+    const canvas = document.getElementById('bgParticles');
+    const ctx = canvas.getContext('2d');
+    let particles=[], W=0, H=0, DPR=Math.min(window.devicePixelRatio||1, 2);
+    let mouse={x:-9999,y:-9999};
+    const PALETTES = {
+      planetado:['#7dd3fc','#c4b5fd','#34d399'],
+      neon:['#22d3ee','#f472b6','#a78bfa'],
+      aurora:['#34d399','#60a5fa','#22d3ee'],
+      hoja:['#4ade80','#16a34a','#bbf7d0'],
+      plateado:['#9ca3af','#e5e7eb','#d1d5db'],
+      mar:['#7dd3fc','#38bdf8','#bae6fd'],
+    };
+    let currentPalette = PALETTES['planetado'];
+
+    function resize(){
+      W = canvas.width = Math.floor(innerWidth * DPR);
+      H = canvas.height = Math.floor(innerHeight * DPR);
+      canvas.style.width = innerWidth+'px';
+      canvas.style.height = innerHeight+'px';
+      spawnParticles();
+    }
+    function rand(a,b){return a+Math.random()*(b-a)}
+    function spawnParticles(){
+      const count = Math.floor(Math.min(140, 70 + (innerWidth*innerHeight)/50000));
+      particles = [];
+      for(let i=0;i<count;i++){
+        const color = currentPalette[i % currentPalette.length];
+        particles.push({
+          x: rand(0,W), y: rand(0,H),
+          vx: rand(-0.08,0.08)*DPR, vy: rand(-0.08,0.08)*DPR,
+          r: rand(0.7,2.2)*DPR, c: color, a: rand(0.35,0.8)
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation='lighter';
+      for(const p of particles){
+        // interacción ligera con cursor
+        const dx = (mouse.x - p.x), dy = (mouse.y - p.y);
+        const d2 = dx*dx + dy*dy;
+        if(d2 < (120*DPR)*(120*DPR)){
+          p.vx -= dx * 0.000003;
+          p.vy -= dy * 0.000003;
+        }
+        // actualizar
+        p.x += p.vx; p.y += p.vy;
+        // envolver
+        if(p.x < -10) p.x = W+10; else if(p.x > W+10) p.x = -10;
+        if(p.y < -10) p.y = H+10; else if(p.y > H+10) p.y = -10;
+        // dibujar
+        ctx.beginPath();
+        ctx.fillStyle = hexToRgba(p.c, p.a);
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation='source-over';
+      raf = requestAnimationFrame(draw);
+    }
+    function hexToRgba(hex, a=1){
+      const h = hex.replace('#','');
+      const r = parseInt(h.substring(0,2),16);
+      const g = parseInt(h.substring(2,4),16);
+      const b = parseInt(h.substring(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+    function initParticlesPalette(theme){
+      currentPalette = PALETTES[theme] || PALETTES['planetado'];
+      spawnParticles();
+    }
+    let raf;
+    function start(){
+      cancelAnimationFrame(raf);
+      resize(); draw();
+    }
+    // Accesibilidad: respeta "reducir movimiento"
+    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)');
+    if(!prefersReduced.matches){ start(); }
+    prefersReduced.addEventListener?.('change', e=>{ if(e.matches){ cancelAnimationFrame(raf); ctx.clearRect(0,0,W,H);} else { start(); }});
+
+    addEventListener('resize', ()=>{ if(!prefersReduced.matches){ resize(); }}, {passive:true});
+    addEventListener('pointermove', e=>{
+      mouse.x = (e.clientX) * DPR;
+      mouse.y = (e.clientY) * DPR;
+    });
+    // when pointer leaves the page, reset the mouse far away so particles return to normal
+    addEventListener('pointerleave', () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+  </script>
+</body>
+</html>
+
+
