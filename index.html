@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark" data-theme="planetado">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innove — Campus AI</title>
+  <meta name="description" content="Innove: portal estudiantil con IA. Diseño único por materia, temas dinámicos, accesibilidad y demo de chat."/>
+  <link rel="icon" type="image/png" href="innoveAI.png" />
+  <style>
+    /* =============== TOKENS & RESET =============== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    :root{
+      --bg:#121f39; --text:#e9f2ff; --muted:#b9c7e6;
+      --glass:rgba(255,255,255,.15); --glass-strong:rgba(255,255,255,.28); --border:rgba(255,255,255,.20);
+      --primary:#7dd3fc; --violet:#c4b5fd; --green:#34d399; --amber:#eab308; --rose:#fb7185;
+      --shadow:0 14px 44px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+      --radius-2xl:22px; --radius-3xl:28px; --radius-max:999px; --maxw:1200px;
+      --card-text:#111; --card-muted:#333;
+    }
+    html[data-scheme="light"]{
+      --bg:#f7f9ff; --text:#0b1020; --muted:#334155;
+      --glass:rgba(255,255,255,.82); --glass-strong:rgba(255,255,255,.92); --border:rgba(8,47,73,.12);
+    }
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+          background:var(--bg); color:var(--text); line-height:1.55; overflow-x:hidden; }
+
+    /* =============== BACKGROUNDS / TEMAS =============== */
+    .space-bg, .aurora, .neon-grid, .leaf-bg, .silver-bg, .sea-bg { position: fixed; inset:0; z-index:-4; pointer-events:none; display:none; }
+    .space-bg{
+      background-image:
+        radial-gradient(1200px 800px at 70% -10%, rgba(56,189,248,.16), transparent 60%),
+        radial-gradient(1000px 600px at 10% 110%, rgba(196,181,253,.2), transparent 60%),
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.35) 0, transparent 60%),
+        radial-gradient(1.5px 1.5px at 80% 60%, rgba(255,255,255,.28) 0, transparent 60%),
+        radial-gradient(1px 1px at 50% 90%, rgba(255,255,255,.22) 0, transparent 60%);
+      animation: twinkle 8s linear infinite; opacity:.9;
+    }
+    @keyframes twinkle { 50%{ filter: drop-shadow(0 0 10px rgba(255,255,255,.35)); } }
+    .aurora{
+      inset:-20% -10% auto -10%; height:60vh; z-index:-3;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(125,211,252,.18), rgba(196,181,253,.2), rgba(52,211,153,.18), rgba(125,211,252,.18));
+      filter: blur(80px) saturate(120%); animation: drift 18s ease-in-out infinite; opacity:.75;
+    }
+    @keyframes drift { 50%{ transform: translateY(-20px) translateX(20px) scale(1.04); } }
+    .neon-grid{
+      z-index:-2; opacity:.22;
+      background:
+        linear-gradient(transparent 0 98%, rgba(124,58,237,.35) 98%) 0 0/ 100% 40px,
+        linear-gradient(90deg, transparent 0 98%, rgba(56,189,248,.35) 98%) 0 0/ 40px 100%;
+      transform: perspective(900px) rotateX(60deg) translateY(-35%);
+      animation: pan 22s linear infinite;
+      mask-image: radial-gradient(60% 50% at 50% 30%, #000 60%, transparent 100%);
+    }
+    @keyframes pan{ to { background-position: 0 40px, 40px 0; } }
+    .leaf-bg{
+      z-index:-3; opacity:.9; background:
+        radial-gradient(800px 500px at 20% -10%, rgba(34,197,94,.15), transparent 60%),
+        radial-gradient(700px 500px at 90% 120%, rgba(34,197,94,.10), transparent 60%),
+        repeating-linear-gradient(180deg, rgba(15,76,59,.08), rgba(15,76,59,.08) 1px, transparent 1px, transparent 28px),
+        linear-gradient(180deg, rgba(240,253,244,.8), rgba(187,247,208,.65));
+    }
+    .silver-bg{
+      background:
+        radial-gradient(800px 800px at 50% 50%, rgba(255,255,255,0.3), rgba(224,224,224,0.05) 60%, transparent 80%),
+        linear-gradient(180deg, #fafafa, #d5d6db);
+      opacity:.75; filter: blur(2px);
+    }
+    .sea-bg{
+      background:
+        radial-gradient(600px 400px at 80% 20%, rgba(3,105,161,.25), transparent 60%),
+        radial-gradient(600px 400px at 20% 80%, rgba(2,132,199,.25), transparent 60%),
+        linear-gradient(180deg, #cffafe, #bae6fd);
+      opacity:.75;
+    }
+    /* Mostrar fondos por tema */
+    html[data-theme="planetado"] .space-bg,
+    html[data-theme="planetado"] .neon-grid,
+    html[data-theme="planetado"] .aurora{ display:block; }
+    html[data-theme="neon"] .neon-grid { display:block; opacity:.45 }
+    html[data-theme="aurora"] .aurora { display:block; opacity:.95; filter: blur(90px) saturate(140%); }
+    html[data-theme="hoja"] .leaf-bg { display:block; }
+    html[data-theme="plateado"] .silver-bg { display:block; }
+    html[data-theme="mar"] .sea-bg { display:block; }
+
+    .spotlight{ position: fixed; inset:0; pointer-events:none; z-index:-1;
+      background: radial-gradient(420px 420px at var(--mx,50%) var(--my,20%), rgba(99,102,241,.14), transparent 60%);
+      transition: background .08s linear;
+    }
+
+    /* =============== NAVBAR =============== */
+    .nav{
+      position: sticky; top: 0; z-index: 60; display:flex; align-items:center; justify-content:space-between;
+      gap: 16px; padding: 14px 22px; margin: 16px; border-radius: var(--radius-3xl);
+      background: var(--glass); backdrop-filter: blur(16px) saturate(160%); border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .brand{ display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.4px; }
+    .brand .logo{
+      --tx:0px; --ty:0px; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; position:relative;
+      transform: translate3d(var(--tx),var(--ty),0); transition: transform 150ms ease, filter 250ms ease;
+    }
+    .brand .logo::before{
+      content:""; position:absolute; inset:-2px; border-radius:50%; padding:2px;
+      background: conic-gradient(from 140deg, var(--primary), var(--violet), var(--green), var(--primary));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; animation: spin 8s linear infinite;
+      filter: drop-shadow(0 0 14px rgba(125,211,252,.55));
+    }
+    .brand .logo .core{
+      width:74%; height:74%; border-radius:50%;
+      background: radial-gradient(circle at 35% 35%, #fff 8%, rgba(125,211,252,.9) 20%, rgba(196,181,253,.85) 45%, rgba(52,211,153,.35) 70%, transparent 75%);
+      box-shadow: inset 0 0 24px rgba(255,255,255,.35), 0 4px 18px rgba(125,211,252,.35);
+      animation: wobble 6s ease-in-out infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+    @keyframes wobble{ 50%{ transform: scale(1.06) translateY(-1px); } }
+
+    .nav a{ color:var(--text); text-decoration:none; padding:10px 14px; border-radius:12px; border:1px solid transparent; transition:200ms ease;
+            background-image: linear-gradient(currentColor,currentColor); background-size:0% 2px; background-repeat:no-repeat; background-position: 0 100%; }
+    .nav a:hover{ border-color:var(--border); background:var(--glass-strong); transform: translateY(-1px); background-size:100% 2px; }
+
+    .nav-cta{ gap:8px; display:flex; align-items:center; flex-wrap:wrap; }
+    .theme{ border:1px solid var(--border); background:var(--glass-strong); border-radius:12px; padding:8px 10px; cursor:pointer; }
+
+    /* Perfil en nav */
+    #profileSection{ display:flex; align-items:center; gap:8px; }
+    #profileSection .level{ font-size:.78em; padding:3px 6px; border-radius:8px; background:var(--glass); border:1px solid var(--border); font-weight:700; }
+
+    /* =============== LAYOUT & HERO =============== */
+    .container{ max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+    .panel{ background:var(--glass); backdrop-filter: blur(18px) saturate(170%); border:1px solid var(--border); border-radius:var(--radius-3xl); box-shadow:var(--shadow); }
+
+    .hero{ display:grid; gap:28px; grid-template-columns: 1.15fr 1fr; align-items:center; margin: 48px auto; }
+    @media (max-width: 1100px){ .hero{ grid-template-columns: 1fr; } }
+    .hero h1{ font-size: clamp(30px, 4.6vw, 64px); line-height:1.02; margin:0; letter-spacing:-0.02em; }
+    .hero h1 .shine{ background:linear-gradient(90deg,var(--primary),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; position:relative; }
+    .hero h1 .shine::after{
+      content:""; position:absolute; inset:0; background: linear-gradient(120deg, transparent 0 40%, rgba(255,255,255,.7) 50%, transparent 60%);
+      transform: translateX(-120%); animation: sweep 3.2s ease-in-out infinite;
+    }
+    @keyframes sweep{ 60%{ transform: translateX(20%);} 100%{ transform: translateX(120%);} }
+    .hero p{ color:var(--muted); margin:6px 0 0; }
+
+    /* =============== DEMO IA (dentro del hero) =============== */
+    #iaDemo .panel { animation:pulse-soft 6s ease-in-out infinite; }
+    @keyframes pulse-soft{ 50%{ box-shadow: 0 0 0 0 rgba(125,211,252,.0), 0 0 24px rgba(125,211,252,.15); } }
+    #iaDemo .stream{ min-height:72px; max-height:190px; overflow:auto; font-size:.95em; }
+    #iaDemo .chips{ display:flex; flex-wrap:wrap; gap:6px; }
+    #iaDemo .chips button{ position:relative; overflow:hidden; background:var(--glass-strong); border:1px solid var(--border); border-radius:8px; padding:4px 8px; color:var(--text); cursor:pointer; transition: transform .15s ease; }
+    #iaDemo .chips button:hover{ transform: translateY(-1px); }
+    #iaDemo .chips button::after{ content:""; position:absolute; inset:0; transform:scaleX(0); transform-origin:left; background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); transition:transform .35s ease; }
+    #iaDemo .chips button:hover::after{ transform:scaleX(1); }
+    #iaDemo .input-row{ display:flex; gap:8px; }
+    #iaDemo input{ flex:1; padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--glass); color:var(--text); }
+    #iaDemo button.ask{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:var(--primary); color:#0b1020; font-weight:800; cursor:pointer; }
+
+    /* =============== GRID MATERIAS =============== */
+    /* Animación de flotación compatible con tilt (usamos variables CSS para rotaciones y posición Y) */
+    @property --fy { syntax: "<length>"; inherits: false; initial-value: 0px; }
+    @property --rx { syntax: "<angle>";  inherits: false; initial-value: 0deg; }
+    @property --ry { syntax: "<angle>";  inherits: false; initial-value: 0deg; }
+
+    .grid{ margin: 12px auto 64px; display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .card{
+      position:relative; overflow:hidden; padding:18px; border-radius:20px; isolation:isolate;
+      color:var(--card-text); text-decoration:none; min-height:170px; display:flex; flex-direction:column; justify-content:center;
+      transition: box-shadow 250ms ease, border-color 250ms ease;
+      background:var(--glass); border:1px solid var(--border);
+      transform: translateY(var(--fy)) rotateY(var(--ry)) rotateX(var(--rx));
+      animation: floatCard 9s ease-in-out infinite;
+    }
+    @keyframes floatCard{ 0%,100%{ --fy:0px; } 50%{ --fy:-6px; } }
+
+    .card .title{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px; color:var(--card-text); }
+    .card .desc{ color:var(--card-muted); font-size:14px; margin-top:8px; }
+
+    /* Glow del puntero + borde decorativo con barrido */
+    .card::after{
+      content:""; position:absolute; inset:-1px; pointer-events:none; z-index:-1;
+      background: radial-gradient(160px 120px at calc(var(--px, .5) * 100%) calc(var(--py, .5) * 100%), rgba(255,255,255,.35), transparent 60%);
+      transition: background-position .08s linear;
+    }
+    .card::before{
+      content:""; position:absolute; inset:-1px; z-index:-2; border-radius:inherit; padding:1px;
+      background: conic-gradient(from 220deg, rgba(255,255,255,.10), rgba(255,255,255,0) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,.10));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; opacity:.45; transition: opacity .2s ease;
+      animation: borderSweep 6s linear infinite;
+    }
+    @keyframes borderSweep { to { transform: rotate(360deg); } }
+    .card:hover::before{ opacity:.85 }
+
+    /* Variantes por materia (todas con su color y patrón) */
+    .card--quimica{
+      background:
+        radial-gradient(8px 8px at 10% 20%, rgba(0,0,0,.06) 20%, transparent 22%) 0 0/36px 36px,
+        radial-gradient(8px 8px at 28px 18px, rgba(0,0,0,.05) 20%, transparent 22%) 0 0/36px 36px,
+        linear-gradient(180deg, rgba(125,211,252,0.26), rgba(125,211,252,0.14));
+      box-shadow: 0 2px 18px rgba(125,211,252,0.18);
+    }
+    .card--fisica{
+      background:
+        linear-gradient(transparent 0 98%, rgba(0,0,0,.08) 98%) 0 0/ 100% 36px,
+        linear-gradient(180deg, rgba(196,181,253,.26), rgba(196,181,253,.14));
+      box-shadow: 0 2px 18px rgba(196,181,253,0.18);
+    }
+    .card--mates{
+      background:
+        linear-gradient(transparent 0 98%, rgba(0,0,0,.04) 98%) 0 0/ 100% 32px,
+        linear-gradient(180deg, rgba(234,179,8,.26), rgba(234,179,8,.14));
+      box-shadow: 0 2px 18px rgba(234,179,8,.18);
+    }
+    .card--informatica{
+      background:
+        radial-gradient(8px 8px at 85% 15%, rgba(0,0,0,.06) 20%, transparent 22%) 0 0/38px 38px,
+        linear-gradient(180deg, rgba(59,130,246,.26), rgba(59,130,246,.14));
+      box-shadow: 0 2px 18px rgba(59,130,246,.20);
+    }
+    .card--ingenieria{
+      background:
+        linear-gradient(135deg, rgba(15,118,110,.08), transparent 60%),
+        linear-gradient(180deg, rgba(52,211,153,.26), rgba(52,211,153,.14));
+      box-shadow: 0 2px 18px rgba(52,211,153,.20);
+    }
+    .card--medicina{
+      background:
+        radial-gradient(8px 8px at 20% 80%, rgba(0,0,0,.06) 20%, transparent 22%) 0 0/34px 34px,
+        linear-gradient(180deg, rgba(251,113,133,.26), rgba(251,113,133,.14));
+      box-shadow: 0 2px 18px rgba(251,113,133,.20);
+    }
+    .card--biologia{
+      background:
+        linear-gradient(transparent 0 98%, rgba(0,0,0,.06) 98%) 0 0/ 100% 28px,
+        linear-gradient(180deg, rgba(74,222,128,.26), rgba(74,222,128,.14));
+      box-shadow: 0 2px 18px rgba(74,222,128,.20);
+    }
+    .card--economia{
+      background:
+        radial-gradient(8px 8px at 30% 30%, rgba(0,0,0,.05) 20%, transparent 22%) 0 0/34px 34px,
+        linear-gradient(180deg, rgba(163,230,53,.26), rgba(163,230,53,.14));
+      box-shadow: 0 2px 18px rgba(163,230,53,.20);
+    }
+    .card--geologia{
+      background:
+        linear-gradient(transparent 0 98%, rgba(0,0,0,.06) 98%) 0 0/ 100% 30px,
+        linear-gradient(180deg, rgba(245,158,11,.26), rgba(245,158,11,.14));
+      box-shadow: 0 2px 18px rgba(245,158,11,.20);
+    }
+    .card--astronomia{
+      background:
+        radial-gradient(10px 10px at 70% 20%, rgba(255,255,255,.08) 15%, transparent 20%) 0 0/44px 44px,
+        linear-gradient(180deg, rgba(99,102,241,.28), rgba(99,102,241,.16));
+      box-shadow: 0 2px 18px rgba(99,102,241,.22);
+    }
+    .card--historia{
+      background:
+        linear-gradient(135deg, rgba(124,45,18,.08), transparent 60%),
+        linear-gradient(180deg, rgba(251,146,60,.26), rgba(251,146,60,.14));
+      box-shadow: 0 2px 18px rgba(251,146,60,.20);
+    }
+    .card--arte{
+      background:
+        radial-gradient(8px 8px at 85% 70%, rgba(0,0,0,.05) 20%, transparent 22%) 0 0/36px 36px,
+        linear-gradient(180deg, rgba(244,114,182,.26), rgba(244,114,182,.14));
+      box-shadow: 0 2px 18px rgba(244,114,182,.20);
+    }
+
+    /* Emoji "pequeño" animado (primer span del título) */
+    .card .title > span:first-child{ display:inline-block; animation: emoji-bounce 5s ease-in-out infinite; }
+    @keyframes emoji-bounce{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-3px); } }
+
+    /* Emoji de fondo gigante, translúcido y borroso */
+    .card .emoji-bg{
+      position:absolute; inset:auto 8px 8px auto; font-size:120px; line-height:1;
+      opacity:.15; filter: blur(1px); pointer-events:none; user-select:none; z-index:0;
+      animation: floatDecor 12s ease-in-out infinite;
+    }
+    @keyframes floatDecor{ 0%,100%{ transform: translate(4px,2px) scale(1);} 50%{ transform: translate(-6px,-4px) scale(1.04);} }
+    .card > *{ position:relative; z-index:1; }
+
+    /* =============== DONACIONES =============== */
+    .donate-pill{ display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:14px;
+      background:#fff; color:#1e293b; border:1px solid rgba(0,0,0,.12); box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .donate-pill .swatch{ width:14px; height:14px; border-radius:50%; border:1px solid rgba(0,0,0,.12); }
+    .donate-pill svg{ flex:none; }
+
+    /* =============== SOCIALS =============== */
+    .socials{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .social-btn{
+      display:grid; place-items:center; width:36px; height:36px; border-radius:999px; background:#fff;
+      border:1px solid rgba(0,0,0,.08); box-shadow:0 2px 8px rgba(0,0,0,.08); transition: transform .15s ease;
+    }
+    .social-btn:hover{ transform: translateY(-1px) scale(1.03); }
+
+    /* =============== THEME PANEL =============== */
+    .theme-panel{
+      position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 70; background: var(--glass-strong);
+      border:1px solid var(--border); backdrop-filter: blur(14px) saturate(160%); border-radius:18px; box-shadow:var(--shadow);
+      display:flex; align-items:center; gap:10px; padding:8px 10px;
+    }
+    .theme-pill{ display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border);
+                 background:var(--glass); border-radius:14px; cursor:pointer; font-weight:700; }
+    .theme-pill .swatch{ width:14px; height:14px; border-radius:50%; border:1px solid var(--border); }
+    .theme-pill[aria-pressed="true"]{ outline:2px solid rgba(56,189,248,.7); box-shadow:0 0 0 6px rgba(56,189,248,0.12); }
+    #showThemesBtn{
+      position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 69; display:none;
+      background: var(--glass-strong); border:1px solid var(--border); padding:8px 12px; border-radius:14px; color:var(--text); cursor:pointer;
+    }
+
+    /* =============== MODAL PERFIL =============== */
+    .modal{ position: fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,.4); z-index:80; }
+    .modal-content{
+      min-width: 320px; max-width: 520px; padding:16px; border-radius:18px; background: var(--glass-strong);
+      border:1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .modal-content .row{ display:grid; gap:6px; margin:10px 0; }
+    .modal-content input, .modal-content select{ padding:8px 10px; border-radius:10px; border:1px solid var(--border); background:var(--glass); color:var(--text); }
+    .modal-content .actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:6px; }
+    .modal-content .actions button{ padding:8px 12px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); cursor:pointer; font-weight:600; }
+
+    /* =============== REVEAL =============== */
+    .reveal{ opacity:0; transform: translateY(16px) scale(.98); filter: blur(6px); }
+    .reveal.visible{ opacity:1; transform:none; filter:none; transition: 720ms cubic-bezier(.2,.8,.2,1); }
+
+    /* =============== SVG HERO ANIMS =============== */
+    .animated-lines{ animation: float-lines 12s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .animated-text{ animation: float-text 16s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes float-lines{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-10px);} }
+    @keyframes float-text{ 0%,100%{ transform: translateY(0) translateX(0);} 50%{ transform: translateY(8px) translateX(-6px);} }
+
+    @media (prefers-reduced-motion: reduce){
+      .orb, .nav, .hero, .grid, .reveal, .neon-grid, .aurora, .card, .theme-panel, .animated-lines, .animated-text { animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BACKGROUNDS -->
+  <div class="space-bg" aria-hidden="true"></div>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="neon-grid" aria-hidden="true"></div>
+  <div class="leaf-bg" aria-hidden="true"></div>
+  <div class="silver-bg" aria-hidden="true"></div>
+  <div class="sea-bg" aria-hidden="true"></div>
+  <div id="spotlight" class="spotlight" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="nav panel" role="navigation" aria-label="Principal">
+    <div class="brand">
+      <div class="logo" aria-label="Innove: logo"><span class="core" aria-hidden="true"></span></div>
+      <span aria-label="Innove ">Innove</span>
+    </div>
+    <div class="nav-cta">
+      <a href="Planner.html">Planner</a>
+      <a href="laboratorio.html">Labratorios</a>
+      <a href="Innove AI.html">Asistente IA</a>
+      <a href="contacto.html">Contacto</a>
+      <button class="theme" id="schemeBtn" aria-pressed="false" aria-label="Cambiar esquema claro/oscuro">🌓</button>
+      <!-- Perfil -->
+      <div id="profileSection"><button id="loginBtn" class="theme" type="button">Iniciar sesión</button></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="container">
+    <!-- HERO -->
+    <header class="hero">
+      <div class="reveal">
+        <h1>Innove: campus con <span class="shine">diseño único</span> por materia</h1>
+        <p>Cada tarjeta tiene su estilo propio, texto negro para máxima legibilidad y animaciones suaves. Todo en un solo archivo <b>HTML</b>.</p>
+
+        <!-- DEMO IA junto al título -->
+        <section id="iaDemo" aria-label="Demostración de chat IA" style="margin-top:14px;">
+          <div class="panel" style="padding:16px; display:grid; gap:10px;">
+            <h3 style="margin:0; font-size:1em; font-weight:800; letter-spacing:.2px;">Demo IA 💬</h3>
+            <div id="stream" class="stream" role="log" aria-live="polite"></div>
+            <div id="chips" class="chips" role="list"></div>
+            <div class="input-row">
+              <input id="prompt" type="text" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta" autocomplete="off" />
+              <button id="ask" class="ask" type="button">Enviar</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="panel reveal" style="position:relative; height:360px; overflow:hidden;">
+        <svg class="hero-svg" viewBox="0 0 600 400" style="position:absolute; inset:0; width:100%; height:100%; opacity:.78;">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7dd3fc" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="#c4b5fd" stop-opacity=".95"/>
+            </linearGradient>
+          </defs>
+          <g stroke="url(#g1)" stroke-width="1" fill="none" opacity="0.7" class="animated-lines">
+            <path d="M40,340 Q120,200 220,240 T400,220 T560,160" />
+            <path d="M20,300 Q160,180 280,220 T480,200" />
+            <path d="M80,360 T220,300 T420,260 T560,200" />
+          </g>
+          <g font-family="ui-monospace, monospace" font-size="14" fill="currentColor" opacity="0.85" class="animated-text">
+            <text x="60" y="60">E = mc²</text>
+            <text x="250" y="90">PV = nRT</text>
+            <text x="480" y="140">∇·E = ρ/ε₀</text>
+            <text x="320" y="320">f(x)=∫ e^{-x²} dx</text>
+            <text x="140" y="210">O(n log n)</text>
+            <text x="440" y="260">σ = F/A</text>
+          </g>
+        </svg>
+      </div>
+    </header>
+
+    <!-- MATERIAS -->
+    <section id="materias" class="grid" aria-label="Materias principales">
+      <a href="quimica.html" aria-label="Química" class="card panel reveal tilt card--quimica">
+        <div class="title"><span style="font-size:2em;">🔬</span><span>Química</span><span class="chip" style="margin-left:8px; font-size:.95em;">Reacciones · Tabla</span></div>
+        <p class="desc" style="font-weight:600;">Modelos moleculares, estequiometría y simulaciones seguras.</p>
+      </a>
+      <a href="fisica.html" aria-label="Física" class="card panel reveal tilt card--fisica">
+        <div class="title"><span style="font-size:2em;">⚙️</span><span>Física</span><span class="chip" style="margin-left:8px; font-size:.95em;">Ondas · Mecánica</span></div>
+        <p class="desc">Óptica, electricidad y fuerzas con visualización en tiempo real.</p>
+      </a>
+      <a href="matematicas.html" aria-label="Matemáticas" class="card panel reveal tilt card--mates">
+        <div class="title"><span style="font-size:2em;">📐</span><span>Matemáticas</span><span class="chip" style="margin-left:8px; font-size:.95em;">Cálculo · Álgebra</span></div>
+        <p class="desc">Demostraciones paso a paso, generador de problemas y gráficas.</p>
+      </a>
+      <a href="informatica.html" aria-label="Informática" class="card panel reveal tilt card--informatica">
+        <div class="title"><span style="font-size:2em;">💻</span><span>Informática</span><span class="chip" style="margin-left:8px; font-size:.95em;">Algoritmos · IA</span></div>
+        <p class="desc">Entorno de código, retos y tutor inteligente.</p>
+      </a>
+      <a href="ingenieria.html" aria-label="Ingeniería" class="card panel reveal tilt card--ingenieria">
+        <div class="title"><span style="font-size:2em;">🏗️</span><span>Ingeniería</span><span class="chip" style="margin-left:8px; font-size:.95em;">Estructuras · CAD</span></div>
+        <p class="desc">Cálculo de cargas, materiales y optimización de diseños.</p>
+      </a>
+      <a href="medicina.html" aria-label="Medicina" class="card panel reveal tilt card--medicina">
+        <div class="title"><span style="font-size:2em;">🩺</span><span>Medicina</span><span class="chip" style="margin-left:8px; font-size:.95em;">Anatomía · Fisio</span></div>
+        <p class="desc">Atlas anatómico, casos clínicos y flashcards inteligentes.</p>
+      </a>
+      <a href="biologia.html" aria-label="Biología" class="card panel reveal tilt card--biologia">
+        <div class="title"><span style="font-size:2em;">🧬</span><span>Biología</span><span class="chip" style="margin-left:8px; font-size:.95em;">Células · Genética</span></div>
+        <p class="desc">Ecología, genética y anatomía comparada asistida por IA.</p>
+      </a>
+      <a href="economia.html" aria-label="Economía" class="card panel reveal tilt card--economia">
+        <div class="title"><span style="font-size:2em;">📈</span><span>Economía</span><span class="chip" style="margin-left:8px; font-size:.95em;">Micro · Macro</span></div>
+        <p class="desc">Oferta y demanda, elasticidades y modelos de crecimiento.</p>
+      </a>
+      <a href="geologia.html" aria-label="Geología" class="card panel reveal tilt card--geologia">
+        <div class="title"><span style="font-size:2em;">🪨</span><span>Geología</span><span class="chip" style="margin-left:8px; font-size:.95em;">Rocas · Tectónica</span></div>
+        <p class="desc">Minerales, fósiles y procesos geodinámicos.</p>
+      </a>
+      <a href="astronomia.html" aria-label="Astronomía" class="card panel reveal tilt card--astronomia">
+        <div class="title"><span style="font-size:2em;">🌌</span><span>Astronomía</span><span class="chip" style="margin-left:8px; font-size:.95em;">Estrellas · Planetas</span></div>
+        <p class="desc">Sistema solar, exoplanetas y observación del cielo.</p>
+      </a>
+      <a href="historia.html" aria-label="Historia" class="card panel reveal tilt card--historia">
+        <div class="title"><span style="font-size:2em;">🏺</span><span>Historia</span><span class="chip" style="margin-left:8px; font-size:.95em;">Antigua · Moderna</span></div>
+        <p class="desc">Líneas de tiempo, civilizaciones y fuentes primarias.</p>
+      </a>
+      <a href="arte.html" aria-label="Arte" class="card panel reveal tilt card--arte">
+        <div class="title"><span style="font-size:2em;">🎨</span><span>Arte</span><span class="chip" style="margin-left:8px; font-size:.95em;">Pintura · Diseño</span></div>
+        <p class="desc">Estilos, técnicas y análisis visual interactivo.</p>
+      </a>
+    </section>
+
+    <!-- DONAR -->
+    <section id="donar" class="container" aria-label="Apoya el proyecto">
+      <div class="panel" style="padding:22px; margin-bottom: 26px; display:grid; gap:16px;">
+        <h2 style="margin:0; font-size:1.4em; font-weight:800; letter-spacing:.3px;">Apóyame 💙</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+          <!-- Patreon con logo -->
+          <a class="theme-pill donate-pill" href="https://patreon.com/TU_PERFIL" target="_blank" rel="noopener" aria-label="Abrir Patreon">
+            <span class="swatch" style="background: linear-gradient(135deg,#ff424d,#ffb0b5);"></span>
+            <svg viewBox="0 0 256 256" width="22" height="22" aria-hidden="true">
+              <circle cx="148" cy="92" r="60" fill="#ff424d"/>
+              <rect x="40" y="40" width="40" height="176" rx="8" fill="#1e293b"/>
+            </svg>
+          </a>
+          <!-- PayPal con logo -->
+          <a class="theme-pill donate-pill" href="https://paypal.me/TUUSUARIO" target="_blank" rel="noopener" aria-label="Donar con PayPal">
+            <span class="swatch" style="background: linear-gradient(135deg,#0070ba,#00a0ff);"></span>
+            <svg viewBox="0 0 256 256" width="22" height="22" aria-hidden="true">
+              <path d="M92 196h-26a10 10 0 0 1-10-12l20-112a10 10 0 0 1 10-8h72c48 0 70 20 62 56-8 36-36 56-84 56h-28l-6 20z" fill="#003087"/>
+              <path d="M102 196l6-20h26c36 0 60-14 68-40 1-2 2-6 2-8-10 16-30 24-58 24h-42l-12 44z" fill="#009cde"/>
+            </svg>
+          </a>
+          <!-- Bizum -->
+          <button id="bizumBtn" class="theme-pill" type="button" aria-label="Copiar número Bizum (601010194)">
+            <span class="swatch" style="background: linear-gradient(135deg,#34d399,#86efac);"></span>
+            <strong>Bizum</strong>
+            <span style="opacity:.8; font-weight:600;">· 601&nbsp;010&nbsp;194</span>
+          </button>
+        </div>
+        <small style="color:var(--muted)">Con Bizum: abre la app de tu banco y envía al número indicado. Con PayPal, usa tu enlace <code>paypal.me</code>. En Patreon, enlaza tu página de creador.</small>
+        <div id="toast" role="status" aria-live="polite" style="display:none; font-weight:700;">¡Número Bizum copiado!</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="container">
+    <div class="panel" style="padding:32px 24px; display:grid; gap:22px;">
+      <h2 style="margin:0 0 8px; font-size:1.5em; font-weight:800; letter-spacing:.5px;">Contacto</h2>
+      <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
+        <div style="flex:1; min-width:220px;">
+          <div style="font-weight:600; color:var(--text); margin-bottom:8px; font-size:1.08em;">¿Propuestas o dudas? Escríbeme:</div>
+          <a href="mailto:rebazacarpioal18@gmail.com" style="font-size:1.15em; color:var(--primary); text-decoration:none; font-weight:700; display:inline-block; margin-top:4px;">📧 rebazacarpioal18@gmail.com</a>
+          <div class="socials" style="margin-top:10px;">
+            <!-- YouTube -->
+            <a class="social-btn" href="https://www.youtube.com/@lozohe"_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M23 7s-.2-1.4-.8-2C21.5 4.3 20.6 4.2 20 4c-3-.2-8-.2-8-.2s-5 0-8 .2c-.6.2-1.5.3-2.2 1-.6.6-.8 2-.8 2S1 8.6 1 10.3v1.4C1 13.4 1 15 1 15s.2 1.4.8 2c.7.7 1.6.8 2.2 1 3 .2 8 .2 8 .2s5 0 8-.2c.6-.2 1.5-.3 2.2-1 .6-.6.8-2 .8-2s.1-1.6.1-3.3v-1.4C23.1 8.6 23 7 23 7z" fill="#FF0000"/>
+                <path d="M10 8.7v6.6l6-3.3-6-3.3z" fill="#fff"/>
+              </svg>
+            </a>
+            <!-- Instagram -->
+            <a class="social-btn" href="https://instagram.com/alonzeth" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <radialGradient id="ig" cx="50%" cy="50%" r="75%">
+                  <stop offset="0%" stop-color="#feda75"/><stop offset="50%" stop-color="#d62976"/><stop offset="100%" stop-color="#962fbf"/>
+                </radialGradient>
+                <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z" fill="url(#ig)"/>
+                <circle cx="12" cy="12" r="3.5" fill="#fff"/>
+                <circle cx="17.5" cy="6.5" r="1.2" fill="#fff"/>
+              </svg>
+            </a>
+            <!-- TikTok -->
+            <a class="social-btn" href="https://www.tiktok.com/@_alonsothe" target="_blank" rel="noopener" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M14 3c1.3 2.6 2.9 4 6 4v3c-2.6 0-4.5-.8-6-2v6.8a6 6 0 1 1-3-5.2V12a3 3 0 1 0 1.5 2.6L12.5 3H14z" fill="#000"/>
+              </svg>
+            </a>
+            <!-- LinkedIn -->
+            <a class="social-btn" href="https://www.linkedin.com/in/alonsothe-rebaza-carpio-115795375/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 8.98h4v12H3zM9 8.98h3.8v1.8h.1c.5-.9 1.8-2 3.7-2 3.9 0 4.6 2.6 4.6 6v6.2h-4v-5.5c0-1.3 0-3-1.9-3s-2.2 1.5-2.2 3v5.5H9z" fill="#0A66C2"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px; color:var(--muted); font-size:15px;">Hecho con ❤ para estudiantes. Prototipo estático — listo para conectar a una API de IA.</div>
+    </div>
+  </footer>
+
+  <!-- PANEL DE TEMAS (BOTTOM) -->
+  <div class="theme-panel" role="toolbar" aria-label="Selección de tema">
+    <button class="theme-pill" data-theme-option="planetado" aria-pressed="true" title="Tema Planetado (espacio)">
+      <span class="swatch" style="background:radial-gradient(circle, #7dd3fc, #0ea5e9);"></span><span>Planetado</span>
+    </button>
+    <button class="theme-pill" data-theme-option="neon" aria-pressed="false" title="Tema Neón">
+      <span class="swatch" style="background:linear-gradient(45deg,#22d3ee,#a78bfa);"></span><span>Neón</span>
+    </button>
+    <button class="theme-pill" data-theme-option="aurora" aria-pressed="false" title="Tema Aurora">
+      <span class="swatch" style="background:linear-gradient(45deg,#34d399,#7dd3fc);"></span><span>Aurora</span>
+    </button>
+    <button class="theme-pill" data-theme-option="hoja" aria-pressed="false" title="Tema Hoja">
+      <span class="swatch" style="background:linear-gradient(45deg,#4ade80,#bbf7d0);"></span><span>Hoja</span>
+    </button>
+    <button class="theme-pill" data-theme-option="plateado" aria-pressed="false" title="Tema Plateado">
+      <span class="swatch" style="background:linear-gradient(45deg,#f3f4f6,#d1d5db);"></span><span>Plateado</span>
+    </button>
+    <button class="theme-pill" data-theme-option="mar" aria-pressed="false" title="Tema Mar">
+      <span class="swatch" style="background:linear-gradient(45deg,#bae6fd,#7dd3fc);"></span><span>Mar</span>
+    </button>
+    <button id="hideThemesBtn" class="theme-pill" data-hide role="button" aria-label="Ocultar panel de temas">
+      <span class="swatch" style="background:transparent;"></span><span>×</span>
+    </button>
+  </div>
+  <button id="showThemesBtn" aria-label="Mostrar panel de temas">Temas</button>
+
+  <!-- MODAL PERFIL -->
+  <div id="loginModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-content">
+      <h3 id="loginTitle" style="margin:0 0 10px; font-weight:800;">Personaliza tu perfil</h3>
+      <div class="row">
+        <label for="usernameInput">Nombre</label>
+        <input id="usernameInput" type="text" placeholder="Tu nombre" />
+      </div>
+      <div class="row">
+        <label for="gmailInput">Gmail</label>
+        <input id="gmailInput" type="email" placeholder="tuusuario@gmail.com" />
+      </div>
+      <div class="row">
+        <label for="passwordInput">Contraseña</label>
+        <input id="passwordInput" type="password" placeholder="••••••••" />
+      </div>
+      <div class="row">
+        <label for="emojiSelect">Emoji</label>
+        <select id="emojiSelect">
+          <option>😎</option><option>🧪</option><option>⚙️</option><option>📐</option><option>💻</option><option>🏗️</option>
+          <option>🩺</option><option>🧬</option><option>📈</option><option>🪨</option><option>🌌</option><option>🎨</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button id="cancelProfileBtn" type="button">Cancelar</button>
+        <button id="saveProfileBtn" type="button">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Reveal on view ===== */
+    const observer = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) e.target.classList.add('visible');
+    }, { threshold: .2 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* Spotlight follows cursor */
+    const spot = document.getElementById('spotlight');
+    window.addEventListener('pointermove', (e) => {
+      spot?.style.setProperty('--mx', e.clientX + 'px');
+      spot?.style.setProperty('--my', e.clientY + 'px');
+    }, { passive: true });
+
+    /* Tilt + pointer glow (ahora usando variables CSS para no romper el float) */
+    document.querySelectorAll('.card').forEach(card => {
+      let rect;
+      function move(x, y){
+        card.style.setProperty('--ry', (x*10)+'deg');
+        card.style.setProperty('--rx', (-y*10)+'deg');
+      }
+      card.addEventListener('pointermove', (e) => {
+        rect = rect || card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        move(x,y);
+        card.style.setProperty('--px', (x+.5).toFixed(3));
+        card.style.setProperty('--py', (y+.5).toFixed(3));
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.removeProperty('--ry'); card.style.removeProperty('--rx');
+        rect = null; card.style.removeProperty('--px'); card.style.removeProperty('--py');
+      });
+      card.addEventListener('focus', () => move(0, -0.06));
+      card.addEventListener('blur',  () => { card.style.removeProperty('--ry'); card.style.removeProperty('--rx'); });
+    });
+
+    /* Scheme (light/dark) persisted */
+    const schemeBtn = document.getElementById('schemeBtn');
+    function setScheme(next){
+      document.documentElement.setAttribute('data-scheme', next);
+      localStorage.setItem('innove-scheme', next);
+      schemeBtn.setAttribute('aria-pressed', String(next==='light'));
+    }
+    const savedScheme = localStorage.getItem('innove-scheme');
+    setScheme(savedScheme || document.documentElement.getAttribute('data-scheme') || 'dark');
+    schemeBtn.addEventListener('click', ()=> setScheme(document.documentElement.getAttribute('data-scheme')==='light' ? 'dark' : 'light'));
+
+    /* Themes (Planetado, Neón, Aurora, Hoja, Plateado y Mar) — persistencia */
+    const themeBtns = document.querySelectorAll('.theme-panel .theme-pill');
+    function setTheme(name){
+      document.documentElement.setAttribute('data-theme', name);
+      localStorage.setItem('innove-theme', name);
+      themeBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeOption === name)));
+    }
+    const savedTheme = localStorage.getItem('innove-theme'); setTheme(savedTheme || 'planetado');
+    themeBtns.forEach(btn => {
+      if(btn.hasAttribute('data-hide')) return; // el botón de ocultar no cambia tema
+      btn.addEventListener('click', ()=> setTheme(btn.dataset.themeOption));
+    });
+
+    /* Panel de temas: ocultar / mostrar, persistencia */
+    const hideThemesBtn = document.getElementById('hideThemesBtn');
+    const showThemesBtn = document.getElementById('showThemesBtn');
+    const themePanel = document.querySelector('.theme-panel');
+    if(localStorage.getItem('innove-themePanelHidden') === 'true'){
+      themePanel.style.display = 'none'; showThemesBtn.style.display = 'block';
+    }
+    hideThemesBtn?.addEventListener('click', ()=>{
+      themePanel.style.display = 'none'; showThemesBtn.style.display = 'block';
+      localStorage.setItem('innove-themePanelHidden','true');
+    });
+    showThemesBtn?.addEventListener('click', ()=>{
+      themePanel.style.display = ''; showThemesBtn.style.display = 'none';
+      localStorage.removeItem('innove-themePanelHidden');
+    });
+
+    /* ====== Gestión de perfil de usuario ====== */
+    const profileSection = document.getElementById('profileSection');
+    const loginModal = document.getElementById('loginModal');
+    const usernameInput = document.getElementById('usernameInput');
+    const gmailInput = document.getElementById('gmailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const emojiSelect = document.getElementById('emojiSelect');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+    const initialLoginBtn = document.getElementById('loginBtn');
+
+    function openProfileModal(){
+      const user = JSON.parse(localStorage.getItem('innove-user')||'{}');
+      usernameInput.value = user.name || '';
+      gmailInput.value = user.gmail || '';
+      passwordInput.value = user.pass || '';
+      if(user.emoji) emojiSelect.value = user.emoji;
+      loginModal.style.display = 'flex';
+    }
+    function closeProfileModal(){ loginModal.style.display = 'none'; }
+
+    function applyProfile(){
+      profileSection.innerHTML = '';
+      const data = JSON.parse(localStorage.getItem('innove-user')||'{}');
+      if(data && data.name){
+        let lvl = Number(localStorage.getItem('innove-level')||'1'); if(!Number.isFinite(lvl)||lvl<1) lvl = 1;
+        localStorage.setItem('innove-level', String(lvl));
+        const emojiSpan = document.createElement('span'); emojiSpan.textContent = data.emoji || '😎';
+        const nameSpan  = document.createElement('strong'); nameSpan.textContent = data.name;
+        const levelSpan = document.createElement('span'); levelSpan.className='level'; levelSpan.textContent = 'Lv.'+lvl;
+        profileSection.appendChild(emojiSpan); profileSection.appendChild(nameSpan); profileSection.appendChild(levelSpan);
+        profileSection.style.cursor='pointer'; profileSection.onclick = openProfileModal;
+      }else{
+        const btn = document.createElement('button'); btn.className='theme'; btn.id='loginBtn2'; btn.type='button'; btn.textContent='Iniciar sesión';
+        btn.addEventListener('click', openProfileModal); profileSection.appendChild(btn); profileSection.style.cursor='default'; profileSection.onclick = null;
+      }
+    }
+
+    saveProfileBtn.addEventListener('click', ()=>{
+      const user = { name: usernameInput.value.trim(), gmail: gmailInput.value.trim(), pass: passwordInput.value, emoji: emojiSelect.value };
+      localStorage.setItem('innove-user', JSON.stringify(user));
+      if(!localStorage.getItem('innove-level')) localStorage.setItem('innove-level','1');
+      applyProfile(); closeProfileModal();
+    });
+    cancelProfileBtn.addEventListener('click', closeProfileModal);
+    initialLoginBtn?.addEventListener('click', openProfileModal);
+    applyProfile();
+
+    /* ====== Demo de IA (fake, local) ====== */
+    const promptEl = document.getElementById('prompt');
+    const streamEl = document.getElementById('stream');
+    const chipsEl = document.getElementById('chips');
+    const btn = document.getElementById('ask');
+
+    const REPLIES = {
+      quimica: [
+        'Balanceo rápido: 2 H₂ + O₂ → 2 H₂O. Consejo: iguala primero los elementos menos frecuentes.',
+        'Ácidos y bases: pH = -log₁₀[H⁺]. Si [H⁺]=1e-3 ⇒ pH≈3 (ácido).',
+        'Estequiometría: moles = masa / PM. Usa el reactivo limitante para el rendimiento.',
+        'Enlace químico: iónico (transferencia), covalente (compartir). Polaridad depende de ΔEN.',
+        'Gas ideal: PV = nRT. A 1 mol, 300 K y 1 atm ⇒ V ≈ 24.6 L.'
+      ],
+      fisica: [
+        'Ley de Ohm: V = I·R. Ej: R=10Ω, I=0.2A ⇒ V=2V.',
+        'Cinemática: x = x₀ + v₀t + ½at². Si a es constante, v = v₀ + at.',
+        'Energía: Eₖ = ½mv². Conservación: Eₖ + Eₚ (si no hay pérdidas).',
+        'Ondas: v = f·λ. Aumenta f ⇒ disminuye λ si v fija.',
+        'Electricidad: P = V·I. En CA, P≈Vₑff·Iₑff·cosφ.'
+      ],
+      mates: [
+        'Derivada: d/dx (x²) = 2x. Regla del producto: (uv)ʼ = uʼv + uvʼ.',
+        'Integral: ∫ cos x dx = sin x + C. Sustitución u para compuestos.',
+        'Límites: usa factorización o L’Hôpital si es 0/0 o ∞/∞.',
+        'Álgebra lineal: det(A)≠0 ⇒ A invertible. Autovalores: det(A-λI)=0.',
+        'Probabilidad: P(A∩B)=P(A)P(B|A). Distribución normal ~ N(μ,σ²).'
+      ],
+      informatica: [
+        'Complejidad: mergesort O(n log n). Hash: promedio O(1), peor O(n).',
+        'Estructuras: pila (LIFO), cola (FIFO), árbol binario, heap, grafo.',
+        'Redes: TCP fiable; UDP rápido. HTTP/3 usa QUIC sobre UDP.',
+        'IA: overfitting ⇒ regulariza (dropout/L2) y valida con datos de test.',
+        'Concurrencia: evita condiciones de carrera con locks u operaciones atómicas.'
+      ],
+      ingenieria: [
+        'Esfuerzo: σ=F/A. Deformación: ε=ΔL/L. Módulo de Young: E=σ/ε.',
+        'Vigas: momento flector M y cortante V → dimensiona para σ admisible.',
+        'Fatiga: ciclos altos ⇒ usa curvas S-N y factor de seguridad adecuado.',
+        'CAD: refuerza con nervaduras y radios para reducir concentraciones de tensión.',
+        'Fluidos: Re=ρvD/μ. Re<2000 laminar; >4000 turbulento (aprox.).'
+      ],
+      medicina: [
+        'Signos vitales: FC 60–100 lpm, FR 12–20, TA ~120/80, T 36–37.5°C.',
+        'Semiología: inspección, palpación, percusión, auscultación (IPPA).',
+        'Fármaco: dosis mg/kg. Atenúa interacciones revisando metabolismo (CYP).',
+        'ECG básico: onda P, QRS, T. FC≈ 300/num grandes cuadros.',
+        'Bioética: autonomía, beneficencia, no maleficencia y justicia.'
+      ]
+    };
+
+    const SUGGEST = {
+      quimica: ['Balancea C₃H₈ + O₂ → CO₂ + H₂O', 'Calcula pH de 0.01 M HCl', '¿Cómo identifico el reactivo limitante?'],
+      fisica: ['Resuelve caída libre con v₀', 'Explica circuito RC', 'Interferencia de doble rendija'],
+      mates: ['Deriva (x³·eˣ)', 'Integra 1/(1+x²)', 'Demuestra el binomio de Newton'],
+      informatica: ['Complejidad de Dijkstra', 'Qué es programación dinámica', 'Ejemplo de promesas en JS'],
+      ingenieria: ['Dimensiona una viga simplemente apoyada', 'Cálculo de FS a tracción', 'Qué es Re en fluidos'],
+      medicina: ['Diagnóstico diferencial de tos', 'Lectura rápida de hemograma', 'Guía ABC en trauma']
+    };
+
+    let lastPrompt = '';
+    const lastUsed = { quimica:null, fisica:null, mates:null, informatica:null, ingenieria:null, medicina:null };
+
+    function detectTopic(q){
+      const t = q.toLowerCase();
+      if (/quim|mol|tabla|ph|ácid|acid|base/.test(t)) return 'quimica';
+      if (/ohm|fuerza|onda|fisic|circuit|cinem|energia|energía|caíd|caid|gravedad/.test(t)) return 'fisica';
+      if (/mate|deriv|integr|limite|límite|matri|vector/.test(t)) return 'mates';
+      if (/algorit|código|program|ia|redes|tcp|udp/.test(t)) return 'informatica';
+      if (/ingen|carga|material|viga|cad|fluido/.test(t)) return 'ingenieria';
+      if (/medic|anatom|clínic|ecg|dosis|signo|diagnos|tos|hemograma/.test(t)) return 'medicina';
+      return 'mates';
+    }
+
+    function pickUnique(topic){
+      const options = REPLIES[topic];
+      if (!options?.length) return 'Pide un tema y te ayudo.';
+      let idx; do { idx = Math.floor(Math.random()*options.length); } while (idx === lastUsed[topic] && options.length>1);
+      lastUsed[topic] = idx; return options[idx];
+    }
+
+    function typewriteHTML(html){
+      streamEl.innerHTML = '';
+      let i = 0; const txt = html;
+      const id = setInterval(() => { streamEl.innerHTML = txt.slice(0, ++i); if (i >= txt.length) clearInterval(id); }, 10);
+    }
+
+    function renderChips(topic){
+      chipsEl.innerHTML = '';
+      (SUGGEST[topic]||[]).forEach(s => {
+        const b = document.createElement('button');
+        b.textContent = s; b.onclick = ()=>{ promptEl.value = s; btn.click(); };
+        chipsEl.appendChild(b);
+      });
+    }
+
+    function answer(q){
+      const topic = detectTopic(q);
+      const reply = pickUnique(topic);
+      typewriteHTML(`<strong>${topic.toUpperCase()}</strong>: ${reply}`);
+      renderChips(topic);
+    }
+
+    btn?.addEventListener('click', ()=>{ const q = promptEl.value.trim(); if(!q) return; lastPrompt=q; answer(q); });
+    promptEl?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); btn.click(); } });
+
+    /* ====== Emoji gigante de fondo para cada tarjeta ====== */
+    (function addEmojiBackgrounds(){
+      document.querySelectorAll('.card').forEach(card => {
+        if (card.querySelector('.emoji-bg')) return;
+        const firstIcon = card.querySelector('.title > span:first-child');
+        if (!firstIcon) return;
+        const emoji = firstIcon.textContent.trim();
+        const bg = document.createElement('span');
+        bg.className = 'emoji-bg';
+        bg.textContent = emoji;
+        card.appendChild(bg);
+      });
+    })();
+
+    /* ====== Logo que sigue el cursor ====== */
+    const logoEl = document.querySelector('.brand .logo');
+    if(logoEl){
+      function handleLogoMove(e){
+        const rect = logoEl.getBoundingClientRect();
+        const x = e.clientX - (rect.left + rect.width/2);
+        const y = e.clientY - (rect.top + rect.height/2);
+        logoEl.style.setProperty('--tx', (x/6).toFixed(1) + 'px');
+        logoEl.style.setProperty('--ty', (y/6).toFixed(1) + 'px');
+      }
+      logoEl.addEventListener('pointerenter', ()=>{ window.addEventListener('pointermove', handleLogoMove); });
+      logoEl.addEventListener('pointerleave', ()=>{
+        window.removeEventListener('pointermove', handleLogoMove);
+        logoEl.style.setProperty('--tx','0px'); logoEl.style.setProperty('--ty','0px');
+      });
+    }
+
+    /* ====== Bizum copy-to-clipboard + toast ====== */
+    const toastEl = document.getElementById('toast');
+    function toast(msg){ if(!toastEl) return; toastEl.textContent = msg; toastEl.style.display='block'; setTimeout(()=> toastEl.style.display='none', 1600); }
+    document.getElementById('bizumBtn')?.addEventListener('click', async ()=>{
+      try { await navigator.clipboard.writeText('601010194'); toast('¡Número Bizum copiado!'); }
+      catch { toast('Cópialo manual: 601 010 194'); }
+    });
+  </script>
+</body>
+</html>
+
