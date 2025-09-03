@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fiabilidad y mantenimiento — Teoría PRO + 196 ejercicios</title>
+<meta name="color-scheme" content="light dark"/>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --bg:#f9f7ff; --paper:#ffffff; --ink:#101223; --muted:#556079;
+    --brand:#7c3aed; --accent:#a855f7; --accent2:#f472b6;
+    --border:#e5e7eb; --shadow:0 10px 30px rgba(24,24,40,.10);
+    --radius:16px; --maxw:92ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b0814; --paper:#0f1424; --ink:#e8ecff; --muted:#b4bde0; --brand:#a855f7; --accent:#c084fc; --accent2:#fb7185; --border:#1f2a44; --shadow:0 12px 28px rgba(0,0,0,.38);} }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1200px 740px at 95% -10%, #ede9fe 0%, transparent 60%),
+               radial-gradient(1000px 680px at 0% 120%, #fee2e2 0%, transparent 75%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:80; background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:70; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 75%,white 10%),color-mix(in oklab,var(--accent) 65%,white 15%)); color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .layout{max-width:1400px; margin:0 auto; padding:16px; display:grid; grid-template-columns: 300px 1fr; gap:16px}
+  @media (max-width: 980px){ .layout{ grid-template-columns: 1fr } .aside{ position:static } }
+  .aside{ position:sticky; top:74px; height:calc(100dvh - 88px); overflow:auto; border-right:1px dashed var(--border); padding-right:10px }
+  .navcard{background:var(--paper); border:1px solid var(--border); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
+  .navcard h3{margin:.2em 0 .6em; font-size:1.0em}
+  .navcard a{display:block; padding:.28em .5em; margin:.1em 0; text-decoration:none; border-radius:10px; color:color-mix(in oklab,var(--brand) 85%, var(--ink));}
+  .navcard a:hover{background:color-mix(in oklab,var(--paper) 82%, var(--accent) 8%)}
+  main{padding:0 2px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 16%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.1em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border); border-radius:12px;padding:12px 14px;margin:12px 0}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border); border-radius:10px;padding:8px 10px;margin:8px 0}
+  summary{cursor:pointer;font-weight:700}
+  code.k{display:block; white-space:pre; overflow:auto; padding:.8em; border:1px solid var(--border); border-radius:12px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+  .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:12px}
+  .tag{display:inline-block; padding:.2em .55em; border:1px solid var(--border); border-radius:999px; font-size:.78em; margin-right:.4em; color:var(--muted)}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:60;background:var(--paper);border:1px solid var(--border); border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, monospace; border:1px solid var(--border); padding:.1em .4em; border-radius:6px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <div class="badge">🧠</div>
+        <div>
+          <h1 class="brand-title">Fiabilidad y mantenimiento</h1>
+          <div class="lead">MTBF, disponibilidad, RCM, FMEA/FTA, Weibull, Markov — teoría + <strong>196 ejercicios</strong></div>
+        </div>
+      </a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
+        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
+        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="aside">
+      <div class="navcard">
+        <h3>Índice</h3>
+        <nav id="sidenav">
+          <a href="#cap1">1. Fundamentos de fiabilidad</a>
+          <a href="#cap2">2. Distribuciones de vida (exp/Weibull/lognormal)</a>
+          <a href="#cap3">3. MTBF/MTTF/MTTR y disponibilidad</a>
+          <a href="#cap4">4. Diagramas de bloques (RBD): serie/ paralelo/ k-de-n</a>
+          <a href="#cap5">5. Árbol de fallos (FTA) y conjuntos mínimos de corte</a>
+          <a href="#cap6">6. FMEA/FMECA y RPN; criticidad</a>
+          <a href="#cap7">7. Sistemas reparables y modelos de Markov</a>
+          <a href="#cap8">8. Políticas de mantenimiento (CM/PM/CBM/RCM)</a>
+          <a href="#cap9">9. Repuestos y logística de mantenimiento</a>
+          <a href="#cap10">10. Ensayos de vida y censura; pruebas aceleradas</a>
+          <a href="#cap11">11. Confiabilidad en operación: crecimiento (Duane/AMSAA)</a>
+          <a href="#cap12">12. Seguridad funcional, LOPA/SIL (nociones)</a>
+          <a href="#cap13">13. KPIs, OEE y tableros</a>
+          <a href="#cap14">14. Taller Python + Excel + problemas integradores</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <section class="paper" id="top">
+        <h2>Guía PRO de Fiabilidad y Mantenimiento</h2>
+        <p class="lead">Contenido profesional con fórmulas claras (MathJax), procedimientos paso a paso, cuadros de buenas prácticas y <strong>196 ejercicios</strong> (14×14) con respuestas/pistas rápidas.</p>
+        <div class="callout"><strong>Notación básica.</strong> Función de fiabilidad \(R(t)\), de fallo \(F(t)=1-R(t)\), densidad \(f(t)=F'(t)\), tasa de fallo \(h(t)=\tfrac{f(t)}{R(t)}\). Media de vida \(\operatorname{MTTF}=\int_0^\infty R(t)\,dt\). Para reparables, \(\lambda\) (fallo), \(\mu\) (reparación), \(\text{MTBF}=1/\lambda\) si \(\lambda\) constante, \(\text{MTTR}=1/\mu\).</div>
+      </section>
+
+      <!-- 1 -->
+      <section class="paper" id="cap1">
+        <h2>1) Fundamentos de fiabilidad</h2>
+        <div class="grid">
+          <div>
+            <h3>Conceptos clave</h3>
+            <ul>
+              <li><em>Fiabilidad</em>: probabilidad de que un ítem opere sin fallo hasta t: \(R(t)=P(T>t)\).</li>
+              <li><em>Disponibilidad</em> \(A(t)\): probabilidad de estar operativo en t. En régimen: \(A=\tfrac{\text{MTBF}}{\text{MTBF}+\text{MTTR}}\) para exponencial.</li>
+              <li><em>Mantenibilidad</em>: probabilidad de reparar en \(\le t\): \(M(t)\).</li>
+              <li>Curva de bañera: mortalidad infantil (\(h\) decreciente), vida útil (\(h\) ~ constante), desgaste (\(h\) creciente).</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Fórmulas esenciales</h3>
+            <p>\(R(t)=e^{-\int_0^t h(u)\,du}\). Si \(h(t)=\lambda\) constante ⇒ \(R(t)=e^{-\lambda t}\) (exponencial). \(E[T]=\int_0^{\infty} R(t)\,dt\).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Deriva \(R(t)\) a partir de \(h(t)=a+bt\)</summary>Pista: integra \(h\).</details></li>
+            <li><details><summary>MTTF general</summary>Usa \(\int_0^\infty R(t)\,dt\) con \(R=e^{-\lambda t - ct^2}\).</details></li>
+            <li><details><summary>Clasifica tramo de la bañera</summary>Dado \(h(t)\), indica si ↓, ≈, ↑.</details></li>
+            <li><details><summary>Compara fiabilidad de dos diseños</summary>Con gráficas de \(R(t)\).</details></li>
+            <li><details><summary>Propiedad sin memoria</summary>Demuestra para exponencial.</details></li>
+            <li><details><summary>Interpretación física de \(h(t)\)</summary>Haz un párrafo técnico.</details></li>
+            <li><details><summary>Vida útil objetivo</summary>Encuentra t con \(R(t)=0.95\).</details></li>
+            <li><details><summary>Parámetros a partir de percentiles</summary>\(R(t_{10})=0.9\), \(R(t_{50})=0.5\).</details></li>
+            <li><details><summary>Transformaciones</summary>Cambia unidades (horas→ciclos).</details></li>
+            <li><details><summary>Chequeo de consistencia</summary>\(R(0)=1\), \(R(\infty)=0\).</details></li>
+            <li><details><summary>Definiciones</summary>Escribe diferencias: confiabilidad vs disponibilidad vs mantenibilidad.</details></li>
+            <li><details><summary>Árbol de causas</summary>Boceto simple.</details></li>
+            <li><details><summary>Tiempo a fallo y a reparación</summary>¿cuándo usar exponencial?</details></li>
+            <li><details><summary>Política de blackout</summary>Explica impacto en \(A\).</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="paper" id="cap2">
+        <h2>2) Distribuciones de vida (exponencial, Weibull, lognormal, gamma)</h2>
+        <div class="callout"><strong>Weibull</strong> \(R(t)=e^{-(t/\eta)^\beta}\), \(h(t)=\tfrac{\beta}{\eta}(t/\eta)^{\beta-1}\), \(\text{MTTF}=\eta\,\Gamma(1+1/\beta)\). <strong>Lognormal</strong>: \(\ln T\sim\mathcal N(\mu,\sigma^2)\). <strong>Gamma/Exponencial</strong> útiles para repuestos y reparaciones.</div>
+        <div class="grid">
+          <div>
+            <h3>Estimación de parámetros</h3>
+            <ul>
+              <li>MLE (máxima verosimilitud) con/ sin censura.</li>
+              <li>Regresión por rangos en papel de Weibull.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Interpretación de \(\beta\)</h3>
+            <ul>
+              <li>\(\beta<1\): mortalidad infantil (\(h\) decreciente).</li>
+              <li>\(\beta=1\): exponencial (\(h\) constante).</li>
+              <li>\(\beta>1\): desgaste (\(h\) creciente).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Ajusta Weibull</summary>Con dos percentiles \(t_{63.2}\) y \(t_{10}\).</details></li>
+            <li><details><summary>Calcula MTTF</summary>Para \(\beta=1.5\), \(\eta=1200\,h\).</details></li>
+            <li><details><summary>Obtén \(h(t)\)</summary>Para lognormal (expresión).</details></li>
+            <li><details><summary>Compara exponencial vs Weibull</summary>Misma MTTF, distinto \(h\).</details></li>
+            <li><details><summary>Censura por la derecha</summary>Escribe la verosimilitud.</details></li>
+            <li><details><summary>Gráfica en papel de Weibull</summary>Transformación lineal.</details></li>
+            <li><details><summary>Simula tiempos de fallo</summary>Genera 1000 muestras y estima \(\beta\).</details></li>
+            <li><details><summary>Test de bondad de ajuste</summary>Anderson–Darling (noción).</details></li>
+            <li><details><summary>Intervalos de confianza</summary>Para \(\eta\) y \(\beta\) (noción).</details></li>
+            <li><details><summary>Mixturas</summary>Dos poblaciones.</details></li>
+            <li><details><summary>Vida B10/B50</summary>Percentiles.</details></li>
+            <li><details><summary>Arrhenius</summary>Relación temperatura–vida (noción).</details></li>
+            <li><details><summary>Transformación probit/logit</summary>Comparación.</details></li>
+            <li><details><summary>Regla de tres sigma</summary>Para lognormal.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="paper" id="cap3">
+        <h2>3) MTBF/MTTF/MTTR y disponibilidad</h2>
+        <div class="callout"><strong>Disponibilidad estacionaria</strong> de un sistema 2‑estados (up/down): \(A=\tfrac{\mu}{\lambda+\mu}=\tfrac{\text{MTBF}}{\text{MTBF}+\text{MTTR}}\). <strong>Disponibilidad intrínseca</strong> (IA), <strong>logística</strong> (LA) y <strong>operacional</strong> (Ao) difieren por incluir logística y tiempos de espera.</div>
+        <div class="grid">
+          <div>
+            <h3>KPIs clásicos</h3>
+            <ul>
+              <li>\(\text{MTBF}=\text{Tiempo de operación}/\#\text{fallos}\).</li>
+              <li>\(\text{MTTR}=\text{Tiempo de reparación}/\#\text{reparaciones}\).</li>
+              <li>\(\text{MDT}=\text{downtime} = \text{MTTR}+\text{MLDT}\) (esperas).</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Fiabilidad vs disponibilidad</h3>
+            <p>Alta fiabilidad reduce fallos; alta mantenibilidad reduce el tiempo fuera de servicio. Ambas elevan \(A\).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Comparación de diseños</summary>Diseño A: mayor MTBF; B: menor MTTR. ¿Cuál da mayor \(A\)?</details></li>
+            <li><details><summary>\(A\) con reparaciones no exponenciales</summary>Usa aproximación de renovación.</details></li>
+            <li><details><summary>Disponibilidad objetivo 0.999</summary>Calcula MTTR máximo dado MTBF.</details></li>
+            <li><details><summary>Backlog</summary>Impacto de logística en Ao.</details></li>
+            <li><details><summary>Uptime anual</summary>Convierte \(A\) a horas/año.</details></li>
+            <li><details><summary>MTBF vs MTTF</summary>Aplica a reparables/no reparables.</details></li>
+            <li><details><summary>MAK (Mean Active Maintenance)</summary>Desglose de MDT.</details></li>
+            <li><details><summary>MTTR percentil</summary>Usa lognormal.</details></li>
+            <li><details><summary>Tiempos de latencia</summary>Incluye movilización y permisos.</details></li>
+            <li><details><summary>Cascada de disponibilidad</summary>Serie de n equipos.</details></li>
+            <li><details><summary>Niveles de servicio</summary>Define KPI para contrato.</details></li>
+            <li><details><summary>Disponibilidad instantánea</summary>Función \(A(t)\) transitoria.</details></li>
+            <li><details><summary>Simula 1 año de operación</summary>Monte Carlo.</details></li>
+            <li><details><summary>OEE vs A</summary>Diferencias.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="paper" id="cap4">
+        <h2>4) RBD: diagramas de bloques de fiabilidad</h2>
+        <div class="callout"><strong>Serie</strong>: \(R_\text{serie}=\prod_i R_i\). <strong>Paralelo</strong>: \(R_\text{par}=1-\prod_i (1-R_i)\). <strong>k-de-n</strong>: \(R=\sum_{j=k}^n \binom{n}{j} \prod_{\text{j éxitos}} R \prod_{\text{n-j fallos}} (1-R)\) si idénticos e independientes. <strong>Standby frío</strong>: usa tasas conmutadas y cobertura \(c\).</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Calcula R(t) de 3 en serie</summary>Exponenciales \(\lambda_i\).</details></li>
+            <li><details><summary>Paralelo de 2 iguales</summary>Deriva \(R(t)\) y \(h(t)\).</details></li>
+            <li><details><summary>2 de 3 (k=2)</summary>Con \(R(t)=e^{-t/1000}\).</details></li>
+            <li><details><summary>Redundancia activa vs standby</summary>Compara.</details></li>
+            <li><details><summary>Correlación</summary>Fallo común (\(\beta\)-factor) noción.</details></li>
+            <li><details><summary>Bypass de mantenimiento</summary>Impacto en \(A\).</details></li>
+            <li><details><summary>Sub-árbol equivalente</summary>Reduce RBD.</details></li>
+            <li><details><summary>Serie-paralelo mixto</summary>Compón.</details></li>
+            <li><details><summary>Disponibilidad de RBD</summary>Usa \(A_i\) en vez de \(R_i\).</details></li>
+            <li><details><summary>Optimiza redundancia</summary>Restricción de costo.</details></li>
+            <li><details><summary>Distribuciones distintas</summary>Weibull + exp.</details></li>
+            <li><details><summary>Tiempo a primer fallo</summary>Min de exponenciales.</details></li>
+            <li><details><summary>Tiempo a fallo del k-de-n</summary>Suma de orden estadístico (noción).</details></li>
+            <li><details><summary>Monte Carlo de RBD</summary>Esqueleto de simulación.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="paper" id="cap5">
+        <h2>5) Árbol de fallos (FTA)</h2>
+        <div class="callout"><strong>Top event</strong> se expresa en compuertas AND/OR. <em>Minimal cut sets</em> (MCS) y <em>minimal path sets</em> (MPS) permiten estimar probabilidad del evento tope. Aproximación de eventos raros: \(P(\text{AND})\approx\prod p_i\), \(P(\text{OR})\approx\sum p_i\) si \(p_i\ll1\).</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Construye FTA de un SAI</summary>Define top event.</details></li>
+            <li><details><summary>Calcula probabilidad anual</summary>Con tasas \(\lambda\) y tiempos de misión.</details></li>
+            <li><details><summary>Deriva MCS</summary>Para un árbol pequeño.</details></li>
+            <li><details><summary>Compara FTA vs RBD</summary>Cuándo usar cada uno.</details></li>
+            <li><details><summary>Puertas votantes</summary>k-de-n en FTA.</details></li>
+            <li><details><summary>Eventos comunes</summary>Fallo común \(\beta\).</details></li>
+            <li><details><summary>Análisis de sensibilidad</summary>Importancias de Birnbaum (noción).</details></li>
+            <li><details><summary>Reparación</summary>Extiende con Markov.</details></li>
+            <li><details><summary>Validación del árbol</summary>Revisa independencia.</details></li>
+            <li><details><summary>Cut set no minimal</summary>Detecta y elimina.</details></li>
+            <li><details><summary>Asignación de datos</summary>De MTBF a probabilidad.</details></li>
+            <li><details><summary>Conversión a RBD</summary>Subredes equivalentes.</details></li>
+            <li><details><summary>Escenarios</summary>Con/ sin pruebas periódicas.</details></li>
+            <li><details><summary>Informe FTA</summary>Plantilla de reporte.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="paper" id="cap6">
+        <h2>6) FMEA/FMECA y RPN; integración RCM</h2>
+        <div class="grid">
+          <div>
+            <h3>FMEA</h3>
+            <p>Identifica <em>modo de fallo</em>, <em>causa</em>, <em>efecto</em>, <em>controles</em>. Prioriza por RPN: \(\text{RPN}=S\times O\times D\) (Severidad, Ocurrencia, Detección) o por criticidad cuantitativa (FMECA).</p>
+          </div>
+          <div>
+            <h3>RCM (Reliability-Centered Maintenance)</h3>
+            <ul>
+              <li>Define funciones y fallos funcionales.</li>
+              <li>Determina consecuencias y selecciona tareas: inspección, sustitución por edad, condición, rediseño.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Tabla FMEA</summary>Completa 5 filas de un sistema.</details></li>
+            <li><details><summary>Criterios de severidad</summary>Define escala 1–10 clara.</details></li>
+            <li><details><summary>RPN empatados</summary>Cómo desempatar (criticidad).</details></li>
+            <li><details><summary>CBM vs PM por edad</summary>Selecciona técnica.</details></li>
+            <li><details><summary>Verificación de efectividad</summary>\(h(t)\) decrece tras tarea.</details></li>
+            <li><details><summary>AMFE de proceso</summary>Defectos de producción.</details></li>
+            <li><details><summary>Plan RCM</summary>7 preguntas clásicas (esquema).</details></li>
+            <li><details><summary>Documentación</summary>Registros mínimos.</details></li>
+            <li><details><summary>Indicadores post‑RCM</summary>MTBF↑, fallos críticos↓.</details></li>
+            <li><details><summary>Chequeo de sesgos</summary>Evita inflar RPN.</details></li>
+            <li><details><summary>costo/beneficio</summary>ROI de una tarea.</details></li>
+            <li><details><summary>Frecuencia óptima de inspección</summary>Minimiza costo esperado.</details></li>
+            <li><details><summary>Mapa de calor de riesgos</summary>Construye.</details></li>
+            <li><details><summary>Auditoría</summary>Lista de verificación.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="paper" id="cap7">
+        <h2>7) Sistemas reparables y modelos de Markov</h2>
+        <div class="callout">Proceso de dos estados con tasas \(\lambda\) y \(\mu\). Matriz generadora \(Q=\begin{bmatrix}-\lambda & \lambda\\ \mu & -\mu\end{bmatrix}\). Solución transitoria y estacionaria. Extiende a múltiples componentes y standby.</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Disponibilidad transitoria</summary>\(A(t)\) para condiciones iniciales.</details></li>
+            <li><details><summary>Dos en paralelo reparables</summary>Modelo CTMC.</details></li>
+            <li><details><summary>Standby frío con cobertura \(c\)</summary>Estados y tasas.</details></li>
+            <li><details><summary>Tiempo medio hasta reparación</summary>Markov de absorción.</details></li>
+            <li><details><summary>Flujo de fallos</summary>NHPP vs HPP.</details></li>
+            <li><details><summary>Balance detallado</summary>Comprueba \(\pi Q=0\).</details></li>
+            <li><details><summary>Disponibilidad a largo plazo</summary>\(\mu/(\lambda+\mu)\).</details></li>
+            <li><details><summary>Políticas de prueba periódica</summary>Efecto en \(\lambda\).</details></li>
+            <li><details><summary>Colapso por reparación lenta</summary>Discusión.</details></li>
+            <li><details><summary>Matriz Q por bloques</summary>Descomposición.</details></li>
+            <li><details><summary>Cadena discreta</summary>DTMC para inspecciones.</details></li>
+            <li><details><summary>MTBF efectivo</summary>De un sistema reparable.</details></li>
+            <li><details><summary>Little en mantenimiento</summary>\(L=\lambda W\) para colas.</details></li>
+            <li><details><summary>Validación</summary>Contra simulación.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="paper" id="cap8">
+        <h2>8) Políticas de mantenimiento (CM/PM/CBM/RCM)</h2>
+        <div class="grid">
+          <div>
+            <h3>Definiciones</h3>
+            <ul>
+              <li><strong>CM</strong> correctivo; <strong>PM</strong> preventivo por edad/uso; <strong>CBM</strong> por condición; <strong>RCM</strong> selección óptima orientada a funciones y consecuencias.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Renovación y reemplazo por edad</h3>
+            <p>Costo promedio por unidad de tiempo: \(C(T)=\dfrac{C_R F(T)+C_M}{T}\) (esquema). Optimiza \(T\).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Edad óptima</summary>Dados \(C_R,C_M\) y Weibull.</details></li>
+            <li><details><summary>Intervalo de inspección</summary>Minimiza riesgo+coste.</details></li>
+            <li><details><summary>Plan híbrido</summary>Inspección + sustitución.</details></li>
+            <li><details><summary>Backlog máximo</summary>Restricción de KPI.</details></li>
+            <li><details><summary>CBM con umbral</summary>Define señal y regla.</details></li>
+            <li><details><summary>Prioridad de órdenes</summary>Colas M/M/c.</details></li>
+            <li><details><summary>Ruta de técnicos</summary>VRP simplificado.</details></li>
+            <li><details><summary>Consolidación de paradas</summary>Ventana común.</details></li>
+            <li><details><summary>Criticalidad</summary>Pondera riesgo y costo.</details></li>
+            <li><details><summary>Pruebas funcionales</summary>Intervalos óptimos.</details></li>
+            <li><details><summary>Reducción de \(\lambda\)</summary>Efecto de rediseño.</details></li>
+            <li><details><summary>MTTR objetivo</summary>Dimensiona recursos.</details></li>
+            <li><details><summary>Simulación de plan anual</summary>Monte Carlo.</details></li>
+            <li><details><summary>Contrato SLA</summary>Traduce a métricas.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="paper" id="cap9">
+        <h2>9) Repuestos y logística de mantenimiento</h2>
+        <div class="callout"><strong>Demanda de repuestos</strong> para fallos raros: aproximación de Poisson. Nivel de servicio: prob. de no stockout. Política (s,S) o base‑stock en repuestos críticos.</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Stock de seguridad</summary>Para tasa \(\lambda\) y lead time L.</details></li>
+            <li><details><summary>Multinivel</summary>Almacén central y site.</details></li>
+            <li><details><summary>Tiempo de ciclo</summary>Coste total anual.</details></li>
+            <li><details><summary>Partes canibalizadas</summary>Modelo.</details></li>
+            <li><details><summary>Fill rate objetivo</summary>Calcula S.</details></li>
+            <li><details><summary>Obsolescencia</summary>Riesgo y estrategia.</details></li>
+            <li><details><summary>Reparables vs consumibles</summary>Decisión.</details></li>
+            <li><details><summary>Política de intercambio</summary>Rotables.</details></li>
+            <li><details><summary>Pooling</summary>Compartir repuestos.</details></li>
+            <li><details><summary>Contrato con proveedor</summary>Consignación/VMI.</details></li>
+            <li><details><summary>Lead time aleatorio</summary>Simula.</details></li>
+            <li><details><summary>Coste de no disponibilidad</summary>Valoriza downtime.</details></li>
+            <li><details><summary>ABC de repuestos</summary>Clasifica por criticidad/valor.</details></li>
+            <li><details><summary>Dash de repuestos</summary>Indicadores mínimos.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="paper" id="cap10">
+        <h2>10) Ensayos de vida y censura; pruebas aceleradas</h2>
+        <div class="grid">
+          <div>
+            <h3>Censura</h3>
+            <ul>
+              <li>Tipo I (tiempo fijo) y Tipo II (fallos fijos).</li>
+              <li>Verosimilitud combinada.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Pruebas aceleradas</h3>
+            <p>Modelos Arrhenius/Eyring: \(\ln \eta = a + b/T\) (ej.). Traslada parámetros a uso normal.</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Plan de demostración de fiabilidad</summary>RDT: tamaño de muestra para cero fallos.</details></li>
+            <li><details><summary>MLE con censura</summary>Deriva para Weibull.</details></li>
+            <li><details><summary>Cálculo de B10</summary>A partir del ajuste.</details></li>
+            <li><details><summary>Traslación acelerada→uso</summary>Arrhenius.</details></li>
+            <li><details><summary>Confianza 90%</summary>En MTTF.</details></li>
+            <li><details><summary>Diseña un test HALT/HASS</summary>Conceptos.</details></li>
+            <li><details><summary>Regla de decisión</summary>Curva OC.</details></li>
+            <li><details><summary>Datos censurados a izquierda</summary>Sensores con límite.</details></li>
+            <li><details><summary>Comparación logrank</summary>Dos poblaciones.</details></li>
+            <li><details><summary>Validación de banco</summary>Checklist.</details></li>
+            <li><details><summary>Tamaño de muestra mínimo</summary>Para detectar mejora de 20%.</details></li>
+            <li><details><summary>Ensayo de desgaste</summary>\(\beta>1\).</details></li>
+            <li><details><summary>Jackknife/Bootstrap</summary>IC no paramétricos.</details></li>
+            <li><details><summary>Reporta resultados</summary>Tabla estándar.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="paper" id="cap11">
+        <h2>11) Confiabilidad en operación: crecimiento (Duane/AMSAA)</h2>
+        <div class="callout">Modelo NHPP *Crow–AMSAA*: \(N(t)=K t^\beta\), tasa instantánea \(\lambda(t)=K\beta t^{\beta-1}\). Si \(\beta<1\) mejora (fallos decrecientes); \(\beta>1\) empeora.</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Estimación de \(K,\beta\)</summary>Regresión log–log de datos acumulados.</details></li>
+            <li><details><summary>Proyección de fallos</summary>Predice próximos 1000 h.</details></li>
+            <li><details><summary>Efecto de rediseños</summary>Saltos en la curva.</details></li>
+            <li><details><summary>Tasa instantánea</summary>Compara con media móvil.</details></li>
+            <li><details><summary>Intervención efectiva</summary>Detecta cambio significativo.</details></li>
+            <li><details><summary>Intervalo de confianza</summary>Para \(\beta\).</details></li>
+            <li><details><summary>Separar por familias</summary>Plataformas distintas.</details></li>
+            <li><details><summary>Reglas de limpieza de datos</summary>Duplicados/errores.</details></li>
+            <li><details><summary>AMSAA vs MTBF rodante</summary>Diferencias.</details></li>
+            <li><details><summary>Stopping rule</summary>Meta de confiabilidad.</details></li>
+            <li><details><summary>FMEA viva</summary>Actualiza frecuencias.</details></li>
+            <li><details><summary>Burn‑in</summary>Decide sí/no.</details></li>
+            <li><details><summary>Gráfico de Pareto</summary>80/20 de fallos.</details></li>
+            <li><details><summary>Auditoría de datos</summary>Campos mínimos.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="paper" id="cap12">
+        <h2>12) Seguridad funcional, LOPA/SIL (nociones)</h2>
+        <div class="grid">
+          <div>
+            <h3>Conceptos</h3>
+            <ul>
+              <li>LOPA: capas de protección independientes.</li>
+              <li>SIL: objetivos de riesgo/ PFDavg de funciones instrumentadas.</li>
+              <li>Spurious trip vs fallo peligroso.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Cálculos base</h3>
+            <p>\(\text{PFD}_{avg} \approx \tfrac{\lambda_D T_{prueba}}{2}\) para arquitectura simple con pruebas periódicas (aprox.).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Esquema LOPA</summary>Evento iniciador y IPLs.</details></li>
+            <li><details><summary>PFDavg</summary>Con prueba anual.</details></li>
+            <li><details><summary>1oo2 vs 2oo3</summary>Comparación.</details></li>
+            <li><details><summary>Pruebas parciales</summary>Efecto en PFD.</details></li>
+            <li><details><summary>Spurious Trip</summary>Probabilidad de falsa actuación.</details></li>
+            <li><details><summary>SFF (safe failure fraction)</summary>Noción.</details></li>
+            <li><details><summary>Demanda alta vs baja</summary>Escenarios.</details></li>
+            <li><details><summary>Cobertura de diagnóstico</summary>Impacto.</details></li>
+            <li><details><summary>Beta común causa</summary>Agrega a cálculo.</details></li>
+            <li><details><summary>Intervalo óptimo de prueba</summary>Minimiza riesgo+coste.</details></li>
+            <li><details><summary>Arquitectura M-out-of-N</summary>Traducción a RBD.</details></li>
+            <li><details><summary>Reporte SIL</summary>Secciones clave.</details></li>
+            <li><details><summary>Valida independencia IPL</summary>Lista de chequeo.</details></li>
+            <li><details><summary>Conecta con FTA</summary>Eventos peligrosos.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="paper" id="cap13">
+        <h2>13) KPIs, OEE y tableros</h2>
+        <div class="grid">
+          <div>
+            <h3>OEE</h3>
+            <ul>
+              <li>\(\text{OEE}=\text{Disponibilidad}\times\text{Rendimiento}\times\text{Calidad}\).</li>
+              <li>Pérdidas mayores: paradas, microparadas, velocidad, rechazos.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Dashboard mínimo</h3>
+            <ul>
+              <li>MTBF/MTTR por activo crítico.</li>
+              <li>Backlog, cumplimiento PM, pareto de fallos.</li>
+              <li>Coste de mantenimiento por unidad producida.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Construye OEE</summary>Con datos mensuales.</details></li>
+            <li><details><summary>KPI de confiabilidad</summary>Define meta trimestral.</details></li>
+            <li><details><summary>Control estadístico</summary>Gráfica de MTBF.</details></li>
+            <li><details><summary>SLA</summary>Traduce a \(A\) y penalizaciones.</details></li>
+            <li><details><summary>Árbol de valor</summary>Impacto económico de mejoras.</details></li>
+            <li><details><summary>Mapa de criticidad</summary>Riesgo × costo.</details></li>
+            <li><details><summary>Indicadores de repuestos</summary>fill rate, rotación.</details></li>
+            <li><details><summary>Curva ABC de fallos</summary>80/20.</details></li>
+            <li><details><summary>Capacidad de mantenimiento</summary>Dimensiona equipo.</details></li>
+            <li><details><summary>Tiempo a restauración</summary>percentiles.</details></li>
+            <li><details><summary>MTBF ajustado</summary>Quita outliers.</details></li>
+            <li><details><summary>Lead vs Lag</summary>KPIs de guía y resultado.</details></li>
+            <li><details><summary>Historia de activo</summary>Campos clave en CMMS.</details></li>
+            <li><details><summary>Reporte mensual</summary>Estructura ejecutiva.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="paper" id="cap14">
+        <h2>14) Taller Python + Excel + problemas integradores</h2>
+        <div class="grid">
+          <div>
+            <h3>Python — Ajuste Weibull y simulación RBD</h3>
+            <code class="k">import numpy as np
+from scipy import stats
+
+# Ajuste Weibull (forma=beta, escala=eta)
+datos = np.array([500, 900, 1200, 1300, 1800, 2200])
+beta, loc, eta = stats.weibull_min.fit(datos, floc=0)
+R = lambda t: np.exp(-(t/eta)**beta)
+
+# Monte Carlo RBD: 2 en paralelo, uno en serie con ellos
+lam = 1/1200  # exp
+N=10000; t=1000
+fails = 0
+rng = np.random.default_rng(0)
+for _ in range(N):
+    # serie de: [A] y [B||C]
+    TA = rng.exponential(1/lam)
+    TB = rng.exponential(1/lam); TC = rng.exponential(1/lam)
+    sys_fail = min(TA, max(TB, TC))
+    fails += (sys_fail < t)
+R_est = 1 - fails/N
+            </code>
+          </div>
+          <div>
+            <h3>Excel — plantillas</h3>
+            <ul>
+              <li>Tabla FMEA con fórmula de RPN.</li>
+              <li>Hoja OEE y MTBF/MTTR con slicers por línea.</li>
+              <li>Papel de Weibull: transforma \(x=\ln t\), \(y=\ln[-\ln R]\).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Problemas integradores (14)</h3>
+          <ol>
+            <li><details><summary>Dimensiona redundancia</summary>Logra \(A\ge 0.999\) con MTTR dado.</details></li>
+            <li><details><summary>Plan RCM de una línea</summary>Entrega tareas, frecuencias y KPIs.</details></li>
+            <li><details><summary>RCM vs solo PM</summary>Compara costo anual.</details></li>
+            <li><details><summary>Fallo peligroso</summary>Calcula PFDavg y decide prueba.</details></li>
+            <li><details><summary>Política de repuestos</summary>Nivel \(S\) para 95% servicio.</details></li>
+            <li><details><summary>Crecimiento AMSAA</summary>Ajusta y proyecta.</details></li>
+            <li><details><summary>Ensayo de vida</summary>Define tamaño de muestra.</details></li>
+            <li><details><summary>Optimización de inspecciones</summary>Minimiza costo total.</details></li>
+            <li><details><summary>FTA de sistema de bombeo</summary>Top event: no entrega caudal.</details></li>
+            <li><details><summary>Modelo Markov</summary>2 bombas en paralelo reparables.</details></li>
+            <li><details><summary>Dashboard</summary>Borra borradores y presenta 6 gráficos clave.</details></li>
+            <li><details><summary>Arrhenius</summary>Traslada vida de 60°C a 35°C.</details></li>
+            <li><details><summary>Weibull mixto</summary>Dos poblaciones 70/30.</details></li>
+            <li><details><summary>Informe ejecutivo</summary>Escribe 1 página con hallazgos.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="paper">
+        <h2>Errores típicos y buenas prácticas</h2>
+        <ul>
+          <li>Usar MTBF como probabilidad: MTBF es un <em>promedio</em>, no una garantía puntual.</li>
+          <li>Asumir independencia donde hay fallo común: modela \(\beta\)-factor o causas latentes.</li>
+          <li>Tomar \(h\) constante sin evidencia: verifica con análisis de vida.</li>
+          <li>Medir disponibilidad sin separar logística: reporta IA/LA/Ao.</li>
+          <li>Ignorar censura en ensayos: sesga MTTF.</li>
+          <li>No cerrar el ciclo RC

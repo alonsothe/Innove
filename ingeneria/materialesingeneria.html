@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Materiales de Ingeniería — Teoría clara + ejercicios</title>
+<meta name="color-scheme" content="light dark">
+<!-- MathJax for LaTeX rendering -->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#b45309; --accent:#f59e0b; --accent2:#f97316;
+    --border:#e9edf6; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b1220; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9;
+      --brand:#fbbf24; --accent:#f59e0b; --accent2:#fb923c; --border:#203054;
+      --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1100px 700px at 80% -10%, #fff1d6 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #ffe9d6 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 70%,white 10%),color-mix(in oklab,var(--accent) 65%,white 20%));
+    color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 8%);border:1px solid var(--border);
+    border-radius:12px;padding:12px 14px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
+  .toc a{display:block;text-decoration:none;border:1px solid var(--border);border-radius:12px;padding:10px 12px;
+    color:color-mix(in oklab,var(--brand) 80%, var(--ink));background:color-mix(in oklab,var(--paper) 88%, transparent)}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 6%);
+    border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border);
+    border-radius:10px;padding:8px 10px;margin:8px 0}
+  summary{cursor:pointer;font-weight:700}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--paper);border:1px solid var(--border);
+    border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <a class="brand" href="#top">
+        <div class="badge">⚙️</div>
+        <div>
+          <h1 class="brand-title">Materiales de Ingeniería</h1>
+          <div class="lead">Teoría clara, fórmulas entendibles y ejercicios graduados</div>
+        </div>
+      </a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
+        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
+        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="paper" id="top">
+      <h1>Guía de Materiales de Ingeniería</h1>
+      <p class="lead">Doce capítulos con <strong>teoría mejorada</strong>, <strong>recuadros de fórmulas/leyes</strong> que indican <em>cuándo</em> y <em>por qué</em> usar cada relación, <strong>ejemplos resueltos</strong> y <strong>12 ejercicios por capítulo</strong> con respuesta breve (144 en total). Incluye notas de diseño y fallos típicos.</p>
+      <div class="callout"><strong>Cómo estudiar.</strong> 1) Revisa objetivos. 2) Lee el recuadro de fórmulas. 3) Estudia 2–4 ejemplos. 4) Practica 12 ejercicios (📝) y contrasta con las respuestas desplegables.</div>
+      <div class="toc">
+        <a href="#cap1">1. Estructura atómica y enlace</a>
+        <a href="#cap2">2. Redes cristalinas e índices de Miller</a>
+        <a href="#cap3">3. Defectos cristalinos y difusión</a>
+        <a href="#cap4">4. Diagramas de fases (binarios)</a>
+        <a href="#cap5">5. Transformaciones de fase · Fe–C</a>
+        <a href="#cap6">6. Propiedades mecánicas y ensayos</a>
+        <a href="#cap7">7. Fractura, fatiga y fluencia</a>
+        <a href="#cap8">8. Tratamientos térmicos y endurecimiento</a>
+        <a href="#cap9">9. Polímeros: estructura y viscoelasticidad</a>
+        <a href="#cap10">10. Cerámicos y vidrios</a>
+        <a href="#cap11">11. Composites y reglas de mezcla</a>
+        <a href="#cap12">12. Corrosión y degradación</a>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 1 ========= -->
+    <section class="paper" id="cap1">
+      <h2>1. Estructura atómica y enlace</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Entender cómo el tipo de enlace gobierna propiedades (E, α, κ, σ_elec, dureza).</div>
+      <div class="callout"><strong>📌 Ideas y fórmulas.</strong>
+        <ul>
+          <li>Enlaces: iónico, covalente, metálico, Van der Waals, puente H. Energía de enlace ↑ → punto de fusión y módulo ↑.</li>
+          <li>Curvas energía–distancia: equilibrio en \(r_0\), módulo \(E\) ∝ pendiente \(d^2U/dr^2|_{r_0}\).</li>
+          <li>Coef. dilatación \(\alpha\) ligado a la asimetría de \(U(r)\).</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Compara enlace iónico vs metálico</summary>El iónico: rígido, frágil, aislante; metálico: dúctil, conductor, reflectivo.</details></li>
+          <li><details><summary>¿Por qué \(E\) mayor → menor \(\alpha\)?</summary>Porque un pozo de energía más profundo es más simétrico y rígido.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Ordena por \(T_f\): NaCl, Al, Ar(s)</summary>NaCl &gt; Al &gt; Ar.</details></li>
+          <li><details><summary>Enlace predominante en Si</summary>Covalente (red diamantina).</details></li>
+          <li><details><summary>Propiedad ligada a electrones libres</summary>Conductividad eléctrica metálica.</details></li>
+          <li><details><summary>¿Por qué los polímeros suelen tener \(E\) bajo?</summary>Enlaces secundarios débilmente cooperativos.</details></li>
+          <li><details><summary>Relación \(E\)–pendiente \(U(r)\)</summary>\(E\propto d^2U/dr^2|_{r_0}\).</details></li>
+          <li><details><summary>Puentes de H en materiales</summary>Suben \(T_g\) en polímeros.</details></li>
+          <li><details><summary>Material más dúctil: NaCl o Al</summary>Al (metálico, dislocaciones móviles).</details></li>
+          <li><details><summary>Polaridad y solubilidad</summary>“Lo semejante disuelve a lo semejante”.</details></li>
+          <li><details><summary>Conduce mejor: Cu o Si intrínseco</summary>Cu.</details></li>
+          <li><details><summary>Enlace en grafito</summary>Covalente planar + Van der Waals entre capas.</details></li>
+          <li><details><summary>\(\alpha\) alto implica…</summary>Mayor cambio de dimensiones con T.</details></li>
+          <li><details><summary>Vidrios son…</summary>Amorfos (sin periodicidad de largo alcance).</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 2 ========= -->
+    <section class="paper" id="cap2">
+      <h2>2. Redes cristalinas e índices de Miller</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Reconocer SC, BCC, FCC, HCP; empaquetamiento, planos/direcciones (Miller) y densidades.</div>
+      <div class="callout"><strong>📌 Fórmulas.</strong>
+        <ul>
+          <li>Factores de empaquetamiento: SC 0.52, BCC 0.68, FCC/HCP 0.74.</li>
+          <li>Densidad de planos/direcciones depende de \(a\) y de la geometría.</li>
+          <li>Índices de Miller (hkl): inversos de las intersecciones normalizados a enteros.</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Plano (111) en FCC</summary>Plano densamente empaquetado; fácil de deslizamiento.</details></li>
+          <li><details><summary>Direcciones &lt;110&gt; en BCC</summary>Direcciones de deslizamiento preferentes con planos {110}.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Nº átomos por celda: BCC</summary>2.</details></li>
+          <li><details><summary>Relación r–a en FCC</summary>\(a=2\sqrt2\,r\).</details></li>
+          <li><details><summary>Planos densos en HCP</summary>{0001} y {10-10}.</details></li>
+          <li><details><summary>Direcciones densas en FCC</summary>&lt;110&gt;.</details></li>
+          <li><details><summary>Calcula F.E.E. de BCC</summary>0.68.</details></li>
+          <li><details><summary>¿Qué es policristalino?</summary>Agregado de granos con distintas orientaciones.</details></li>
+          <li><details><summary>Índices de (020)</summary>Equivale a (010) tras simplificar.</details></li>
+          <li><details><summary>¿Difracción X depende de?</summary>\(d\)-espaciamientos y factor de estructura.</details></li>
+          <li><details><summary>\(a\) de Cu (FCC) si r=0.128 nm</summary>\(a≈0.361\) nm.</details></li>
+          <li><details><summary>Sistema más dúctil: BCC o FCC a T baja</summary>FCC (más sistemas de deslizamiento activos).</details></li>
+          <li><details><summary>Macla vs deslizamiento</summary>Deformación por reorientación vs por movimiento de dislocaciones.</details></li>
+          <li><details><summary>Textura cristalográfica</summary>Orientación preferente inducida por proceso.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 3 ========= -->
+    <section class="paper" id="cap3">
+      <h2>3. Defectos cristalinos y difusión</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Vacancias, intersticiales, dislocaciones; límites de grano; leyes de Fick y Arrhenius.</div>
+      <div class="callout"><strong>📌 Relaciones clave.</strong>
+        <ul>
+          <li>Concentración de vacancias: \(N_v/N=\exp(-Q_v/\,kT)\).</li>
+          <li>Fick I: \(J=-D\,\tfrac{dC}{dx}\). Fick II: \(\tfrac{\partial C}{\partial t}=D\,\tfrac{\partial^2 C}{\partial x^2}\).</li>
+          <li>Difusividad: \(D=D_0\exp(-Q_D/RT)\).</li>
+          <li>Endurecimiento por solución sólida: \(\Delta\sigma\propto c^{1/2}\) (tendencia).</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Difusión C en Fe (intersticial) vs sustitucional</summary>Intersticial ≫ rápida por menor \(Q_D\).</details></li>
+          <li><details><summary>Perfil de difusión a tiempo corto</summary>\(C(x,t)=C_s\,\operatorname{erfc}\big(\tfrac{x}{2\sqrt{Dt}}\big)\) para sólido semiinfinito.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>\(J\) si \(D=10^{-10}\) m²/s y \(dC/dx=10^6\) m⁻⁴</summary>\(J=-10^{-4}\) m⁻²s⁻¹.</details></li>
+          <li><details><summary>\(D\) a 600 K si \(D_0=10^{-4}\), \(Q=200\) kJ/mol</summary>Usa Arrhenius.</details></li>
+          <li><details><summary>Más vacancias a 300 K o 600 K</summary>600 K.</details></li>
+          <li><details><summary>Efecto de reducir tamaño de grano</summary>Más barreras → mayor resistencia (Hall–Petch).</details></li>
+          <li><details><summary>Dislocación tornillo vs canto</summary>Vector de Burgers paralelo vs perpendicular a la línea.</details></li>
+          <li><details><summary>Movimiento de dislocaciones favorecido por</summary>Planos densos, T alta, baja tasa de deformación.</details></li>
+          <li><details><summary>Límite de grano: efecto en difusión</summary>Camino rápido (difusión intergranular).</details></li>
+          <li><details><summary>Solución sólida sustitucional: regla de Hume–Rothery</summary>Tamaño atómico, valencia, estructura y electronegatividad similares.</details></li>
+          <li><details><summary>Relación \(J\)–signo del gradiente</summary>Flujo va de mayor a menor concentración.</details></li>
+          <li><details><summary>Endurecimiento por deformación</summary>Mayor densidad de dislocaciones → interacción → sube \(\sigma_y\).</details></li>
+          <li><details><summary>Recristalización</summary>Nucleación y crecimiento de granos libres de deformación tras recocido.</details></li>
+          <li><details><summary>Recuperación vs recristalización</summary>Recuperación: reordenamiento; recristalización: nuevos granos.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 4 ========= -->
+    <section class="paper" id="cap4">
+      <h2>4. Diagramas de fases (binarios)</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Leer diagramas isomorfos, eutécticos, peritécticos; usar regla de la palanca y fracciones.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>Regla de la palanca: fracción de fase \(f_\alpha=\dfrac{C_L-C_0}{C_L-C_\alpha}\), \(f_L=1-f_\alpha\).</li>
+          <li>Solidus/Liquidus determinan inicio/fin de solidificación.</li>
+          <li>Microestructuras: eutéctica láminas; hipereutectoide/hipoeutectoide.</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Binario isomorfo: fracciones a T intermedia</summary>Usa palanca entre composiciones de equilibrio.</details></li>
+          <li><details><summary>Diagrama eutéctico: \(C_0\) hipoeutéctico</summary>Primario \(\alpha\) + eutéctica (\(\alpha+\beta\)).</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Dibuja línea de amarre</summary>Une composiciones de equilibrio a T fija.</details></li>
+          <li><details><summary>Calcula \(f_\alpha\) dado \(C_0,C_\alpha,C_L\)</summary>Aplica palanca.</details></li>
+          <li><details><summary>Indica fases a T por encima del liquidus</summary>Sólo líquido.</details></li>
+          <li><details><summary>Microestructura de \(C_0\) hipereutéctico</summary>Primario \(\beta\) + eutéctica.</details></li>
+          <li><details><summary>Define solvus</summary>Límite de solubilidad sólida.</details></li>
+          <li><details><summary>Segunda fase precipitada al enfriar</summary>Cuando se cruza el solvus.</details></li>
+          <li><details><summary>Enfriamiento lento vs rápido</summary>Equilibrio vs posibles segregaciones finas.</details></li>
+          <li><details><summary>Peritéctico (noción)</summary>Reacción L+\(\alpha\)→\(\beta\).</details></li>
+          <li><details><summary>Congruente vs incongruente</summary>Fusión congruente mantiene composición.</details></li>
+          <li><details><summary>Fase intermetálica</summary>Estequiométrica con estructura propia.</details></li>
+          <li><details><summary>Palanca en extremos</summary>Si \(C_0=C_\alpha\) → \(f_\alpha=1\).</details></li>
+          <li><details><summary>Segregación micro/macro</summary>Escala de composición desigual durante solidificación.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 5 ========= -->
+    <section class="paper" id="cap5">
+      <h2>5. Transformaciones de fase · Fe–C</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Interpretar Fe–C, TTT/CCT, temple y revenido; perlita, bainita, martensita.</div>
+      <div class="callout"><strong>📌 Puntos clave.</strong>
+        <ul>
+          <li>Austenita (\(\gamma\)), ferrita (\(\alpha\)), cementita (Fe₃C); eutectoide 0.76%C a 727 °C aprox.</li>
+          <li>Martensita: transformación difusionaless; dureza ↑ pero fragilidad ↑.</li>
+          <li>Templar = enfriar rápido a formar martensita; revenido = calentar bajo para aliviar tensiones y ajustar dureza/tenacidad.</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Acero hipoeutectoide 0.4%C enfriado lento</summary>Ferrita proeutectoide + perlita.</details></li>
+          <li><details><summary>Secuencia temple + revenido</summary>\(\gamma\to M\) (temple), luego \(M\to\) templado (carburos + \(\alpha\)).</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Define perlita</summary>Láminas \(\alpha+Fe_3C\).</details></li>
+          <li><details><summary>¿Por qué bainita más tenaz que perlita fina?</summary>Morfofología y distribución de carburos.</details></li>
+          <li><details><summary>Evitar perlita usando TTT</summary>Enfriar atravesando nariz rápido (temple).</details></li>
+          <li><details><summary>Retenido de austenita</summary>Se estabiliza a C alto o enfriamientos específicos.</details></li>
+          <li><details><summary>Efecto del revenido en \(M\)</summary>Reduce dureza, aumenta tenacidad.</details></li>
+          <li><details><summary>Esferoidización</summary>Carburos redondeados → mayor maquinabilidad.</details></li>
+          <li><details><summary>Normalizado</summary>Refina grano tras laminación.</details></li>
+          <li><details><summary>Temple superficial por inducción</summary>Endurece capa externa.</details></li>
+          <li><details><summary>Acero hipereutectoide 1.2%C lento</summary>Cementita proeutectoide + perlita.</details></li>
+          <li><details><summary>TTT vs CCT</summary>Isotérmico vs enfriamiento continuo.</details></li>
+          <li><details><summary>Templabilidad</summary>Tendencia a formar \(M\) a profundidad (Jominy).</details></li>
+          <li><details><summary>Templado troostita/sorbita</summary>Microestructuras de revenido a distintas T.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 6 ========= -->
+    <section class="paper" id="cap6">
+      <h2>6. Propiedades mecánicas y ensayos</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Curvas \(\sigma\)–\(\varepsilon\), módulo \(E\), \(\sigma_y\), tenacidad, dureza; ensayos tracción/dureza/impacto.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>Ley de Hooke: \(\sigma=E\,\varepsilon\) (elástico lineal).</li>
+          <li>Tenacidad (área bajo curva hasta rotura). Resiliencia (hasta \(\sigma_y\)).</li>
+          <li>Const. de fluencia plástica Ludwik/Hollomon: \(\sigma=K\,\varepsilon_p^n\).</li>
+          <li>Dureza ~ resistencia: \(\sigma_y \approx c\,HB\) (aprox.).</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Obtén \(E\) de tramo inicial</summary>Pendiente del tramo elástico de \(\sigma\)–\(\varepsilon\).</details></li>
+          <li><details><summary>Energía Charpy</summary>Área bajo curva carga–deflexión del péndulo.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Alargamiento de barra</summary>\(\Delta L=\tfrac{FL}{AE}\).</details></li>
+          <li><details><summary>\(\sigma\) verdadera</summary>\(\sigma_t=F/A_{inst}\).</details></li>
+          <li><details><summary>\(\varepsilon\) verdadera</summary>\(\varepsilon_t=\ln(L/L_0)\).</details></li>
+          <li><details><summary>\(UTS\) vs \(\sigma_y\)</summary>UTS ≥ \(\sigma_y\).</details></li>
+          <li><details><summary>\(n\) y \(K\) por ajuste log–log</summary>\(\log \sigma = \log K + n\log \varepsilon_p\).</details></li>
+          <li><details><summary>Comparar HB y HRC</summary>Tablas de conversión aproximadas.</details></li>
+          <li><details><summary>Reducir área en estricción</summary>\(\phi=(A_0-A_f)/A_0\).</details></li>
+          <li><details><summary>Tenacidad vs dureza</summary>Diferentes (energía vs resistencia local a indentación).</details></li>
+          <li><details><summary>Ensayo impacto: ductil–frágil</summary>Transición con T.</details></li>
+          <li><details><summary>Límite elástico 0.2%</summary>Método de offset.</details></li>
+          <li><details><summary>Módulos \(E,G,K\)</summary>\(E=2G(1+\nu)\), \(K=E/[3(1-2\nu)]\).</details></li>
+          <li><details><summary>Comportamiento elastoplástico</summary>Modelo bilineal idealizado.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 7 ========= -->
+    <section class="paper" id="cap7">
+      <h2>7. Fractura, fatiga y fluencia</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> LEFM, curvas S–N, crecimiento de grietas y creep a alta T.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>LEFM: \(K=Y\sigma\sqrt{\pi a}\). Fractura frágil si \(K\ge K_{IC}\).</li>
+          <li>Griffith (idea): \(\sigma_f\propto \sqrt{\tfrac{E\gamma}{\pi a}}\).</li>
+          <li>Fatiga (Paris): \(\tfrac{da}{dN}=C(\Delta K)^m\).</li>
+          <li>Creep estacionario: \(\dot\varepsilon = A\sigma^n \exp(-Q/RT)\).</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Verifica seguridad a fractura</summary>Calcula \(K\) y compara con \(K_{IC}\).</details></li>
+          <li><details><summary>Vida a fatiga por regla de Miner</summary>\(\sum n_i/N_i \le 1\).</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>\(K\) para placa con grieta central</summary>\(Y≈1\).</details></li>
+          <li><details><summary>Reduce \(\Delta\sigma\) al 80% → vida?</summary>Aumenta fuertemente (curvas S–N).</details></li>
+          <li><details><summary>Diseño contra iniciación</summary>Pulir superficies, evitar entallas.</details></li>
+          <li><details><summary>Temperatura y creep</summary>↑T → ↑\(\dot\varepsilon\).</details></li>
+          <li><details><summary>Endurecimiento por precipitación y fatiga</summary>Puede mejorar límite, pero ojo fragilización.</details></li>
+          <li><details><summary>Tamaño defecto crítico</summary>\(a_c=(K_{IC}/(Y\sigma))^2/\pi\).</details></li>
+          <li><details><summary>Regiones de fluencia</summary>Primaria, secundaria, terciaria.</details></li>
+          <li><details><summary>Efecto del ambiente (corrosión-fatiga)</summary>Reduce vida.</details></li>
+          <li><details><summary>Mapas de Ashby (noción)</summary>Selección material por \(E,\rho,\sigma\).</details></li>
+          <li><details><summary>Daño acumulado</summary>Miner.</details></li>
+          <li><details><summary>Umbral de crecimiento</summary>\(\Delta K_{th}\): por debajo no crece grieta.</details></li>
+          <li><details><summary>Viscosidad por temperatura (polímeros) y fatiga térmica</summary>Relación con \(T_g\).</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 8 ========= -->
+    <section class="paper" id="cap8">
+      <h2>8. Tratamientos térmicos y endurecimiento</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Recocidos, normalizado, solución + envejecimiento, endurecimiento por deformación/precipitación.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>Hall–Petch: \(\sigma_y=\sigma_0+k\,d^{-1/2}\).</li>
+          <li>Orowan (tendencia): \(\Delta\sigma\propto \dfrac{Gb}{\lambda}\). \(\lambda\): espaciamiento entre obstáculos.</li>
+          <li>Precipitación: solución sólida a T alta → temple → envejecimiento a T media.</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Al–Cu 2024: SHT + temple + envejecido</summary>Aumenta \(\sigma_y\) vía precipitados coherentes.</details></li>
+          <li><details><summary>Grano fino vs grueso</summary>Grano fino → mayor \(\sigma_y\), mejor impacto; pero posible menor ductilidad uniform.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Secuencia de recocido</summary>Recuperación → recristalización → crecimiento de grano.</details></li>
+          <li><details><summary>Sobre-envejecimiento</summary>Precipitados gruesos → baja resistencia.</details></li>
+          <li><details><summary>Endurecimiento por trabajo en Cu</summary>↑ densidad de dislocaciones.</details></li>
+          <li><details><summary>\(d\) pasa de 20 a 5 µm: efecto en \(\sigma_y\)</summary>↑ por Hall–Petch.</details></li>
+          <li><details><summary>Solución sólida: sustitucional vs intersticial</summary>Tamaño y distorsión de red.</details></li>
+          <li><details><summary>TTT de aleación Al–Cu (cualitativo)</summary>Zonas GP → \(\theta''\) → \(\theta'\).</details></li>
+          <li><details><summary>Temple en acero y revenido</summary>Véase cap. 5.</details></li>
+          <li><details><summary>Endurecimiento por dispersión</summary>Partículas finas inertes.</details></li>
+          <li><details><summary>Recocido isotérmico</summary>Controla tamaño de grano.</details></li>
+          <li><details><summary>Límite de solubilidad</summary>Delimita solución sólida máxima.</details></li>
+          <li><details><summary>TRIP/TWIP (noción)</summary>Endurecimiento por transformación/twinning.</details></li>
+          <li><details><summary>Microaleaciones (Nb, V, Ti) en aceros</summary>Carburos/nitruros finos → refuerzo.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 9 ========= -->
+    <section class="paper" id="cap9">
+      <h2>9. Polímeros: estructura y viscoelasticidad</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Configuración/conformación, \(T_g\), cristalización, modelos viscoelásticos y TTS.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>\(T_g\) sube con rigidez de cadena y enlaces secundarios.</li>
+          <li>Viscoelasticidad lineal: modelos Maxwell (serie) y Kelvin–Voigt (paralelo).</li>
+          <li>Superposición tiempo–temperatura (TTS): curvas maestras.</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Maxwell: respuesta a escalón de deformación</summary>Relajación de tensión exponencial \(\sigma(t)=\sigma_0 e^{-t/\tau}\).</details></li>
+          <li><details><summary>Kelvin–Voigt: respuesta a escalón de tensión</summary>Retardo en deformación \(\varepsilon(t)=\varepsilon_\infty (1-e^{-t/\tau})\).</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Relación \(T_g\) y plasticizantes</summary>Plasticizante ↓ \(T_g\).</details></li>
+          <li><details><summary>Termoplástico vs termoestable</summary>Reprocesable vs reticulado.</details></li>
+          <li><details><summary>Cristalinidad ↑ implica…</summary>↑ E, ↓ transparencia.</details></li>
+          <li><details><summary>Configuración vs conformación</summary>Enlaces cruzados vs rotaciones alrededor de enlaces.</details></li>
+          <li><details><summary>Esfuerzo–deformación por debajo/encima de \(T_g\)</summary>Vítreo vs gomoso.</details></li>
+          <li><details><summary>Reología: ley de potencias</summary>\(\eta_{ap}\propto \dot\gamma^{n-1}\).</details></li>
+          <li><details><summary>Orientación por estirado</summary>Refuerza en dirección de estirado.</details></li>
+          <li><details><summary>Craze vs grieta</summary>Microfibrillas que portan carga vs separación limpia.</details></li>
+          <li><details><summary>Reticulación por radiación</summary>Mejora \(T_g\), resistencia térmica.</details></li>
+          <li><details><summary>Coef. de permeación</summary>\(P=DS\).</details></li>
+          <li><details><summary>Envejecimiento físico</summary>Relajación hacia estados de menor volumen libre.</details></li>
+          <li><details><summary>Polímeros conductores</summary>Conjugados (p.ej. PEDOT).</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 10 ========= -->
+    <section class="paper" id="cap10">
+      <h2>10. Cerámicos y vidrios</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Propiedades de cerámicos, sinterizado, fractura frágil, tenacificación.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>Fragilidad: \(K_{IC}\) bajo; sensibilidad a defectos.</li>
+          <li>Sinterización: \(\rho\) aumenta por difusión a altas T; porosidad ↓.</li>
+          <li>Tenacificación: refuerzo por transformación (ZrO₂), refuerzo por fibras.</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Vidrio templado</summary>Tensiones residuales de compresión superficial ↑ resistencia a grietas.</details></li>
+          <li><details><summary>Alúmina sinterizada</summary>Cambio de densidad y tamaño de grano con T/t.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Porosidad y resistencia</summary>Porosidad ↑ → resistencia ↓.</details></li>
+          <li><details><summary>Por qué cerámicos son duros pero frágiles</summary>Enlaces iónico/covalente direccionales.</details></li>
+          <li><details><summary>Conductividad iónica</summary>Vacancias y movilidad.</details></li>
+          <li><details><summary>Temperatura de transición vítrea</summary>\(T_g\) en vidrios.</details></li>
+          <li><details><summary>Refractarios</summary>Estabilidad térmica y química.</details></li>
+          <li><details><summary>Carburos/nitruros</summary>Alta dureza y T de fusión.</details></li>
+          <li><details><summary>Resistencia a choque térmico</summary>Bajo \(\alpha\), alto \(K_{IC}\), alto \(k\).</details></li>
+          <li><details><summary>Tenacificación por fibras</summary>Pontes de fibra limitan apertura de grietas.</details></li>
+          <li><details><summary>Fallo por superficie</summary>Defectos superficiales dominan.</details></li>
+          <li><details><summary>Fatiga estática (cerámicos)</summary>Crecimiento subcrítico de grietas en ambiente.</details></li>
+          <li><details><summary>Vidrios metálicos (noción)</summary>Estructura amorfa metálica, alta resistencia.</details></li>
+          <li><details><summary>Y-TZP</summary>Zirconia tenacificada por transformación.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 11 ========= -->
+    <section class="paper" id="cap11">
+      <h2>11. Composites y reglas de mezcla</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Propiedades de refuerzos, matrices y predicción de \(E\), \(\sigma\), \(\rho\).</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>Voigt (iso-deformación): \(E_L=V_f E_f + V_m E_m\).</li>
+          <li>Reuss (iso-tensión): \(1/E_T=V_f/E_f+V_m/E_m\).</li>
+          <li>Resistencia específica: \(\sigma/\rho\).</li>
+          <li>Cizalla interlaminar y fallo por delaminación (noción).</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Fibra de carbono + epoxi (unidireccional)</summary>Calcula \(E_L\) con Voigt.</details></li>
+          <li><details><summary>Laminado [0/90]s</summary>Respuesta ortotrópica; direcciones L/T.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>\(E_L\) con \(V_f=0.6\), \(E_f=230\) GPa, \(E_m=3\) GPa</summary>≈ 139.8 GPa.</details></li>
+          <li><details><summary>\(E_T\) con Reuss para mismos datos</summary>≈ 7.5 GPa.</details></li>
+          <li><details><summary>Regla de mezclas para \(\rho\)</summary>\(\rho=V_f\rho_f+V_m\rho_m\).</details></li>
+          <li><details><summary>Longitud crítica de fibra</summary>\(l_c=\dfrac{\sigma_f d}{2\tau_i}\).</details></li>
+          <li><details><summary>Eficiencia de orientación</summary>Factor \(\eta\) &lt;1 para fibras aleatorias.</details></li>
+          <li><details><summary>Tenacidad en compuestos</summary>Energía de delaminación \(G_c\).</details></li>
+          <li><details><summary>Fallo por fibra vs matriz</summary>Depende de \(V_f\) y tensiones locales.</details></li>
+          <li><details><summary>Híbridos (vidrio+carbono)</summary>Compromiso coste–propiedades.</details></li>
+          <li><details><summary>Sandwich con alma alveolar</summary>Alta rigidez a flexión por separación de pieles.</details></li>
+          <li><details><summary>Fatiga en laminados</summary>Daño gradual, crecimiento de delaminación.</details></li>
+          <li><details><summary>Impacto en compuestos</summary>Daño BVID; inspección NDT.</details></li>
+          <li><details><summary>Regla de mezcla para conductividad</summary>Analogías serie/paralelo.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ========= CAPÍTULO 12 ========= -->
+    <section class="paper" id="cap12">
+      <h2>12. Corrosión y degradación</h2>
+      <div class="callout"><strong>🧠 Objetivos.</strong> Mecanismos (uniforme, galvánica, picadura, hendidura, intergranular), protección y selección.</div>
+      <div class="callout"><strong>📌 Relaciones.</strong>
+        <ul>
+          <li>Ecuación de Butler–Volmer (idea), diagramas de Evans (polarización).</li>
+          <li>Serie galvánica: metal menos noble se corroe en par galvánico.</li>
+          <li>Velocidad de corrosión ∝ densidad de corriente de corrosión \(i_{corr}\).</li>
+        </ul>
+      </div>
+      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
+        <ol>
+          <li><details><summary>Protección catódica</summary>Ánodo de sacrificio (Zn) para acero en agua de mar.</details></li>
+          <li><details><summary>Acero inoxidable: pasivación</summary>Capa Cr₂O₃ estable evita corrosión uniforme.</details></li>
+        </ol>
+      </div>
+      <div class="examples"><h4>📝 Ejercicios (12)</h4>
+        <ol>
+          <li><details><summary>Par galvánico Al–Cu en salmuera</summary>Al se corroe (menos noble).</details></li>
+          <li><details><summary>Picadura en Cl⁻</summary>Riesgo en inox austeníticos sin Mo.</details></li>
+          <li><details><summary>Corrosión bajo tensión</summary>Grietas asistidas por ambiente.</details></li>
+          <li><details><summary>Intergranular en inox sensibilizado</summary>Precipitación de carburos Cr en límites.</details></li>
+          <li><details><summary>Pinturas ricas en Zn</summary>Protección galvánica.</details></li>
+          <li><details><summary>Velocidad de corrosión a partir de pérdida de masa</summary>\(\text{mpy}\) o mm/año.</details></li>
+          <li><details><summary>Elección de recubrimiento</summary>Epoxi vs poliuretano vs galvanizado.</details></li>
+          <li><details><summary>Erosión–corrosión</summary>Flujo alto quita película protectora.</details></li>
+          <li><details><summary>Corrosión en grieta</summary>Diferencias de oxígeno → celda local.</details></li>
+          <li><details><summary>Protección catódica impresa</summary>Fuente de corriente.</details></li>
+          <li><details><summary>Ambiente H₂S (sulfuro)</summary>SCC en aceros (NACE MR0175).</details></li>
+          <li><details><summary>Compatibilidad metal–polímero</summary>Ataque por disolventes/plasticizantes.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="paper">
+      <h2>Errores típicos y trucos útiles</h2>
+      <ul>
+        <li>Aplicar la regla de la palanca fuera de la región bifásica → primero comprueba fases presentes.</li>
+        <li>Confundir \(K_{IC}\) (tenacidad a fractura) con \(K\) aplicado → el primero es propiedad del material.</li>
+        <li>Mezclar unidades (kJ/mol vs eV/átomo) al usar Arrhenius → conviértelas antes.</li>
+        <li>Suponer isotropía en compuestos unidireccionales → son ortotrópicos.</li>
+        <li>Tratar \(T_g\) como \(T_m\) → \(T_g\) no es fusión; es transición vítrea.</li>
+      </ul>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn">↑ Arriba</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    // Progress bar + top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+
+    // Reader controls
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
+      root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
+      root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
+      const num = parseFloat(w);
+      root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
+      const num = parseFloat(w);
+      root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff';
+      if(light){ // switch to dark palette
+        root.style.setProperty('--bg','#0b1220'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#fbbf24'); root.style.setProperty('--accent','#f59e0b'); root.style.setProperty('--accent2','#fb923c'); root.style.setProperty('--border','#203054');
+      }else{ // back to light
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#b45309'); root.style.setProperty('--accent','#f59e0b'); root.style.setProperty('--accent2','#f97316'); root.style.setProperty('--border','#e9edf6');
+      }
+    });
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+

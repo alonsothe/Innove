@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Análisis de Circuitos — Teoría PRO + 144 ejercicios</title>
+<meta name="color-scheme" content="light dark"/>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --bg:#f6f9ff; --paper:#ffffff; --ink:#0b1220; --muted:#475569;
+    --brand:#0ea5e9; --accent:#22d3ee; --accent2:#06b6d4;
+    --border:#e2e8f0; --shadow:0 10px 30px rgba(15,23,42,.10);
+    --radius:16px; --maxw:86ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#060914; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9; --brand:#38bdf8; --accent:#67e8f9; --accent2:#22d3ee; --border:#203054; --shadow:0 12px 28px rgba(0,0,0,.38);} }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1200px 740px at 95% -10%, #e0f2fe 0%, transparent 60%),
+               radial-gradient(1000px 680px at 0% 120%, #ccfbf1 0%, transparent 75%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:80; background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:70; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 75%,white 10%),color-mix(in oklab,var(--accent) 65%,white 15%)); color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .layout{max-width:1400px; margin:0 auto; padding:16px; display:grid; grid-template-columns: 290px 1fr; gap:16px}
+  @media (max-width: 980px){ .layout{ grid-template-columns: 1fr } .aside{ position:static } }
+  .aside{ position:sticky; top:74px; height:calc(100dvh - 88px); overflow:auto; border-right:1px dashed var(--border); padding-right:10px }
+  .navcard{background:var(--paper); border:1px solid var(--border); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
+  .navcard h3{margin:.2em 0 .6em; font-size:1.0em}
+  .navcard a{display:block; padding:.28em .5em; margin:.1em 0; text-decoration:none; border-radius:10px; color:color-mix(in oklab,var(--brand) 85%, var(--ink));}
+  .navcard a:hover{background:color-mix(in oklab,var(--paper) 82%, var(--accent) 8%)}
+  main{padding:0 2px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 16%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.1em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border); border-radius:12px;padding:12px 14px;margin:12px 0}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border); border-radius:10px;padding:8px 10px;margin:8px 0}
+  summary{cursor:pointer;font-weight:700}
+  code.k{display:block; white-space:pre; overflow:auto; padding:.8em; border:1px solid var(--border); border-radius:12px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+  .tag{display:inline-block; padding:.2em .55em; border:1px solid var(--border); border-radius:999px; font-size:.78em; margin-right:.4em; color:var(--muted)}
+  .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:12px}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:60;background:var(--paper);border:1px solid var(--border); border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, monospace; border:1px solid var(--border); padding:.1em .4em; border-radius:6px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <div class="badge">⚡</div>
+        <div>
+          <h1 class="brand-title">Análisis de Circuitos</h1>
+          <div class="lead">Teoría clara, pasos de resolución y 12×12 ejercicios con respuestas</div>
+        </div>
+      </a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
+        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
+        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="aside">
+      <div class="navcard">
+        <h3>Índice</h3>
+        <nav id="sidenav">
+          <a href="#cap1">1. Conceptos básicos y potencia</a>
+          <a href="#cap2">2. Elementos y fuentes (indep./dep.)</a>
+          <a href="#cap3">3. Series/Paralelo y divisores</a>
+          <a href="#cap4">4. Análisis nodal (KCL)</a>
+          <a href="#cap5">5. Análisis por mallas (KVL)</a>
+          <a href="#cap6">6. Teoremas (Superposición, Thévenin/Norton)</a>
+          <a href="#cap7">7. Operacionales ideales (configuraciones)</a>
+          <a href="#cap8">8. RC/RL: transitorios de 1er orden</a>
+          <a href="#cap9">9. RLC: 2º orden y resonancia</a>
+          <a href="#cap10">10. AC: fasores, potencia y factor de potencia</a>
+          <a href="#cap11">11. Filtros pasivos y Bode</a>
+          <a href="#cap12">12. Laplace, función de transferencia y SPICE</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <section class="paper" id="top">
+        <h2>Guía PRO de Análisis de Circuitos</h2>
+        <p class="lead">Aprende a plantear y resolver circuitos paso a paso. Cada capítulo incluye <span class="tag">teoría</span> <span class="tag">fórmulas</span> <span class="tag">procedimientos</span> <span class="tag">ejemplos</span> y <span class="tag">12 ejercicios</span> con respuestas o pistas.</p>
+        <div class="callout"><strong>Convenciones.</strong> Corriente positiva entra por el terminal positivo al definir potencia absorbida; fasor \(\underline X\) indica magnitud y ángulo; impedancias: \(Z_R=R\), \(Z_L=j\omega L\), \(Z_C=1/(j\omega C)\).</div>
+      </section>
+
+      <!-- 1. BASICS -->
+      <section class="paper" id="cap1">
+        <h2>1) Conceptos básicos y potencia</h2>
+        <div class="callout"><strong>Fórmulas clave</strong>
+          <ul>
+            <li>Ley de Ohm: \(v=iR\). Conductancia \(G=1/R\).</li>
+            <li>Leyes de Kirchhoff: KCL (corrientes que entran = salen), KVL (suma de tensiones = 0).</li>
+            <li>Potencia: \(p=vi\). Absorbida si \(i\) entra por terminal +; entregada si sale.</li>
+            <li>Fuentes: ideales de tensión \(v=V_s\), de corriente \(i=I_s\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Balance de potencia</summary>En todo circuito estacionario: \(\sum p_k=0\). La potencia entregada por fuentes = la absorbida por elementos pasivos.</details>
+          <details><summary>Medición de polaridades</summary>Usa la convención pasiva: flecha de corriente entra por el + del elemento para \(p=+vi\).</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Resistor 5 Ω con 10 V</summary>\(i=2\,A\), \(p=20\,W\) absorbidos.</details></li>
+            <li><details><summary>Fuente entrega 15 W y el resto absorbe 15 W</summary>Se cumple conservación de potencia.</details></li>
+            <li><details><summary>Convertir 2 kΩ a conductancia</summary>\(G=0.5\,mS\).</details></li>
+            <li><details><summary>Signo de potencia</summary>Si la corriente sale del terminal +, \(p=-vi\) (entregada).</details></li>
+            <li><details><summary>Serie de resistores: V total 24 V, R tot 12 Ω</summary>\(i=2\,A\).</details></li>
+            <li><details><summary>División de tensión: R1=3, R2=9, V=24</summary>\(v_2=V·\frac{R2}{R1+R2}=18\,V\).</details></li>
+            <li><details><summary>División de corriente en paralelo iguales</summary>Se reparte por igual.</details></li>
+            <li><details><summary>Polaridad en KVL</summary>Respeta el signo al recorrer el lazo.</details></li>
+            <li><details><summary>Potencia en fuente ideal de tensión con i=0</summary>\(p=0\).</details></li>
+            <li><details><summary>Resistencia equivalente 3Ω||6Ω</summary>\(=2\,Ω\).</details></li>
+            <li><details><summary>Caída en serie de 2Ω con 2A</summary>\(v=4\,V\).</details></li>
+            <li><details><summary>Chequeo \(\sum p=0\)</summary>Calcula y verifica.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 2. ELEMENTS & SOURCES -->
+      <section class="paper" id="cap2">
+        <h2>2) Elementos y fuentes (independientes y dependientes)</h2>
+        <div class="callout"><strong>Tipos</strong>
+          <ul>
+            <li>Resistores, capacitores \(i=C\,\tfrac{dv}{dt}\), inductores \(v=L\,\tfrac{di}{dt}\).</li>
+            <li>Fuentes dependientes: VCVS, CCVS, VCCS, CCCS. Notación: ganancia \(\mu, r_o, g_m\).</li>
+            <li>Modelos de carga: lineal, no lineal (diodo: \(i=I_s( e^{v/nV_T}-1)\)).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Fuente dependiente</summary>Una VCVS de valor \(v=\mu v_x\) con \(\mu=4\): se resuelve como una fuente más con restricción adicional.</details>
+          <details><summary>Ley i–v del capacitor</summary>En DC estacionaria, \(i=0\) (abierto). En transitorios, almacena energía \(E=\tfrac{1}{2}C v^2\).</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Inductor en DC</summary>En estado estacionario, cortocircuito (\(v=0\)).</details></li>
+            <li><details><summary>Energía en L=10 mH con i=2 A</summary>\(E=\tfrac12 L i^2=0.02\,J\).</details></li>
+            <li><details><summary>Capacitor 100 µF a 10 V</summary>\(E=0.005\,J\).</details></li>
+            <li><details><summary>Fuente dependiente VCVS \(v=5v_x\) con \(v_x=2V\)</summary>\(v=10V\).</details></li>
+            <li><details><summary>Diodo ideal</summary>Conduce si v>0; bloquea si v<0.</details></li>
+            <li><details><summary>Condición de linealidad</summary>Superposición válida solo en circuitos lineales (sin diodos).</details></li>
+            <li><details><summary>CCVS definición</summary>Fuente de tensión controlada por corriente.</details></li>
+            <li><details><summary>Capacitor como circuito abierto en DC</summary>i=0 tras mucho tiempo.</details></li>
+            <li><details><summary>Inductor energía no negativa</summary>Siempre \(\ge 0\).</details></li>
+            <li><details><summary>Estabilidad de un C negativo (concepto)</summary>No físico pasivo.</details></li>
+            <li><details><summary>Señal de control en fuente dependiente</summary>Debe definirse camino de medición.</details></li>
+            <li><details><summary>Modelo linealizado de diodo (pequeña señal)</summary>Resistencia \(r_d\approx nV_T/I_D\).</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 3. SERIES/PARALLEL -->
+      <section class="paper" id="cap3">
+        <h2>3) Series, paralelo y divisores</h2>
+        <div class="callout"><strong>Fórmulas</strong>
+          <ul>
+            <li>Serie: \(R_{eq}=\sum R_i\); Paralelo: \(R_{eq}=(\sum 1/R_i)^{-1}\).</li>
+            <li>Divisor de tensión: \(v_k=V\,\dfrac{R_k}{\sum R}\).</li>
+            <li>Divisor de corriente: \(i_k=I\,\dfrac{G_k}{\sum G}\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Puente de Wheatstone</summary>Equilibrio cuando \(R1/R2=R3/R4\) → corriente por el puente = 0.</details>
+          <details><summary>Redelta–estrella (Δ–Y)</summary>\(R_Y = \frac{R_{ab}R_{ac}}{\sum R_Δ}\) (etc.). Útil para simplificar redes.</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Req de 10, 20, 30 Ω en paralelo</summary>\(=5.45\,Ω\).</details></li>
+            <li><details><summary>Divisor: 12 V sobre R2=3 Ω en serie con R1=1 Ω</summary>\(v_2=9\,V\).</details></li>
+            <li><details><summary>Corriente en rama con G=4 mS, total 10 mS, I=5 A</summary>\(i=2\,A\).</details></li>
+            <li><details><summary>Δ–Y de 3,3,3 Ω</summary>\(R_Y=1\,Ω\) cada una.</details></li>
+            <li><details><summary>Paso de Y a Δ</summary>Usa fórmulas inversas.</details></li>
+            <li><details><summary>Puente desequilibrado</summary>Resolver por nodos o mallas.</details></li>
+            <li><details><summary>Resistencia vista entre dos nodos</summary>Desactiva fuentes independientes.</details></li>
+            <li><details><summary>Condición para máximo \(v_k\) en divisor</summary>\(R_k\) grande comparado con otros.</details></li>
+            <li><details><summary>Carga conectada al divisor</summary>Usa \(R_{th}\) del divisor para evaluar efecto.</details></li>
+            <li><details><summary>Paralelo de n resistencias iguales</summary>\(R/n\).</details></li>
+            <li><details><summary>Serie de conductancias</summary>Invierte y suma resistencias.</details></li>
+            <li><details><summary>Equivalente de dos ramas paralelas complejas</summary>Suma admittancias.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 4. NODAL -->
+      <section class="paper" id="cap4">
+        <h2>4) Análisis Nodal (KCL)</h2>
+        <div class="callout"><strong>Procedimiento</strong>
+          <ol>
+            <li>Elige nodo de referencia (tierra).</li>
+            <li>Asigna tensiones nodales \(v_1, v_2,...\).</li>
+            <li>Escribe KCL en cada nodo: suma de corrientes saliendo = 0.</li>
+            <li>Modela fuentes de tensión con <em>supernodos</em>.</li>
+            <li>Resuelve el sistema lineal \(G\,\vec v=\vec I\).</li>
+          </ol>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Supernodo con fuente de 10 V entre nodos 1 y 2</summary>Une 1 y 2 en un supernodo y agrega ecuación \(v_1-v_2=10\).</details>
+          <details><summary>Fuentes dependientes</summary>Incluye ecuación de control, p.ej. \(v=4 v_x\).</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Nodo único con 3 resistencias a tierra</summary>\(v=\frac{I}{G_{tot}}\) si hay fuente de corriente a nodo.</details></li>
+            <li><details><summary>Red de 3 nodos con fuente de tensión</summary>Usa supernodo.</details></li>
+            <li><details><summary>Encontrar tensión de carga</summary>Agrega ecuación de medición.</details></li>
+            <li><details><summary>Corriente por una rama</summary>\(i=(v_i-v_j)/R\).</details></li>
+            <li><details><summary>Con dependiente VCVS</summary>Incluye ecuación de control.</details></li>
+            <li><details><summary>Chequeo de unidades</summary>Conductancias en S.</details></li>
+            <li><details><summary>G matriz simétrica</summary>En redes pasivas sí.</details></li>
+            <li><details><summary>Condición de singularidad de G</summary>Falta referencia o fuentes puras de tensión en lazo.</details></li>
+            <li><details><summary>Solución numérica pequeña</summary>Resuelve 2×2 a mano.</details></li>
+            <li><details><summary>Potencia en una rama</summary>\(p=v i\).</details></li>
+            <li><details><summary>Medición de \(v_x\) entre dos nodos</summary>Define polaridad.</details></li>
+            <li><details><summary>Elección del nodo de referencia</summary>El que más elementos conecte.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 5. MESH -->
+      <section class="paper" id="cap5">
+        <h2>5) Análisis por Mallas (KVL)</h2>
+        <div class="callout"><strong>Procedimiento</strong>
+          <ol>
+            <li>Define corrientes de malla en sentido horario.</li>
+            <li>Escribe KVL para cada lazo independiente.</li>
+            <li>Fuentes de corriente: usa <em>supermalla</em> rodeándola y agrega ecuación de corriente.</li>
+            <li>Resuelve \(R\,\vec i=\vec V\).</li>
+          </ol>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Supermalla</summary>Eliminar fuente de corriente entre dos mallas y escribir KVL externo + relación \(i_1-i_2=I_s\).</details>
+          <details><summary>Malla con fuente dependiente</summary>Agrega ecuación de control.</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Lazo único</summary>\(i=V/\sum R\).</details></li>
+            <li><details><summary>Dos lazos con resistor compartido</summary>Plantea sistema 2×2.</details></li>
+            <li><details><summary>Supermalla por fuente de corriente</summary>Escribe KVL externo.</details></li>
+            <li><details><summary>Malla con VCVS</summary>Controla con variable adecuada.</details></li>
+            <li><details><summary>Corriente en elemento</summary>Combinación de corrientes de mallas adyacentes.</details></li>
+            <li><details><summary>Potencia en R</summary>\(i^2 R\).</details></li>
+            <li><details><summary>Verificar \(\sum p=0\)</summary>Balance.</details></li>
+            <li><details><summary>Red 3 mallas</summary>Resolver 3×3.</details></li>
+            <li><details><summary>Elegir mallas independientes</summary>No redundantes.</details></li>
+            <li><details><summary>Con fuente de corriente dependiente</summary>Agrega ecuación de control.</details></li>
+            <li><details><summary>Equivalencia con nodal</summary>Resultados consistentes.</details></li>
+            <li><details><summary>Comparar complejidad</summary>Elige nodal si más nodos que mallas, etc.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 6. THEOREMS -->
+      <section class="paper" id="cap6">
+        <h2>6) Teoremas: Superposición, Thévenin/Norton y MTP</h2>
+        <div class="callout"><strong>Claves</strong>
+          <ul>
+            <li><strong>Superposición</strong>: activa una fuente a la vez (anula las otras: V→corto, I→abierto). Suma respuestas.</li>
+            <li><strong>Thévenin</strong>: \(V_{th}\) tensión en bornes en circuito abierto; \(R_{th}\) desactivando fuentes (o \(R_{th}=V_{th}/I_{cc}\)).</li>
+            <li><strong>Norton</strong>: \(I_N=I_{cc}\), \(R_N=R_{th}\).</li>
+            <li><strong>Máxima transferencia de potencia</strong>: \(R_L=R_{th}\) (DC); en AC \(Z_L=Z_{th}^*\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Transformación fuente</summary>\(V_s\) en serie con R ↔ \(I_s=V_s/R\) en paralelo con R.</details>
+          <details><summary>Medición de \(R_{th}\) con fuentes dependientes</summary>Aplica fuente de prueba y mide v/i.</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>\(V_{th}\) de un divisor</summary>\(=V·R_2/(R_1+R_2)\).</details></li>
+            <li><details><summary>\(R_{th}\) de la misma red</summary>\(=R_1||R_2\).</details></li>
+            <li><details><summary>Máxima potencia a carga</summary>\(R_L=R_{th}\); \(P_{max}=V_{th}^2/(4R_{th})\).</details></li>
+            <li><details><summary>Norton equivalente</summary>\(I_N=V_{th}/R_{th}\).</details></li>
+            <li><details><summary>Superposición con V e I</summary>Suma contribuciones.</details></li>
+            <li><details><summary>Fuente dependiente</summary>Necesita fuente de prueba para \(R_{th}\).</details></li>
+            <li><details><summary>Transformación V–I</summary>\(I_s=V_s/R\).</details></li>
+            <li><details><summary>Impedancias en AC</summary>Usa \(Z\).</details></li>
+            <li><details><summary>Condición de adaptación en AC</summary>\(Z_L=Z_{th}^*\).</details></li>
+            <li><details><summary>Ej. mixto con tres fuentes</summary>Aplica superposición.</details></li>
+            <li><details><summary>Medición de \(I_{cc}\)</summary>Corto los bornes de salida.</details></li>
+            <li><details><summary>Verificación de potencia</summary>\(P_{fuentes}=-P_{cargas}\).</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 7. OP-AMPS -->
+      <section class="paper" id="cap7">
+        <h2>7) Amplificadores operacionales ideales</h2>
+        <div class="callout"><strong>Modelo ideal</strong> \(A\to\infty\), \(R_{in}\to\infty\), \(R_{out}\to0\). Reglas: (1) \(v^+=v^-\) (con realimentación negativa), (2) entradas no absorben corriente.</div>
+        <div class="grid">
+          <div>
+            <h3>Configuraciones</h3>
+            <ul>
+              <li>Inversor: \(v_o=-\frac{R_f}{R_{in}} v_i\).</li>
+              <li>No inversor: \(v_o=(1+R_f/R_g) v_i\).</li>
+              <li>Sumador/integrador/diferenciador.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Consejos</h3>
+            <ul>
+              <li>Comprueba el signo de la realimentación.</li>
+              <li>En AC usa impedancias \(Z\).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Inversor Rf=10k, Rin=2k</summary>Ganancia = −5.</details></li>
+            <li><details><summary>No inversor Rf=9k, Rg=1k</summary>Ganancia = 10.</details></li>
+            <li><details><summary>Sumador 2 entradas (2k, 1k) con Rf=1k</summary>\(v_o=-(v_1+2v_2)\).</details></li>
+            <li><details><summary>Integrador ideal</summary>\(v_o=-(1/RC)\int v_i dt\).</details></li>
+            <li><details><summary>Diferenciador</summary>\(v_o=-RC\, dv_i/dt\).</details></li>
+            <li><details><summary>Entrada de bias ≠0</summary>Modelo no ideal (conceptual).</details></li>
+            <li><details><summary>Slew rate limita</summary>\(dv/dt\) máx (no ideal).</details></li>
+            <li><details><summary>Filtro activo pasa-bajas</summary>No inversor con red RC en realimentación.</details></li>
+            <li><details><summary>Impedancia de entrada</summary>Idealmente infinita.</details></li>
+            <li><details><summary>Op-amp saturado</summary>Si el lazo intenta forzar \(v_o\) fuera de railes.</details></li>
+            <li><details><summary>Cambio de referencia</summary>Sumar offset en entrada no inversora.</details></li>
+            <li><details><summary>Verificar lazo negativo</summary>Señal vuelve al −.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 8. FIRST ORDER -->
+      <section class="paper" id="cap8">
+        <h2>8) RC/RL: transitorios de primer orden</h2>
+        <div class="callout"><strong>Soluciones estándar</strong>
+          <ul>
+            <li>RC: \(v_C(t)=V_f+(V_0-V_f)e^{-t/\tau}\), \(\tau=RC\).</li>
+            <li>RL: \(i_L(t)=I_f+(I_0-I_f)e^{-t/\tau}\), \(\tau=L/R_{eq}\).</li>
+            <li>Condiciones iniciales: \(v_C\) continuo; \(i_L\) continuo.</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Excitación escalón</summary>Determina \(V_f\) por circuito en t→∞, \(V_0\) por t=0⁺, y aplica la forma estándar.</details>
+          <details><summary>Conmutación con Thevenin</summary>Vista del C: \(R_{th}\) define \(\tau\).</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>RC con R=10k, C=10µF, escalón 5V</summary>\(\tau=0.1\,s\), \(v_C(0.1s)≈3.16V\).</details></li>
+            <li><details><summary>RL L=20mH, R=2Ω, escalón 4V</summary>\(\tau=10ms\), \(i(10ms)≈1.26A\) si \(I_f=2A\).</details></li>
+            <li><details><summary>Cond. iniciales</summary>\(v_C(0^+)=v_C(0^-)\).</details></li>
+            <li><details><summary>t=3τ</summary>Error ≈ 5%.</details></li>
+            <li><details><summary>t=5τ</summary>Prácticamente estado final (≤1%).</details></li>
+            <li><details><summary>\(R_{th}\) visto por C</summary>Desactiva fuentes y simplifica.</details></li>
+            <li><details><summary>Energia disipada en R</summary>\(E=\int i^2R dt\).</details></li>
+            <li><details><summary>Corriente pico en RL</summary>\(=I_f\).</details></li>
+            <li><details><summary>Respuesta a impulso</summary>Derivada de escalón.</details></li>
+            <li><details><summary>Forzamiento exponencial</summary>Usa solución particular.</details></li>
+            <li><details><summary>Conmutación con fuente de corriente</summary>Convierte a fuente de tensión con \(R\) para \(R_{th}\).</details></li>
+            <li><details><summary>RC en serie con carga</summary>Ajusta \(R_{eq}\).</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 9. SECOND ORDER -->
+      <section class="paper" id="cap9">
+        <h2>9) RLC: segundo orden y resonancia</h2>
+        <div class="callout"><strong>Ecuación</strong> \(a\,\ddot x+b\,\dot x+c\,x=f(t)\). Natural: raíces de \(s^2+2\zeta\omega_n s+\omega_n^2=0\). Casos: subamortiguado \(\zeta<1\), crítico \(=1\), sobreamortiguado \(>1\).</div>
+        <div class="grid">
+          <div>
+            <h3>Series</h3>
+            <p>\(\omega_n=1/\sqrt{LC}\), \(\zeta=R/2\,\sqrt{C/L}\).</p>
+          </div>
+          <div>
+            <h3>Paralelo</h3>
+            <p>\(\zeta=1/(2R)\,\sqrt{L/C}\).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>\(L=10mH\), \(C=10µF\) → \(\omega_n\)</summary>\(\approx 3162\,rad/s\).</details></li>
+            <li><details><summary>R=10Ω en serie → \(\zeta\)</summary>\(\zeta=R/2\sqrt{C/L}≈0.5\).</details></li>
+            <li><details><summary>Clasifica el régimen</summary>Con \(\zeta=0.5\): subamortiguado.</details></li>
+            <li><details><summary>Frecuencia de resonancia serie</summary>\(\omega_0≈\omega_n\) si \(\zeta\ll1\).</details></li>
+            <li><details><summary>Ancho de banda</summary>\(BW=\omega_0/Q\), \(Q=1/(2\zeta)\).</details></li>
+            <li><details><summary>Pico de corriente en resonancia</summary>Limitado por R.</details></li>
+            <li><details><summary>Curva de Bode (concepto)</summary>Pasa banda en serie.</details></li>
+            <li><details><summary>Paralelo: impedancia máxima</summary>En resonancia.</details></li>
+            <li><details><summary>Tiempo de asentamiento ≈</summary>\(\approx 4/(\zeta\omega_n)\) (aprox.).</details></li>
+            <li><details><summary>Sobrepaso %</summary>\(M_p≈e^{-\pi\zeta/\sqrt{1-\zeta^2}}\).</details></li>
+            <li><details><summary>Energia intercambiada L–C</summary>Oscila entre campos.</details></li>
+            <li><details><summary>Condición crítica</summary>\(\zeta=1\).</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 10. AC -->
+      <section class="paper" id="cap10">
+        <h2>10) AC: fasores, potencia y factor de potencia</h2>
+        <div class="callout"><strong>Fasores</strong> \(\underline X = X_m e^{j\phi}\). Impedancias: \(Z_R=R\), \(Z_L=j\omega L\), \(Z_C=1/(j\omega C)\). Leyes de Ohm y Kirchhoff en dominio fasorial.</div>
+        <div class="grid">
+          <div>
+            <h3>Potencia</h3>
+            <p>\(S=VI^*\) (VA), \(P=\Re\{S\}\) (W), \(Q=\Im\{S\}\) (var), \(\cos\varphi=P/|S|\).</p>
+          </div>
+          <div>
+            <h3>Compensación</h3>
+            <p>Agregar C o L para corregir \(\cos\varphi\to1\).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Impedancia de R=10Ω y C=100µF a 50 Hz</summary>\(Z=10- j\,31.8\,Ω\).</details></li>
+            <li><details><summary>Corriente con V=230∠0°, Z anterior</summary>\(I=V/Z\) (calcular magnitud y ángulo).</details></li>
+            <li><details><summary>P, Q y S</summary>Usa \(S=VI^*\).</details></li>
+            <li><details><summary>FP antes/después de compensar</summary>Calcula C tal que \(Q=0\).</details></li>
+            <li><details><summary>Triángulo de potencias</summary>Relación geométrica.</details></li>
+            <li><details><summary>Impedancia de L a 60 Hz, L=100 mH</summary>\(j37.7Ω\).</details></li>
+            <li><details><summary>Divisor de tensión AC</summary>Usa \(Z\) en lugar de R.</details></li>
+            <li><details><summary>Transformación a admitancias</summary>\(Y=1/Z\).</details></li>
+            <li><details><summary>Promedio temporal de p(t)</summary>\(P\).</details></li>
+            <li><details><summary>Potencia reactiva signo</summary>Inductiva: +Q; capacitiva: −Q.</details></li>
+            <li><details><summary>Valor eficaz</summary>\(V_{rms}=V_m/\sqrt{2}\).</details></li>
+            <li><details><summary>Conexión estrella–triángulo (notas)</summary>Relaciones de fase y línea.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 11. FILTERS -->
+      <section class="paper" id="cap11">
+        <h2>11) Filtros pasivos y Bode</h2>
+        <div class="callout"><strong>Funciones de transferencia</strong> \(H(j\omega)=\dfrac{V_o}{V_i}\). RC pasa-bajas: \(H=\dfrac{1}{1+j\omega RC}\). RC pasa-altas: \(H=\dfrac{j\omega RC}{1+j\omega RC}\).</div>
+        <div class="examples"><h3>Ejemplos</h3>
+          <details><summary>Frecuencia de corte</summary>\(\omega_c=1/RC\), |H|=−3 dB.</details>
+          <details><summary>Ganancia en dB</summary>\(20\log_{10}|H|\). Fase: \(\angle H\).</details>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>RC con R=1k, C=100 nF</summary>\(f_c≈1.59\,kHz\).</details></li>
+            <li><details><summary>|H| a 10 f_c (pasa-bajas)</summary>≈ 0.099 (−20 dB).</details></li>
+            <li><details><summary>Fase a f_c</summary>−45° (pasa-bajas), +45° (pasa-altas).</details></li>
+            <li><details><summary>RL pasa-altas corte</summary>\(\omega_c=R/L\).</details></li>
+            <li><details><summary>RLC pasa-banda Q=10</summary>Estima BW.</details></li>
+            <li><details><summary>Atención a 0.1 f_c</summary>≈ −20 dB/dec.</details></li>
+            <li><details><summary>Diagrama de Bode por tramos</summary>Aproximación asintótica.</details></li>
+            <li><details><summary>Fase acumulada</summary>−90° por polo, +90° por cero.</details></li>
+            <li><details><summary>Polar–cero</summary>Ubica en s=jω.</details></li>
+            <li><details><summary>Ganancia a f=0</summary>1 en pasa-bajas ideal.</details></li>
+            <li><details><summary>Ganancia a f→∞</summary>0 en pasa-bajas.</details></li>
+            <li><details><summary>Comparar RC vs RL</summary>Simetrías.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 12. LAPLACE/SPICE -->
+      <section class="paper" id="cap12">
+        <h2>12) Laplace, función de transferencia y SPICE</h2>
+        <div class="callout"><strong>Laplace</strong> Convierte \(\tfrac{d}{dt}\to s\). Impedancias: \(Z_C=1/(sC)\), \(Z_L=sL\). Condiciones iniciales como fuentes equivalentes.</div>
+        <div class="grid">
+          <div>
+            <h3>Flujo típico</h3>
+            <ol>
+              <li>Escribe ecuaciones en s (KCL/KVL).</li>
+              <li>Obtén \(H(s)=\dfrac{Y(s)}{X(s)}\).</li>
+              <li>Factoriza polos/ceros; estabilidad (polos con \(\Re\{s\}<0\)).</li>
+              <li>Antitransforma para obtener \(y(t)\).</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Mini–SPICE</h3>
+            <code class="k">* RC pasa-bajas
+V1 in 0 AC 1
+R1 in out 1k
+C1 out 0 100n
+.ac dec 100 10 100k
+.print ac vm(out) vp(out)
+.end</code>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (12)</h3>
+          <ol>
+            <li><details><summary>Transformar RC a s</summary>\(H(s)=1/(1+sRC)\).</details></li>
+            <li><details><summary>Polos de \(H(s)=\omega_c/(s+\omega_c)\)</summary>\(s=-\omega_c\).</details></li>
+            <li><details><summary>Respuesta al escalón</summary>\(1-e^{-t/\tau}\).</details></li>
+            <li><details><summary>Condición inicial capacitor</summary>Fuente de tensión \(V_0/s\) en rama de C (método equivalente).</details></li>
+            <li><details><summary>RLC transferencia</summary>Deriva \(H(s)\) y polos complejos.</details></li>
+            <li><details><summary>Estabilidad</summary>Polos en semiplano izq.</details></li>
+            <li><details><summary>Tiempo de subida vs polos</summary>Más lejos → más rápido.</details></li>
+            <li><details><summary>Simular en SPICE</summary>Escribe netlist simple.</details></li>
+            <li><details><summary>Punto de operación (.op)</summary>Estado DC.</details></li>
+            <li><details><summary>Tran (.tran)</summary>Respuesta temporal.</details></li>
+            <li><details><summary>AC (.ac)</summary>Bode.</details></li>
+            <li><details><summary>Comparar teoría–SPICE</summary>Validación.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="paper">
+        <h2>Errores típicos y trucos</h2>
+        <ul>
+          <li>Olvidar la convención pasiva → signos de potencia erróneos.</li>
+          <li>Usar superposición con elementos no lineales (no aplica).</li>
+          <li>Confundir impedancia con reactancia (\(X=\Im\{Z\}\)).</li>
+          <li>No verificar límites: \(t\to0\), \(t\to\infty\), \(\omega\to0/\infty\).</li>
+          <li>En transitorios, olvidar continuidad de \(v_C\) y \(i_L\).</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <button class="topbtn" id="topbtn">↑ Arriba</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const bar = $('#progress');
+    function updateProgress(){ const h=document.documentElement; const sc=h.scrollTop||document.body.scrollTop; const max=(h.scrollHeight-h.clientHeight); const p=max>0?(sc/max)*100:0; bar.style.width=p+'%'; $('#topbtn').classList.toggle('show', sc>600); }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    const root=document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{ const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18; root.style.setProperty('--base', Math.min(val+1, 22)+'px'); });
+    $('#fs-down').addEventListener('click', ()=>{ const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18; root.style.setProperty('--base', Math.max(val-1, 14)+'px'); });
+    $('#width-up').addEventListener('click', ()=>{ const w=getComputedStyle(root).getPropertyValue('--maxw')||'86ch'; const num=parseFloat(w); root.style.setProperty('--maxw', Math.min(num+8, 110)+'ch'); });
+    $('#width-down').addEventListener('click', ()=>{ const w=getComputedStyle(root).getPropertyValue('--maxw')||'86ch'; const num=parseFloat(w); root.style.setProperty('--maxw', Math.max(num-8, 60)+'ch'); });
+    $('#theme-toggle').addEventListener('click', ()=>{ const light=getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff'; if(light){ root.style.setProperty('--bg','#060914'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff'); root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#38bdf8'); root.style.setProperty('--accent','#67e8f9'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#203054'); } else { root.style.setProperty('--bg','#f6f9ff'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#0b1220'); root.style.setProperty('--muted','#475569'); root.style.setProperty('--brand','#0ea5e9'); root.style.setProperty('--accent','#22d3ee'); root.style.setProperty('--accent2','#06b6d4'); root.style.setProperty('--border','#e2e8f0'); } });
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+

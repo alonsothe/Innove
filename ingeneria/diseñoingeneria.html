@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>CAD · CAE · Diseño — Manual profesional (teoría + flujo + plantillas + modelo CAD)</title>
+<meta name="color-scheme" content="light dark"/>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --bg:#f6f7fb; --paper:#ffffff; --ink:#0f172a; --muted:#475569;
+    --brand:#6d28d9; --accent:#8b5cf6; --accent2:#22d3ee;
+    --border:#e5e7eb; --shadow:0 10px 30px rgba(15,23,42,.08);
+    --radius:16px; --maxw:86ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b1220; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9; --brand:#a78bfa; --accent:#c4b5fd; --accent2:#22d3ee; --border:#203054; --shadow:0 12px 28px rgba(0,0,0,.38); }
+  }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1200px 740px at 90% -10%, #ede9fe 0%, transparent 60%),
+               radial-gradient(900px 600px at 0% 120%, #cffafe 0%, transparent 70%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:80; background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:70; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 70%,white 10%),color-mix(in oklab,var(--accent) 65%,white 20%)); color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .layout{max-width:1400px; margin:0 auto; padding:16px; display:grid; grid-template-columns: 280px 1fr; gap:16px}
+  @media (max-width: 980px){ .layout{ grid-template-columns: 1fr } .aside{ position:static } }
+  .aside{ position:sticky; top:74px; height:calc(100dvh - 88px); overflow:auto; border-right:1px dashed var(--border); padding-right:10px }
+  .navcard{background:var(--paper); border:1px solid var(--border); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
+  .navcard h3{margin:.4em 0 .6em; font-size:1.0em}
+  .navcard a{display:block; padding:.25em .4em; margin:.1em 0; text-decoration:none; border-radius:10px; color:color-mix(in oklab,var(--brand) 80%, var(--ink));}
+  .navcard a:hover{background:color-mix(in oklab,var(--paper) 82%, var(--accent) 8%)}
+  main{padding:0 2px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 14%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.1em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border); border-radius:12px;padding:12px 14px;margin:12px 0}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border); border-radius:10px;padding:8px 10px;margin:8px 0}
+  summary{cursor:pointer;font-weight:700}
+  code.k{display:block; white-space:pre; overflow:auto; padding:.8em; border:1px solid var(--border); border-radius:12px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+  .tag{display:inline-block; padding:.2em .55em; border:1px solid var(--border); border-radius:999px; font-size:.78em; margin-right:.4em; color:var(--muted)}
+  .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:12px}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:60;background:var(--paper);border:1px solid var(--border); border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, monospace; border:1px solid var(--border); padding:.1em .4em; border-radius:6px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+  .toc-inline a{margin-right:12px}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <div class="badge">🧩</div>
+        <div>
+          <h1 class="brand-title">CAD · CAE · Diseño — Manual Profesional</h1>
+          <div class="lead">Buenas prácticas, estándares, plantillas y un modelo CAD paramétrico listo para usar</div>
+        </div>
+      </a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
+        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
+        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="aside">
+      <div class="navcard">
+        <h3>Índice</h3>
+        <nav id="sidenav">
+          <a href="#cap0">Resumen ejecutivo</a>
+          <a href="#cap1">1. Estrategia de modelado</a>
+          <a href="#cap2">2. Parametría avanzada</a>
+          <a href="#cap3">3. Modelado de superficies</a>
+          <a href="#cap4">4. Diseño top–down & contextos</a>
+          <a href="#cap5">5. Ensamblajes y movimiento</a>
+          <a href="#cap6">6. Dibujo técnico y GD&T</a>
+          <a href="#cap7">7. Tolerancias y apilamientos</a>
+          <a href="#cap8">8. Estándares y normalización</a>
+          <a href="#cap9">9. DFM/DFA y costes</a>
+          <a href="#cap10">10. Materiales y sostenibilidad</a>
+          <a href="#cap11">11. CAE: FEA (lineal/no lineal)</a>
+          <a href="#cap12">12. CAE: Buckling, fatiga y optimización</a>
+          <a href="#cap13">13. CFD: del CAD al mallado</a>
+          <a href="#cap14">14. CAM e impresión 3D (intro)</a>
+          <a href="#cap15">15. PDM/PLM y control de cambios</a>
+          <a href="#cap16">16. Checklist de calidad</a>
+          <a href="#cap17">17. Proyecto: soporte en L (PRO)</a>
+          <a href="#cap18">18. Apéndices y plantillas</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <section class="paper" id="cap0">
+        <h2>Resumen ejecutivo</h2>
+        <p>Este manual reúne <span class="tag">teoría</span><span class="tag">estándares</span><span class="tag">buenas prácticas</span><span class="tag">plantillas</span> para que un equipo pueda pasar de idea a producción con control: CAD paramétrico robusto, CAE con criterios de validación, planos con GD&amp;T, y decisiones de DFM/DFA respaldadas por costos.</p>
+        <div class="grid">
+          <div class="callout"><strong>Objetivos.</strong> Robustez del modelo, trazabilidad, fabricabilidad, y verificación.</div>
+          <div class="callout"><strong>Resultados.</strong> CAD limpio (nombres/parametría), dibujos conformes ISO/ASME, simulaciones verificadas y checklist de liberación.</div>
+        </div>
+      </section>
+
+      <section class="paper" id="cap1">
+        <h2>1. Estrategia de modelado</h2>
+        <p>La estrategia correcta determina la <em>resiliencia</em> del diseño ante cambios.</p>
+        <ul>
+          <li><strong>Árbol limpio:</strong> nombra croquis, operaciones y planos; agrupa por función (esqueleto, features, redondeos, taladros).</li>
+          <li><strong>Referencias estables:</strong> dimensiona desde planos/ejes, evita edges efímeras. Usa <em>datum geometry</em>.</li>
+          <li><strong>Orden recomendado:</strong> croquis base → features principales → vaciados/refuerzos → taladros → filetes/chaflanes.</li>
+          <li><strong>Configuraciones:</strong> parámetros/estados suprimidos para variantes (Light/HD, L/R, etc.).</li>
+        </ul>
+        <div class="examples">
+          <h4>Antipatrones (evítalos)</h4>
+          <ul>
+            <li>Patronar agujeros respecto a un borde que luego cambia.</li>
+            <li>Filetear pronto: rompe muchas dependencias al cambiar espesores.</li>
+            <li>Referencias externas no bloqueadas en <em>in-context</em>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="paper" id="cap2">
+        <h2>2. Parametría avanzada</h2>
+        <p>El parámetro es la unidad de cambio. Centraliza y documenta.</p>
+        <div class="grid">
+          <div>
+            <h3>Convenciones</h3>
+            <ul>
+              <li>Nomenclatura: <code>t_*</code> espesores, <code>L/W/H</code> medidas globales, <code>d_*</code> diámetros, <code>p_*</code> pasos, <code>R</code> radios.</li>
+              <li>Unidades explícitas en descripciones y comentarios.</li>
+              <li>Funciones: límites con <code>max()</code>/<code>min()</code> para evitar geometrías degeneradas.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Ejemplo (tabla de parámetros)</h3>
+            <code class="k">// Clave de parámetros globales
+L=80; W=60; H=80; t=4; r=6; d_h=8; p=40; n_h=2; off=15;
+// Reglas
+r = min(r, min(W,H)/4);
+n_h = max(1, n_h);
+            </code>
+          </div>
+        </div>
+        <details><summary>Expresiones útiles</summary>
+          <ul>
+            <li><strong>Espesores mínimos</strong>: <code>t ≥ 0.4·D_fresa</code> (mecanizado), <code>t ≥ 2·w_linea</code> (FFF).</li>
+            <li><strong>Filetes automáticos</strong>: <code>R = clamp(0.5·t, 1, 6)</code>.</li>
+          </ul>
+        </details>
+      </section>
+
+      <section class="paper" id="cap3">
+        <h2>3. Modelado de superficies</h2>
+        <p>Para carcasas y formas aerodinámicas, el <em>surfacing</em> permite continuidad y control local.</p>
+        <ul>
+          <li>Continuidades: <strong>G0</strong> (pos.), <strong>G1</strong> (tang.), <strong>G2</strong> (curv.).</li>
+          <li>Flujo de isocurvas coherente; evita parches con ángulos agudos.</li>
+          <li><em>Loft</em> con guías y <em>boundary fill</em>; remata con <em>thicken</em>.</li>
+        </ul>
+        <div class="examples"><h4>Checklist</h4>
+          <ul><li>Seam alineado y oculto.</li><li>Curvas maestras bloqueadas en un <em>esqueleto</em>.</li><li>Verifica <em>zebra stripes</em> y análisis de curvatura.</li></ul>
+        </div>
+      </section>
+
+      <section class="paper" id="cap4">
+        <h2>4. Diseño top–down & contextos</h2>
+        <p>El diseño <em>top–down</em> minimiza errores en ensamblajes complejos.</p>
+        <ul>
+          <li><strong>Esqueleto</strong> (master sketch/part) con interfaces, datums, patrones.</li>
+          <li>Deriva piezas hijas desde el esqueleto; controla referencias externas (bloquear, romper, publicar).</li>
+          <li>Layouts 2D/3D para rutas de cables/tubos.</li>
+        </ul>
+      </section>
+
+      <section class="paper" id="cap5">
+        <h2>5. Ensamblajes y movimiento</h2>
+        <ul>
+          <li>Mates mínimos para definir 6 GDL; usa subensamblajes lógicos.</li>
+          <li>Simulaciones de movimiento: contactos, fricción, servos, perfiles de tiempo.</li>
+          <li>BOM: propiedades personalizadas (nº parte, material, masa, proveedor).</li>
+        </ul>
+        <details><summary>Plantilla de nomenclatura</summary>
+          <code class="k">PROY-###-Pieza-Descripción-RevA
+ASM-###-Módulo-RevB
+DWG-###-Pieza-RevB
+          </code>
+        </details>
+      </section>
+
+      <section class="paper" id="cap6">
+        <h2>6. Dibujo técnico y GD&amp;T</h2>
+        <div class="callout">ISO 8015 (principios), ISO 1101 (indicaciones), ISO 5459 (datums), ISO 286 (ajustes), ISO 2768 (tolerancias generales), ISO 1302 (acabado).</div>
+        <div class="grid">
+          <ul>
+            <li>Vistas: principal, auxiliares, secciones, detalle; escala y jerarquía.</li>
+            <li>Acotación funcional: desde datums A|B|C; evita cadenas largas.</li>
+            <li>Tablas: roscas (ISO 261/965), taladros (ISO 273), acabados.</li>
+          </ul>
+          <ul>
+            <li>GD&amp;T comunes: posición, planitud, perpendicularidad, paralelismo, concentricidad (evitar salvo necesidad).</li>
+            <li>MMC/LMC, <em>bonus</em> y <em>datum shift</em>.</li>
+          </ul>
+        </div>
+        <details><summary>Marco de control (ejemplo)</summary>
+          <code class="k">⟦ POS ⟧ ⌀0.20 | M | A | B | C
+A: Plano base; B/C: agujeros pasantes; tolerancia varía con MMC.
+          </code>
+        </details>
+      </section>
+
+      <section class="paper" id="cap7">
+        <h2>7. Tolerancias y apilamientos</h2>
+        <p>Controla el riesgo de no–ensamble. Dos métodos de cálculo: <em>escenario peor</em> y <em>RMS/RSS</em>.</p>
+        <div class="grid">
+          <div>
+            <h3>Peor caso</h3>
+            <p>Para cadenas 1D: \(T_{total}=\sum T_i\).</p>
+          </div>
+          <div>
+            <h3>RSS</h3>
+            <p>Asumiendo variaciones independientes: \(T_{rss}=\sqrt{\sum T_i^2}\).</p>
+          </div>
+        </div>
+        <details><summary>Ejemplo de cadena</summary>
+          <p>Separación entre placas con separadores y arandelas: define signos y suma con peor caso/RSS. Verifica que \(gap_{min}>0\).</p>
+        </details>
+      </section>
+
+      <section class="paper" id="cap8">
+        <h2>8. Estándares y normalización</h2>
+        <ul>
+          <li>Roscas: ISO métrica (coarse/fine), UNC/UNF si aplica.</li>
+          <li>Agujeros y tornillería: ISO 273, 4014, 4017; arandelas ISO 7089.</li>
+          <li>Materiales: ISO/TR 15608 (agrupación soldadura), designaciones EN/ASTM.</li>
+        </ul>
+        <div class="examples"><h4>Biblioteca propia</h4>
+          <p>Construye una librería de features: taladro avellanado, chaveteros, alojamientos de rodamientos con chaflán y radios estandarizados.</p>
+        </div>
+      </section>
+
+      <section class="paper" id="cap9">
+        <h2>9. DFM/DFA y costes</h2>
+        <ul>
+          <li>Mecanizado: radios internos ≥ herramienta; evitar bolsas ciegas profundas; accesos de herramienta.</li>
+          <li>Chapa: radio de pliegue ≥ <code>t</code>; deducción de pliegue y K–factor calibrado.</li>
+          <li>Inyección: ángulos de desmoldeo (1–2°), espesores uniformes, nervaduras con <code>t_rib≈0.5–0.7·t</code>.</li>
+          <li>Impresión 3D: orientación para minimizar soportes; grosor mínimo funcional.</li>
+        </ul>
+        <details><summary>Estimación de coste rápida</summary>
+          <p>Coste ≈ tiempo de mecanizado + material + acabado + montaje. Tiempo ≈ <code>longitud de trayectorias / feed</code> + cambios de herramienta.</p>
+        </details>
+      </section>
+
+      <section class="paper" id="cap10">
+        <h2>10. Materiales y sostenibilidad</h2>
+        <ul>
+          <li>Métricas: <em>resistencia específica</em> \(\sigma/\rho\), <em>rigidez específica</em> \(E/\rho\).</li>
+          <li>Impacto: reciclabilidad, contenido reciclado, huella de CO₂ del proceso.</li>
+          <li>Selección multicriterio (Ashby + coste + ciclo de vida).</li>
+        </ul>
+        <details><summary>Ejemplo</summary>
+          <p>Al 6061-T6 vs Acero S355: Al reduce masa ~65%; si la rigidez es crítica, aumenta sección para igualar flecha.</p>
+        </details>
+      </section>
+
+      <section class="paper" id="cap11">
+        <h2>11. CAE: FEA (lineal y no lineal)</h2>
+        <ul>
+          <li>Lineal: pequeñas deformaciones, módulo constante, sin contactos deslizantes.</li>
+          <li>No lineal: materiales (plasticidad), grandes deformaciones, contacto/fricción.</li>
+          <li>Malla: tetra/hex; refinamiento en filetes/agujeros; <em>quality</em> (aspect ratio, skewness).</li>
+          <li>Validación: comparaciones manuales (vigas, placas), malla convergente (≤5%), BC realistas.</li>
+        </ul>
+        <details><summary>Plástico bilineal (ejemplo)</summary>
+          <p>Curva σ–ε con hardening: valida la zona de plastificación y <em>springback</em> en chapa.</p>
+        </details>
+      </section>
+
+      <section class="paper" id="cap12">
+        <h2>12. CAE: pandeo, fatiga y optimización</h2>
+        <ul>
+          <li><strong>Pandeo</strong>: factor de carga crítico eigen; aplica coeficientes de seguridad.</li>
+          <li><strong>Fatiga</strong>: S–N (Wöhler), reglas de Miner; concentradores (K<sub>t</sub>).</li>
+          <li><strong>Topología</strong>: optimización con restricciones de masa/desplazamiento y direcciones de manufactura.</li>
+        </ul>
+        <details><summary>Secuencia típica</summary>
+          <ol><li>Estático para tensiones base.</li><li>Modal para evitar resonancias.</li><li>Fatiga a espectro de carga.</li><li>Topología para aligerar.</li></ol>
+        </details>
+      </section>
+
+      <section class="paper" id="cap13">
+        <h2>13. CFD: del CAD al mallado</h2>
+        <ul>
+          <li>Limpiar CAD: cuerpos estancos, sin aristas abiertas; <em>defeature</em> de tornillos/fillets pequeños.</li>
+          <li>Dominio y BC: entradas/salidas, simetrías, pared; elección de modelo de turbulencia.</li>
+          <li>Malla: <em>y+</em> objetivo; capas prismáticas; refinamiento en estelas.</li>
+        </ul>
+        <details><summary>Validación</summary>
+          <p>Coeficientes integrales (C<sub>D</sub>, C<sub>L</sub>), curvas características y estudios de independencia de malla.</p>
+        </details>
+      </section>
+
+      <section class="paper" id="cap14">
+        <h2>14. CAM e impresión 3D (intro)</h2>
+        <ul>
+          <li>CAM 2.5D/3D: selección de herramienta, estrategia (parallel, scallop), <em>stock</em>, <em>tabs</em>.</li>
+          <li>Impresión FFF/SLA/SLS: elección de material, relleno, capas; orientación por resistencia.</li>
+        </ul>
+        <details><summary>SLA vs FFF</summary>
+          <p>SLA: mejor detalle/superficie; FFF: coste bajo y piezas funcionales con fibras.</p>
+        </details>
+      </section>
+
+      <section class="paper" id="cap15">
+        <h2>15. PDM/PLM y control de cambios</h2>
+        <ul>
+          <li>Estados: WIP → In Review → Released; firmantes.</li>
+          <li>ECN/ECR: descripción, causa, impacto, piezas afectadas.</li>
+          <li>Versionado: mayor (rotura compat.), menor (compatible), hotfix.</li>
+        </ul>
+        <details><summary>Plantilla de registro</summary>
+          <code class="k">ECN-2025-014 | Cambio filete R6→R8 por interferencias con tornillo M8 | Afecta: PROY-123-Soporte-L | Rev B→C</code>
+        </details>
+      </section>
+
+      <section class="paper" id="cap16">
+        <h2>16. Checklist de calidad antes de liberar</h2>
+        <div class="grid">
+          <ul>
+            <li>CAD sin <em>errors/suppressions</em> y con <em>rebuild</em> limpio.</li>
+            <li>Material asignado y masa validada ±2%.</li>
+            <li>Clearances ≥ tolerancias acumuladas.</li>
+          </ul>
+          <ul>
+            <li>Planos con datums y GD&amp;T mínimos; notas generales ISO 2768–m.</li>
+            <li>FEA con estudio de malla y comparaciones manuales.</li>
+            <li>DFM revisado con proveedor/tecnología objetivo.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="paper" id="cap17">
+        <h2>17. Proyecto: soporte en L (versión PRO)</h2>
+        <p>Modelo paramétrico enriquecido con opciones: nervio, aligeramientos, avellanados y <em>slots</em> oblongos.</p>
+        <h3>A) OpenSCAD — modelo paramétrico</h3>
+        <code class="k">// — Soporte en L paramétrico (PRO) — Unidades: mm
+// ===== PARÁMETROS =====
+t = 5;  W = 80; H = 100; r = 8; d_h = 8; p = 40; n_h = 3; off = 18;
+slot = true;  // agujeros oblongos
+cs = true;    // avellanados para tornillo M8
+rib = true;   // nervio interior
+light = true; // aligeramientos
+
+// ===== UTILIDADES =====
+module countersink(d, head=16, ang=90, h=t){
+  // cono para cabeza avellanada
+  translate([0,0,t/2]) cylinder(h=h, d1=head, d2=d, $fn=64);
+}
+module slot_hole(len=16, d=d_h){
+  hull(){ cylinder(h=t+2, d=d, $fn=48);
+         translate([len,0,0]) cylinder(h=t+2, d=d, $fn=48); }
+}
+module L_base(){
+  difference(){
+    minkowski(){ union(){ cube([W,t,t]); cube([t,t,H]); } cylinder(h=0.01, r=r, $fn=64); }
+    translate([-r,-r,-1]) cube([r,r,H+2]);
+    translate([-r,-1,-r]) cube([W+2,t+2,r]);
+  }
+}
+module holes(){
+  for(i=[0:n_h-1]){
+    translate([off+i*p, t/2, t/2])
+      rotate([90,0,0]) (slot? slot_hole(10,d_h) : cylinder(h=t+2, d=d_h, $fn=48));
+    translate([t/2, t/2, off+i*p])
+      rotate([0,90,0]) (slot? slot_hole(10,d_h) : cylinder(h=t+2, d=d_h, $fn=48));
+  }
+}
+module lighten(){
+  if(light){
+    translate([W*0.35, t/2, H*0.35]) rotate([0,0,0]) scale([1.2,1,1.2])
+      cylinder(h=t+2, r=min(W,H)*0.22, $fn=6);
+  }
+}
+module rib_inner(){ if(rib){ translate([t, t, 0]) polyhedron(points=[[0,0,0],[W-t,0,0],[0,0,H-t]], faces=[[0,1,2]]); } }
+
+// ===== MODELO =====
+difference(){
+  union(){ L_base(); rib_inner(); }
+  holes(); lighten();
+}
+if(cs){ // avellanados
+  for(i=[0:n_h-1]){
+    translate([off+i*p, 0, 0]) countersink(d_h, head=16);
+    translate([0, 0, off+i*p]) rotate([0,90,0]) countersink(d_h, head=16);
+  }
+}
+        </code>
+        <details><summary>Pasos en Fusion/SolidWorks (PRO)</summary>
+          <ol>
+            <li>Configura parámetros globales y crea <em>configurations</em> para Light/HD.</li>
+            <li>Genera <em>slots</em> con <em>slot feature</em> controlado por <code>p</code> y <code>off</code>.</li>
+            <li>Patrones dependientes: enlace patrón vertical/horizontal a una tabla (excel/link). 
+            </li>
+            <li>Archivo de <em>design table</em> con variables y estados suprimidos.</li>
+          </ol>
+        </details>
+        <h3>B) Mini–FEA de validación</h3>
+        <ul>
+          <li>BC: fija caras inferiores; carga distribuida en el extremo.
+          <li>Malla: refinamiento local en filetes y en la raíz del nervio.</li>
+          <li>Criterio: \(\sigma_{max} < \sigma_y/FS\) con FS=2–3; \(\delta\) &lt; límite funcional.</li>
+        </ul>
+      </section>
+
+      <section class="paper" id="cap18">
+        <h2>18. Apéndices y plantillas</h2>
+        <div class="grid">
+          <div>
+            <h3>A) Título de plano (texto)</h3>
+            <code class="k">Proyecto: PROY-123  | Pieza: Soporte en L  | Nº Parte: 123-001
+Material: S355JR    | Acabado: Pintura RAL 9005
+Tolerancias generales: ISO 2768-m | Rugosidad: Ra 3.2 (salvo indicación)
+Escala: 1:2 | Plano: DWG-123-001-RevC | Fecha: 2025-08-26</code>
+          </div>
+          <div>
+            <h3>B) Notas generales (copiar/pegar)</h3>
+            <code class="k">1) Quitar rebabas y cantos vivos ⩾ 0.5 mm.
+2) Todos los bordes con chaflán 0.5×45° salvo indicación.
+3) Tolerancias no especificadas: ISO 2768–m.
+4) Material y tratamiento según tabla.
+5) Verificar masa y COG por control.
+6) Inspección GD&T según plano.
+            </code>
+          </div>
+          <div>
+            <h3>C) Checklist de entrega</h3>
+            <ul>
+              <li>STEP (AP214/AP242), nativo CAD, PDF de planos, DXF de láser (si chapa), STL (si 3D).</li>
+              <li>BOM con nº parte, material, masa, proveedor.</li>
+              <li>Registro ECN de cambios desde última versión.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="paper">
+        <h2>Errores típicos y trucos</h2>
+        <ul>
+          <li>Usar edges “móviles” para acotar → <em>siempre</em> desde datums.</li>
+          <li>Ignorar manufactura desde el inicio → el 80% del coste se decide en diseño.</li>
+          <li>FEA sin validación manual → exige comparaciones simples y estudio de malla.</li>
+          <li>GD&amp;T recargado → selecciona lo esencial para función e inspección.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <button class="topbtn" id="topbtn">↑ Arriba</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const bar = $('#progress');
+    function updateProgress(){ const h = document.documentElement; const sc = h.scrollTop || document.body.scrollTop; const max = (h.scrollHeight - h.clientHeight); const p = max>0 ? (sc/max)*100 : 0; bar.style.width = p + '%'; $('#topbtn').classList.toggle('show', sc>600); }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{ const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18; root.style.setProperty('--base', Math.min(val+1, 22)+'px'); });
+    $('#fs-down').addEventListener('click', ()=>{ const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18; root.style.setProperty('--base', Math.max(val-1, 14)+'px'); });
+    $('#width-up').addEventListener('click', ()=>{ const w = getComputedStyle(root).getPropertyValue('--maxw') || '86ch'; const num = parseFloat(w); root.style.setProperty('--maxw', Math.min(num+8, 110)+'ch'); });
+    $('#width-down').addEventListener('click', ()=>{ const w = getComputedStyle(root).getPropertyValue('--maxw') || '86ch'; const num = parseFloat(w); root.style.setProperty('--maxw', Math.max(num-8, 60)+'ch'); });
+    $('#theme-toggle').addEventListener('click', ()=>{ const light = getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff'; if(light){ root.style.setProperty('--bg','#0b1220'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff'); root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#a78bfa'); root.style.setProperty('--accent','#c4b5fd'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#203054'); }else{ root.style.setProperty('--bg','#f6f7fb'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#0f172a'); root.style.setProperty('--muted','#475569'); root.style.setProperty('--brand','#6d28d9'); root.style.setProperty('--accent','#8b5cf6'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#e5e7eb'); } });
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+
