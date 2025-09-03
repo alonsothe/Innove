@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nomenclatura orgánica — por niveles (IUPAC, reglas y muchos ejercicios)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:18px; --lh:1.85;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+    --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+    --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:
+      radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+      radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%),
+      var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  code{background:color-mix(in oklab,var(--paper) 90%, transparent);border:1px solid var(--border);padding:2px 6px;border-radius:8px}
+  table{border-collapse:collapse;width:100%;margin:.6em 0;border:1px solid var(--border)}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+  th{background:color-mix(in oklab,var(--paper) 85%, var(--bg))}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">🧪</span><span class="brand-title">Nomenclatura orgánica — por niveles</span></a>
+      <div class="reader" role="group" aria-label="Controles de lectura">
+        <button class="btn small" id="fs-down" title="Disminuir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up" title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de columna">⇤</button>
+        <button class="btn small" id="width-up" title="Aumentar ancho de columna">⇥</button>
+        <button class="btn" id="theme-toggle" title="Alternar tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="primaria" role="tab" aria-selected="true">Primaria</button>
+        <button class="pill" data-level="eso" role="tab" aria-selected="false">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="master" role="tab" aria-selected="false">Máster</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== PRIMARIA ===== -->
+    <section id="sec-primaria" class="paper level" data-active>
+      <h1>Primaria — ¿Qué es “nomenclatura” en química?</h1>
+      <p class="lead">Es el sistema para poner <strong>nombres</strong> a las sustancias para que cualquier persona del mundo entienda de qué hablamos.</p>
+      <div class="toc">
+        <a href="#p-idea">Idea básica</a>
+        <a href="#p-cadenas">Nombres de cadenas cortas</a>
+        <a href="#p-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="p-idea">Idea básica</h2>
+      <p>En orgánica, muchas sustancias están hechas de <strong>átomos de carbono</strong> unidos entre sí y con hidrógeno, oxígeno, nitrógeno…</p>
+
+      <h2 id="p-cadenas">Cadenas cortas (prefijos)</h2>
+      <div class="grid-2">
+        <div class="callout">
+          <strong>1–10 carbonos</strong><br>
+          met-, et-, prop-, but-, pent-, hex-, hept-, oct-, non-, dec-
+        </div>
+        <div class="callout">
+          <strong>Tipos simples</strong><br>
+          <em>-ano</em> (solo enlaces simples), <em>-eno</em> (uno o más dobles), <em>-ino</em> (triples).
+        </div>
+      </div>
+
+      <h2 id="p-ejercicios">Ejercicios (5)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Cadena de 3 carbonos con enlaces simples.</summary>Propano.</details></li>
+        <li><details><summary>Cadena de 2 carbonos con un doble enlace.</summary>Eteno (eteno/etileno).</details></li>
+        <li><details><summary>Cadena de 4 carbonos con un triple enlace.</summary>But-1-ino o but-2-ino (según posición).</details></li>
+        <li><details><summary>¿Qué significa “-ano”?</summary>Solo enlaces simples (alcano).</details></li>
+        <li><details><summary>¿Cómo se llama C₆H₁₄?</summary>Hexano (puede tener isómeros).</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level">
+      <h1>ESO — Reglas básicas: cadena principal, numeración y sustituyentes</h1>
+      <p class="lead">Aprende a elegir la cadena principal, numerar para dar los <em>locantes</em> más bajos y usar prefijos para ramificaciones.</p>
+      <div class="toc">
+        <a href="#e-cadena">Cadena principal y numeración</a>
+        <a href="#e-sustituyentes">Sustituyentes (alquilo, halo…)</a>
+        <a href="#e-sufijos">Sufijos comunes</a>
+        <a href="#e-ejemplos">Ejemplos típicos</a>
+        <a href="#e-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="e-cadena">Cadena principal y numeración</h2>
+      <ul>
+        <li>Elige la cadena con <strong>más carbonos</strong> que incluya <strong>el mayor número de insaturaciones</strong> y <strong>el grupo funcional principal</strong>.</li>
+        <li>Numera para que los <strong>locantes más bajos</strong> caigan en insaturaciones y función principal.</li>
+        <li>Si hay empate: aplica la <em>regla del primer punto de diferencia</em>.</li>
+      </ul>
+
+      <h2 id="e-sustituyentes">Sustituyentes</h2>
+      <ul>
+        <li><strong>Alquilo</strong>: metil-, etil-, propil-…</li>
+        <li><strong>Halo</strong>: fluoro-, cloro-, bromo-, iodo-</li>
+        <li>Otros: nitro-, ciano-, hidroxi- (si no es función principal)</li>
+        <li>Multiplicadores: di-, tri-, tetra- (no cuentan para el orden alfabético).</li>
+      </ul>
+
+      <h2 id="e-sufijos">Sufijos comunes</h2>
+      <table>
+        <tr><th>Función (principal)</th><th>Sufijo</th><th>Ejemplo</th></tr>
+        <tr><td>Alcano / alqueno / alquino</td><td>-ano / -eno / -ino</td><td>butano, pent-2-eno, hept-1-ino</td></tr>
+        <tr><td>Alcohol</td><td>-ol</td><td>propan-2-ol</td></tr>
+        <tr><td>Aldehído</td><td>-al</td><td>propanal</td></tr>
+        <tr><td>Cetona</td><td>-ona</td><td>butan-2-ona</td></tr>
+        <tr><td>Ácido carboxílico</td><td>ácido …oico</td><td>ácido etanoico</td></tr>
+        <tr><td>Éster</td><td>…oato de alquilo</td><td>etanoato de metilo</td></tr>
+        <tr><td>Amina</td><td>-amina</td><td>etanamina</td></tr>
+        <tr><td>Nitrilo</td><td>-nitrilo</td><td>propanonitrilo</td></tr>
+      </table>
+
+      <h2 id="e-ejemplos">Ejemplos</h2>
+      <div class="callout mono">3-metilhexano · 2,3-dimetilbutano · 4-cloropent-2-eno · propan-1-ol · butanona</div>
+
+      <h2 id="e-ejercicios">Ejercicios (12)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Nombra: CH₃–CH(CH₃)–CH₂–CH₃.</summary>3-metilbutano.</details></li>
+        <li><details><summary>Nombra: CH₂=CH–CH₃.</summary>Propeno (prop-1-eno).</details></li>
+        <li><details><summary>Escribe la fórmula de “2,2-dimetilpropano”.</summary>Neopentano: (CH₃)₄C.</details></li>
+        <li><details><summary>Nombra: CH₃–CH₂–C≡CH.</summary>But-1-ino.</details></li>
+        <li><details><summary>Clasifica: “cloroetano”.</summary>Haloalcano (cloro-).</details></li>
+        <li><details><summary>Nombra: CH₃–CH₂–CH₂–OH.</summary>Propan-1-ol.</details></li>
+        <li><details><summary>¿Qué sufi jo tiene una cetona?</summary>-ona.</details></li>
+        <li><details><summary>Escribe el nombre del ácido CH₃–COOH.</summary>Ácido etanoico (acético).</details></li>
+        <li><details><summary>Nombra: CH₃–CH₂–CN.</summary>Propanonitrilo.</details></li>
+        <li><details><summary>Da el nombre del éster CH₃–COO–CH₃.</summary>Etanoato de metilo.</details></li>
+        <li><details><summary>Nombra el ciclo C₆H₁₂ con todos enlaces simples.</summary>Ciclohexano.</details></li>
+        <li><details><summary>Elige la cadena principal en 3-etil-2,2-dimetilpentano.</summary>Pentano (5 C); etil y dos metil son sustituyentes.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Reglas IUPAC: prioridad de funciones, E/Z, R/S, aromáticos y ciclos complejos</h1>
+      <p class="lead">Pasamos a la nomenclatura sistemática completa: elección de cadena, prioridad de grupos funcionales, insaturaciones, estereoquímica y compuestos aromáticos.</p>
+      <div class="toc">
+        <a href="#b-prioridad">Prioridad de funciones</a>
+        <a href="#b-cadena">Cadena, insaturaciones y “locantes”</a>
+        <a href="#b-sustitu">Sustituyentes y orden alfabético</a>
+        <a href="#b-estereo">Estereoquímica: E/Z, R/S</a>
+        <a href="#b-ciclos">Ciclos, bicíclos y espiro</a>
+        <a href="#b-aromaticos">Aromáticos (benceno y derivados)</a>
+        <a href="#b-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="b-prioridad">Prioridad (tabla guía)</h2>
+      <table>
+        <tr><th>Mayor prioridad → menor</th><th>Sufijo</th><th>Prefijo (cuando no es principal)</th></tr>
+        <tr><td>Ácidos carboxílicos</td><td>ácido …oico</td><td>carboxi-</td></tr>
+        <tr><td>Anhídridos / halogenuros / ésteres / amidas</td><td>…oico, …oilo, …oato, …amida</td><td>aciloxi-, …oilo-, alcoxicarbonil-, carbamoil-</td></tr>
+        <tr><td>Nitrilos</td><td>…nitrilo</td><td>ciano-</td></tr>
+        <tr><td>Aldehídos</td><td>…al</td><td>formil- (oxo- para >C=O)</td></tr>
+        <tr><td>Cetonas</td><td>…ona</td><td>oxo-</td></tr>
+        <tr><td>Alcoholes</td><td>…ol</td><td>hidroxi-</td></tr>
+        <tr><td>Aminas</td><td>…amina</td><td>amino-</td></tr>
+        <tr><td>Alquenos / alquinos</td><td>…eno / …ino</td><td>—</td></tr>
+        <tr><td>Alcanos / éteres / halogenuros</td><td>…ano</td><td>alcoxi-, halo-</td></tr>
+      </table>
+      <div class="callout">El <strong>grupo principal</strong> fija el sufijo y la numeración. Las insaturaciones se integran en el nombre base: <em>hept-3-en-5-ino</em>.</div>
+
+      <h2 id="b-cadena">Cadena e insaturaciones</h2>
+      <ul>
+        <li>La cadena principal debe incluir la función de mayor prioridad y el <strong>máximo número de dobles/triples</strong>.</li>
+        <li>Locantes lo más bajos posibles; en empate, prioriza insaturación sobre sustituyentes.</li>
+      </ul>
+
+      <h2 id="b-sustitu">Sustituyentes y orden alfabético</h2>
+      <ul>
+        <li>Ordena por <strong>alfabeto</strong> ignorando multiplicadores (di-, tri-) y prefijos <em>sec-, tert-, neo-</em>; <em>iso-</em> sí cuenta.</li>
+        <li>Sustituyentes complejos se nombran entre <strong>paréntesis</strong> como grupos: p. ej., <em>3-(bromometil)heptano</em>.</li>
+      </ul>
+
+      <h2 id="b-estereo">Estereoquímica</h2>
+      <ul>
+        <li><strong>E/Z</strong> para dobles: aplica <em>CIP</em> (prioridades atómicas). Z = “juntos”, E = “opuestos”.</li>
+        <li><strong>R/S</strong> para centros quirales: orienta el átomo de menor prioridad atrás y sigue 1→2→3.</li>
+        <li>Cis/trans se usa en anillos y alquenos simples cuando no hay ambigüedad.</li>
+      </ul>
+
+      <h2 id="b-ciclos">Ciclos, bicíclicos y espiránicos</h2>
+      <ul>
+        <li><strong>Ciclo</strong>: “ciclohexano”, “1,3-dimetilciclopent-2-eno”.</li>
+        <li><strong>Biciclo</strong>: “bicyclo[a.b.c]alkano” contando puentes, p. ej., bicyclo[2.2.1]heptano (norbornano).</li>
+        <li><strong>Spiro</strong>: “spiro[a.b]alkano”; numera desde el carbono de unión.</li>
+      </ul>
+
+      <h2 id="b-aromaticos">Aromáticos</h2>
+      <ul>
+        <li>Benceno como base: “clorobenceno”, “1,3-dimetilbenceno (m-xileno)”.</li>
+        <li>Grupos especiales: fenil-, bencil-; prioriza función principal si hay (fenol, benzaldehído).</li>
+      </ul>
+
+      <h2 id="b-ejercicios">Ejercicios (20)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Nombra: CH₃–CH₂–CH(CH₃)–CH₂–CH₃.</summary>3-metilpentano.</details></li>
+        <li><details><summary>Nombra: CH₃–CH=CH–CH₃.</summary>(E/Z)-but-2-eno (si se especifica la geometría).</details></li>
+        <li><details><summary>Nombra: CH₃–CO–CH₃.</summary>Propan-2-ona (acetona).</details></li>
+        <li><details><summary>Nombra: CH₃–CH₂–CHO.</summary>Propanal.</details></li>
+        <li><details><summary>Nombra: CH₃–CH₂–COOH.</summary>Ácido propanoico.</details></li>
+        <li><details><summary>Da el nombre del éster CH₃–COO–CH₂CH₃.</summary>Etanoato de etilo.</details></li>
+        <li><details><summary>Asigna E/Z: CH₃CH=CHCl (con H y Cl en C2).</summary>Z si CH₃ y Cl están del mismo lado; E si opuestos.</details></li>
+        <li><details><summary>Asigna R/S a CH₃–CH(OH)–CH₃.</summary>(R)- o (S)-propan-2-ol (depende de la disposición).</details></li>
+        <li><details><summary>Nombra: (CH₃)₃C–Br.</summary>2-bromopropano como radical; compuesto: 2-bromopropano tert.-butílico no es correcto; mejor “2-bromopropano” si la cadena principal es propano. (También se usa “bromuro de tert-butilo” en nomenclatura radical-función.)</details></li>
+        <li><details><summary>Nombra: 3-(bromometil)heptano.</summary>Cadena principal heptano; bromo en el metileno del C3.</details></li>
+        <li><details><summary>Nombra: 4-etil-2,2-dimetilhex-3-eno.</summary>Comprobar locantes mínimos para dobles y sustituyentes.</details></li>
+        <li><details><summary>Nombra el anillo C₆H₆ con OH en C1.</summary>Fenol.</details></li>
+        <li><details><summary>Nombra: OHC–C₆H₅.</summary>Benzaldehído.</details></li>
+        <li><details><summary>Nombra: NC–CH₂–CH₃.</summary>Propannonitrilo.</details></li>
+        <li><details><summary>Nombra: bicyclo[2.2.1]hept-2-eno con metil en C5.</summary>5-metilbicyclo[2.2.1]hept-2-eno.</details></li>
+        <li><details><summary>Nombra: spiro[2.3]hexano con metil en C1.</summary>1-metilspiro[2.3]hexano.</details></li>
+        <li><details><summary>Ordena alfabéticamente: etil-, isopropil-, tert-butil-.</summary>etil- &lt; isopropil- &lt; tert-butil- (sec-/tert- no cuentan, iso sí).</details></li>
+        <li><details><summary>Nombra: CH₃–CH₂–O–CH₃ como éter.</summary>Metoxietano (éter etílico como nombre común).</details></li>
+        <li><details><summary>Nombra un diol en C2 y C3 de butano.</summary>Butano-2,3-diol.</details></li>
+        <li><details><summary>Nombra: ClCH₂–CO–CH₃.</summary>1-cloropropan-2-ona.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Hantzsch–Widman, polifuncionales, carbohidratos, peptídica y polímeros</h1>
+      <p class="lead">Nomenclatura avanzada: heterociclos, sistemas fusionados, múltiples funciones, estereoquímica fina y macromoléculas.</p>
+      <div class="toc">
+        <a href="#u-hetero">Heterociclos (Hantzsch–Widman)</a>
+        <a href="#u-fusion">Sistemas fusionados (naftaleno, indol…)</a>
+        <a href="#u-polifun">Polifuncionales y jerarquías</a>
+        <a href="#u-carbos">Carbohidratos y azúcares</a>
+        <a href="#u-peptidos">Péptidos y derivados</a>
+        <a href="#u-polimeros">Polímeros</a>
+        <a href="#u-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="u-hetero">Heterociclos</h2>
+      <ul>
+        <li>Prefijos: <em>oxa-, tio-, aza-</em> (O, S, N). Tamaño y saturación definen el sufijo: <em>-olano/-ol</em>, <em>-oleno/-ina</em> (según recomendación Hantzsch–Widman).</li>
+        <li>Ej.: <strong>1,4-dioxano</strong>, <strong>tiazol</strong>, <strong>piridina</strong>, <strong>pirrol</strong> (a veces 1H-pirrol para especificar el protón en N).</li>
+      </ul>
+
+      <h2 id="u-fusion">Sistemas fusionados</h2>
+      <ul>
+        <li><strong>Naftaleno</strong>, <strong>antraceno</strong>, <strong>fenantreno</strong>; <strong>indol</strong>, <strong>benzofurano</strong>, <strong>quinolina</strong>.</li>
+        <li>Se usa notación de letras para los bordes de fusión: p. ej., <em>benz[b]furano</em>.</li>
+      </ul>
+
+      <h2 id="u-polifun">Polifuncionales</h2>
+      <ul>
+        <li>Elige función principal según jerarquía; las demás → prefijos: <em>hidroxi-, oxo-, amino-, formil-, carboxi-</em>.</li>
+        <li>Ej.: <em>ácido 3-oxo-4-aminobenzoico</em>; <em>4-formilciclohexanocarboxamida</em>.</li>
+      </ul>
+
+      <h2 id="u-carbos">Carbohidratos</h2>
+      <ul>
+        <li><em>D/L</em> según proyección de Fischer (centro estereogénico más alejado del carbonilo).</li>
+        <li><em>α/β</em> para anómeros en formas cíclicas (OH anomérico vs. plano del anillo).</li>
+        <li>Ej.: <em>β-D-glucopiranosa</em>, <em>α-D-fructofuranosa</em>.</li>
+      </ul>
+
+      <h2 id="u-peptidos">Péptidos</h2>
+      <ul>
+        <li>Nomenclatura trivial por secuencia (Ala-Gly-Ser) y sistemática para derivados: <em>N-acetil-L-alanil-L-valina metil éster</em>.</li>
+      </ul>
+
+      <h2 id="u-polimeros">Polímeros</h2>
+      <ul>
+        <li>Uso de <strong>poly(…)</strong>: <em>poly(ethene)</em> (polietileno), <em>poly(propene)</em> (polipropileno).</li>
+        <li>Copolímeros: <em>poly(styrene-co-butadiene)</em>, tacticidad (isotáctico/sindiotá ctico).</li>
+      </ul>
+
+      <h2 id="u-ejercicios">Ejercicios (18)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Nombra el heterociclo C₄H₄N₂ con N en 1 y 3 (aromático).</summary>Imidazol.</details></li>
+        <li><details><summary>Nombra el anillo saturado de 6 con O en 1 y 4.</summary>1,4-dioxano.</details></li>
+        <li><details><summary>Nombra un benzofurano fusionado por el borde b.</summary>benz[b]furano.</details></li>
+        <li><details><summary>Nombra: ácido con OH y =O en C3 y NH₂ en C4 sobre anillo benzoico.</summary>Ácido 3-oxo-4-aminobenzoico.</details></li>
+        <li><details><summary>Da el nombre anomérico de glucosa en silla β.</summary>β-D-glucopiranosa.</details></li>
+        <li><details><summary>Nombra un dipeptido acetilado con éster metílico.</summary>N-acetil-L-alanil-L-valina metil éster.</details></li>
+        <li><details><summary>Nombra: nitrilo con OH en C3 de una cadena de 5.</summary>3-hidroxipentanonitrilo.</details></li>
+        <li><details><summary>Asigna “H” en 1H-indol.</summary>Protón ligado al N en posición 1.</details></li>
+        <li><details><summary>Da el nombre sistemático de poliestireno.</summary>poly(1-phenylethene).</details></li>
+        <li><details><summary>Escribe el nombre de un copolímero estireno-butadieno.</summary>poly(styrene-co-butadiene).</details></li>
+        <li><details><summary>Nombra: 2-oxoácido de tres carbonos.</summary>Ácido 2-oxopropanoico (pirúvico).</details></li>
+        <li><details><summary>Nombra: lactona de 5 miembros derivada de 4-hidroxibutanoico.</summary>γ-butirolactona (oxolano-2-ona).</details></li>
+        <li><details><summary>Nombra: amida cíclica de 5 miembros de ácido 5-aminopentanoico.</summary>ε-caprolactama (azepan-2-ona).</details></li>
+        <li><details><summary>Nombra: “1H-benzo[d]imidazol-2-il” como sustituyente.</summary>Grupo benzimidazol-2-il (tautomería 1H indicada).</details></li>
+        <li><details><summary>Establece jerarquía para: ácido, nitrilo y alcohol.</summary>Ácido &gt; nitrilo &gt; alcohol.</details></li>
+        <li><details><summary>Nombra: 4-formilciclohexanocarboxamida.</summary>Amida del ácido ciclohexanocarboxílico con formilo en C4.</details></li>
+        <li><details><summary>Nombra: 3,4-dihidroxibenzeno-1-carbaldehído.</summary>Protocatecualdehído (nombre común); sistemático dado.</details></li>
+        <li><details><summary>Define “carbaldehído”.</summary>Sufijo para –CHO unido a anillo o a grupo que no admite “-al”.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== MÁSTER ===== -->
+    <section id="sec-master" class="paper level">
+      <h1>Máster — Estereoavanzada, proquiralidad, atropisomería y organometálicos</h1>
+      <p class="lead">Profundizamos en descriptores CIP extendidos, ejes quirales (Ra/Sa), helicidad (P/M), caras Re/Si y nomenclatura en organometálicos con ligandos orgánicos.</p>
+      <div class="toc">
+        <a href="#m-cip">CIP extendido: cumulenos, allenos</a>
+        <a href="#m-pro">Proquiralidad: Re/Si y pro-R/pro-S</a>
+        <a href="#m-atro">Atropisomería y ejes quirales</a>
+        <a href="#m-heli">Helicidad (P/M)</a>
+        <a href="#m-orgmet">Organometálicos: η, κ, μ</a>
+        <a href="#m-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="m-cip">CIP en dobles y cumulenos</h2>
+      <ul>
+        <li>Asigna prioridades a sustituyentes en cumulenos/allenos con pares perpendiculares; puede surgir quiralidad axial.</li>
+        <li>Alquenos tetrasustituidos: usa E/Z estrictamente (no cis/trans).</li>
+      </ul>
+
+      <h2 id="m-pro">Proquiralidad</h2>
+      <ul>
+        <li>Caras <em>Re</em>/<em>Si</em> de carbonilos; centros proquirales con etiquetas <em>pro-R</em>/<em>pro-S</em>.</li>
+        <li>Ej.: hidrogenación desde Re/Si produce enantiómeros específicos.</li>
+      </ul>
+
+      <h2 id="m-atro">Atropisomería</h2>
+      <ul>
+        <li>Biari los orto-sustituidos (BINOL): ejes quirales con designación <em>Ra</em>/<em>Sa</em> según CIP.</li>
+      </ul>
+
+      <h2 id="m-heli">Helicidad</h2>
+      <ul>
+        <li>Moléculas helicoidales (helicenos): <em>P</em> (dextrogiro) / <em>M</em> (levogiro).</li>
+      </ul>
+
+      <h2 id="m-orgmet">Organometálicos</h2>
+      <ul>
+        <li><strong>η</strong> (hapto) para coordinación <em>π</em>: η⁵-ciclopentadienilo, η⁶-benceno.</li>
+        <li><strong>κ</strong> para átomos donadores específicos: κ²-(O,O)-quelato.</li>
+        <li><strong>μ</strong> para puentes: μ-cloro (cloro puente).</li>
+      </ul>
+
+      <h2 id="m-ejercicios">Ejercicios (12)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Etiqueta Re/Si en la cara de un carbonilo proquiral.</summary>Según la disposición CIP de sustituyentes.</details></li>
+        <li><details><summary>Designa Ra/Sa para BINOL.</summary>Usa la proyección de Newman a lo largo del eje biarilo.</details></li>
+        <li><details><summary>Aplica E/Z a un alqueno tetrasustituido.</summary>Comparar prioridades en cada C de la doble.</details></li>
+        <li><details><summary>Identifica pro-R/pro-S en CH₂R₁R₂OH.</summary>Secuencia CIP tras hipotética elevación de prioridad del H.</details></li>
+        <li><details><summary>Nombra: (η⁵-C₅H₅)Fe(η⁶-C₆H₆)⁺.</summary>(η⁵-ciclopentadienil)(η⁶-benceno)hierro(II) catión (ferrocenio).</details></li>
+        <li><details><summary>Nombra un quelato κ²-(O,O) de acetilacetonato.</summary>Bis(acetilacetonato-κ²O,O)metal.</details></li>
+        <li><details><summary>Nombra: μ-cloro en un dímero de paladio.</summary>Di-μ-cloro-bis(… )dipaladato(II).</details></li>
+        <li><details><summary>Asigna helicidad P/M en [6]heliceno.</summary>Geometría espacial de giro derecho/izquierdo.</details></li>
+        <li><details><summary>Decide si un alleno es quiral.</summary>Si los extremos tienen pares de sustituyentes diferentes.</details></li>
+        <li><details><summary>Etiqueta ejes y planos de simetría que rompen quiralidad.</summary>Analiza elementos impropios.</details></li>
+        <li><details><summary>Aplica CIP en centros con isótopos.</summary>Mayor número másico = mayor prioridad.</details></li>
+        <li><details><summary>Nombra: (R)-2-butanol con configuración explícita.</summary>(R)-butan-2-ol.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Etiquetado isotópico, estereoquímica compleja y casos frontera</h1>
+      <p class="lead">Casos especiales, etiquetas isotópicas, topología molecular, reglas priorizadas en sistemas retorcidos y preferencia por nombres sistemáticos frente a tradicionales.</p>
+      <div class="toc">
+        <a href="#d-isotopos">Isótopos y etiquetas</a>
+        <a href="#d-topologia">Topología y estereodescriptores avanzados</a>
+        <a href="#d-sistemas">Sistemas masivos y nombres preferidos</a>
+        <a href="#d-retos">Retos</a>
+      </div>
+
+      <h2 id="d-isotopos">Etiquetas isotópicas</h2>
+      <ul>
+        <li>Usa <strong>[²H]</strong>, <strong>[¹³C]</strong>, etc., antepuestos al fragmento: <em>[²H₆]benzeno</em>, <em>[1-¹³C]etanol</em>.</li>
+        <li>Para ubicaciones múltiples: <em>[1,2-¹³C₂]</em>.</li>
+      </ul>
+
+      <h2 id="d-topologia">Estereoquímica avanzada</h2>
+      <ul>
+        <li>Descriptores <em>Ra/Sa</em>, <em>P/M</em>, <em>Re/Si</em>, <em>pro-R/pro-S</em> combinados en nombres largos.</li>
+        <li>Helecenoides, catenanos y rotaxanos: convenciones específicas para macroanillos y enlaces mecánicos (más allá del grado de detalle básico).</li>
+      </ul>
+
+      <h2 id="d-sistemas">Sistemas masivos y preferidos</h2>
+      <ul>
+        <li>Cuando el nombre sistemático es impracticable, IUPAC admite <strong>nombres preferidos</strong> (PIN) o <strong>tradicionales bien definidos</strong> (ácido acético, tolueno).</li>
+      </ul>
+
+      <h2 id="d-retos">Retos (10)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Nombra: [2-¹³C]acetanilida.</summary>Isótopo ¹³C en C2 del anillo acilado.</details></li>
+        <li><details><summary>Propón nombre PIN para ácido láctico.</summary>Ácido 2-hidroxipropanoico.</details></li>
+        <li><details><summary>Nombra un rotaxano simple con macroanillo corona.</summary>Usa sufijo “rotaxano” con descriptores de componentes (esquema general).</details></li>
+        <li><details><summary>Da dos nombres válidos: 4-hidroxibenceno-1-carbaldehído vs p-hidroxibenzaldehído.</summary>Ambos aceptables; el primero sistemático.</details></li>
+        <li><details><summary>Etiqueta un centro con deuterio y protio.</summary>Prioridad a ²H sobre ¹H.</details></li>
+        <li><details><summary>Decide si usar PIN o nombre trivial.</summary>PIN en documentos técnicos; trivial aceptado si inequívoco.</details></li>
+        <li><details><summary>Construye nombre para macrodiol lactonizado.</summary>Aplicar reglas de lactonas (…olido/…ona).</details></li>
+        <li><details><summary>Especifica estereo de azúcar con varios centros.</summary>D/L + α/β + R/S cuando sea preciso.</details></li>
+        <li><details><summary>Da el nombre isotópico de [U-²H]benceno.</summary>[²H₆]benzeno.</details></li>
+        <li><details><summary>Resuelve conflicto de numeración en poliinsaturados con función principal.</summary>Prioriza función; luego máximas insaturaciones; luego locantes mínimos.</details></li>
+      </ol></div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" aria-label="Subir">↑</button>
+
+  <script>
+    // --- Persistencia ---
+    const root = document.documentElement;
+    const ls = window.localStorage;
+
+    function applySettings(){
+      const theme = ls.getItem('orgnom_theme');
+      if(theme) root.setAttribute('data-theme', theme);
+      const base = ls.getItem('orgnom_base');
+      if(base) root.style.setProperty('--base', base);
+      const maxw = ls.getItem('orgnom_maxw');
+      if(maxw) root.style.setProperty('--maxw', maxw);
+    }
+    applySettings();
+
+    // --- Barra de nivel ---
+    const sections = {
+      primaria: document.querySelector('#sec-primaria'),
+      eso: document.querySelector('#sec-eso'),
+      bach: document.querySelector('#sec-bach'),
+      uni: document.querySelector('#sec-uni'),
+      master: document.querySelector('#sec-master'),
+      phd: document.querySelector('#sec-phd'),
+    };
+    document.querySelectorAll('#levelBar .pill').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#levelBar .pill').forEach(b=>b.setAttribute('aria-selected','false'));
+        btn.setAttribute('aria-selected','true');
+        const lvl = btn.dataset.level;
+        Object.values(sections).forEach(sec=>sec.removeAttribute('data-active'));
+        sections[lvl].setAttribute('data-active','');
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    });
+
+    // --- Controles de lectura ---
+    document.querySelector('#fs-up').addEventListener('click', ()=>{
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base'));
+      const next = Math.min(cur+1, 24);
+      root.style.setProperty('--base', next+'px'); ls.setItem('orgnom_base', next+'px');
+    });
+    document.querySelector('#fs-down').addEventListener('click', ()=>{
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base'));
+      const next = Math.max(cur-1, 14);
+      root.style.setProperty('--base', next+'px'); ls.setItem('orgnom_base', next+'px');
+    });
+    document.querySelector('#width-up').addEventListener('click', ()=>{
+      const cur = getComputedStyle(root).getPropertyValue('--maxw');
+      const val = parseFloat(cur);
+      const next = Math.min(val+6, 96);
+      root.style.setProperty('--maxw', next+'ch'); ls.setItem('orgnom_maxw', next+'ch');
+    });
+    document.querySelector('#width-down').addEventListener('click', ()=>{
+      const cur = getComputedStyle(root).getPropertyValue('--maxw');
+      const val = parseFloat(cur);
+      const next = Math.max(val-6, 60);
+      root.style.setProperty('--maxw', next+'ch'); ls.setItem('orgnom_maxw', next+'ch');
+    });
+
+    const themeBtn = document.querySelector('#theme-toggle');
+    themeBtn.addEventListener('click', ()=>{
+      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      ls.setItem('orgnom_theme', next);
+    });
+
+    // --- Progreso y botón arriba ---
+    const bar = document.querySelector('#progress');
+    const topbtn = document.querySelector('#topbtn');
+    function onScroll(){
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+      bar.style.width = (scrolled*100)+'%';
+      topbtn.classList.toggle('show', h.scrollTop > 300);
+    }
+    window.addEventListener('scroll', onScroll);
+    topbtn.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+    onScroll();
+  </script>
+</body>
+</html>
