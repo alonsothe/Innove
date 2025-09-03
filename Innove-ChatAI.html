@@ -2,10 +2,9 @@
 <html lang="es" data-scheme="dark" data-theme="planetado">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Innove AI — Ultra v4 (animaciones)</title>
-  <link rel="icon" type="image/png" href="innoveAI.png"
-  <meta name="description" content="Innove AI: chat educativo con temas del portal, fondos animados, niveles, emojis, misiones, prompts por materia y streaming SSE limpio — ahora con micro‑interacciones y efectos visuales pro."/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Innove AI — Ultra v4.1 (responsive)</title>
+  <meta name="description" content="Innove AI: chat educativo con streaming, misiones y fondos animados. Versión mobile‑first con chat a pantalla completa, composer fijo, mejor contraste y toques accesibles."/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
 
   <!-- Markdown seguro + highlight -->
@@ -30,6 +29,11 @@
       --r2:16px; --r3:22px; --r4:28px; --rMax:999px; --maxw:1200px;
       --bubble:rgba(17,24,39,.9);
       --glow: drop-shadow(0 0 18px rgba(125,211,252,.25)) drop-shadow(0 0 36px rgba(196,181,253,.22));
+
+      /* Nuevas vars mobile */
+      --nav-h: 56px;           /* será recalculado en runtime */
+      --composer-h: 116px;     /* textarea + botones */
+      --safe-b: env(safe-area-inset-bottom, 0px);
     }
     html[data-scheme="light"]{
       --bg:#f7f9ff; --text:#0b1020; --muted:#334155;
@@ -40,10 +44,9 @@
     html,body{height:100%}
     body{margin:0; background:var(--bg); color:var(--text); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; overflow-x:hidden}
 
-    /* ===== Fondos (temas del índice) con parallax ===== */
+    /* ===== Fondos con parallax (desactivados en móvil/low-motion) ===== */
     .space-bg, .aurora, .neon-grid, .leaf-bg, .silver-bg, .sea-bg { position: fixed; inset:0; z-index:-4; pointer-events:none; display:none; will-change: transform; }
-    .space-bg{
-      background-image:
+    .space-bg{ background-image:
         radial-gradient(1200px 800px at 70% -10%, rgba(56,189,248,.18), transparent 60%),
         radial-gradient(1000px 600px at 10% 110%, rgba(196,181,253,.22), transparent 60%),
         radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.35) 0, transparent 60%),
@@ -65,73 +68,70 @@
     html[data-theme="hoja"] .leaf-bg{ display:block; }
     html[data-theme="plateado"] .silver-bg{ display:block; }
     html[data-theme="mar"] .sea-bg{ display:block; }
+    @media (max-width: 720px), (prefers-reduced-motion: reduce){
+      .neon-grid, .aurora{ display:none !important; }
+    }
 
-    .wrap{max-width:var(--maxw); margin:0 auto; padding:18px;}
+    /* ===== App layout ===== */
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:12px;}
+    .app{min-height:100dvh; display:flex; flex-direction:column;}
 
-    /* ===== Nav con shimmer ===== */
-    .nav{position:sticky; top:10px; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-radius:var(--r3); background:var(--glass-strong); border:1px solid var(--border); box-shadow:var(--shadow); backdrop-filter:saturate(140%) blur(10px);}
-    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; background: linear-gradient(90deg, #fff, #bfe3ff, #e7d9ff, #fff); -webkit-background-clip:text; background-clip:text; color:transparent; animation: shimmer 5s linear infinite; }
+    /* ===== Nav ===== */
+    .nav{position:sticky; top:8px; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:18px; background:var(--glass-strong); border:1px solid var(--border); box-shadow:var(--shadow); backdrop-filter:saturate(140%) blur(10px);}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; background: linear-gradient(90deg, #fff, #bfe3ff, #e7d9ff, #fff); -webkit-background-clip:text; background-clip:text; color:transparent; animation: shimmer 5s linear infinite; font-size:clamp(.9rem, 2.5vw, 1.05rem);}
     @keyframes shimmer{ 0%{ background-position:0% } 100%{ background-position:200% } }
-    .logo{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 8%, rgba(125,211,252,.9) 20%, rgba(196,181,253,.85) 45%, rgba(52,211,153,.35) 70%, transparent 75%); filter: var(--glow);}
+    .logo{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 8%, rgba(125,211,252,.9) 20%, rgba(196,181,253,.85) 45%, rgba(52,211,153,.35) 70%, transparent 75%); filter: var(--glow);}    
+    .hint{color:var(--muted); font-size:.92em}
 
-    .panel{background:var(--glass); backdrop-filter: blur(16px) saturate(160%); border:1px solid var(--border); border-radius:var(--r3); box-shadow:var(--shadow); transition: transform .25s ease, box-shadow .25s ease;}
+    /* ===== Panel ===== */
+    .panel{background:var(--glass); backdrop-filter: blur(16px) saturate(160%); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); transition: transform .25s ease, box-shadow .25s ease;}
     .panel:hover{ transform: translateY(-2px) scale(1.002); box-shadow:0 24px 60px rgba(0,0,0,.4) }
 
-    .hint{color:var(--muted); font-size:.9em}
+    /* ===== Grid principal ===== */
+    .grid{display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; margin-top:12px; flex:1;}
+    @media (max-width:1100px){ .grid{grid-template-columns:1fr; gap:12px} }
 
-    /* ===== Layout ===== */
-    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px; margin-top:12px}
-    @media (max-width:1100px){ .grid{grid-template-columns:1fr} }
-
-    /* ===== Chat mejorado ===== */
-    .chat{display:flex; flex-direction:column; gap:12px; padding:14px; height:min(78dvh, 760px); overflow:auto; border-radius:18px; border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); box-shadow: inset 0 0 18px rgba(2,132,199,.08)}
-    .msg{display:flex; gap:12px; align-items:flex-start; animation:pop-bounce .35s cubic-bezier(.2,.8,.2,1)}
+    /* ===== Chat: mobile-first fullscreen ===== */
+    .chat-panel{ display:flex; flex-direction:column; padding:12px; }
+    .toolbar{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap}
+    .chat{display:flex; flex-direction:column; gap:12px; padding:12px; flex:1; min-height: 0; height:auto; overflow:auto; border-radius:18px; border:1px solid var(--border); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); box-shadow: inset 0 0 18px rgba(2,132,199,.08); scroll-behavior:smooth; scroll-padding-bottom: 140px;}
+    .msg{display:flex; gap:10px; align-items:flex-start; animation:pop-bounce .35s cubic-bezier(.2,.8,.2,1)}
     @keyframes pop-bounce{0%{opacity:0;transform:translateY(10px) scale(.98)}60%{opacity:1;transform:translateY(-2px) scale(1.01)}100%{transform:none}}
-    .role{width:42px; height:42px; border-radius:14px; display:grid; place-items:center; font-size:20px; border:1px solid var(--border); background:rgba(255,255,255,.12)}
-    .bubble{position:relative; padding:14px 16px; border-radius:18px; border:1px solid var(--border); background:var(--bubble); box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);}
+    .role{width:38px; height:38px; border-radius:12px; display:grid; place-items:center; font-size:18px; border:1px solid var(--border); background:rgba(255,255,255,.12)}
+    .bubble{position:relative; padding:12px 14px; border-radius:16px; border:1px solid var(--border); background:var(--bubble); box-shadow: inset 0 0 0 1px rgba(255,255,255,.02); line-height:1.45}
     html[data-scheme="light"] .bubble{ background:#fff; }
     .msg.user .bubble{background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06))}
     .msg.ai .bubble{background:linear-gradient(180deg, rgba(124,58,237,.16), rgba(255,255,255,.06))}
     .bubble .tools{position:absolute; top:6px; right:6px; display:flex; gap:6px; opacity:0; transition:opacity .2s}
     .bubble:hover .tools{opacity:1}
-    .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass-strong); cursor:pointer; user-select:none}
 
-    .composer{display:grid; grid-template-columns:1fr auto; gap:10px}
-    textarea{min-height:80px; max-height:240px; resize:vertical; padding:12px 14px; border-radius:16px; border:1px solid var(--border); background:rgba(255,255,255,.10); color:var(--text); outline:none; font-size:1.05em; transition: box-shadow .2s}
+    /* Composer fijo (sticky) */
+    .composer-wrap{position:sticky; bottom:0; left:0; right:0; padding:10px 0 8px; background: linear-gradient(180deg, transparent, rgba(0,0,0,.35) 35%, rgba(0,0,0,.55)); border-bottom-left-radius:20px; border-bottom-right-radius:20px; margin-top:12px}
+    .uploader{padding:10px; border-radius:14px; border:1px dashed var(--border); display:flex; gap:10px; align-items:center; justify-content:space-between}
+    .file-list{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+    .thumb, .pdficon{width:70px; height:70px; object-fit:cover; border-radius:10px; border:1px solid var(--border); display:grid; place-items:center; background:rgba(255,255,255,.06)}
+    .composer{display:grid; grid-template-columns:1fr auto; gap:10px; padding-bottom: max(0px, var(--safe-b));}
+    textarea{min-height:60px; max-height:240px; resize:vertical; padding:12px 14px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,.10); color:var(--text); outline:none; font-size:1.02em; transition: box-shadow .2s}
     html[data-scheme="light"] textarea{ background:#fff }
     textarea:focus{box-shadow:0 0 0 3px rgba(125,211,252,.3)}
     button{padding:12px 16px; border-radius:14px; border:1px solid transparent; background:linear-gradient(135deg,var(--primary),var(--violet)); color:#0b1020; font-weight:800; cursor:pointer; box-shadow:0 0 16px rgba(125,211,252,.22); position:relative; overflow:hidden; transform:translateZ(0)}
     button::after{content:""; position:absolute; inset:0; opacity:0; background:radial-gradient(120px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.45), transparent 60%); transition:opacity .25s}
     button:hover::after{opacity:1}
 
-    /* Uploader */
-    .uploader{padding:10px; border-radius:16px; border:1px dashed var(--border); display:flex; gap:10px; align-items:center; justify-content:space-between}
-    .file-list{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
-    .thumb, .pdficon{width:84px; height:84px; object-fit:cover; border-radius:12px; border:1px solid var(--border); display:grid; place-items:center; background:rgba(255,255,255,.06)}
+    /* Userbar + ajustes compactos en móvil */
+    .userbar{display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:10px 0; padding:10px 12px}
+    .avatar{width:40px; height:40px; border-radius:50%; background:linear-gradient(180deg,#f3e8ff,#e0f2ff); display:grid; place-items:center; font-size:1.35em; filter:var(--glow)}
 
-    /* Perfil y XP con animación de franjas */
-    .userbar{display:flex; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:10px; padding:12px 16px}
-    .avatar{width:46px; height:46px; border-radius:50%; background:linear-gradient(180deg,#f3e8ff,#e0f2ff); display:grid; place-items:center; font-size:1.6em; filter:var(--glow)}
-    .levelbar{display:flex; align-items:center; gap:10px}
-    .xpwrap{flex:1; height:14px; background:rgba(255,255,255,.10); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden}
-    .xp{position:absolute; height:100%; left:0; top:0; background:linear-gradient(90deg,var(--primary),var(--violet));
-      background-size: 24px 24px; mask: linear-gradient(#000 0 0);
-      animation: stripes 1.2s linear infinite; transition: width .5s ease}
-    @keyframes stripes{ to{ background-position: 24px 0 } }
-
-    /* Theme Pills con borde animado */
+    /* Pills/Chips */
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass-strong); cursor:pointer; user-select:none}
     .theme-panel{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
     .theme-pill{display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass-strong); cursor:pointer; font-weight:700; position:relative}
     .theme-pill[aria-pressed="true"]{ box-shadow:0 0 0 6px rgba(125,211,252,.12); }
     .theme-pill[aria-pressed="true"]::before{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; background:linear-gradient(90deg, var(--primary), var(--violet), var(--primary)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: borderflow 2.5s linear infinite; }
     @keyframes borderflow{ to{ background-position:200% 0 } }
 
-    /* Misiones */
-    .quests{display:grid; gap:8px}
-    .quest{display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border:1px solid var(--border); border-radius:12px; background:var(--glass)}
-
     /* Botón scroll al final */
-    .toBottom{position:fixed; right:18px; bottom:18px; z-index:70; padding:10px 12px; border-radius:14px; background:linear-gradient(135deg,var(--primary),var(--violet)); color:#0b1020; border:0; box-shadow:0 10px 24px rgba(2,132,199,.25); display:none}
+    .toBottom{position:fixed; right:14px; bottom:calc(14px + var(--safe-b)); z-index:70; padding:10px 12px; border-radius:14px; background:linear-gradient(135deg,var(--primary),var(--violet)); color:#0b1020; border:0; box-shadow:0 10px 24px rgba(2,132,199,.25); display:none}
 
     /* Indicador de escritura */
     .typing{display:inline-flex; gap:4px; align-items:center}
@@ -140,8 +140,14 @@
     .typing i:nth-child(3){ animation-delay:.3s }
     @keyframes bounce{ 0%,80%,100%{ transform: translateY(0) } 40%{ transform: translateY(-4px) }}
 
-    /* Reacciones */
-    .float-emoji{ position:fixed; font-size:18px; pointer-events:none; z-index:9999; }
+    /* Accesibilidad y tipografía fluida */
+    :where(h1,h2,h3){ margin: 0 0 .4em; line-height:1.2 }
+    body{ font-size: clamp(15px, 2.5vw, 16px); }
+
+    /* Reduce animaciones si el usuario lo pide */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition:none !important }
+    }
   </style>
 </head>
 <body>
@@ -153,10 +159,10 @@
   <div class="silver-bg" aria-hidden="true"></div>
   <div class="sea-bg" aria-hidden="true"></div>
 
-  <div class="wrap">
-    <nav class="nav panel" aria-label="Navegación">
-      <div class="brand"><div class="logo"></div> Innove AI — Ultra v4</div>
-      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap">
+  <div class="wrap app">
+    <nav class="nav panel" aria-label="Navegación" id="nav">
+      <div class="brand"><div class="logo"></div> Innove AI — Ultra v4.1</div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
         <span class="hint">Atajos: <kbd>Ctrl/Cmd + Enter</kbd> enviar · <kbd>Ctrl/Cmd + K</kbd> enfocar</span>
         <button id="schemeBtn" class="theme-pill" aria-pressed="false">🌓 Esquema</button>
       </div>
@@ -169,9 +175,9 @@
       <input id="usernameinput" class="chip" type="text" maxlength="16" placeholder="Tu nombre…"/>
       <button id="savebtn">Guardar</button>
 
-      <div class="levelbar" style="min-width:260px">
+      <div class="levelbar" style="min-width:240px; display:flex; align-items:center; gap:10px">
         <strong>Nivel <span id="lvl">1</span>/150</strong>
-        <div class="xpwrap"><div id="xpbar" class="xp" style="width:0%"></div></div>
+        <div class="xpwrap" style="flex:1; height:12px; background:rgba(255,255,255,.10); border:1px solid var(--border); border-radius:999px; position:relative; overflow:hidden"><div id="xpbar" class="xp" style="position:absolute; height:100%; left:0; top:0; background:linear-gradient(90deg,var(--primary),var(--violet)); background-size: 24px 24px; mask: linear-gradient(#000 0 0); animation: stripes 1.2s linear infinite; transition: width .5s ease; width:0%"></div></div>
         <span class="hint" id="xptext">0/100 XP</span>
       </div>
 
@@ -179,8 +185,8 @@
     </div>
 
     <!-- Temas + modos -->
-    <section class="panel" style="padding:14px 16px; display:grid; gap:12px">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap">
+    <section class="panel" style="padding:12px; display:grid; gap:10px">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
         <div>
           <div class="hint">Temas del índice</div>
           <div class="theme-panel" id="themePanel">
@@ -192,7 +198,7 @@
             <button class="theme-pill" data-theme="mar"><span class="sw" style="width:12px;height:12px;border-radius:50%;background:#60a5fa"></span>Mar</button>
           </div>
         </div>
-        <div class="hint">Activa el tema que más te motive. Se guarda localmente.</div>
+        <div class="hint">El tema se guarda localmente. En móvil se prioriza rendimiento.</div>
       </div>
       <div class="theme-panel" id="modes" aria-label="Modos IA">
         <span class="chip" data-mode="informatico">🖥️ Informático</span>
@@ -208,16 +214,16 @@
       </div>
     </section>
 
-    <div class="panel" style="padding:10px 16px; margin-top:8px">
-      <b>Novedades:</b> animaciones nuevas (shimmer, parallax, typing, plane, hearts), **copiar** respuestas, misiones diarias y XP con franjas.
+    <div class="panel" style="padding:10px 12px; margin-top:8px">
+      <b>Novedades v4.1:</b> chat a pantalla completa en móvil, composer fijo, tap‑targets grandes, mejor contraste y rendimiento.
     </div>
 
     <div class="grid">
       <!-- CHAT -->
-      <section class="panel" style="padding:16px">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px">
+      <section class="panel chat-panel">
+        <div class="toolbar">
           <div class="hint">Modelos · Streaming · Voz</div>
-          <div style="display:flex; gap:8px; align-items:center">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
             <label class="hint">Modelo</label>
             <select id="model" class="chip" aria-label="Modelo">
               <optgroup label="OpenAI">
@@ -244,28 +250,30 @@
 
         <div id="chat" class="chat" aria-live="polite"></div>
 
-        <!-- Adjuntos -->
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
-          <div id="dropzone" class="uploader" style="flex:1" aria-label="Soltar archivos para adjuntar">
-            <span class="hint">Arrastra y suelta imágenes, PDFs o audio</span>
-            <div>
-              <input type="file" id="fileInput" multiple />
-              <label id="attachLabel" for="fileInput" class="chip" style="cursor:pointer">📎 Adjuntar</label>
-              <button id="recordBtn" class="chip">🎙️ Grabar</button>
-              <button id="clearBtn" class="chip">🧹 Limpiar</button>
+        <!-- Adjuntos + Composer sticky -->
+        <div class="composer-wrap">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+            <div id="dropzone" class="uploader" style="flex:1" aria-label="Soltar archivos para adjuntar">
+              <span class="hint">Arrastra y suelta imágenes, PDFs o audio</span>
+              <div>
+                <input type="file" id="fileInput" multiple />
+                <label id="attachLabel" for="fileInput" class="chip" style="cursor:pointer">📎 Adjuntar</label>
+                <button id="recordBtn" class="chip">🎙️ Grabar</button>
+                <button id="clearBtn" class="chip">🧹 Limpiar</button>
+              </div>
             </div>
+            <div id="fileList" class="file-list" aria-live="polite"></div>
           </div>
-          <div id="fileList" class="file-list" aria-live="polite"></div>
-        </div>
 
-        <div class="composer" style="margin-top:10px">
-          <textarea id="prompt" placeholder="Escribe tu mensaje… Usa $...$ o $$...$$ para fórmulas (y \\ce{...} en química)." aria-label="Mensaje"></textarea>
-          <button id="sendBtn">Enviar</button>
+          <div class="composer" style="margin-top:10px">
+            <textarea id="prompt" placeholder="Escribe tu mensaje… Usa $...$ o $$...$$ para fórmulas (y \\ce{...} en química)." aria-label="Mensaje"></textarea>
+            <button id="sendBtn">Enviar</button>
+          </div>
         </div>
       </section>
 
       <!-- Lado derecho: Ajustes + Misiones -->
-      <aside class="panel" style="padding:16px">
+      <aside class="panel" style="padding:12px">
         <h3 style="margin:6px 0 10px">Ajustes</h3>
         <div class="theme-panel">
           <div>
@@ -289,18 +297,18 @@
         <h3 style="margin:18px 0 8px">Misiones diarias</h3>
         <div class="quests" id="quests"></div>
         <p class="hint" style="margin-top:10px">Completa misiones para ganar XP extra. ¡Sube de nivel y desbloquea emojis! 🔓</p>
-        <p class="hint" style="margin-top:10px">Seguridad: no expongas claves en el cliente. Configura un proxy/servidor con variables de entorno.</p>
+        <p class="hint" style="margin-top:10px">Seguridad: no expongas claves en el cliente. Usa proxy/servidor.</p>
       </aside>
     </div>
 
-    <footer style="text-align:center; margin:18px 0; opacity:.85; font-size:12px">Innove AI · © 2025 · Temas del portal + gamificación + animaciones.</footer>
+    <footer style="text-align:center; margin:16px 0; opacity:.85; font-size:12px">Innove AI · © 2025 · Mobile‑first + gamificación + animaciones.</footer>
   </div>
 
   <button id="toBottom" class="toBottom" aria-label="Ir al final">⬇️ Al final</button>
 
   <script>
-    // ===== Config (sin claves en cliente) =====
-    const OPENAI_KEY="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";     // ← Pon tu clave SOLO en local. En prod usa proxy.
+    // ===== Config (no metas claves en prod) =====
+    const OPENAI_KEY = "fgrgtVtjTkXr2YgnUj2jjCdsSTZXkzdLIu1KryOXQcukqMLWI"; // ⚠️ Vacío por seguridad. Usa proxy.
     const USE_PROXY=false;    // true para usar tu backend
     const PROXY_URL="/api/ai/chat";
 
@@ -320,6 +328,7 @@
     const ttsEl=document.getElementById('tts');
     const providerLabel=document.getElementById('providerLabel');
     const toBottomBtn=document.getElementById('toBottom');
+    const nav=document.getElementById('nav');
 
     // Perfil
     const avatarEl=document.getElementById('avatar');
@@ -331,6 +340,14 @@
     const xptext=document.getElementById('xptext');
 
     let attachments=[]; let mediaRecorder=null, chunks=[]; let recording=false;
+
+    // ===== Ajusta alturas dinámicas (chat fullscreen en móvil) =====
+    function recalcHeights(){
+      const navH = nav.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--nav-h', navH + 'px');
+    }
+    new ResizeObserver(recalcHeights).observe(nav);
+    recalcHeights();
 
     // ===== Perfil & niveles =====
     let USER={ emoji: localStorage.getItem('innove-emoji')||'🦉', name: localStorage.getItem('innove-name')||'Sofi', level: parseInt(localStorage.getItem('innove-level')||'1',10), xp: parseInt(localStorage.getItem('innove-xp')||'0',10) };
@@ -369,9 +386,9 @@
     let mode = localStorage.getItem('iaMode')||'informatico';
     document.getElementById('modes')?.querySelectorAll('[data-mode]').forEach(chip=>{ if(chip.dataset.mode===mode) chip.style.outline='2px solid rgba(125,211,252,.6)'; chip.addEventListener('click',()=>{ mode=chip.dataset.mode; localStorage.setItem('iaMode',mode); document.querySelectorAll('#modes [data-mode]').forEach(c=>c.style.outline='none'); chip.style.outline='2px solid rgba(125,211,252,.6)'; addMsg('ai',`Modo activo: <b>${mode}</b>.`); }); });
 
-    // ===== Micro‑interacciones =====
-    // Parallax de fondos
+    // ===== Micro‑interacciones (parallax suave en desktop) =====
     window.addEventListener('pointermove', (e)=>{
+      if (window.matchMedia('(max-width: 720px)').matches) return; // evita coste en móvil
       const {innerWidth:w, innerHeight:h} = window; const x=(e.clientX-w/2)/w, y=(e.clientY-h/2)/h;
       const t = `translate(${x*-8}px, ${y*-6}px)`; const t2=`translate(${x*-16}px, ${y*-10}px)`; const t3=`translate(${x*6}px, ${y*4}px)`;
       document.querySelector('.space-bg')?.style.setProperty('transform', t);
@@ -418,8 +435,7 @@
     function detectProvider(model){ if(/claude/i.test(model)) return 'anthropic'; if(/gemini/i.test(model)) return 'google'; if(/deepseek/i.test(model)) return 'deepseek'; return 'openai'; }
     function systemPrompt(){ const base=SYSTEM_PROMPTS[mode]||''; const depth=Math.min(150,USER.level); let s = `${base}\n\nEres Innove. Usuario: ${USER.name} ${USER.emoji}. Ajusta la explicación a Nivel ${depth}/150.`; if(attachments.some(a=>a.type==='pdf')) s += "\n\nNota: hay PDF adjunto (resumen parcial)."; return s; }
     function buildMessages(userText){ const msgs=[{role:'system',content:systemPrompt()}]; if(userText) msgs.push({role:'user',content:userText}); return msgs; }
-    async function callAI({provider, model, messages, stream}){ if(USE_PROXY){ return fetch(PROXY_URL,{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({provider,model,messages,stream})}); } if(provider==='openai'){ return fetch('https://api.openai.com/v1/chat/completions',{method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY}, body:JSON.stringify({model,messages,stream})}); } // Otros: requiere proxy por CORS
-      const fallback = {choices:[{message:{content:'(Conecta tu proxy para usar '+provider+')'}}]}; return new Response(new Blob([JSON.stringify(fallback)],{type:'application/json'}),{ok:true}); }
+    async function callAI({provider, model, messages, stream}){ if(USE_PROXY){ return fetch(PROXY_URL,{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({provider,model,messages,stream})}); } if(provider==='openai' && OPENAI_KEY){ return fetch('https://api.openai.com/v1/chat/completions',{method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY}, body:JSON.stringify({model,messages,stream})}); } const fallback = {choices:[{message:{content:'(Conecta tu proxy para usar '+provider+')'}}]}; return new Response(new Blob([JSON.stringify(fallback)],{type:'application/json'}),{ok:true}); }
 
     // ===== Scroll helper =====
     chatEl.addEventListener('scroll',()=>{ const nearBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<120; toBottomBtn.style.display=nearBottom?'none':'block'; });
@@ -427,20 +443,21 @@
     function jiggleToBottom(){ toBottomBtn.style.display='block'; toBottomBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-3px)'},{transform:'translateY(0)'}],{duration:380,iterations:1}); }
 
     // ===== Confeti + Misiones =====
-    function confetti(){ const n=90; for(let i=0;i<n;i++){ const p=document.createElement('div'); const size=4+Math.random()*6; const left=10+Math.random()*80; const rot=Math.random()*360; p.style.cssText=`position:fixed;top:-10px;left:${left}vw;width:${size}px;height:${size}px;background:hsl(${Math.random()*360} 90% 60%);border-radius:2px;transform:rotate(${rot}deg);z-index:9999;opacity:.9;`; document.body.appendChild(p); const y=100+Math.random()*100; const x=(Math.random()-.5)*40; p.animate([{transform:`translate(0,0) rotate(${rot}deg)`},{transform:`translate(${x}vw,${y}vh) rotate(${rot+720}deg)`}],{duration:1200+Math.random()*900,easing:'ease-out'}).onfinish=()=>p.remove(); } }
+    function confetti(){ const n=60; for(let i=0;i<n;i++){ const p=document.createElement('div'); const size=4+Math.random()*6; const left=10+Math.random()*80; const rot=Math.random()*360; p.style.cssText=`position:fixed;top:-10px;left:${left}vw;width:${size}px;height:${size}px;background:hsl(${Math.random()*360} 90% 60%);border-radius:2px;transform:rotate(${rot}deg);z-index:9999;opacity:.9;`; document.body.appendChild(p); const y=100+Math.random()*100; const x=(Math.random()-.5)*40; p.animate([{transform:`translate(0,0) rotate(${rot}deg)`},{transform:`translate(${x}vw,${y}vh) rotate(${rot+720}deg)`}],{duration:900+Math.random()*700,easing:'ease-out'}).onfinish=()=>p.remove(); } }
     const QUESTS_BASE=[{id:'saludar', text:'Envía tu primer mensaje', xp:40},{id:'formula', text:'Usa una fórmula ($...$ o \\ce{...})', xp:30},{id:'archivo', text:'Adjunta un archivo', xp:30}];
     const questsEl=document.getElementById('quests');
     const doneQuests=JSON.parse(localStorage.getItem('innove-quests')||'[]');
-    function renderQuests(){ questsEl.innerHTML=''; for(const q of QUESTS_BASE){ const row=document.createElement('div'); row.className='quest'; const left=document.createElement('div'); left.textContent=q.text+` (+${q.xp} XP)`; const btn=document.createElement('button'); btn.className='chip'; btn.textContent=doneQuests.includes(q.id)?'✅ Hecho':'Tomar'; btn.disabled=doneQuests.includes(q.id); btn.onclick=()=>{ if(!doneQuests.includes(q.id)){ doneQuests.push(q.id); localStorage.setItem('innove-quests', JSON.stringify(doneQuests)); addXP(q.xp); renderQuests(); burstEmoji(btn.getBoundingClientRect().left, btn.getBoundingClientRect().top, ['✨','⭐','💫']); } }; row.appendChild(left); row.appendChild(btn); questsEl.appendChild(row);} }
+    function renderQuests(){ questsEl.innerHTML=''; for(const q of QUESTS_BASE){ const row=document.createElement('div'); row.className='quest'; row.style.cssText='display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border:1px solid var(--border); border-radius:12px; background:var(--glass)'; const left=document.createElement('div'); left.textContent=q.text+` (+${q.xp} XP)`; const btn=document.createElement('button'); btn.className='chip'; btn.textContent=doneQuests.includes(q.id)?'✅ Hecho':'Tomar'; btn.disabled=doneQuests.includes(q.id); btn.onclick=()=>{ if(!doneQuests.includes(q.id)){ doneQuests.push(q.id); localStorage.setItem('innove-quests', JSON.stringify(doneQuests)); addXP(q.xp); renderQuests(); burstEmoji(btn.getBoundingClientRect().left, btn.getBoundingClientRect().top, ['✨','⭐','💫']); } }; row.appendChild(left); row.appendChild(btn); questsEl.appendChild(row);} }
     renderQuests();
 
     // ===== Efectos extra =====
-    function animateSendPlane(){ const rect=sendBtn.getBoundingClientRect(); const el=document.createElement('div'); el.className='float-emoji'; el.textContent='🛩️'; el.style.left=rect.left+'px'; el.style.top=rect.top+'px'; document.body.appendChild(el); el.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate(120px,-140px) rotate(25deg)'},{transform:'translate(240px,-260px) rotate(35deg)', opacity:.2}],{duration:900, easing:'ease-out'}).onfinish=()=>el.remove(); }
-    function burstEmoji(x,y,emojis=['✨']){ for(let i=0;i<12;i++){ const e=document.createElement('div'); e.className='float-emoji'; e.textContent=emojis[Math.floor(Math.random()*emojis.length)]; e.style.left=(x)+'px'; e.style.top=(y)+'px'; document.body.appendChild(e); const dx=(Math.random()-.5)*140; const dy=(Math.random()-.8)*200-40; const rot=(Math.random()*90-45); const dur=500+Math.random()*700; e.animate([{transform:'translate(0,0) scale(.8)'},{transform:`translate(${dx}px,${dy}px) rotate(${rot}deg) scale(1.1)`, opacity:0}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>e.remove(); } }
+    function animateSendPlane(){ const rect=sendBtn.getBoundingClientRect(); const el=document.createElement('div'); el.className='float-emoji'; el.textContent='🛩️'; el.style.left=rect.left+'px'; el.style.top=rect.top+'px'; el.style.position='fixed'; el.style.fontSize='18px'; el.style.pointerEvents='none'; el.style.zIndex='9999'; document.body.appendChild(el); el.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate(120px,-140px) rotate(25deg)'},{transform:'translate(240px,-260px) rotate(35deg)', opacity:.2}],{duration:900, easing:'ease-out'}).onfinish=()=>el.remove(); }
+    function burstEmoji(x,y,emojis=['✨']){ for(let i=0;i<12;i++){ const e=document.createElement('div'); e.className='float-emoji'; e.textContent=emojis[Math.floor(Math.random()*emojis.length)]; e.style.position='fixed'; e.style.left=(x)+'px'; e.style.top=(y)+'px'; e.style.fontSize='18px'; e.style.pointerEvents='none'; e.style.zIndex='9999'; document.body.appendChild(e); const dx=(Math.random()-.5)*140; const dy=(Math.random()-.8)*200-40; const rot=(Math.random()*90-45); const dur=500+Math.random()*700; e.animate([{transform:'translate(0,0) scale(.8)'},{transform:`translate(${dx}px,${dy}px) rotate(${rot}deg) scale(1.1)`, opacity:0}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>e.remove(); } }
 
     // Bienvenida
-    addMsg('ai','✨ Temas del índice activos + modelos (Claude/GPT/Gemini/DeepSeek). Escribe fórmulas con `$a^2+b^2=c^2` o química con `\\ce{2 H2 + O2 -> 2 H2O}`. ¡Completa misiones y desbloquea emojis!');
+    addMsg('ai','✨ v4.1 lista. En móvil el chat ocupa toda la pantalla y el composer queda fijo. ¡Prueba enviar un mensaje!');
   </script>
 </body>
 </html>
+
 
