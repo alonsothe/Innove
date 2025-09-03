@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Métodos numéricos — Teoría PRO + 196 ejercicios</title>
+<meta name="color-scheme" content="light dark"/>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root{
+    --bg:#f6fffb; --paper:#ffffff; --ink:#0b1220; --muted:#475569;
+    --brand:#0ea5a4; --accent:#14b8a6; --accent2:#22d3ee;
+    --border:#e2e8f0; --shadow:0 10px 30px rgba(15,23,42,.10);
+    --radius:16px; --maxw:90ch; --base:18px; --lh:1.85;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#071311; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9; --brand:#14b8a6; --accent:#5eead4; --accent2:#22d3ee; --border:#203054; --shadow:0 12px 28px rgba(0,0,0,.38);} }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1200px 740px at 95% -10%, #ccfbf1 0%, transparent 60%),
+               radial-gradient(1000px 680px at 0% 120%, #bae6fd 0%, transparent 75%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:80; background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:70; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 75%,white 10%),color-mix(in oklab,var(--accent) 65%,white 15%)); color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .layout{max-width:1400px; margin:0 auto; padding:16px; display:grid; grid-template-columns: 300px 1fr; gap:16px}
+  @media (max-width: 980px){ .layout{ grid-template-columns: 1fr } .aside{ position:static } }
+  .aside{ position:sticky; top:74px; height:calc(100dvh - 88px); overflow:auto; border-right:1px dashed var(--border); padding-right:10px }
+  .navcard{background:var(--paper); border:1px solid var(--border); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
+  .navcard h3{margin:.2em 0 .6em; font-size:1.0em}
+  .navcard a{display:block; padding:.28em .5em; margin:.1em 0; text-decoration:none; border-radius:10px; color:color-mix(in oklab,var(--brand) 85%, var(--ink));}
+  .navcard a:hover{background:color-mix(in oklab,var(--paper) 82%, var(--accent) 8%)}
+  main{padding:0 2px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
+    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 16%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.1em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border); border-radius:12px;padding:12px 14px;margin:12px 0}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border); border-radius:10px;padding:8px 10px;margin:8px 0}
+  summary{cursor:pointer;font-weight:700}
+  code.k{display:block; white-space:pre; overflow:auto; padding:.8em; border:1px solid var(--border); border-radius:12px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+  .tag{display:inline-block; padding:.2em .55em; border:1px solid var(--border); border-radius:999px; font-size:.78em; margin-right:.4em; color:var(--muted)}
+  .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:12px}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:60;background:var(--paper);border:1px solid var(--border); border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, monospace; border:1px solid var(--border); padding:.1em .4em; border-radius:6px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <div class="badge">🧮</div>
+        <div>
+          <h1 class="brand-title">Métodos numéricos</h1>
+          <div class="lead">Raíces, integración, álgebra lineal, EDO/EDP, optimización — 14×14 ejercicios</div>
+        </div>
+      </a>
+      <div class="reader">
+        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
+        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
+        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="aside">
+      <div class="navcard">
+        <h3>Índice</h3>
+        <nav id="sidenav">
+          <a href="#cap1">1. Error, redondeo y condicionamiento</a>
+          <a href="#cap2">2. Raíces de ecuaciones (una variable)</a>
+          <a href="#cap3">3. Sistemas no lineales (multivariable)</a>
+          <a href="#cap4">4. Sistemas lineales — directos (GAUSS/LU/Cholesky)</a>
+          <a href="#cap5">5. Sistemas lineales — iterativos (Jacobi, GS, SOR, CG)</a>
+          <a href="#cap6">6. Autovalores y SVD (potencia, QR)</a>
+          <a href="#cap7">7. Interpolación y splines</a>
+          <a href="#cap8">8. Ajuste por mínimos cuadrados (QR/SVD) y regresión</a>
+          <a href="#cap9">9. Diferenciación e integración numérica</a>
+          <a href="#cap10">10. EDO (IVP): Euler, RK, estabilidad y rigidez</a>
+          <a href="#cap11">11. EDO (BVP): disparo y diferencias finitas</a>
+          <a href="#cap12">12. EDP: calor, onda y Laplace (FTCS, CN, CFL)</a>
+          <a href="#cap13">13. Optimización (GD, Newton, BFGS, KKT)</a>
+          <a href="#cap14">14. Taller: MATLAB/Octave + Python y problemas integradores</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <section class="paper" id="top">
+        <h2>Guía PRO de Métodos Numéricos</h2>
+        <p class="lead">Enfoque profesional en <strong>teoría, estabilidad y error</strong> con pseudocódigo limpio y <strong>196 ejercicios</strong> (14 capítulos × 14 ejercicios) con respuesta/pistas. Todas las fórmulas se renderizan con MathJax.</p>
+        <div class="callout"><strong>Convenciones y notación.</strong> Norma \(\|\cdot\|\), número de condición \(\kappa(A)=\|A\|\,\|A^{-1}\|\), orden de convergencia \(p\), paso \(h\). Tolerancia de paro \(\varepsilon\). Complejidad \(\mathcal O(\cdot)\).</div>
+      </section>
+
+      <!-- 1 -->
+      <section class="paper" id="cap1">
+        <h2>1) Error, redondeo y condicionamiento</h2>
+        <div class="callout"><strong>Ideas clave</strong>
+          <ul>
+            <li><em>Redondeo</em>: máquina con precisión \(\varepsilon_{mach}\). Para IEEE-754 doble, \(\varepsilon_{mach}\approx 1.11\times 10^{-16}\).</li>
+            <li><em>Errores</em>: absoluto \(|x-\tilde x|\), relativo \(\frac{|x-\tilde x|}{|x|}\).</li>
+            <li><em>Propagación</em>: problema bien/mal condicionado vía \(\kappa\).</li>
+            <li><em>Estabilidad</em> algorítmica ≠ condicionamiento del problema.</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>Notas y fórmulas</h3>
+          <ul>
+            <li>Cancelación catastrófica: evita restar números cercanos; usa identidades equivalentes.</li>
+            <li>Acotación del error de funciones: \(\frac{|\delta f|}{|f|}\le \kappa_f \frac{|\delta x|}{|x|}\).</li>
+            <li>Condición de \(Ax=b\): \(\frac{\|\delta x\|}{\|x\|}\le \kappa(A)\,\frac{\|\delta b\|}{\|b\|}\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Calcula \(\varepsilon_{mach}\) mediante bucle</summary>Pista: divide por 2 hasta que \(1+\varepsilon=1\).</details></li>
+            <li><details><summary>Condición de \(f(x)=\sqrt{x}\) en \(x=10^{-6}\)</summary>\(\kappa=\tfrac{1}{2}\).</details></li>
+            <li><details><summary>Cancelación en \(\sqrt{x+1}-\sqrt{x}\)</summary>Usa racionalización.</details></li>
+            <li><details><summary>\(\kappa(A)\) para matriz diagonal</summary>\(=\max|d_i|/\min|d_i|\).</details></li>
+            <li><details><summary>Estimación de \(\kappa\) por potencia</summary>Usa \(\|A\|\) y \(\|A^{-1}\|\) vía sistemas.</details></li>
+            <li><details><summary>Pérdida de significancia en polinomios</summary>Evalúa con Horner.</details></li>
+            <li><details><summary>Relación precisión–paso en derivación</summary>Mínimo error total.</details></li>
+            <li><details><summary>Errores de truncamiento</summary>Orden local vs global.</details></li>
+            <li><details><summary>Estabilidad hacia adelante/atrás</summary>Define y ejemplifica.</details></li>
+            <li><details><summary>Overflow/underflow</summary>Escalado.</details></li>
+            <li><details><summary>Acota error al sumar N números</summary>Modelo de redondeo.</details></li>
+            <li><details><summary>Signo de 0 en IEEE</summary>Casos +0/−0.</details></li>
+            <li><details><summary>Propaga error en \(e^x\)</summary>Usa serie.</details></li>
+            <li><details><summary>Precisión requerida para 6 cifras</summary>Elige tipo flotante.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="paper" id="cap2">
+        <h2>2) Raíces de ecuaciones (una variable)</h2>
+        <div class="callout"><strong>Métodos</strong> Bisección (convergencia segura, \(p=1\)), punto fijo (\(|g'|<1\)), Newton–Raphson (\(p=2\)), secante (\(p\approx1.618\)), regula falsi mejorada.</div>
+        <div class="examples"><h3>Fórmulas</h3>
+          <ul>
+            <li>Newton: \(x_{k+1}=x_k-\tfrac{f(x_k)}{f'(x_k)}\).</li>
+            <li>Secante: \(x_{k+1}=x_k- f(x_k)\tfrac{x_k-x_{k-1}}{f(x_k)-f(x_{k-1})}\).</li>
+            <li>Estima orden: \(p\approx \frac{\log|e_{k+1}/e_k|}{\log|e_k/e_{k-1}|}\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Raíz de \(\cos x - x\)</summary>Newton desde 0.7 → \(x\approx0.739085\).</details></li>
+            <li><details><summary>Cuenta iteraciones de bisección</summary>Para intervalo [a,b] y tolerancia \(\varepsilon\).</details></li>
+            <li><details><summary>Multiplicidad</summary>Modifica Newton para raíz múltiple.</details></li>
+            <li><details><summary>Secante vs Newton</summary>Comparar evaluaciones de f y f'.</details></li>
+            <li><details><summary>Falso posicion mejorado</summary>Illinois.</details></li>
+            <li><details><summary>Punto fijo</summary>Elige \(g(x)\) que cumpla \(|g'|<1\).</details></li>
+            <li><details><summary>Paro basado en residuo</summary>\(|f(x_k)|<\varepsilon\).</details></li>
+            <li><details><summary>Acota error a priori</summary>Bisección.</details></li>
+            <li><details><summary>Raíz de \(x e^x-1\)</summary>Newton.</details></li>
+            <li><details><summary>Estudio de convergencia</summary>Gráfica log–log.</details></li>
+            <li><details><summary>Sin derivadas</summary>Usa secante.</details></li>
+            <li><details><summary>Protección ante división por 0</summary>Regularización.</details></li>
+            <li><details><summary>Escalado de variable</summary>Mejora condición.</details></li>
+            <li><details><summary>Polinomio de grado alto</summary>Usa deflación.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="paper" id="cap3">
+        <h2>3) Sistemas no lineales (multivariable)</h2>
+        <div class="callout"><strong>Newton multivariable</strong> \(J(x_k) \Delta x_k = -f(x_k)\), \(x_{k+1}=x_k+\Delta x_k\). Estrategias: line-search, trust-region, damping.</div>
+        <div class="examples"><h3>Notas</h3>
+          <ul>
+            <li>Jacobiano exacto, numérico (diferencias) o automático.</li>
+            <li>Criterios de paro: \(\|f\|\), \(\|\Delta x\|\) y \(\|\nabla f\|\).</li>
+            <li>Good practices: reusar factorización de J y actualizar con Broyden.</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Resolver sistema de ecuaciones de cinemática</summary>Aplica Newton con Jacobiano.</details></li>
+            <li><details><summary>Método de Broyden</summary>Implementa actualización rank-1.</details></li>
+            <li><details><summary>Condición del Jacobiano</summary>Evalúa \(\kappa(J)\).</details></li>
+            <li><details><summary>Line search</summary>Wolfe/Armijo (noción).</details></li>
+            <li><details><summary>Trust-region</summary>Dogleg (noción).</details></li>
+            <li><details><summary>Escalado de variables</summary>Diagonal D.</details></li>
+            <li><details><summary>Paro por estancamiento</summary>Define tolerancias.</details></li>
+            <li><details><summary>Sistema con múltiples soluciones</summary>Dependencia de \(x_0\).</details></li>
+            <li><details><summary>Jacobian numérico</summary>Paso óptimo.</details></li>
+            <li><details><summary>Comparar Broyden vs Newton</summary>Conteo de f y J.</details></li>
+            <li><details><summary>Problema de equilibrio químico</summary>Modelo no lineal.</details></li>
+            <li><details><summary>Homotopía</summary>Continuación desde problema fácil.</details></li>
+            <li><details><summary>Reutilizar LU de J</summary>Actualización con Sherman–Morrison.</details></li>
+            <li><details><summary>Diagnóstico de fallo</summary>Qué revisar cuando diverge.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="paper" id="cap4">
+        <h2>4) Sistemas lineales — directos (Gauss/LU/Cholesky)</h2>
+        <div class="callout"><strong>Conceptos</strong> Eliminación Gaussiana con pivoteo parcial (GEPP) es estándar. Factorización \(A=LU\) (\(\mathcal O(n^3)\)); Cholesky para SPD: \(A=LL^T\).</div>
+        <div class="examples"><h3>Notas</h3>
+          <ul>
+            <li>Errores de redondeo controlados con pivoteo.</li>
+            <li>Soluciones múltiples RHS: reutiliza \(LU\).</li>
+            <li>Banda/tri-diagonal: coste \(\mathcal O(nb^2)\) o \(\mathcal O(n)\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Realiza GEPP en matriz 3×3</summary>Calcula L y U.</details></li>
+            <li><details><summary>Cuenta FLOPs de LU</summary>\(\approx 2n^3/3\).</details></li>
+            <li><details><summary>Cholesky de SPD 3×3</summary>Obtén L.</details></li>
+            <li><details><summary>Tri-diagonal Thomas</summary>Implementa.</details></li>
+            <li><details><summary>Back/forward substitution</summary>Complejidad.</details></li>
+            <li><details><summary>Estima crecimiento de error</summary>Pivoteo vs sin pivoteo.</details></li>
+            <li><details><summary>Escalado previo</summary>Mejora \(\kappa\).</details></li>
+            <li><details><summary>Matriz de Hilbert</summary>Mala condición.</details></li>
+            <li><details><summary>Bloques</summary>LU por bloques.</details></li>
+            <li><details><summary>Almacenamiento banda</summary>Formato.</details></li>
+            <li><details><summary>Resolver con múltiples RHS</summary>Reutiliza LU.</details></li>
+            <li><details><summary>Comparar GEPP vs Givens/Householder</summary>Estabilidad.</details></li>
+            <li><details><summary>Test SPD</summary>Menores principales positivos.</details></li>
+            <li><details><summary>Precondiciona con Jacobi</summary>Para aproximar \(A\).</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="paper" id="cap5">
+        <h2>5) Sistemas lineales — iterativos (Jacobi, GS, SOR, CG)</h2>
+        <div class="callout"><strong>Teoría</strong> Sea \(x^{(k+1)}=Mx^{(k)}+c\). Converge si \(\rho(M)<1\). CG es óptimo para SPD con precondicionador \(P\).</div>
+        <div class="examples"><h3>Fórmulas</h3>
+          <ul>
+            <li>Jacobi/GS: descomposición \(A=D-L-U\).</li>
+            <li>SOR: parámetro \(\omega\in(0,2)\).</li>
+            <li>CG: minimiza \(\|x-x_*\|_A\) en subespacios de Krylov.</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Deriva matrices de iteración</summary>Para Jacobi y GS.</details></li>
+            <li><details><summary>Espectro y \(\rho(M)\)</summary>Calcula para un ejemplo 2×2.</details></li>
+            <li><details><summary>Elige \(\omega\) óptimo SOR</summary>Para matriz Poisson 1D.</details></li>
+            <li><details><summary>Implementa CG</summary>Con paro por residuo.</details></li>
+            <li><details><summary>Precondicionador Jacobi</summary>\(P=\mathrm{diag}(A)\).</details></li>
+            <li><details><summary>SSOR</summary>Esquema.</details></li>
+            <li><details><summary>Comparar iteraciones</summary>Jacobi vs GS vs SOR.</details></li>
+            <li><details><summary>Poisson 2D</summary>Cuenta iteraciones de CG.</details></li>
+            <li><details><summary>Reinicio en GMRES</summary>(noción).</details></li>
+            <li><details><summary>Estima error con residuo</summary>Acotación.</details></li>
+            <li><details><summary>Condensa con permutaciones</summary>Bandwidth.</details></li>
+            <li><details><summary>Paro por estancamiento</summary>\(\|r\|\) no baja.</details></li>
+            <li><details><summary>Precond. Incompleto</summary>ILU(0).</details></li>
+            <li><details><summary>Richardson</summary>Iteración básica.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="paper" id="cap6">
+        <h2>6) Autovalores y SVD (potencia, QR)</h2>
+        <div class="callout"><strong>Herramientas</strong> Método de la potencia/ potencia inversa con <em>shift</em>, cociente de Rayleigh, iteración QR; SVD: \(A=U\Sigma V^T\).</div>
+        <div class="examples"><h3>Notas</h3>
+          <ul>
+            <li>Discos de Gershgorin para acotar espectro.</li>
+            <li>SVD para mínimos cuadrados y \(\kappa(A)=\sigma_{max}/\sigma_{min}\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Potencia en matriz 3×3</summary>Encuentra \(\lambda_{max}\).</details></li>
+            <li><details><summary>Inversa con <em>shift</em></summary>Aproxima \(\lambda_i\) dado \(\mu\).</details></li>
+            <li><details><summary>Rayleigh</summary>Convergencia cúbica local.</details></li>
+            <li><details><summary>Descomposición QR</summary>Householder.</details></li>
+            <li><details><summary>Iteración QR</summary>Esquema básico.</details></li>
+            <li><details><summary>Gershgorin</summary>Discos y ubicación.</details></li>
+            <li><details><summary>Rank y SVD</summary>Truncada.</details></li>
+            <li><details><summary>PCA</summary>Con SVD.</details></li>
+            <li><details><summary>Autovectores ortogonales</summary>Para simétrica.</details></li>
+            <li><details><summary>Comparar QR vs potencia</summary>Tiempo.</details></li>
+            <li><details><summary>Condición via SVD</summary>Calcula \(\kappa\).</details></li>
+            <li><details><summary>Subespacios de Krylov</summary>Lanzcos (noción).</details></li>
+            <li><details><summary>Deflación espectral</summary>Quita \(\lambda_{max}\).</details></li>
+            <li><details><summary>Gap espectral</summary>Efecto en convergencia.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="paper" id="cap7">
+        <h2>7) Interpolación y splines</h2>
+        <div class="callout"><strong>Teoría</strong> Lagrange/Newton equivalentes. Error: \(f^{(n+1)}(\xi)\tfrac{\prod (x-x_i)}{(n+1)!}\). Evita el fenómeno de Runge con nodos de Chebyshev y <em>barycentric</em>. Splines cúbicos C2.</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Interpolante de 3 puntos</summary>Formula Lagrange.</details></li>
+            <li><details><summary>Newton con diferencias divididas</summary>Tabla.</details></li>
+            <li><details><summary>Error en punto medio</summary>Evalúa cota.</details></li>
+            <li><details><summary>Nodos de Chebyshev</summary>Genera \(x_k=\cos\tfrac{(2k-1)\pi}{2n}\).</details></li>
+            <li><details><summary>Barycentric</summary>Pesos \(w_i\).</details></li>
+            <li><details><summary>Spline natural vs clamped</summary>Condiciones.</details></li>
+            <li><details><summary>Hermite cúbico</summary>Uso de derivadas.</details></li>
+            <li><details><summary>Fenómeno de Runge</summary>Ejemplo.</details></li>
+            <li><details><summary>Continuidad C2</summary>Matriz tridiagonal.</details></li>
+            <li><details><summary>Hoja de error</summary>Comparar polinomio vs spline.</details></li>
+            <li><details><summary>Extrapolación</summary>Peligros.</details></li>
+            <li><details><summary>Interpolación racional</summary>Noción.</details></li>
+            <li><details><summary>Piecewise linear</summary>Implementación simple.</details></li>
+            <li><details><summary>Ajuste monotónico (PCHIP)</summary>Noción.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="paper" id="cap8">
+        <h2>8) Ajuste por mínimos cuadrados (QR/SVD) y regresión</h2>
+        <div class="callout"><strong>Formulación</strong> Minimizamos \(\|Ax-b\|_2\). Evita \(A^TA\) (mal condicionado); usa QR o SVD. Regulariza con ridge \(\lambda\|x\|^2\).</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Normal vs QR</summary>Compara errores.</details></li>
+            <li><details><summary>Ajuste polinomial grado 3</summary>Construye A y resuelve.</details></li>
+            <li><details><summary>Ponderados</summary>\(W^{1/2}Ax\approx W^{1/2}b\).</details></li>
+            <li><details><summary>SVD truncada</summary>Filtro de rango.</details></li>
+            <li><details><summary>Ridge</summary>Elige \(\lambda\) por validación.</details></li>
+            <li><details><summary>Lasso (noción)</summary>\(\ell_1\).</details></li>
+            <li><details><summary>Colinealidad</summary>Detéctala con SVD.</details></li>
+            <li><details><summary>Leave-one-out</summary>Validación.</details></li>
+            <li><details><summary>Regresión logística</summary>Newton (noción).</details></li>
+            <li><details><summary>Predicción en punto nuevo</summary>Con bandas de confianza.</details></li>
+            <li><details><summary>Residuos</summary>Analiza normalidad.</details></li>
+            <li><details><summary>Base de Chebyshev</summary>Mejor condicionada.</details></li>
+            <li><details><summary>Pseudoinversa</summary>\(A^+\) vía SVD.</details></li>
+            <li><details><summary>Detección de atípicos</summary>Leverage.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="paper" id="cap9">
+        <h2>9) Diferenciación e integración numérica</h2>
+        <div class="callout"><strong>Cuadraturas</strong> Newton–Cotes (trapecio, Simpson, Romberg) y Gauss-Legendre. Diferenciación por diferencias finitas con balance truncamiento/redondeo.</div>
+        <div class="grid">
+          <div>
+            <h3>Fórmulas</h3>
+            <p>Trapecio compuesta: \(\int_a^b f\,dx\approx h\big(\tfrac{f(a)+f(b)}{2}+\sum_{i=1}^{n-1} f(a+ih)\big)\). Simpson compuesta: \(\tfrac{h}{3}[f_0+4f_1+2f_2+\cdots+f_n]\).</p>
+          </div>
+          <div>
+            <h3>Error</h3>
+            <p>Trapecio: \(E= -\tfrac{(b-a)h^2}{12}f''(\xi)\). Simpson: \(E= -\tfrac{(b-a)h^4}{180}f^{(4)}(\xi)\).</p>
+          </div>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Integra \(e^{-x^2}\) en [0,1]</summary>Simpson n=100 (aprox 0.7468).</details></li>
+            <li><details><summary>Romberg</summary>Construye tabla hasta R(3,3).</details></li>
+            <li><details><summary>Gauss-Legendre 2 puntos</summary>Pesa y nodos.</details></li>
+            <li><details><summary>Integral impropia</summary>Transforma variable.</details></li>
+            <li><details><summary>Regla adaptativa</summary>Paro por estimación de error.</details></li>
+            <li><details><summary>Derivada primera</summary>Esquema central O(h^2).</details></li>
+            <li><details><summary>Paso óptimo en derivación</summary>Minimiza truncamiento+redondeo.</details></li>
+            <li><details><summary>Integración de datos discretos</summary>Trapecio.</details></li>
+            <li><details><summary>Comparar NC vs Gauss</summary>Eficiencia.</details></li>
+            <li><details><summary>Extrapolación de Richardson</summary>Mejora orden.</details></li>
+            <li><details><summary>Cuadratura en cambio de variable</summary>Regla tanh-sinh (noción).</details></li>
+            <li><details><summary>Integración Monte Carlo</summary>Estimación y varianza.</details></li>
+            <li><details><summary>Derivada ruidosa</summary>Suaviza antes.</details></li>
+            <li><details><summary>Regla compuesta no uniforme</summary>Peso variable.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="paper" id="cap10">
+        <h2>10) EDO (IVP): Euler, RK, estabilidad y rigidez</h2>
+        <div class="callout"><strong>Marco</strong> \(y'=f(t,y)\), \(y(t_0)=y_0\). Métodos: Euler, Heun, RK4, adaptativos (RKF45). Estabilidad: región del método, rigidez → implícitos (Backward Euler, TR).</div>
+        <div class="examples"><h3>Fórmulas</h3>
+          <ul>
+            <li>Euler: \(y_{n+1}=y_n+h f(t_n,y_n)\).</li>
+            <li>RK4 clásico (4 etapas).</li>
+            <li>Backward Euler: \(y_{n+1}=y_n+h f(t_{n+1},y_{n+1})\).</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Test con \(y'=-10y\)</summary>Inestabilidad de Euler explícito.</details></li>
+            <li><details><summary>Orden de RK4</summary>Confirma \(O(h^4)\).</details></li>
+            <li><details><summary>Control de paso</summary>Empareja RK45.</details></li>
+            <li><details><summary>Método de Trapecios</summary>Implícito A-estable.</details></li>
+            <li><details><summary>Función test \(\lambda y\)</summary>Regiones de estabilidad.</details></li>
+            <li><details><summary>Sistemas rígidos</summary>Modelo químico.</details></li>
+            <li><details><summary>Newton interno</summary>Para métodos implícitos.</details></li>
+            <li><details><summary>Conservación</summary>Métodos sin/favor de energía.</details></li>
+            <li><details><summary>EDO vectorial</summary>Acoplamientos.</details></li>
+            <li><details><summary>Evento</summary>Detección de cruce.</details></li>
+            <li><details><summary>Estima error global</summary>Por dobles pasos.</details></li>
+            <li><details><summary>Problema oscilatorio</summary>Elige método.</details></li>
+            <li><details><summary>Jacobiano automático</summary>Ventajas.</details></li>
+            <li><details><summary>Estabilidad absoluta vs relativa</summary>Discútela.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="paper" id="cap11">
+        <h2>11) EDO (BVP): disparo y diferencias finitas</h2>
+        <div class="callout"><strong>Modelos</strong> Problemas de frontera \(y''=g(x,y,y')\) con condiciones en \(a,b\). Disparo transforma en IVP; diferencias finitas discretizan.</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Barra 1D \(y''=0\)</summary>Solución lineal.</details></li>
+            <li><details><summary>Poisson 1D</summary>Esquema de 3 puntos.</details></li>
+            <li><details><summary>Disparo con Newton</summary>Ajusta pendiente inicial.</details></li>
+            <li><details><summary>Condiciones mixtas</summary>Robin.</details></li>
+            <li><details><summary>Consistencia</summary>Orden del esquema.</details></li>
+            <li><details><summary>Tridiagonal solver</summary>Thomas.</details></li>
+            <li><details><summary>Errores de borde</summary>Mejora con malla no uniforme.</details></li>
+            <li><details><summary>No lineal</summary>Actualiza con Newton.</details></li>
+            <li><details><summary>Comparación disparo vs DF</summary>Costo y robustez.</details></li>
+            <li><details><summary>Adaptatividad espacial</summary>Refinamiento.</details></li>
+            <li><details><summary>Condiciones en derivada</summary>Esquemas.</details></li>
+            <li><details><summary>Problema singular</summary>Tratamiento.</details></li>
+            <li><details><summary>Validación</summary>Con solución analítica.</details></li>
+            <li><details><summary>Estima de error</summary>Por mallas anidadas.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="paper" id="cap12">
+        <h2>12) EDP: calor, onda y Laplace (FTCS, Crank–Nicolson, CFL)</h2>
+        <div class="callout"><strong>Esquemas 1D</strong> Calor: FTCS \(u_i^{n+1}=u_i^n+r(u_{i+1}^n-2u_i^n+u_{i-1}^n)\), con \(r=\alpha\,\tfrac{\Delta t}{\Delta x^2}\) (estable si \(r\le 1/2\)); Crank–Nicolson incondicionalmente estable. Onda: CFL \(c\,\tfrac{\Delta t}{\Delta x}\le1\).</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>Calor FTCS</summary>Simula y verifica estabilidad.</details></li>
+            <li><details><summary>Crank–Nicolson</summary>Arma sistema tridiagonal.</details></li>
+            <li><details><summary>Von Neumann</summary>Analiza estabilidad.</details></li>
+            <li><details><summary>Onda 1D</summary>Esquema explícito.</details></li>
+            <li><details><summary>Laplace 2D</summary>Iterativo GS/SOR.</details></li>
+            <li><details><summary>Frontera no homogénea</summary>Imposición.</details></li>
+            <li><details><summary>Malla no uniforme</summary>Coeficientes.</details></li>
+            <li><details><summary>Calor con fuente</summary>Término \(S(x,t)\).</details></li>
+            <li><details><summary>Condición de flujo</summary>Neumann.</details></li>
+            <li><details><summary>Estabilidad numérica vs física</summary>Discusión.</details></li>
+            <li><details><summary>Esquema implícito</summary>Backward Euler.</details></li>
+            <li><details><summary>ADI (noción)</summary>Alternating direction.</details></li>
+            <li><details><summary>Refinamiento temporal</summary>Comparación errores.</details></li>
+            <li><details><summary>Conservación</summary>Chequea masa total.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="paper" id="cap13">
+        <h2>13) Optimización (GD, Newton, BFGS, KKT)</h2>
+        <div class="callout"><strong>Panorama</strong> No restringida: descenso por gradiente (GD), Newton, quasi-Newton (BFGS). Restringida: KKT, penalización, barreras. Lineal: Simplex (noción) y puntos interiores.</div>
+        <div class="examples"><h3>📝 Ejercicios (14)</h3>
+          <ol>
+            <li><details><summary>GD con paso fijo</summary>Convergencia para cuadrática.</details></li>
+            <li><details><summary>Newton</summary>Dirección \(-H^{-1}\nabla f\).</details></li>
+            <li><details><summary>BFGS</summary>Actualización.</details></li>
+            <li><details><summary>Backtracking Armijo</summary>Implementa.</details></li>
+            <li><details><summary>Condiciones KKT</summary>Plantea para restric. igualdad.</details></li>
+            <li><details><summary>Penalización cuadrática</summary>Esquema.</details></li>
+            <li><details><summary>Barrera log</summary>Interior-point (noción).</details></li>
+            <li><details><summary>QP</summary>Cuadrático con desigualdades.</details></li>
+            <li><details><summary>Lagrangiano</summary>Multiplicadores.</details></li>
+            <li><details><summary>Convexidad</summary>Chequea Hessiano.</details></li>
+            <li><details><summary>Líneas de nivel</summary>Visualiza GD vs Newton.</details></li>
+            <li><details><summary>Condicionamiento</summary>Escalado de variables.</details></li>
+            <li><details><summary>Stopping</summary>\(\|\nabla f\|<\varepsilon\).</details></li>
+            <li><details><summary>LP 2D</summary>Grafica región factible.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="paper" id="cap14">
+        <h2>14) Taller: MATLAB/Octave + Python y problemas integradores</h2>
+        <div class="grid">
+          <div>
+            <h3>Mini–recetario MATLAB/Octave</h3>
+            <code class="k">% Raíz por Newton
+f = @(x) cos(x)-x; df = @(x) -sin(x)-1; x=0.7; for k=1:10, x=x-f(x)/df(x); end
+
+% LU/Cholesky
+A = gallery('poisson',20); [L,U,P]=lu(A); x = U\(L\(P*(ones(size(A,1),1))));
+R = chol(A); x2 = R\(R'\(ones(size(A,1),1)));
+
+% RK45 (ode45)
+[t,y]=ode45(@(t,y)-10*y,[0 1],1);
+
+% Poisson 2D con SOR (boceto)
+% ...
+            </code>
+          </div>
+          <div>
+            <h3>Mini–recetario Python (NumPy/SciPy)</h3>
+            <code class="k">import numpy as np
+from scipy import linalg, optimize, integrate
+
+# Secante
+f=lambda x: np.cos(x)-x
+x0,x1=0.5,0.8
+for _ in range(8):
+    x0,x1=x1,x1-f(x1)*(x1-x0)/(f(x1)-f(x0))
+
+# QR para mínimos cuadrados
+A=np.vander(np.linspace(0,1,20),4)
+b=np.sin(np.linspace(0,1,20))
+Q,R=np.linalg.qr(A, mode='reduced'); x= linalg.solve(R, Q.T@b)
+
+# Integración adaptativa
+res=integrate.quad(lambda t: np.exp(-t**2),0,1)
+            </code>
+          </div>
+        </div>
+        <div class="examples"><h3>🧠 Checklist profesional</h3>
+          <ul>
+            <li>Analiza <strong>condicionamiento</strong> del problema <em>antes</em> de elegir el método.</li>
+            <li>Elige un algoritmo <strong>estable</strong>; si no, re-formula.</li>
+            <li>Define criterios de paro y <strong>reporta errores</strong> (a priori y a posteriori).</li>
+            <li>Usa escalado y precondicionamiento cuando corresponda.</li>
+            <li>Valida con casos de prueba con solución conocida.</li>
+          </ul>
+        </div>
+        <div class="examples"><h3>📝 Problemas integradores (14)</h3>
+          <ol>
+            <li><details><summary>Diseña un solver para Poisson 2D</summary>Comparar GS/SOR/CG.</details></li>
+            <li><details><summary>Calor 1D CN</summary>Verifica conservación y convergencia.</details></li>
+            <li><details><summary>Estimación de parámetros</summary>LS con regularización.</details></li>
+            <li><details><summary>Orbitas con ODE rígida</summary>Elige método implícito.</details></li>
+            <li><details><summary>Ajuste spline + integración</summary>Integra datos ruidosos.</details></li>
+            <li><details><summary>Autovalores dominantes</summary>Potencia vs QR.</details></li>
+            <li><details><summary>Raíces múltiples</summary>Newton modificado.</details></li>
+            <li><details><summary>Optimización con restricciones</summary>KKT y barrera.</details></li>
+            <li><details><summary>Simulación Monte Carlo</summary>Estimación de π.</details></li>
+            <li><details><summary>Calibración de sensor</summary>LS ponderado.</details></li>
+            <li><details><summary>Control parámetro paso</summary>RK45 tolerancia.</details></li>
+            <li><details><summary>Derivación robusta</summary>Suavizado + diferencias.</details></li>
+            <li><details><summary>Comparar reglas de cuadratura</summary>Eficiencia.</details></li>
+            <li><details><summary>Informe técnico</summary>Redacta con métricas de error y tiempos.</details></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="paper">
+        <h2>Errores típicos y trucos</h2>
+        <ul>
+          <li>Usar ecuaciones normales en vez de QR/SVD en problemas mal condicionados.</li>
+          <li>Parar por \(|f|\) sin revisar \(|\Delta x|\) → falso OK.</li>
+          <li>Ignorar CFL/estabilidad en EDP → explosión numérica.</li>
+          <li>No distinguir error de <em>modelo</em> vs <em>numérico</em>.</li>
+          <li>No reutilizar factorizaciones (costo innecesario).</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <button class="topbtn" id="topbtn">↑ Arriba</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const bar = $('#progress');
+    function updateProgress(){ const h=document.documentElement; const sc=h.scrollTop||document.body.scrollTop; const max=(h.scrollHeight-h.clientHeight); const p=max>0?(sc/max)*100:0; bar.style.width=p+'%'; $('#topbtn').classList.toggle('show', sc>600); }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    const root=document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{ const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18; root.style.setProperty('--base', Math.min(val+1, 22)+'px'); });
+    $('#fs-down').addEventListener('click', ()=>{ const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18; root.style.setProperty('--base', Math.max(val-1, 14)+'px'); });
+    $('#width-up').addEventListener('click', ()=>{ const w=getComputedStyle(root).getPropertyValue('--maxw')||'90ch'; const num=parseFloat(w); root.style.setProperty('--maxw', Math.min(num+8, 120)+'ch'); });
+    $('#width-down').addEventListener('click', ()=>{ const w=getComputedStyle(root).getPropertyValue('--maxw')||'90ch'; const num=parseFloat(w); root.style.setProperty('--maxw', Math.max(num-8, 60)+'ch'); });
+    $('#theme-toggle').addEventListener('click', ()=>{ const light=getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff'; if(light){ root.style.setProperty('--bg','#071311'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff'); root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#14b8a6'); root.style.setProperty('--accent','#5eead4'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#203054'); } else { root.style.setProperty('--bg','#f6fffb'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#0b1220'); root.style.setProperty('--muted','#475569'); root.style.setProperty('--brand','#0ea5a4'); root.style.setProperty('--accent','#14b8a6'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#e2e8f0'); } });
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+

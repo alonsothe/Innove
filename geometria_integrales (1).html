@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Geometría — ESO · Bachillerato · Universidad (Integrales) · Doctorado</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{ --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+         --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+         --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+         --radius:16px; --maxw:78ch; --base:18px; --lh:1.9; }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+            --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399; --border:#203054; }
+  }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+        font-size:var(--base); line-height:var(--lh); color:var(--ink);
+        background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+                   radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg); }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff; font-weight:900}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:22px clamp(18px,3vw,28px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .tbox{border:1px solid var(--border); border-left:6px solid var(--accent); border-radius:12px; padding:12px 14px; background:color-mix(in oklab,var(--paper) 90%, var(--bg)); margin:10px 0}
+  .controls{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:10px 0}
+  .card{border:1px dashed var(--border); border-radius:14px; padding:12px; background:color-mix(in oklab,var(--paper) 96%, transparent); margin:10px 0}
+  .card-h{display:flex; align-items:center; justify-content:space-between; font-weight:800}
+  .chip{padding:.2rem .6rem; border-radius:999px; border:1px solid var(--border); background:color-mix(in oklab,var(--paper) 80%, var(--bg)); font-size:.9em}
+  .num{opacity:.6}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dotted var(--border); border-radius:10px; padding:8px 10px; margin:8px 0}
+  summary{cursor:pointer; font-weight:800}
+  .steps{margin:.5em 0 .2em 1.2em}
+  .result{border-left:4px solid var(--accent2); padding-left:10px}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">△</span><span class="brand-title">Geometría — ESO · Bachillerato · Universidad (Integrales) · Doctorado</span></a>
+      <div class="reader">
+        <button class="btn small" id="fs-down">A−</button>
+        <button class="btn small" id="fs-up">A+</button>
+        <button class="btn small" id="width-down">⇤</button>
+        <button class="btn small" id="width-up">⇥</button>
+        <button class="btn" id="theme-toggle">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="eso" role="tab" aria-selected="true">ESO (intro)</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad (Integrales)</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <section id="sec-eso" class="paper level" data-active>
+      <h1>ESO — Geometría básica (muy breve)</h1>
+      <p class="lead">Figuras planas, perímetros, áreas y el teorema de Pitágoras.</p>
+      <div class="tbox"><h3>Fórmulas que debes tener</h3>
+        <ul>
+          <li>Rectángulo: P=2(a+b), A=ab.</li>
+          <li>Triángulo: A=(base·altura)/2.</li>
+          <li>Círculo: P=2πr, A=πr²; sector: arco s=rθ, área A=(1/2)r²θ (θ en radianes).</li>
+          <li>Pitágoras: h²=a²+b² en triángulos rectángulos.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Geometría euclidiana y analítica (60 ejercicios)</h1>
+      <div class="tbox"><h3>Teoría clara</h3>
+        <ul>
+          <li><strong>Triángulos:</strong> congruencia, semejanza, razones en 30-60-90 y 45-45-90.</li>
+          <li><strong>Circunferencia:</strong> ángulos centrales e inscritos, arcos, sectores.</li>
+          <li><strong>Vectores:</strong> producto escalar, proyección, ángulo.</li>
+          <li><strong>Geometría analítica:</strong> rectas (pendiente, distancia punto-recta), mediatrices, centros notables.</li>
+          <li><strong>Cónicas:</strong> ecuaciones y parámetros (centro, ejes, focos).</li>
+          <li><strong>3D:</strong> cilindros y conos: área lateral y volumen.</li>
+        </ul>
+      </div>
+      <div class="controls">
+        <button class="btn small" id="expand-bach">▶︎ Mostrar todo</button>
+        <button class="btn small" id="collapse-bach">▾ Ocultar todo</button>
+      </div>
+      <div id="ex-bach">
+        
+    <article class="card">
+      <header class="card-h"><span class="chip">Pitágoras</span><span class="num">01</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Triángulo rectángulo con catetos 3 y 4. Calcula la hipotenusa.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Aplica Pitágoras: h^2 = a^2 + b^2.</li><li>h = √(3^2 + 4^2) = √(9+16).</li></ol>
+          <p class="result"><strong>Resultado:</strong> h = 5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Pitágoras</span><span class="num">02</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Triángulo rectángulo con catetos 5 y 12. Calcula la hipotenusa.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Aplica Pitágoras: h^2 = a^2 + b^2.</li><li>h = √(5^2 + 12^2) = √(25+144).</li></ol>
+          <p class="result"><strong>Resultado:</strong> h = 13</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Pitágoras</span><span class="num">03</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Triángulo rectángulo con catetos 8 y 15. Calcula la hipotenusa.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Aplica Pitágoras: h^2 = a^2 + b^2.</li><li>h = √(8^2 + 15^2) = √(64+225).</li></ol>
+          <p class="result"><strong>Resultado:</strong> h = 17</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Pitágoras</span><span class="num">04</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Triángulo rectángulo con catetos 7 y 24. Calcula la hipotenusa.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Aplica Pitágoras: h^2 = a^2 + b^2.</li><li>h = √(7^2 + 24^2) = √(49+576).</li></ol>
+          <p class="result"><strong>Resultado:</strong> h = 25</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Triángulos</span><span class="num">05</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Triángulo 30°-60°-90°. Dado h=10, halla los otros lados.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa las razones fijas del triángulo especial.</li><li>Sustituye el dato y calcula.</li></ol>
+          <p class="result"><strong>Resultado:</strong> catetos: h·(1/2) y h·(√3/2) ⇒ 5 y 5√3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Triángulos</span><span class="num">06</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Triángulo 45°-45°-90°. Dado cateto=6, halla los otros lados.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa las razones fijas del triángulo especial.</li><li>Sustituye el dato y calcula.</li></ol>
+          <p class="result"><strong>Resultado:</strong> h=6√2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Círculo</span><span class="num">07</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Para un círculo de radio r=2, calcula perímetro y área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Perímetro: 2πr.</li><li>Área: πr^2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> P=12.57, A=12.57</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Círculo</span><span class="num">08</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Para un círculo de radio r=3, calcula perímetro y área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Perímetro: 2πr.</li><li>Área: πr^2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> P=18.85, A=28.27</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Círculo</span><span class="num">09</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Para un círculo de radio r=4, calcula perímetro y área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Perímetro: 2πr.</li><li>Área: πr^2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> P=25.13, A=50.27</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Círculo</span><span class="num">10</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Para un círculo de radio r=5, calcula perímetro y área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Perímetro: 2πr.</li><li>Área: πr^2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> P=31.42, A=78.54</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Círculo</span><span class="num">11</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Para un círculo de radio r=6, calcula perímetro y área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Perímetro: 2πr.</li><li>Área: πr^2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> P=37.70, A=113.10</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Sector</span><span class="num">12</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Arco y sector: r=6, ángulo central θ=30°.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Convierte a radianes: θ_rad = θ·π/180.</li><li>Arco s=r·θ_rad; Área sector A=(1/2)r²·θ_rad.</li></ol>
+          <p class="result"><strong>Resultado:</strong> s=3.142, A=9.425</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Sector</span><span class="num">13</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Arco y sector: r=8, ángulo central θ=45°.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Convierte a radianes: θ_rad = θ·π/180.</li><li>Arco s=r·θ_rad; Área sector A=(1/2)r²·θ_rad.</li></ol>
+          <p class="result"><strong>Resultado:</strong> s=6.283, A=25.133</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Sector</span><span class="num">14</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Arco y sector: r=10, ángulo central θ=60°.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Convierte a radianes: θ_rad = θ·π/180.</li><li>Arco s=r·θ_rad; Área sector A=(1/2)r²·θ_rad.</li></ol>
+          <p class="result"><strong>Resultado:</strong> s=10.472, A=52.360</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Vectores</span><span class="num">15</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Dados u=(1,2) y v=(3,1), calcula u·v y el ángulo.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto escalar u·v = x1x2 + y1y2.</li><li>cos θ = (u·v)/(|u||v|).</li><li>Despeja θ = arccos(…).</li></ol>
+          <p class="result"><strong>Resultado:</strong> u·v=5, θ≈45.00°</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Vectores</span><span class="num">16</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Dados u=(-2,5) y v=(4,-1), calcula u·v y el ángulo.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto escalar u·v = x1x2 + y1y2.</li><li>cos θ = (u·v)/(|u||v|).</li><li>Despeja θ = arccos(…).</li></ol>
+          <p class="result"><strong>Resultado:</strong> u·v=-13, θ≈125.84°</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Vectores</span><span class="num">17</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Dados u=(3,4) y v=(-4,3), calcula u·v y el ángulo.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto escalar u·v = x1x2 + y1y2.</li><li>cos θ = (u·v)/(|u||v|).</li><li>Despeja θ = arccos(…).</li></ol>
+          <p class="result"><strong>Resultado:</strong> u·v=0, θ≈90.00°</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Vectores</span><span class="num">18</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Dados u=(2,-1) y v=(1,2), calcula u·v y el ángulo.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Producto escalar u·v = x1x2 + y1y2.</li><li>cos θ = (u·v)/(|u||v|).</li><li>Despeja θ = arccos(…).</li></ol>
+          <p class="result"><strong>Resultado:</strong> u·v=0, θ≈90.00°</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">19</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Distancia del punto P(3,4) a la recta 3x−4y+1=0.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Usa d = |Ax0+By0+C|/√(A^2+B^2).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = 1.200</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Recta</span><span class="num">20</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Ecuación de la recta que pasa por (0,0) y (2,3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente m=(y2−y1)/(x2−x1).</li><li>Ecuación: y=mx+b usando un punto.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = 1.50x + 0.00</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Recta</span><span class="num">21</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Ecuación de la recta que pasa por (-1,2) y (3,2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente m=(y2−y1)/(x2−x1).</li><li>Ecuación: y=mx+b usando un punto.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = 0.00x + 2.00</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Recta</span><span class="num">22</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Ecuación de la recta que pasa por (1,-2) y (4,4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente m=(y2−y1)/(x2−x1).</li><li>Ecuación: y=mx+b usando un punto.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = 2.00x + -4.00</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Recta</span><span class="num">23</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Ecuación de la recta que pasa por (-3,-2) y (0,1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Pendiente m=(y2−y1)/(x2−x1).</li><li>Ecuación: y=mx+b usando un punto.</li></ol>
+          <p class="result"><strong>Resultado:</strong> y = 1.00x + 1.00</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Rotación</span><span class="num">24</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Rota 90° antihorario el punto (x,y)=(2,−3) respecto del origen.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Fórmula: (x,y)→(−y,x).</li></ol>
+          <p class="result"><strong>Resultado:</strong> (3, 2)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Centroide</span><span class="num">25</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Centroide del triángulo con vértices A(0,0), B(6,0), C(0,3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Media de coordenadas: ((xA+xB+xC)/3, (yA+yB+yC)/3).</li></ol>
+          <p class="result"><strong>Resultado:</strong> (2.00, 1.00)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Cónicas</span><span class="num">26</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Identifica parámetros en la cónica: x²+y²=25.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Compara con la forma estándar.</li><li>Lee centro y parámetros.</li></ol>
+          <p class="result"><strong>Resultado:</strong> centro (0,0), radio 5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Cónicas</span><span class="num">27</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Identifica parámetros en la cónica: (x−2)²+(y+1)²=16.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Compara con la forma estándar.</li><li>Lee centro y parámetros.</li></ol>
+          <p class="result"><strong>Resultado:</strong> centro (2,−1), radio 4</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Cónicas</span><span class="num">28</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Identifica parámetros en la cónica: x²/9 + y²/4 = 1.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Compara con la forma estándar.</li><li>Lee centro y parámetros.</li></ol>
+          <p class="result"><strong>Resultado:</strong> a=3, b=2, ejes sobre XY</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Cónicas</span><span class="num">29</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Identifica parámetros en la cónica: x²/16 − y²/9 = 1.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Compara con la forma estándar.</li><li>Lee centro y parámetros.</li></ol>
+          <p class="result"><strong>Resultado:</strong> a=4, b=3, focos ±√(a²+b²)=±5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polígonos</span><span class="num">30</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Polígono regular de n=5 lados, lado s=4. Halla el área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Área = (Perímetro·apotema)/2.</li><li>Apotema a = s/(2 tan(π/n)).</li></ol>
+          <p class="result"><strong>Resultado:</strong> A ≈ 27.528</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polígonos</span><span class="num">31</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Polígono regular de n=6 lados, lado s=4. Halla el área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Área = (Perímetro·apotema)/2.</li><li>Apotema a = s/(2 tan(π/n)).</li></ol>
+          <p class="result"><strong>Resultado:</strong> A ≈ 41.569</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polígonos</span><span class="num">32</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Polígono regular de n=8 lados, lado s=4. Halla el área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Área = (Perímetro·apotema)/2.</li><li>Apotema a = s/(2 tan(π/n)).</li></ol>
+          <p class="result"><strong>Resultado:</strong> A ≈ 77.255</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polígonos</span><span class="num">33</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Polígono regular de n=10 lados, lado s=4. Halla el área.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Área = (Perímetro·apotema)/2.</li><li>Apotema a = s/(2 tan(π/n)).</li></ol>
+          <p class="result"><strong>Resultado:</strong> A ≈ 123.107</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Sólidos</span><span class="num">34</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Cilindro de radio 3 y altura 5: área lateral y volumen.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Alat = 2πrh; V=πr²h.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Alat ≈ 94.25, V ≈ 141.37</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Sólidos</span><span class="num">35</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Cilindro de radio 2 y altura 7: área lateral y volumen.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Alat = 2πrh; V=πr²h.</li></ol>
+          <p class="result"><strong>Resultado:</strong> Alat ≈ 87.96, V ≈ 87.96</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">36</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-23,-46) y Q(-46,-23).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-23 ≈ 32.527</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">37</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-22,-44) y Q(-44,-22).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-22 ≈ 31.113</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">38</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-21,-42) y Q(-42,-21).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-21 ≈ 29.698</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">39</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-20,-40) y Q(-40,-20).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-20 ≈ 28.284</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">40</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-19,-38) y Q(-38,-19).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-19 ≈ 26.870</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">41</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-18,-36) y Q(-36,-18).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-18 ≈ 25.456</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">42</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-17,-34) y Q(-34,-17).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-17 ≈ 24.042</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">43</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-16,-32) y Q(-32,-16).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-16 ≈ 22.627</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">44</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-15,-30) y Q(-30,-15).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-15 ≈ 21.213</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">45</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-14,-28) y Q(-28,-14).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-14 ≈ 19.799</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">46</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-13,-26) y Q(-26,-13).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-13 ≈ 18.385</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">47</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-12,-24) y Q(-24,-12).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-12 ≈ 16.971</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">48</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-11,-22) y Q(-22,-11).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-11 ≈ 15.556</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">49</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-10,-20) y Q(-20,-10).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-10 ≈ 14.142</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">50</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-9,-18) y Q(-18,-9).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-9 ≈ 12.728</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">51</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-8,-16) y Q(-16,-8).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-8 ≈ 11.314</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">52</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-7,-14) y Q(-14,-7).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-7 ≈ 9.899</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">53</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-6,-12) y Q(-12,-6).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-6 ≈ 8.485</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">54</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-5,-10) y Q(-10,-5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-5 ≈ 7.071</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">55</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-4,-8) y Q(-8,-4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-4 ≈ 5.657</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">56</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-3,-6) y Q(-6,-3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-3 ≈ 4.243</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">57</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-2,-4) y Q(-4,-2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-2 ≈ 2.828</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">58</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(-1,-2) y Q(-2,-1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·-1 ≈ 1.414</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">59</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(0,0) y Q(0,0).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·0 ≈ 0.000</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Distancia</span><span class="num">60</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Encuentra la distancia entre P(1,2) y Q(2,1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Distancia: √((x2−x1)²+(y2−y1)²).</li></ol>
+          <p class="result"><strong>Resultado:</strong> d = √2·1 ≈ 1.414</p>
+        </details>
+      </div>
+    </article>
+    
+      </div>
+    </section>
+
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Geometría con integrales (100 ejercicios)</h1>
+      <div class="tbox"><h3>Teoría (integrales geométricas)</h3>
+        <ul>
+          <li><strong>Área entre curvas:</strong> A=∫ (superior − inferior) dx (o dy).</li>
+          <li><strong>Volumen de revolución:</strong> discos/arandelas V=π∫(R²−r²) dx; capas V=2π∫ x·y dx.</li>
+          <li><strong>Arco:</strong> L=∫ √(1+(y')²) dx; paramétrica L=∫ √((x')²+(y')²) dt.</li>
+          <li><strong>Superficie de revolución:</strong> S=2π∫ y √(1+(y')²) dx.</li>
+          <li><strong>Centroide (lámina y≥0):</strong> A=∫ y dx, x̄=(1/A)∫ x y dx, ȳ=(1/(2A))∫ y² dx.</li>
+          <li><strong>Polars:</strong> A=(1/2)∫ r² dθ.</li>
+        </ul>
+      </div>
+      <div class="controls">
+        <button class="btn small" id="expand-uni">▶︎ Mostrar todo</button>
+        <button class="btn small" id="collapse-uni">▾ Ocultar todo</button>
+      </div>
+      <div id="ex-uni">
+        
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">01</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=1x en [0,1] (intersecciones x=0 y x=1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 0.16666666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">02</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=2x en [0,2] (intersecciones x=0 y x=2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 1.3333333333333333</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">03</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=3x en [0,3] (intersecciones x=0 y x=3).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 4.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">04</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=4x en [0,4] (intersecciones x=0 y x=4).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 10.666666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">05</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=5x en [0,5] (intersecciones x=0 y x=5).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 20.833333333333332</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">06</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=6x en [0,6] (intersecciones x=0 y x=6).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 36.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">07</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=7x en [0,7] (intersecciones x=0 y x=7).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 57.166666666666664</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">08</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=8x en [0,8] (intersecciones x=0 y x=8).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 85.33333333333333</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">09</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=9x en [0,9] (intersecciones x=0 y x=9).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 121.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">10</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=10x en [0,10] (intersecciones x=0 y x=10).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Dibuja y ordena: arriba y=ax, abajo y=x².</li><li>A=∫₀ᵃ (ax − x²) dx.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a³/6 = 166.66666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">11</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=cos x y y=sin x en [0, π/4].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫(cos−sin) dx</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = (sin x + cos x)|₀^{π/4} = √2 − 1</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">12</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área bajo y=√x en [0,4].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀⁴ √x dx</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = [2/3 x^{3/2}]₀⁴ = 16/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">13</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=1 y y=x en [0,1].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀¹ (1−x) dx</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 1/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">14</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: rota y=x, x∈[0,1], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Radio = y = x.</li><li>V = π ∫₀ᵇ (x)² dx = π b³/3.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·1/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">15</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: rota y=x, x∈[0,2], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Radio = y = x.</li><li>V = π ∫₀ᵇ (x)² dx = π b³/3.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·8/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">16</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: rota y=x, x∈[0,3], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Radio = y = x.</li><li>V = π ∫₀ᵇ (x)² dx = π b³/3.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·27/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">17</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: rota y=x, x∈[0,4], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Radio = y = x.</li><li>V = π ∫₀ᵇ (x)² dx = π b³/3.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·64/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">18</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: rota y=x, x∈[0,5], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Radio = y = x.</li><li>V = π ∫₀ᵇ (x)² dx = π b³/3.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·125/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (washers)</span><span class="num">19</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por arandelas: región bajo y=x en [0,2], gira alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>R(x)=x, r(x)=0.</li><li>V=π∫₀² (R² − r²) dx = π∫₀² x² dx = (8/3)π.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 8π/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (capas)</span><span class="num">20</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por capas cilíndricas: región bajo y=1−x², x∈[0,1], gira alrededor del eje Y.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=2π∫₀¹ x(1−x²) dx.</li><li>Calcula: 2π[x²/2 − x⁴/4]₀¹ = π/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (capas)</span><span class="num">21</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Capas: región bajo y=2−x, x∈[0,2], al girar alrededor del eje Y.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=2π∫₀² x(2−x) dx.</li><li>Integra y evalúa.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 8π/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (capas)</span><span class="num">22</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Capas: región bajo y=2−x, x∈[0,2], al girar alrededor del eje Y.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=2π∫₀² x(2−x) dx.</li><li>Integra y evalúa.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 8π/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (capas)</span><span class="num">23</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Capas: región bajo y=2−x, x∈[0,2], al girar alrededor del eje Y.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=2π∫₀² x(2−x) dx.</li><li>Integra y evalúa.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 8π/3</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Arco</span><span class="num">24</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Longitud del tramo de la recta y=0.5x desde x=0 hasta x=3.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Para rectas: L=√(1+m²)·(b−a).</li></ol>
+          <p class="result"><strong>Resultado:</strong> L ≈ 3.354</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Arco</span><span class="num">25</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Longitud del tramo de la recta y=1x desde x=0 hasta x=3.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Para rectas: L=√(1+m²)·(b−a).</li></ol>
+          <p class="result"><strong>Resultado:</strong> L ≈ 4.243</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Arco</span><span class="num">26</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Longitud del tramo de la recta y=2x desde x=0 hasta x=3.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Para rectas: L=√(1+m²)·(b−a).</li></ol>
+          <p class="result"><strong>Resultado:</strong> L ≈ 6.708</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Arco</span><span class="num">27</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Longitud del tramo de la recta y=3x desde x=0 hasta x=3.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Para rectas: L=√(1+m²)·(b−a).</li></ol>
+          <p class="result"><strong>Resultado:</strong> L ≈ 9.487</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Arco</span><span class="num">28</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Longitud de arco de y=x² en [0,1].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>L=∫₀¹ √(1+(2x)²) dx = ∫ √(1+4x²) dx.</li><li>Resultado: (x/2)√(1+4x²) + (1/4)ln(2x+√(1+4x²))|₀¹.</li></ol>
+          <p class="result"><strong>Resultado:</strong> L = (1/2)√5 + (1/4)ln(2+√5) ≈ 1.4789</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Superficie</span><span class="num">29</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Superficie al rotar y=x, x∈[0,1], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>S=2π∫₀¹ y√(1+(y&#x27;)²) dx; y=x, y&#x27;=1.</li><li>S=2π∫₀¹ x√2 dx = π√2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> S = π√2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Superficie</span><span class="num">30</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Superficie al rotar y=√x, x∈[0,4], alrededor del eje X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>y&#x27;=1/(2√x).</li><li>S=2π∫₀⁴ √x·√(1+1/(4x)) dx = 2π∫₀⁴ √x·√((4x+1)/(4x)) dx.</li><li>Simplifica e integra por sustitución.</li></ol>
+          <p class="result"><strong>Resultado:</strong> S = 2π∫₀⁴ √(x + 1/4) dx (expresa o evalúa numéricamente)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Centroide (∫)</span><span class="num">31</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Centroide del dominio bajo y=x, x∈[0,1] (respecto al eje X).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Área A=∫₀¹ x dx = 1/2.</li><li>x̄=(1/A)∫₀¹ x·x dx = (1/(1/2))·1/3 = 2/3.</li><li>ȳ=(1/(2A))∫₀¹ x² dx = (1)·1/3 = 1/3.</li></ol>
+          <p class="result"><strong>Resultado:</strong> (x̄, ȳ) = (2/3, 1/3)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Centroide (∫)</span><span class="num">32</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Centroide de la región bajo y=1−x², x∈[0,1].</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀¹ (1−x²) dx = [x − x³/3]₀¹ = 2/3.</li><li>x̄=(1/A)∫₀¹ x(1−x²) dx = (1/(2/3))[x²/2 − x⁴/4]₀¹ = (3/2)(1/2−1/4)=3/8.</li><li>ȳ=(1/(2A))∫₀¹ (1−x²)² dx = (3/4)∫(1 − 2x² + x⁴) dx = (3/4)[x − 2x³/3 + x⁵/5]₀¹ =  (3/4)(1 − 2/3 + 1/5) =  (3/4)( (15−10+3)/15 ) = (3/4)(8/15)=2/5.</li></ol>
+          <p class="result"><strong>Resultado:</strong> (x̄, ȳ) = (3/8, 2/5)</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polar (∫)</span><span class="num">33</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área polar de r=1·sin θ, θ∈[0,π] (círculo de radio a/2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A = (1/2)∫ r² dθ = (1/2)∫ a² sin² θ dθ en [0,π].</li><li>∫ sin² θ dθ = π/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a²·π/4 = 0.785</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polar (∫)</span><span class="num">34</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área polar de r=2·sin θ, θ∈[0,π] (círculo de radio a/2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A = (1/2)∫ r² dθ = (1/2)∫ a² sin² θ dθ en [0,π].</li><li>∫ sin² θ dθ = π/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a²·π/4 = 3.142</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polar (∫)</span><span class="num">35</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área polar de r=3·sin θ, θ∈[0,π] (círculo de radio a/2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A = (1/2)∫ r² dθ = (1/2)∫ a² sin² θ dθ en [0,π].</li><li>∫ sin² θ dθ = π/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a²·π/4 = 7.069</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polar (∫)</span><span class="num">36</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área polar de r=4·sin θ, θ∈[0,π] (círculo de radio a/2).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A = (1/2)∫ r² dθ = (1/2)∫ a² sin² θ dθ en [0,π].</li><li>∫ sin² θ dθ = π/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = a²·π/4 = 12.566</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Polar (∫)</span><span class="num">37</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área encerrada por la cardioide r=1+cos θ.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=(1/2)∫₀^{2π} (1+cos θ)² dθ = (1/2)∫(1+2cos θ+cos² θ) dθ.</li><li>Usa cos²=(1+cos 2θ)/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 3π/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Clásico (∫)</span><span class="num">38</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen de una esfera de radio 1 por discos: y=√(R²−x²), x∈[−R,R], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫_{−R}^{R} (R² − x²) dx.</li><li>Resultado clásico: 4/3 π R³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 4.189</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Clásico (∫)</span><span class="num">39</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen de una esfera de radio 2 por discos: y=√(R²−x²), x∈[−R,R], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫_{−R}^{R} (R² − x²) dx.</li><li>Resultado clásico: 4/3 π R³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 33.510</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Clásico (∫)</span><span class="num">40</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen de una esfera de radio 3 por discos: y=√(R²−x²), x∈[−R,R], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫_{−R}^{R} (R² − x²) dx.</li><li>Resultado clásico: 4/3 π R³.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = 113.097</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Green/Área</span><span class="num">41</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Usa el teorema de Green para el área de un recinto: A = ∬ 1 dA = ∮ (−y/2 dx + x/2 dy). (Ejemplo: rectángulo 2×1).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>Recorre el contorno en sentido antihorario.</li><li>Evalúa la integral de línea por tramos.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">42</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=2x en [0,2] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 1.3333333333333333</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">43</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=3x en [0,3] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 4.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">44</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=4x en [0,4] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 10.666666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">45</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=5x en [0,5] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 20.833333333333332</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">46</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=6x en [0,6] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 36.0</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">47</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=7x en [0,7] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 57.166666666666664</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">48</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=8x en [0,8] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 85.33333333333333</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">49</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=9x en [0,9] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 121.5</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">50</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=10x en [0,10] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 166.66666666666666</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Área (∫)</span><span class="num">51</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Área entre y=x² y y=11x en [0,11] (general).</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>A=∫₀ᵃ (ax − x²) dx.</li><li>Evalúa: a³/6.</li></ol>
+          <p class="result"><strong>Resultado:</strong> A = 221.83333333333334</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">52</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-8], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·64/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">53</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-7], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·49/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">54</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-6], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·36/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">55</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-5], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·25/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">56</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-4], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·16/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">57</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">58</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-2], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·4/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">59</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,-1], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·1/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">60</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,0], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·0/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">61</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,1], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·1/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">62</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,2], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·4/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">63</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">64</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,4], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·16/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">65</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,5], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·25/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">66</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,6], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·36/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">67</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,7], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·49/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">68</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,8], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·64/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">69</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,9], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·81/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">70</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,10], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·100/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">71</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,11], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·121/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">72</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,12], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·144/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">73</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,13], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·169/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">74</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,14], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·196/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">75</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,15], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·225/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">76</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,16], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·256/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">77</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,17], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·289/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">78</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,18], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·324/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">79</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,19], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·361/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">80</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,20], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·400/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">81</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,21], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·441/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">82</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,22], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·484/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">83</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,23], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·529/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">84</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,24], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·576/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">85</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,25], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·625/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">86</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,26], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·676/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">87</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,27], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·729/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">88</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,28], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·784/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">89</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,29], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·841/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">90</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">91</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">92</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">93</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">94</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">95</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">96</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">97</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">98</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">99</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+
+    <article class="card">
+      <header class="card-h"><span class="chip">Volumen (discos)</span><span class="num">100</span></header>
+      <div class="card-b">
+        <p><strong>Enunciado:</strong> Volumen por discos: y=√x, x∈[0,3], rota alrededor de X.</p>
+        <details>
+          <summary>Solución guiada</summary>
+          <ol class="steps"><li>V=π∫₀ᵇ (√x)² dx = π∫₀ᵇ x dx = π b²/2.</li></ol>
+          <p class="result"><strong>Resultado:</strong> V = π·9/2</p>
+        </details>
+      </div>
+    </article>
+    
+      </div>
+    </section>
+
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Ideas para profundizar</h1>
+      <div class="tbox"><h3>Panorama</h3>
+        <ul>
+          <li>Fórmulas de Pappus, fórmulas de centroides para superficies/volúmenes.</li>
+          <li>Teoremas de Green, Stokes y Gauss (conexión entre integrales de línea, superficie y volumen).</li>
+          <li>Geometría diferencial básica: curvatura de curvas planas y superficies.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Tabs
+    const map = { eso:'#sec-eso', bach:'#sec-bach', uni:'#sec-uni', phd:'#sec-phd' };
+    function showLevel(key, push=true){
+      Object.entries(map).forEach(([k,sel])=>{
+        document.querySelector(sel).toggleAttribute('data-active', k===key);
+        const b = document.querySelector(`.pill[data-level="${k}"]`);
+        if(b) b.setAttribute('aria-selected', String(k===key));
+      });
+      if(push){
+        const url = new URL(location.href); url.searchParams.set('nivel', key);
+        history.replaceState(null,'',url.toString());
+        localStorage.setItem('nivel-geo', key);
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    $$('.pill').forEach(b=> b.addEventListener('click', ()=> showLevel(b.dataset.level)));
+    const saved = localStorage.getItem('nivel-geo');
+    const param = new URLSearchParams(location.search).get('nivel');
+    showLevel(map[param]?param:(map[saved]?saved:'eso'), false);
+
+    // Progress + Top button
+    const bar = $('#progress');
+    function updateProgress(){
+      const h = document.documentElement;
+      const sc = h.scrollTop || document.body.scrollTop;
+      const max = (h.scrollHeight - h.clientHeight);
+      const p = max>0 ? (sc/max)*100 : 0;
+      bar.style.width = p + '%';
+      $('#topbtn').classList.toggle('show', sc>600);
+    }
+    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Reader controls
+    const root = document.documentElement;
+    $('#fs-up').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.min(val+1, 22)+'px');
+    });
+    $('#fs-down').addEventListener('click', ()=>{
+      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')); root.style.setProperty('--base', Math.max(val-1, 14)+'px');
+    });
+    $('#width-up').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
+    });
+    $('#width-down').addEventListener('click', ()=>{
+      const w = getComputedStyle(root).getPropertyValue('--maxw'); const num = parseInt(w); root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
+    });
+    $('#theme-toggle').addEventListener('click', ()=>{
+      const light = getComputedStyle(root).getPropertyValue('--bg').trim()==='#f7f9fc';
+      if(light){
+        root.style.setProperty('--bg','#0e1424'); root.style.setProperty('--paper','#101a34'); root.style.setProperty('--ink','#eaf2ff');
+        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc');
+        root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
+      }else{
+        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
+        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9');
+        root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      }
+    });
+
+    // Expand/Collapse all
+    function setAllDetails(container, open){
+      $$(container+' details').forEach(d=> d.open = open);
+    }
+    $('#expand-bach').addEventListener('click', ()=> setAllDetails('#ex-bach', true));
+    $('#collapse-bach').addEventListener('click', ()=> setAllDetails('#ex-bach', false));
+    $('#expand-uni').addEventListener('click', ()=> setAllDetails('#ex-uni', true));
+    $('#collapse-uni').addEventListener('click', ()=> setAllDetails('#ex-uni', false));
+
+  </script>
+</body>
+</html>

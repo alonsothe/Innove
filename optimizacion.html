@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimización — Teoría por niveles (Bachillerato → Doctorado)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  /* ======= Diseño base (mismo estilo, con controles de tema y tamaño) ======= */
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:19px; --lh:1.85;
+  }
+  /* Preferencia del SO */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+      --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+  }
+  /* Forzamos tema manualmente si se establece data-theme */
+  :root[data-theme="light"]{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e; --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+    --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399; --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3.2vw,23px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  /* === Bloques de ejercicios === */
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  code.k{background:color-mix(in oklab,var(--paper) 86%, transparent);padding:2px 5px;border-radius:6px;border:1px solid var(--border)}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">∇</span><span class="brand-title">Optimización — Teoría por niveles</span></a>
+      <div class="reader" role="group" aria-label="Controles de lectura">
+        <button class="btn small" id="fs-down" title="Reducir texto">A−</button>
+        <button class="btn small" id="fs-up" title="Aumentar texto">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho">⇤</button>
+        <button class="btn small" id="width-up" title="Aumentar ancho">⇥</button>
+        <button class="btn" id="theme-toggle" title="Claro/Oscuro">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="bach" role="tab" aria-selected="true">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="master" role="tab" aria-selected="false">Máster</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level" data-active>
+      <h1>Bachillerato — Optimización elemental</h1>
+      <p class="lead">Objetivo: modelar situaciones reales, usar derivadas y/o métodos gráficos (programación lineal en 2 variables) para encontrar máximos y mínimos con sentido.</p>
+
+      <div class="toc">
+        <a href="#b-intro">¿Qué es optimizar?</a>
+        <a href="#b-deriv">Extremos con derivadas</a>
+        <a href="#b-pliceal">Programación lineal (método gráfico)</a>
+        <a href="#b-amgm">Desigualdades útiles (AM-GM)</a>
+        <a href="#b-modelado">Modelado paso a paso</a>
+        <a href="#b-propuestos">Ejercicios propuestos</a>
+      </div>
+
+      <h2 id="b-intro">¿Qué es optimizar?</h2>
+      <p>Optimizar es <strong>elegir la mejor alternativa</strong> según un criterio (máximo beneficio, mínimo coste, mínima distancia…). Siempre hay tres piezas: (1) variables de decisión, (2) función objetivo y (3) restricciones. Con ellas formamos un <em>problema de optimización</em>.</p>
+      <div class="callout"><strong>Plantilla</strong> → Variables: x,y,…; Objetivo: maximizar/minimizar f(x,y,…); Restricciones: gᵢ(x,y,…) ≤/=/≥ bᵢ y dominios.</div>
+
+      <h2 id="b-deriv">Extremos con derivadas (una variable)</h2>
+      <p>En un intervalo cerrado [a,b], un extremo global ocurre en <em>puntos críticos</em> (f′=0 o no derivable) o en los extremos a,b. Clasifica con tabla de signos de f′ o con f″.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (10)</h4>
+        <ol>
+          <li><details><summary>Rectángulo de perímetro fijo P: ¿máximo área?</summary>Área A=x(P/2−x)=−x²+(P/2)x ⇒ A′=−2x+P/2=0 ⇒ x=P/4 ⇒ cuadrado. <em>Conclusión:</em> el cuadrado maximiza área con perímetro fijo.</details></li>
+          <li><details><summary>Minimiza S(x)=x+9/x para x&gt;0.</summary>S′=1−9/x²=0 ⇒ x=3 ⇒ S(3)=6. Por AM-GM, S≥2√(9)=6 (se verifica).</details></li>
+          <li><details><summary>Caja sin tapa desde cuadrado 30×30 cm cortando esquinas de lado x.</summary>V(x)=x(30−2x)²; V′=0 ⇒ x≈5 cm da el máximo (comprobar con f″ o tabla).</details></li>
+          <li><details><summary>Distancia mínima de (2,0) a y=x².</summary>Minimiza D²=(x−2)²+(x²−0)² ⇒ (D²)′=2(x−2)+4x³=0 ⇒ 2x−4+4x³=0 ⇒ solución numérica x≈0,879 ⇒ D≈1,41.</details></li>
+          <li><details><summary>Optimiza el área de un corral pegado a un muro con 40 m de valla.</summary>Si el muro hace de un lado, perímetro 2x+y=40, área A=xy ⇒ y=40−2x ⇒ A=40x−2x² ⇒ máximo en x=10 ⇒ y=20.</details></li>
+          <li><details><summary>Máximo de f(x)=x√(12−x²) en [0,√12].</summary>f′=√(12−x²)+x(−x/√(12−x²))=0 ⇒ 12−x²=x² ⇒ x=√6 ⇒ f=6.</details></li>
+          <li><details><summary>Máximo beneficio B(q)=−2q²+40q−75.</summary>Parábola cóncava: vértice q=−b/2a=40/4=10 ⇒ B(10)=125.</details></li>
+          <li><details><summary>Tiempo mínimo en una playa: correr (v₁) y nadar (v₂).</summary>Principio de <em>Snell</em> 1D con derivadas: senθ₁/v₁ = senθ₂/v₂ → punto óptimo donde cambia de medio.</details></li>
+          <li><details><summary>Máximo producto con suma fija: x+y=12, x,y&gt;0.</summary>Producto P=xy ⇒ y=12−x ⇒ P=12x−x² ⇒ máximo en x=6 ⇒ P=36 (y=6). También AM-GM: P≤(6)².</details></li>
+          <li><details><summary>Modelo de crecimiento con saturación: C(t)=At e^{−kt}.</summary>Máximo cuando C′=0 ⇒ A e^{−kt}(1−kt)=0 ⇒ t*=1/k.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-pliceal">Programación lineal en 2 variables (método gráfico)</h2>
+      <p>Objetivo y restricciones lineales. Se grafica la región factible y el óptimo está en un vértice.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (5)</h4>
+        <ol>
+          <li><details><summary>Max z=3x+2y s.a. x+2y≤14, 3x+y≤18, x,y≥0.</summary>Vértices: (0,0),(0,7),(6,0),(4,5). Evalúa: z=0,14,18,3·4+2·5=22 ⇒ óptimo (4,5), z=22.</details></li>
+          <li><details><summary>Min c=5x+4y s.a. x+y≥8, x≥2, y≥3.</summary>Vértices relevantes: (2,6),(5,3),(2,3) no cumple x+y≥8. Evalúa: c(2,6)=32; c(5,3)=37 ⇒ mínimo (2,6).</details></li>
+          <li><details><summary>Max beneficio con horas de máquina y mano de obra.</summary>Plantea restricciones del tipo 2x+y≤40, x+3y≤45; solución en cruce → x=15, y=10; z=3·15+2·10=65.</details></li>
+          <li><details><summary>Max z=7x+5y s.a. x≤10, y≤8, 2x+3y≤30.</summary>Vértices: (0,0),(10,0),(0,8),(9,4) ⇒ mejor (9,4): z=7·9+5·4=83.</details></li>
+          <li><details><summary>Min c= x+y con x+2y≥10, 3x+y≥12, x,y≥0.</summary>Vértice de cruce: x=14/5, y=8/5 ⇒ c=22/5=4,4.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-amgm">Desigualdades útiles: AM-GM y Cauchy</h2>
+      <p>Para a,b&gt;0, <strong>AM-GM</strong>: (a+b)/2 ≥ √(ab). Útil para acotar y hallar mínimos. <strong>Cauchy-Schwarz</strong>: (∑aᵢbᵢ)² ≤ (∑aᵢ²)(∑bᵢ²).</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (3)</h4>
+        <ol>
+          <li><details><summary>Minimiza x+16/x, x&gt;0.</summary>≥2√16=8; se logra en x=4.</details></li>
+          <li><details><summary>Maximiza xy con x+y fijo.</summary>xy ≤ ((x+y)/2)² (AM-GM) ⇒ máximo cuando x=y.</details></li>
+          <li><details><summary>Cota superior de 3x+4y si x²+y²≤1.</summary>Por Cauchy: (3x+4y)² ≤ (3²+4²)(x²+y²) ≤ 25 ⇒ 3x+4y ≤5.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="b-modelado">Modelado paso a paso</h2>
+      <ol>
+        <li>Define variables (qué controlas).</li>
+        <li>Escribe el objetivo (qué mides).</li>
+        <li>Construye restricciones realistas.</li>
+        <li>Resuelve (derivadas o método gráfico).</li>
+        <li>Interpreta y verifica unidades / sentido.</li>
+      </ol>
+
+      <h2 id="b-propuestos">Ejercicios propuestos (con respuestas)</h2>
+      <div class="examples">
+        <ol>
+          <li><details><summary>Valla: 120 m para un rectángulo pegado a un río (un lado gratis). Máximo área.</summary>Sol: 2x+y=120 ⇒ A=xy ⇒ x=30, y=60, A=1800 m².</details></li>
+          <li><details><summary>Min de f(x)=x+25/x, x&gt;0.</summary>x=5 ⇒ mínimo 10.</details></li>
+          <li><details><summary>PL: max z=2x+5y; x+2y≤10; 3x+y≤12; x,y≥0.</summary>Óptimo (x,y)=(2,4) ⇒ z=24.</details></li>
+          <li><details><summary>Distancia mínima de (3,1) a y=1/x (x&gt;0).</summary>Minimiza D²=(x−3)²+(1/x−1)² ⇒ x≈1,618.</details></li>
+          <li><details><summary>Max de volumen de una lata de área lateral fija 200π: V=πr²h.</summary>h= A/(2πr)=100/r ⇒ V=πr²(100/r)=100πr ⇒ crece con r → falta restricción de tapas; si total fija, óptimo h=2r.</details></li>
+          <li><details><summary>Maximiza producto de tres positivos con suma 30.</summary>Por AM-GM, máximo en 10,10,10 ⇒ 1000.</details></li>
+          <li><details><summary>Min de costo C(q)=q²−14q+60 en [0,20].</summary>vértice q=7 ⇒ C=11 (dentro del intervalo).</details></li>
+          <li><details><summary>PL: min x+y con x≥4, y≥2, x+3y≥18.</summary>Vértice (12,2) ⇒ 14.</details></li>
+          <li><details><summary>Punto del círculo x²+y²=25 que maximiza 3x+4y.</summary>Dirección (3,4) ⇒ (x,y)=5(3,4)/5=(3,4) ⇒ valor 25.</details></li>
+          <li><details><summary>Encuentra k para que f(x)=x³−3kx tenga extremo relativo en x=2.</summary>f′=3x²−3k ⇒ f′(2)=0 ⇒ k=4.</details></li>
+          <li><details><summary>Minimiza tiempo T(x)= √(x²+9)/2 + √((12−x)²+16)/1 (dos medios).</summary>x≈5,7.</details></li>
+          <li><details><summary>Diseña una caja de volumen 1000 cm³ con mínimo material (caja con tapa).</summary>Resultado cercano a cubo: lado ≈ 10 cm.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Optimización de varias variables</h1>
+      <p class="lead">Gradiente, Hessiano, multiplicadores de Lagrange, programación lineal y métodos básicos (descenso, Newton).</p>
+
+      <div class="toc">
+        <a href="#u-sin">Sin restricciones</a>
+        <a href="#u-lag">Con Lagrange</a>
+        <a href="#u-conv">Convexidad y condiciones de segundo orden</a>
+        <a href="#u-lp">LP y Simplex (visión)</a>
+        <a href="#u-met">Métodos de gradiente / Newton</a>
+        <a href="#u-propuestos">Ejercicios propuestos</a>
+      </div>
+
+      <h2 id="u-sin">Óptimos sin restricciones</h2>
+      <p>f∈C². Candidatos: ∇f=0. Clasifica con el Hessiano H. Si H≻0 ⇒ mínimo local; H≺0 ⇒ máximo; si H indefinido ⇒ silla.</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (7)</h4>
+        <ol>
+          <li><details><summary>f(x,y)=x²+xy+y².</summary>∇f=(2x+y, x+2y)=0 ⇒ (0,0). H=[[2,1],[1,2]]≻0 ⇒ mínimo global en (0,0).</details></li>
+          <li><details><summary>f(x,y)=x²−y².</summary>∇f=(2x,−2y)=0 ⇒ (0,0). H diag(2,−2) indefinido ⇒ punto de silla.</details></li>
+          <li><details><summary>f(x,y)=x⁴+y⁴−4xy.</summary>∇f=(4x³−4y, 4y³−4x)=0 ⇒ soluciones simétricas x=y, etc. En x=y, 4x³−4x=0 ⇒ x∈{−1,0,1}. Clasificar con H.</details></li>
+          <li><details><summary>Distancia mínima de (a,b) a la parábola y=x².</summary>Minimiza g(x)= (x−a)²+(x²−b)². Resuelve g′(x)=0 numéricamente.</details></li>
+          <li><details><summary>Ajuste cuadrático: min f(m)=∑(yᵢ−mxᵢ)².</summary>f′(m)=−2∑xᵢ(yᵢ−mxᵢ)=0 ⇒ m= (∑xᵢyᵢ)/(∑xᵢ²).</details></li>
+          <li><details><summary>Newton en f(x)=x³−2.</summary>x_{k+1}=x_k − (x_k³−2)/(3x_k²). Con x₀=1.5 converge a ³√2.</details></li>
+          <li><details><summary>Descenso por gradiente en f(x)=1/2‖Ax−b‖².</summary>x_{k+1}=x_k−αAᵀ(Ax_k−b). Con 0<α<2/λ_max(AᵀA) converge linealmente.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="u-lag">Óptimos con restricciones: Lagrange</h2>
+      <p>Para g(x)=0, resuelve ∇f=λ∇g con g=0. Para varias restricciones de igualdad, multiplica por λᵢ. Las desigualdades requieren KKT (ver abajo).</p>
+      <div class="examples">
+        <h4>Ejemplos resueltos (6)</h4>
+        <ol>
+          <li><details><summary>Maximiza f(x,y)=xy s.a. x+y=10.</summary>∇f=(y,x)=λ(1,1) ⇒ y=x, x+y=10 ⇒ (5,5), f=25.</details></li>
+          <li><details><summary>Mínima distancia del punto (2,0) a la elipse x²/9+y²/4=1.</summary>L= (x−2)²+y² + λ(x²/9+y²/4−1). Sistema ⇒ solución ≈(1.62,1.17).</details></li>
+          <li><details><summary>Max 3x+4y con x²+y²=25.</summary>∇f=(3,4)=λ(2x,2y) ⇒ (x,y)= (3,4) ⇒ valor 25.</details></li>
+          <li><details><summary>Min f(x,y)=(x−1)²+(y−2)² con g=x+y−1=0.</summary>∇f=(2(x−1),2(y−2))=λ(1,1) y g=0 ⇒ (x,y)=(0.5,0.5).</details></li>
+          <li><details><summary>Isoperimétrico discreto: máximo área de rectángulo con perímetro P.</summary>L clásico → cuadrado.</details></li>
+          <li><details><summary>Cilindro de volumen fijo V: minimiza área total.</summary>A=2πr²+2πrh, V=πr²h ⇒ h=V/(πr²). A(r)=2πr²+2V/r ⇒ A′=4πr−2V/r²=0 ⇒ h=2r.</details></li>
+        </ol>
+      </div>
+
+      <h2 id="u-conv">Convexidad y condiciones de óptimo</h2>
+      <p>Si f es convexa y el dominio es convexo, todo mínimo local es global. Para f∈C², f convexa ⇔ H≽0. Restricciones convexas + f convexa ⇒ problema convexo.</p>
+
+      <h2 id="u-lp">Programación lineal (visión rápida del Simplex)</h2>
+      <p>Los LP buscan max/min de cᵀx con Ax≤b, x≥0. El óptimo está en un vértice. Simplex avanza de vértice en vértice mejorando cᵀx.</p>
+
+      <h2 id="u-met">Métodos numéricos básicos</h2>
+      <ul>
+        <li><strong>Gradiente</strong>: x_{k+1}=x_k−α∇f(x_k). Elección de α por búsqueda lineal (Armijo/Wolfe) o constante.</li>
+        <li><strong>Newton</strong>: x_{k+1}=x_k−H^{-1}∇f(x_k). Convergencia cuadrática cerca del óptimo (si H≻0).</li>
+        <li><strong>Quasi-Newton</strong> (BFGS): aproxima H^{-1} sin calcularlo explícitamente.</li>
+      </ul>
+
+      <h2 id="u-propuestos">Ejercicios propuestos (con respuestas)</h2>
+      <div class="examples">
+        <ol>
+          <li><details><summary>Clasifica los críticos de f(x,y)=x³−3xy².</summary>∇f=(3x²−3y², −6xy)=0 ⇒ puntos (0,0) y x=±y≠0. Clasificación estándar (silla en (0,0)).</details></li>
+          <li><details><summary>Min de f(x,y)=x²+y²−2x−4y s.a. x+y=1.</summary>L ⇒ (x,y)=(1/2,1/2).</details></li>
+          <li><details><summary>PL: max z=4x+3y s.a. x+2y≤8; 3x+y≤9; x,y≥0.</summary>Vértice óptimo (3,2) ⇒ z=18.</details></li>
+          <li><details><summary>Hessiano de f(x,y)=e^{x}+y⁴ y convexidad.</summary>H diag(e^{x}, 12y²) ≽ 0 ⇒ f convexa.</details></li>
+          <li><details><summary>Un paso de Newton para f(x)=x²−10 en x₀=3.</summary>x₁=3−(9−10)/6≈3.1667.</details></li>
+          <li><details><summary>Descenso con α=1/L en f(x)=1/2‖Ax−b‖².</summary>Con L=λ_max(AᵀA) da mejor cota lineal.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== MÁSTER ===== -->
+    <section id="sec-master" class="paper level">
+      <h1>Máster — Optimización convexa y algoritmos de primer/segundo orden</h1>
+      <p class="lead">Dualidad, KKT, métodos de primer orden (GD acelerado, proximal), interior-point y programación cuadrática.</p>
+
+      <div class="toc">
+        <a href="#m-conv">Convexidad avanzada y dualidad</a>
+        <a href="#m-kkt">KKT y Slater</a>
+        <a href="#m-first">Métodos de primer orden</a>
+        <a href="#m-prox">Operadores proximales</a>
+        <a href="#m-ipm">Métodos de punto interior</a>
+        <a href="#m-propuestos">Ejercicios propuestos</a>
+      </div>
+
+      <h2 id="m-conv">Convexidad avanzada y dualidad</h2>
+      <p>Dual de Lagrange: L(x,λ,ν)=f(x)+∑λᵢgᵢ(x)+∑νⱼhⱼ(x). Función dual q(λ,ν)=infₓ L. <em>Brecha dual</em> ≥0; con Slater puede cerrarse.</p>
+
+      <h2 id="m-kkt">Condiciones KKT</h2>
+      <ul>
+        <li>Estacionariedad: 0∈∂f(x*)+∑λᵢ∂gᵢ(x*)+∑νⱼ∇hⱼ(x*).</li>
+        <li>Primal factible: gᵢ(x*)≤0, hⱼ(x*)=0.</li>
+        <li>Duales: λᵢ≥0.</li>
+        <li>Complementariedad: λᵢ gᵢ(x*)=0.</li>
+      </ul>
+
+      <h2 id="m-first">Métodos de primer orden</h2>
+      <ul>
+        <li><strong>Gradiente con búsqueda lineal</strong> (Armijo/Wolfe).</li>
+        <li><strong>Nesterov</strong>: tasa O(1/k²) para f convexa L-Lipschitziana.</li>
+        <li><strong>SGD</strong>: para sumas grandes f(x)=1/n∑fᵢ(x); tasa sublineal.</li>
+        <li><strong>Prox-Grad</strong>: para f=g+h con g suave y h proximable.</li>
+      </ul>
+
+      <h2 id="m-prox">Operadores proximales</h2>
+      <p>prox_{τh}(v)=argminₓ { h(x)+ (1/2τ)‖x−v‖² }. Ej.: h(x)=λ‖x‖₁ ⇒ <em>soft-thresholding</em>: S_{λτ}(v)=sign(v)·max(|v|−λτ,0).</p>
+
+      <h2 id="m-ipm">Punto interior (idea)</h2>
+      <p>Para gᵢ(x)≤0, resuelve min f(x)−(1/t)∑log(−gᵢ(x)) con t creciente. Sigue la <em>central path</em> hasta converger.</p>
+
+      <div class="examples">
+        <h4>Ejemplos resueltos (6)</h4>
+        <ol>
+          <li><details><summary>Dual de Lasso: min 1/2‖Ax−b‖²+λ‖x‖₁.</summary>Dual: max −1/2‖y‖²−bᵀy s.a. ‖Aᵀy‖_∞≤λ. KKT conecta signos con soporte.</details></li>
+          <li><details><summary>Deriva Nesterov para f convexa L-suave.</summary>Esquema: y_k=x_k+β_k(x_k−x_{k−1}); x_{k+1}=y_k−(1/L)∇f(y_k); β_k=(k−1)/(k+2).</details></li>
+          <li><details><summary>Prox de norma ℓ₂: h(x)=λ‖x‖₂.</summary>prox(v)= (1−λτ/‖v‖₂)_+ v.</details></li>
+          <li><details><summary>QP: min 1/2 xᵀQx + cᵀx s.a. Ax≤b, Q≻0.</summary>Único óptimo; resuelve con KKT o IPM.</details></li>
+          <li><details><summary>SGD con tasa α_k=α₀/√k en ERM.</summary>Convergencia en expectativa a óptimo para convexa.</details></li>
+          <li><details><summary>Barrera log para x&gt;0 en min −∑log xᵢ.</summary>Newton con Hessiano diag(1/xᵢ²).</details></li>
+        </ol>
+      </div>
+
+      <h2 id="m-propuestos">Ejercicios propuestos (con respuestas abreviadas)</h2>
+      <div class="examples">
+        <ol>
+          <li><details><summary>Demuestra que f(x)=e^{ax} es convexa para todo a.</summary>f″=a²e^{ax}≥0.</details></li>
+          <li><details><summary>Obtén KKT para min x²+y² s.a. x+y≥1, x≥0,y≥0.</summary>Activas en óptimo: x=y=1/2, λ₁>0, λ₂=λ₃=0.</details></li>
+          <li><details><summary>Prox de h(x)=λ‖x‖₁.</summary>Soft-thresholding componente a componente.</details></li>
+          <li><details><summary>Demuestra O(1/k) para GD en convexa L-suave.</summary>Usa desigualdad de cocoercividad de ∇f.</details></li>
+          <li><details><summary>Diseña un IPM para LP estándar.</summary>Introduce barrera −∑log s y condiciones centrales.</details></li>
+          <li><details><summary>Deriva el dual de SVM lineal duro.</summary>max ∑αᵢ − 1/2 ∑αᵢαⱼyᵢyⱼ xᵢᵀxⱼ s.a. αᵢ≥0, ∑αᵢyᵢ=0.</details></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Tópicos avanzados y fronteras</h1>
+      <p class="lead">No convexo, subgradientes, proximal avanzado, ADMM, tasas de convergencia, optimización estocástica moderna.</p>
+
+      <div class="toc">
+        <a href="#p-sub">Subgradientes y no suavidad</a>
+        <a href="#p-prox">Proximal avanzado y splitting</a>
+        <a href="#p-admm">ADMM y penalizaciones</a>
+        <a href="#p-nc">No convexo y paisaje</a>
+        <a href="#p-rate">Complejidad y tasas</a>
+        <a href="#p-propuestos">Ejercicios/desafíos</a>
+      </div>
+
+      <h2 id="p-sub">Subgradientes</h2>
+      <p>Para f convexa no diferenciable, g es subgradiente en x si f(y)≥f(x)+gᵀ(y−x). Método de subgradientes: x_{k+1}=x_k−α_k g_k; requiere reglas de paso decrecientes (p.ej. α_k=α₀/√k).</p>
+
+      <h2 id="p-prox">Splitting y proximal</h2>
+      <ul>
+        <li><strong>Prox-Grad acelerado</strong> (FISTA): O(1/k²) en convexa.</li>
+        <li><strong>Douglas–Rachford / Peaceman–Rachford</strong>.</li>
+        <li><strong>Primal-dual</strong> (Chambolle–Pock) para problemas con términos conjugados.</li>
+      </ul>
+
+      <h2 id="p-admm">ADMM</h2>
+      <p>Para min f(x)+g(z) s.a. Ax+Bz=c. Itera: x^{k+1}=argmin f(x)+(ρ/2)‖Ax+Bz^k−c+u^k‖²; z^{k+1}=argmin g(z)+(ρ/2)‖Ax^{k+1}+Bz−c+u^k‖²; u^{k+1}=u^k+Ax^{k+1}+Bz^{k+1}−c.</p>
+
+      <h2 id="p-nc">No convexo</h2>
+      <ul>
+        <li><strong>Condiciones de primer orden</strong>: ‖∇f(x*)‖=0; segundo orden: H≽0.</li>
+        <li><strong>Saddles estrictos</strong>: GD con ruido/aleatoriedad escapa con alta probabilidad.</li>
+        <li><strong>PL / Kurdyka–Łojasiewicz</strong> para tasas sublineales.</li>
+      </ul>
+
+      <h2 id="p-rate">Tasas y complejidad</h2>
+      <ul>
+        <li>GD en L-suave y µ-fuerte: O((1−µ/L)^k).</li>
+        <li>Subgradiente en convexa: O(1/√k) en valor.</li>
+        <li>FISTA: O(1/k²).</li>
+        <li>Newton (local): cuadrática.</li>
+      </ul>
+
+      <h2 id="p-propuestos">Desafíos / ejercicios cortos (con ideas)</h2>
+      <div class="examples">
+        <ol>
+          <li><details><summary>Demuestra convergencia de FISTA para g L-suave y h proper, l.s.c.</summary>Idea: potencial con secuencia {t_k} y desigualdad de tres puntos.</details></li>
+          <li><details><summary>Aplica ADMM a Lasso separando x=z.</summary>Deriva soft-thresholding en subproblema de z.</details></li>
+          <li><details><summary>Demuestra que GD con ruido isotrópico escapa de sillas estrictas.</summary>Idea: direcciones de curvatura negativa y perturbaciones.</details></li>
+          <li><details><summary>Ejemplo no convexo con mínimos locales: f(x)=x⁴−3x²+2x.</summary>Analiza críticos y valores globales.</details></li>
+          <li><details><summary>Diseña regla adaptativa de ρ en ADMM para acelerar.</summary>Usa residual primal/dual balanceados.</details></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" title="Volver arriba">↑</button>
+
+  <script>
+    // ===== Persistencia de preferencias =====
+    const root = document.documentElement;
+    const ls = {
+      get k(){return 'optv1_prefs'},
+      load(){ try{ return JSON.parse(localStorage.getItem(this.k)||'{}'); }catch{return {}} },
+      save(v){ localStorage.setItem(this.k, JSON.stringify(v)); }
+    };
+    let prefs = Object.assign({ base: 19, maxw: 78, theme: 'auto' }, ls.load());
+
+    function applyPrefs(){
+      root.style.setProperty('--base', prefs.base + 'px');
+      root.style.setProperty('--maxw', prefs.maxw + 'ch');
+      if(prefs.theme==='auto'){ root.removeAttribute('data-theme'); }
+      else{ root.setAttribute('data-theme', prefs.theme); }
+    }
+    applyPrefs();
+
+    // ===== Controles de lectura =====
+    document.getElementById('fs-up').addEventListener('click',()=>{ prefs.base=Math.min(26, prefs.base+1); ls.save(prefs); applyPrefs(); });
+    document.getElementById('fs-down').addEventListener('click',()=>{ prefs.base=Math.max(16, prefs.base-1); ls.save(prefs); applyPrefs(); });
+    document.getElementById('width-up').addEventListener('click',()=>{ prefs.maxw=Math.min(98, prefs.maxw+4); ls.save(prefs); applyPrefs(); });
+    document.getElementById('width-down').addEventListener('click',()=>{ prefs.maxw=Math.max(56, prefs.maxw-4); ls.save(prefs); applyPrefs(); });
+    document.getElementById('theme-toggle').addEventListener('click',()=>{
+      if(prefs.theme==='auto') prefs.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark';
+      else if(prefs.theme==='dark') prefs.theme='light';
+      else prefs.theme='dark';
+      ls.save(prefs); applyPrefs();
+    });
+
+    // ===== Tabs por nivel =====
+    const bar = document.getElementById('levelBar');
+    bar.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.pill'); if(!btn) return;
+      const lvl = btn.dataset.level;
+      for(const b of bar.querySelectorAll('.pill')) b.setAttribute('aria-selected', String(b===btn));
+      for(const s of document.querySelectorAll('section.level')) s.removeAttribute('data-active');
+      document.getElementById('sec-'+lvl).setAttribute('data-active','');
+      history.replaceState(null,'','#sec-'+lvl);
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+
+    // ===== Barra de progreso al leer =====
+    const prog = document.getElementById('progress');
+    addEventListener('scroll',()=>{
+      const h = document.documentElement;
+      const sc = h.scrollTop; const max = h.scrollHeight - h.clientHeight;
+      const pct = Math.max(0, Math.min(1, sc/max));
+      prog.style.width = (pct*100).toFixed(2)+'%';
+    }, {passive:true});
+
+    // ===== Botón volver arriba =====
+    const topbtn = document.getElementById('topbtn');
+    addEventListener('scroll',()=>{ topbtn.classList.toggle('show', window.scrollY>600); }, {passive:true});
+    topbtn.addEventListener('click',()=>window.scrollTo({top:0, behavior:'smooth'}));
+  </script>
+</body>
+</html>
+
