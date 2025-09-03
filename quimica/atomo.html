@@ -1,0 +1,461 @@
+# Create the requested HTML file with the same design and controls, adapted to "Teoría del átomo — por niveles"
+html = r"""<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teoría del átomo — por niveles (con ejercicios)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:18px; --lh:1.85;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+    --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+    --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:
+      radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+      radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%),
+      var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  code{background:color-mix(in oklab,var(--paper) 90%, transparent);border:1px solid var(--border);padding:2px 6px;border-radius:8px}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">⚛︎</span><span class="brand-title">Teoría del átomo — por niveles</span></a>
+      <div class="reader" role="group" aria-label="Controles de lectura">
+        <button class="btn small" id="fs-down" title="Disminuir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up" title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de columna">⇤</button>
+        <button class="btn small" id="width-up" title="Aumentar ancho de columna">⇥</button>
+        <button class="btn" id="theme-toggle" title="Alternar tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="primaria" role="tab" aria-selected="true">Primaria</button>
+        <button class="pill" data-level="eso" role="tab" aria-selected="false">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="master" role="tab" aria-selected="false">Máster</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== PRIMARIA ===== -->
+    <section id="sec-primaria" class="paper level" data-active>
+      <h1>Primaria — ¿Qué es un átomo?</h1>
+      <p class="lead">Un átomo es como una bolita diminuta que forma todo lo que vemos. Está hecho de un <strong>núcleo</strong> muy pesado en el centro y <strong>electrones</strong> que se mueven alrededor.</p>
+      <div class="toc">
+        <a href="#p-que">Idea básica</a>
+        <a href="#p-partes">Partes del átomo</a>
+        <a href="#p-historia">Mini-historia</a>
+        <a href="#p-ejercicios">Ejercicios rápidos</a>
+      </div>
+
+      <h2 id="p-que">Idea básica</h2>
+      <p>Todo está hecho de átomos: el agua, el aire, tu cuerpo y las estrellas. Los átomos son tan pequeños que hacen falta millones en fila para medir un milímetro.</p>
+
+      <h2 id="p-partes">Partes del átomo</h2>
+      <ul>
+        <li><strong>Núcleo</strong>: centro con <em>protones</em> (carga +) y <em>neutrones</em> (sin carga).</li>
+        <li><strong>Electrones</strong>: muy ligeros, con carga −, se mueven alrededor del núcleo.</li>
+      </ul>
+      <div class="callout"><strong>Dato de tamaño:</strong> Si el átomo fuese un estadio, el núcleo sería una canica en el centro.</div>
+
+      <h2 id="p-historia">Mini-historia</h2>
+      <ul>
+        <li><strong>Demócrito</strong> (Antigüedad): “todo está hecho de átomos”.</li>
+        <li><strong>Dalton</strong> (1803): cada elemento tiene átomos iguales entre sí.</li>
+        <li><strong>Rutherford</strong> (1911): descubre el núcleo.</li>
+        <li><strong>Bohr</strong> (1913): propone “órbitas” para los electrones.</li>
+      </ul>
+
+      <h2 id="p-ejercicios">Ejercicios rápidos (5)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Di las tres partes principales del átomo.</summary>Núcleo (protones y neutrones) y electrones.</details></li>
+        <li><details><summary>¿Qué carga tiene el protón?</summary>Positiva.</details></li>
+        <li><details><summary>¿Cuál es más grande: átomo o núcleo?</summary>El átomo es muchísimo más grande que su núcleo.</details></li>
+        <li><details><summary>¿Quién dijo que el átomo tenía un núcleo?</summary>Rutherford.</details></li>
+        <li><details><summary>Si un átomo es neutro, ¿qué significa?</summary>Que tiene tantos protones como electrones.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level">
+      <h1>ESO — Estructura atómica y elementos</h1>
+      <p class="lead">Introducción formal a número atómico, isótopos, iones, configuraciones electrónicas sencillas y relación con la tabla periódica.</p>
+      <div class="toc">
+        <a href="#e-numero">Número atómico y másico</a>
+        <a href="#e-isotopos">Isótopos e iones</a>
+        <a href="#e-bohr">Modelo de Bohr (idea)</a>
+        <a href="#e-config">Capas y configuraciones simples</a>
+        <a href="#e-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="e-numero">Número atómico (Z) y número másico (A)</h2>
+      <ul>
+        <li><strong>Z</strong> = nº de protones (define el elemento).</li>
+        <li><strong>A</strong> = nº total de nucleones = protones + neutrones.</li>
+        <li>En notación <code>^{A}_{Z}X</code>, por ejemplo <code>^{23}_{11}Na</code>.</li>
+      </ul>
+
+      <h2 id="e-isotopos">Isótopos, isóbaros e iones</h2>
+      <ul>
+        <li><strong>Isótopos</strong>: mismo Z, distinto A (cambian neutrones).</li>
+        <li><strong>Isóbaros</strong>: mismo A, distinto Z.</li>
+        <li><strong>Ion</strong>: átomo con carga por ganar o perder electrones.</li>
+      </ul>
+
+      <h2 id="e-bohr">Modelo de Bohr — idea clave</h2>
+      <p>Los electrones ocupan niveles de energía. Al saltar de un nivel alto a uno más bajo, el átomo emite luz con una energía igual a la diferencia entre niveles.</p>
+
+      <h2 id="e-config">Capas y configuraciones simples</h2>
+      <p>Distribuimos electrones en capas (K, L, M, …) u orbitales (1s, 2s, 2p…). Reglas básicas: primero el nivel más bajo disponible y máximo 2 electrones por orbital.</p>
+
+      <h2 id="e-ejercicios">Ejercicios (8)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Para <code>^{35}_{17}Cl</code>, halla p, n, e⁻ (átomo neutro).</summary>p=17, n=35−17=18, e⁻=17.</details></li>
+        <li><details><summary>Indica cuál es isótopo de <code>^{23}_{11}Na</code>: <code>^{22}_{11}Na</code> o <code>^{23}_{12}Mg</code>.</summary><code>^{22}_{11}Na</code> (mismo Z).</details></li>
+        <li><details><summary>¿Cuántos electrones tiene Ca²⁺?</summary>Z=20 ⇒ e⁻=18.</details></li>
+        <li><details><summary>Configura Na (Z=11) en orbitales.</summary>1s² 2s² 2p⁶ 3s¹.</details></li>
+        <li><details><summary>Configura Cl (Z=17).</summary>1s² 2s² 2p⁶ 3s² 3p⁵.</details></li>
+        <li><details><summary>¿Qué cambia entre isótopos de C-12 y C-14?</summary>El nº de neutrones (6 vs 8).</details></li>
+        <li><details><summary>¿Qué sucede al emitir un fotón?</summary>Un electrón cae a un nivel de menor energía.</details></li>
+        <li><details><summary>¿Por qué los gases nobles son poco reactivos?</summary>Tienen capas de valencia completas.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Historia, modelos y periodicidad (contenido ampliado)</h1>
+      <p class="lead">Desde Dalton hasta la mecánica cuántica básica. Enlaces con la tabla periódica, configuraciones electrónicas y espectros atómicos.</p>
+      <div class="toc">
+        <a href="#b-historia">Historia resumida</a>
+        <a href="#b-rutherford">Rutherford y el núcleo</a>
+        <a href="#b-bohr">Bohr y el hidrógeno</a>
+        <a href="#b-cuantica">Números cuánticos y orbitales</a>
+        <a href="#b-periodica">Tabla periódica y tendencias</a>
+        <a href="#b-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="b-historia">Historia resumida con ideas clave</h2>
+      <ul>
+        <li><strong>Dalton</strong> (1803): átomos indivisibles (hoy sabemos que no lo son), leyes ponderales.</li>
+        <li><strong>Thomson</strong> (1897–1904): descubre el electrón; modelo del “pudín de pasas”.</li>
+        <li><strong>Rutherford</strong> (1911): experimento con lámina de oro → el átomo tiene un núcleo compacto cargado positivamente.</li>
+        <li><strong>Bohr</strong> (1913): niveles discretos de energía explican el espectro del H.</li>
+        <li><strong>De Broglie</strong>, <strong>Heisenberg</strong>, <strong>Schrödinger</strong> (1925–1926): onda de materia, principio de incertidumbre y ecuación de ondas → <em>orbitales</em> en lugar de órbitas.</li>
+      </ul>
+
+      <h2 id="b-rutherford">Rutherford: núcleo pequeño, denso y cargado</h2>
+      <p>La mayor parte de las partículas α atravesaron la lámina sin desviarse; unas pocas se desviaron fuertemente → la masa y la carga positiva están concentradas en un <strong>núcleo</strong>. Radio nuclear ~ <code>10⁻¹⁵ m</code>; radio atómico típico ~ <code>10⁻¹⁰ m</code>.</p>
+
+      <h2 id="b-bohr">Bohr: niveles de energía del hidrógeno</h2>
+      <p>Para el hidrógeno, las energías permitidas son <code>Eₙ = −13,6 eV / n²</code> (n=1,2,…). Las transiciones <code>nᵢ→n_f</code> emiten fotones de energía <code>ΔE</code>. La serie de Balmer (visible) corresponde a <code>n_f=2</code>.</p>
+
+      <h2 id="b-cuantica">Números cuánticos y orbitales</h2>
+      <ul>
+        <li><strong>n</strong> (1,2,…): nivel principal.</li>
+        <li><strong>l</strong> (0…n−1): subnivel (s, p, d, f…).</li>
+        <li><strong>m_l</strong> (−l…+l): orientación.</li>
+        <li><strong>m_s</strong> = ±1/2: espín del electrón.</li>
+      </ul>
+      <p><strong>Pauli</strong>: máx. 2 e⁻ por orbital con espines opuestos. <strong>Hund</strong>: orbitales degenerados se ocupan primero con espines paralelos.</p>
+
+      <h2 id="b-periodica">Periodicidad</h2>
+      <p>La configuración electrónica explica radios, energías de ionización y afinidades electrónicas. Los metales alcalinos (ns¹) son muy reactivos; los halógenos (ns² np⁵) también.</p>
+
+      <h2 id="b-ejercicios">Ejercicios (12)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Calcula la longitud de onda del fotón emitido en H al pasar de n=3 a n=2.</summary>ΔE = 13,6(1/2² − 1/3²)=1,89 eV ⇒ λ ≈ 1240 eV·nm / 1,89 ≈ 656 nm (línea Hα).</details></li>
+        <li><details><summary>Determina Z, A, p, n y e⁻ en <code>^{58}_{28}Ni^{2+}</code>.</summary>Z=28, A=58, p=28, n=30, e⁻=26.</details></li>
+        <li><details><summary>Configura Fe (Z=26).</summary>[Ar] 4s² 3d⁶ (recordar llenado 4s antes que 3d; en iones suele vaciar 4s primero).</details></li>
+        <li><details><summary>Configura Cr y Cu (anomalías famosas).</summary>Cr: [Ar] 4s¹ 3d⁵; Cu: [Ar] 4s¹ 3d¹⁰.</details></li>
+        <li><details><summary>Promedio másico: Cl con 75,8% de Cl-35 y 24,2% de Cl-37.</summary>M≈0,758·35 + 0,242·37 = 35,48 u.</details></li>
+        <li><details><summary>¿Por qué la serie Lyman está en el ultravioleta?</summary>Porque <code>n_f=1</code> implica saltos energéticos mayores → fotones más energéticos (λ más corta).</details></li>
+        <li><details><summary>Clasifica: isótopos, isóbaros o isótonos: <code>^{40}_{20}Ca</code> y <code>^{40}_{18}Ar</code>.</summary>Isóbaros (mismo A, distinto Z).</details></li>
+        <li><details><summary>¿Qué postulado de Bohr explica las líneas discretas?</summary>Los electrones sólo ocupan órbitas de energía cuantizada; radiación al cambiar de órbita.</details></li>
+        <li><details><summary>Escribe la configuración de valencia y grupo para Br (Z=35).</summary>Valencia: 4s² 3d¹⁰ 4p⁵ → grupo 17 (halógenos).</details></li>
+        <li><details><summary>Ordena por radio atómico: Na, K, Rb.</summary>Rb &gt; K &gt; Na (aumenta hacia abajo en el grupo).</details></li>
+        <li><details><summary>¿Qué significa “orbital p”?</summary>Solución de la ecuación de Schrödinger con l=1; tiene tres orientaciones m_l=−1,0,+1.</details></li>
+        <li><details><summary>Calcula la energía necesaria para ionizar H desde n=2.</summary>|E₂|=13,6/4=3,4 eV.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — Mecánica cuántica del átomo (contenido ampliado)</h1>
+      <p class="lead">Modelo de Schrödinger para H, números cuánticos, degeneración, aproximaciones para átomos multielectrónicos y principios de espectroscopía.</p>
+      <div class="toc">
+        <a href="#u-sch">Ecuación de Schrödinger y H</a>
+        <a href="#u-ener">Energías, degeneración y a₀</a>
+        <a href="#u-prob">Densidades radiales y esperanzas</a>
+        <a href="#u-multi">Átomos multielectrónicos (HF, correlación)</a>
+        <a href="#u-selec">Reglas de selección y espectros</a>
+        <a href="#u-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="u-sch">Schrödinger para el hidrógeno</h2>
+      <p>Resolver <code>Hψ = Eψ</code> con <code>H = −(ħ²/2m)∇² − e²/(4πϵ₀ r)</code> da funciones de onda <code>ψ_{nℓm}(r,θ,φ)</code> separables. Los orbitales son estas soluciones.</p>
+
+      <h2 id="u-ener">Energías, degeneración y escala natural</h2>
+      <ul>
+        <li><strong>Niveles</strong>: <code>Eₙ = − (m e⁴) / (2 (4πϵ₀)² ħ² n²) = −13,6 eV / n²</code>.</li>
+        <li><strong>Bohr</strong>: <code>a₀ = 4πϵ₀ ħ² / (m e²) ≈ 0,529 Å</code>.</li>
+        <li><strong>Degeneración</strong> en H: no depende de ℓ ni m; 2n² estados considerando espín.</li>
+      </ul>
+
+      <h2 id="u-prob">Probabilidad radial y valores esperados</h2>
+      <p>La densidad radial <code>P_{nℓ}(r)=r²|R_{nℓ}(r)|²</code>. Para 1s: máximo en <code>r=a₀</code>, <code>⟨r⟩=1,5 a₀</code>.</p>
+
+      <h2 id="u-multi">Átomos multielectrónicos</h2>
+      <ul>
+        <li><strong>Principio de exclusión</strong> &amp; <strong>determinantes de Slater</strong>.</li>
+        <li><strong>Hartree–Fock</strong>: campo medio con intercambio; pierde correlación dinámica.</li>
+        <li><strong>Correlación</strong>: métodos <em>post</em>-HF (CI, MP2, CC) o DFT.</li>
+        <li><strong>Configuraciones</strong> reales: excepciones (Cr, Cu), contracción de orbitales d y f.</li>
+      </ul>
+
+      <h2 id="u-selec">Reglas de selección y espectros</h2>
+      <ul>
+        <li>Dipolar eléctrica: <code>Δℓ=±1</code>, <code>Δm=0,±1</code>, conservación de paridad.</li>
+        <li>Acoplamientos <strong>LS</strong> y <strong>jj</strong>; <em>spin–órbita</em>, efecto Zeeman y Stark.</li>
+      </ul>
+
+      <h2 id="u-ejercicios">Ejercicios (12)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Demuestra que <code>Eₙ ∝ −1/n²</code> para H resolviendo radialmente.</summary>Separación de variables → ecuación radial de Laguerre; imposición de normalización y frontera da la cuantización <code>Eₙ</code>.</details></li>
+        <li><details><summary>Calcula <code>a₀</code> numéricamente.</summary><code>a₀≈0,529×10⁻¹⁰ m</code>.</details></li>
+        <li><details><summary>Halla <code>⟨r⟩</code> en 1s.</summary>Integrando <code>4π ∫ r³ |R_{10}|² dr</code> → <code>⟨r⟩=3a₀/2</code>.</details></li>
+        <li><details><summary>¿Cuántos estados distintos hay con n=3 (incluyendo espín)?</summary>2n²=18.</details></li>
+        <li><details><summary>Primera orden de Stark para H(n=2) en un campo débil.</summary>Estado degenerado → mezclar 2s y 2p; desplazamiento lineal en E.</details></li>
+        <li><details><summary>Justifica la regla de selección <code>Δℓ=±1</code>.</summary>La integral de matriz de dipolo cambia paridad → sólo conecta ℓ con ℓ±1.</details></li>
+        <li><details><summary>Escribe la función de onda determinantal para Helio 1s² (espín singlete).</summary>Determinante 2×2 con orbit ales 1sα y 1sβ.</details></li>
+        <li><details><summary>Compara HF y DFT para energías atómicas.</summary>HF incorpora intercambio exacto; DFT usa funcionales de intercambio-correlación aproximados; DFT suele dar mejores energías totales.</details></li>
+        <li><details><summary>Explica por qué 4s se desocupa antes que 3d al ionizar Fe.</summary>En presencia del campo del ion, el 3d queda más ligado que 4s.</details></li>
+        <li><details><summary>Calcula la longitud de onda de Lyman-α.</summary>n=2→1: ΔE=10,2 eV ⇒ λ≈121,6 nm (UV).</details></li>
+        <li><details><summary>Estima el radio nuclear comparado con a₀.</summary>R_nuc ~ 1 fm; a₀ ~ 0,5 Å ⇒ diferencia de 10⁵.</details></li>
+        <li><details><summary>Identifica términos LS para configuración p² (por Hund).</summary><em>³P</em>, <em>¹D</em>, <em>¹S</em>; estado fundamental <em>³P</em>.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== MÁSTER ===== -->
+    <section id="sec-master" class="paper level">
+      <h1>Máster — Correcciones finas y métodos</h1>
+      <p class="lead">Perturbaciones, acoplamientos, estructura fina, hiperfina y métodos variacionales/post-HF para átomos.</p>
+      <div class="toc">
+        <a href="#m-fine">Estructura fina e hiperfina</a>
+        <a href="#m-pert">Teoría de perturbaciones</a>
+        <a href="#m-var">Variacional y Helio</a>
+        <a href="#m-rel">Dirac y relativista</a>
+        <a href="#m-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="m-fine">Estructura fina e hiperfina</h2>
+      <ul>
+        <li><strong>Fina</strong>: corrección relativista, <em>spin–órbita</em> y término de Darwin.</li>
+        <li><strong>Hiperfina</strong>: acoplo núcleo–electrón (momento nuclear) → desdoblamientos (p.ej., 21 cm en H).</li>
+      </ul>
+
+      <h2 id="m-pert">Perturbaciones</h2>
+      <p>Perturbación de primer orden para niveles no degenerados y degenerados; Stark y Zeeman; efecto cuadrático en campos fuertes.</p>
+
+      <h2 id="m-var">Variacional — Helio</h2>
+      <p>Ensayo con <code>ψ=exp(−Z_eff (r₁+r₂)/a₀)</code> → minimizar en <code>Z_eff</code> aproxima la energía del estado base de He, mostrando la <em>pantalla</em> entre electrones.</p>
+
+      <h2 id="m-rel">Modelo relativista</h2>
+      <p>Ecuación de Dirac para H reproduce fina y da el <em>factor g</em> de espín.</p>
+
+      <h2 id="m-ejercicios">Ejercicios (8)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Calcula la corrección <em>spin–órbita</em> cualitativa para 2p.</summary>Usar <code>⟨L·S⟩</code> y acoplo LS → desdoblamiento <em>²P₁/₂</em>, <em>²P₃/₂</em>.</details></li>
+        <li><details><summary>Stark lineal en n=2: matriz efectiva 2×2 para 2s–2p.</summary>Construir <code>⟨i|eE z|j⟩</code> y diagonalizar.</details></li>
+        <li><details><summary>Zeeman débil: reglas de selección en m.</summary>Δm=0,±1 y desdoblamientos igualmente espaciados.</details></li>
+        <li><details><summary>Variacional de He: encuentra <code>Z_eff</code> óptimo.</summary>Minimizar <code>E(Z_eff)</code> → valor cercano a 27/16.</details></li>
+        <li><details><summary>Compara CI restringida vs. completa.</summary>La completa converge al exacto pero es exponencial en tamaño.</details></li>
+        <li><details><summary>Calcula el factor de Landé para un término <em>³P₂</em>.</summary><code>g_J = 1 + [J(J+1)+S(S+1)−L(L+1)]/(2J(J+1))</code> → g≈1,5.</details></li>
+        <li><details><summary>Predice líneas permitidas entre <em>³P</em> y <em>³D</em>.</summary>Permitidas por ΔL=+1, ΔS=0, ΔJ=0,±1 (sin 0→0).</details></li>
+        <li><details><summary>Explica el origen de la línea de 21 cm.</summary>Transición hiperfina entre estados de espín paralelo/antiparalelo en H.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Fronteras y temas de investigación</h1>
+      <p class="lead">QED y desplazamiento de Lamb, correlación electrónica de alto orden, átomos fríos y precisión metrológica.</p>
+      <div class="toc">
+        <a href="#d-qed">QED y Lamb</a>
+        <a href="#d-corr">Correlación avanzada (CC, QMC)</a>
+        <a href="#d-cold">Átomos fríos y Rydberg</a>
+        <a href="#d-iso">Desplazamientos isotópicos y tamaño nuclear</a>
+        <a href="#d-ejercicios">Retos</a>
+      </div>
+
+      <h2 id="d-qed">QED y desplazamiento de Lamb</h2>
+      <p>Correcciones radiativas (autoenergía y polarización del vacío) rompen la degeneración 2s–2p en H → <em>desplazamiento de Lamb</em>. Requiere renormalización.</p>
+
+      <h2 id="d-corr">Correlación avanzada</h2>
+      <ul>
+        <li><strong>CCSD(T)</strong> como “gold standard” en átomos pequeños.</li>
+        <li><strong>QMC</strong> (Monte Carlo cuántico) para energías de referencia.</li>
+        <li>DFT con funcionales híbridos/rasgados para propiedades atómicas.</li>
+      </ul>
+
+      <h2 id="d-cold">Átomos fríos y de Rydberg</h2>
+      <p>Estados de Rydberg (n ≫ 1) con enormes momentos dipolares; aplicaciones en computación cuántica y metrología láser.</p>
+
+      <h2 id="d-iso">Desplazamientos isotópicos</h2>
+      <p>Dependencias con la masa reducida y el tamaño nuclear permiten estimar radios nucleares a partir de espectros atómicos de alta precisión.</p>
+
+      <h2 id="d-ejercicios">Retos (6)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Esboza la derivación de los niveles de Dirac para H.</summary>Separación radial con espinores → <code>E_{nκ}</code> con dependencia en <code>j</code>.</details></li>
+        <li><details><summary>Estima el orden de magnitud del Lamb en 2s.</summary>Corrección de ~1 GHz (~4 μeV).</details></li>
+        <li><details><summary>Evalúa el defecto cuántico de Na para la serie ns.</summary>Ajuste de Rydberg efectivo <code>E_n = −R/(n−δ)²</code>.</details></li>
+        <li><details><summary>Propón una base CI mínima para C (1s²2s²2p²).</summary>Lista de determinantes que conservan S y M_S.</details></li>
+        <li><details><summary>Diseña un esquema láser de dos fotones para excitar 1s→2s en H.</summary>Seleccionar λ=243 nm; discute selección y anclaje Doppler-free.</details></li>
+        <li><details><summary>Cómo extraer el radio del protón de espectroscopía muónica.</summary>Compara energías medidas con predicción QED dependiente del radio.</details></li>
+      </ol></div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" aria-label="Subir">↑</button>
+
+  <script>
+    // --- Persistencia ---
+    const root = document.documentElement;
+    const ls = window.localStorage;
+
+    function applySettings(){
+      const theme = ls.getItem('atom_theme');
+      if(theme) root.setAttribute('data-theme', theme);
+      const base = ls.getItem('atom_base');
+      if(base) root.style.setProperty('--base', base);
+      const maxw = ls.getItem('atom_maxw');
+      if(maxw) root.style.setProperty('--maxw', maxw);
+    }
+    applySettings();
+
+    // --- Barra de nivel ---
+    const sections = {
+      primaria: document.querySelector('#sec-primaria'),
+      eso: document.querySelector('#sec-eso'),
+      bach: document.querySelector('#sec-bach'),
+      uni: document.querySelector('#sec-uni'),
+      master: document.querySelector('#sec-master'),
+      phd: document.querySelector('#sec-phd'),
+    };
+    document.querySelectorAll('#levelBar .pill').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#levelBar .pill').forEach(b=>b.setAttribute('aria-selected','false'));
+        btn.setAttribute('aria-selected','true');
+        const lvl = btn.dataset.level;
+        Object.values(sections).forEach(sec=>sec.removeAttribute('data-active'));
+        sections[lvl].setAttribute('data-active','');
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    });
+
+    // --- Controles de lectura ---
+    document.querySelector('#fs-up').addEventListener('click', ()=>{
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base'));
+      const next = Math.min(cur+1, 24);
+      root.style.setProperty('--base', next+'px'); ls.setItem('atom_base', next+'px');
+    });
+    document.querySelector('#fs-down').addEventListener('click', ()=>{
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base'));
+      const next = Math.max(cur-1, 14);
+      root.style.setProperty('--base', next+'px'); ls.setItem('atom_base', next+'px');
+    });
+    document.querySelector('#width-up').addEventListener('click', ()=>{
+      const cur = getComputedStyle(root).getPropertyValue('--maxw');
+      const val = parseFloat(cur);
+      const next = Math.min(val+6, 96);
+      root.style.setProperty('--maxw', next+'ch'); ls.setItem('atom_maxw', next+'ch');
+    });
+    document.querySelector('#width-down').addEventListener('click', ()=>{
+      const cur = getComputedStyle(root).getPropertyValue('--maxw');
+      const val = parseFloat(cur);
+      const next = Math.max(val-6, 60);
+      root.style.setProperty('--maxw', next+'ch'); ls.setItem('atom_maxw', next+'ch');
+    });
+
+    const themeBtn = document.querySelector('#theme-toggle');
+    themeBtn.addEventListener('click', ()=>{
+      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      ls.setItem('atom_theme', next);
+    });
+
+    // --- Progreso y botón arriba ---
+    const bar = document.querySelector('#progress');
+    const topbtn = document.querySelector('#topbtn');
+    function onScroll(){
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+      bar.style.width = (scrolled*100)+'%';
+      topbtn.classList.toggle('show', h.scrollTop > 300);
+    }
+    window.addEventListener('scroll', onScroll);
+    topbtn.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+    onScroll();
+  </script>
+</body>
+</html>
+"""
+path = "/mnt/data/atomo_teoria_niveles.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(html)
+
+path
+

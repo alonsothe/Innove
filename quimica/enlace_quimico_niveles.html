@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enlace químico — por niveles (con historia y ejercicios)</title>
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
+    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
+    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
+    --radius:16px; --maxw:78ch; --base:18px; --lh:1.85;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1424; --paper:#101a34; --ink:#eaf2ff; --muted:#aab7d9;
+    --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
+    --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+    font-size:var(--base); line-height:var(--lh); color:var(--ink);
+    background:
+      radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
+      radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%),
+      var(--bg);
+  }
+  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
+    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border);
+    box-shadow:var(--shadow)}
+  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
+  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
+  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
+  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
+  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
+  .btn.small{padding:6px 10px;font-weight:700}
+  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
+  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
+  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
+  main{max-width:1200px;margin:0 auto;padding:16px}
+  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
+  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
+  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
+  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
+  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
+  .lead{color:var(--muted)}
+  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
+  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
+  section.level{display:none} section.level[data-active]{display:block}
+  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
+  .topbtn.show{display:block}
+  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
+  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
+  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
+  summary{cursor:pointer; font-weight:800}
+  code{background:color-mix(in oklab,var(--paper) 90%, transparent);border:1px solid var(--border);padding:2px 6px;border-radius:8px}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+</style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <div class="topbar">
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <a class="brand" href="#"><span class="badge">🔗</span><span class="brand-title">Enlace químico — por niveles</span></a>
+      <div class="reader" role="group" aria-label="Controles de lectura">
+        <button class="btn small" id="fs-down" title="Disminuir tamaño de letra">A−</button>
+        <button class="btn small" id="fs-up" title="Aumentar tamaño de letra">A+</button>
+        <button class="btn small" id="width-down" title="Reducir ancho de columna">⇤</button>
+        <button class="btn small" id="width-up" title="Aumentar ancho de columna">⇥</button>
+        <button class="btn" id="theme-toggle" title="Alternar tema claro/oscuro">☀️/🌙</button>
+      </div>
+    </div>
+    <div class="wrap">
+      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
+        <button class="pill" data-level="primaria" role="tab" aria-selected="true">Primaria</button>
+        <button class="pill" data-level="eso" role="tab" aria-selected="false">ESO</button>
+        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
+        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
+        <button class="pill" data-level="master" role="tab" aria-selected="false">Máster</button>
+        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
+      </nav>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== PRIMARIA ===== -->
+    <section id="sec-primaria" class="paper level" data-active>
+      <h1>Primaria — ¿Qué es el enlace químico?</h1>
+      <p class="lead">Es “la fuerza de amistad” que hace que los átomos se unan para formar sustancias como el agua o la sal.</p>
+      <div class="toc">
+        <a href="#p-idea">Idea básica</a>
+        <a href="#p-tipos">Tipos simples</a>
+        <a href="#p-historia">Mini-historia</a>
+        <a href="#p-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="p-idea">Idea básica</h2>
+      <p>Los átomos se juntan para estar más “cómodos” (estables). Al unirse, pueden <strong>compartir</strong> electrones o <strong>intercambiarlos</strong>.</p>
+
+      <h2 id="p-tipos">Tipos</h2>
+      <ul>
+        <li><strong>Iónico</strong>: un átomo “da” electrones y otro los “recibe” (como en la sal de mesa, NaCl).</li>
+        <li><strong>Covalente</strong>: comparten electrones (como en el agua, H₂O).</li>
+        <li><strong>Metálico</strong>: los metales comparten un “mar” de electrones (cobre, aluminio).</li>
+      </ul>
+      <div class="callout"><strong>Resultado:</strong> al unirse, forman moléculas o sólidos con propiedades nuevas (puntos de fusión, dureza, conductividad…).</div>
+
+      <h2 id="p-historia">Mini-historia</h2>
+      <ul>
+        <li><strong>Lewis</strong> y <strong>Kossel</strong> (1916) explicaron cómo los átomos se unen usando electrones externos.</li>
+      </ul>
+
+      <h2 id="p-ejercicios">Ejercicios (5)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>¿Qué enlace tiene la sal?</summary>Iónico.</details></li>
+        <li><details><summary>¿Qué enlace hay en H₂O?</summary>Covalente.</details></li>
+        <li><details><summary>Di un metal con enlace metálico.</summary>Cobre, hierro, aluminio…</details></li>
+        <li><details><summary>¿Por qué se unen los átomos?</summary>Para ganar estabilidad.</details></li>
+        <li><details><summary>¿Qué comparten en un enlace covalente?</summary>Electrones.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== ESO ===== -->
+    <section id="sec-eso" class="paper level">
+      <h1>ESO — Regla del octeto, Lewis, geometría sencilla e interacciones</h1>
+      <p class="lead">Diferencia entre iónico y covalente, electronegatividad, estructuras de Lewis, geometrías VSEPR básicas e <em>interacciones intermoleculares</em>.</p>
+      <div class="toc">
+        <a href="#e-ionico">Iónico vs. covalente</a>
+        <a href="#e-elecneg">Electronegatividad</a>
+        <a href="#e-lewis">Estructuras de Lewis</a>
+        <a href="#e-vsepr">Geometría (VSEPR) básica</a>
+        <a href="#e-imf">Fuerzas intermoleculares</a>
+        <a href="#e-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="e-ionico">Iónico vs. covalente</h2>
+      <ul>
+        <li><strong>Iónico</strong>: metal + no metal; sólidos cristalinos, altos puntos de fusión, conducen en disolución o fundidos.</li>
+        <li><strong>Covalente</strong>: no metales; moléculas con enlaces direccionales; pueden ser polares o no polares.</li>
+      </ul>
+
+      <h2 id="e-elecneg">Electronegatividad</h2>
+      <p>Indica cuánto atrae un átomo los electrones. Si la diferencia de electronegatividad es grande → iónico; intermedia → covalente polar; pequeña → covalente no polar.</p>
+
+      <h2 id="e-lewis">Estructuras de Lewis</h2>
+      <p>Pasos: (1) contar e⁻ de valencia, (2) elegir átomo central, (3) completar octetos (o duetos para H), (4) usar enlaces múltiples si faltan e⁻.</p>
+
+      <h2 id="e-vsepr">Geometría VSEPR simple</h2>
+      <ul>
+        <li>Lineal (CO₂), angular (H₂O), trigonal plana (BF₃), piramidal trigonal (NH₃), tetraédrica (CH₄).</li>
+      </ul>
+
+      <h2 id="e-imf">Fuerzas intermoleculares</h2>
+      <ul>
+        <li><strong>London (dispersión)</strong>, <strong>dipolo–dipolo</strong>, <strong>puentes de hidrógeno</strong> (H unido a N, O, F).</li>
+      </ul>
+
+      <h2 id="e-ejercicios">Ejercicios (10)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Clasifica el enlace en KF.</summary>Iónico.</details></li>
+        <li><details><summary>¿Es polar H–Cl?</summary>Sí, Cl es más electronegativo.</details></li>
+        <li><details><summary>Dibuja Lewis de CO₂.</summary>O=C=O; lineal.</details></li>
+        <li><details><summary>Geometría de NH₃.</summary>Piramidal trigonal.</details></li>
+        <li><details><summary>¿Qué fuerza explica alto p.f. del agua?</summary>Puentes de hidrógeno.</details></li>
+        <li><details><summary>¿Conduce NaCl sólido?</summary>No; sí cuando está fundido o en disolución.</details></li>
+        <li><details><summary>¿Cuál es más polar: C–H o O–H?</summary>O–H.</details></li>
+        <li><details><summary>¿Qué tipo de enlace hay en O₂?</summary>Covalente doble no polar.</details></li>
+        <li><details><summary>¿Qué geometría tiene CH₄?</summary>Tetraédrica.</details></li>
+        <li><details><summary>Predice si I₂ es sólido, líquido o gas (≈25 °C).</summary>Sólido (fuerzas de dispersión más fuertes por muchos e⁻).</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== BACHILLERATO ===== -->
+    <section id="sec-bach" class="paper level">
+      <h1>Bachillerato — Lewis, VSEPR, hibridación, enlace iónico (Born–Haber) y orbitales moleculares</h1>
+      <p class="lead">Fundamentos cuantitativos del enlace: energías, longitudes, órdenes; excepciones de octeto, resonancia, y primer contacto con MO y magnetismo.</p>
+      <div class="toc">
+        <a href="#b-lewis">Lewis avanzado y carga formal</a>
+        <a href="#b-vsepr">VSEPR y geometrías</a>
+        <a href="#b-hybrid">Hibridación (sp, sp², sp³)</a>
+        <a href="#b-born">Ciclo de Born–Haber</a>
+        <a href="#b-mo">Teoría de orbitales moleculares (MO)</a>
+        <a href="#b-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="b-lewis">Lewis avanzado</h2>
+      <ul>
+        <li><strong>Carga formal</strong> = e⁻ valencia − (no enlazantes + ½ enlazantes). Minimizarla sugiere estructuras más estables.</li>
+        <li><strong>Resonancia</strong>: mezcla de estructuras (ej., NO₃⁻, benceno).</li>
+        <li><strong>Excepciones</strong>: octeto incompleto (BF₃), octeto expandido (SF₆), radicales (NO).</li>
+      </ul>
+
+      <h2 id="b-vsepr">VSEPR</h2>
+      <ul>
+        <li>AX₂ lineal, AX₃ trigonal plana, AX₄ tetraédrica, AX₅ bipirámide trigonal, AX₆ octaédrica; pares libres comprimen ángulos (H₂O &lt; 109,5°).</li>
+      </ul>
+
+      <h2 id="b-hybrid">Hibridación</h2>
+      <ul>
+        <li><strong>sp³</strong>: CH₄ (109,5°). <strong>sp²</strong>: eteno, trigonal (120°). <strong>sp</strong>: etino, lineal (180°).</li>
+        <li><strong>Hiperconjugación</strong> y estabilización de carbocationes.</li>
+      </ul>
+
+      <h2 id="b-born">Enlace iónico — Born–Haber</h2>
+      <p>Energía de red compensa ionización y afinidad electrónica: <em>sublimación + ½ disociación + IE + AE + energía de red = ΔH_f</em>.</p>
+
+      <h2 id="b-mo">Orbitales moleculares (MO)</h2>
+      <ul>
+        <li>Combinación LCAO de orbitales atómicos: σ y π, enlazantes y antienlazantes (con *).</li>
+        <li>Orden de niveles 2p: en B–N: π2p &lt; σ2p; en O–Ne: σ2p &lt; π2p. O₂ es paramagnético (2 e⁻ desapareados en π*).</li>
+      </ul>
+
+      <h2 id="b-ejercicios">Ejercicios (16)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Calcula cargas formales en NO₃⁻ (estructura con doble enlace a un O).</summary>N: +1; O doble: 0; O simples: −1.</details></li>
+        <li><details><summary>Predice geometría de SF₄.</summary>AX₄E: balancín (bipirámide trigonal con un par libre ecuatorial).</details></li>
+        <li><details><summary>Ángulo aproximado en H₂O y NH₃.</summary>H₂O ≈ 104,5°; NH₃ ≈ 107°.</details></li>
+        <li><details><summary>Indica hibridación del C en CO₂.</summary>sp (lineal).</details></li>
+        <li><details><summary>Orden de enlace en NO (MO).</summary>2,5.</details></li>
+        <li><details><summary>¿Por qué O₂ es paramagnético?</summary>Porque tiene dos electrones desapareados en π*.</details></li>
+        <li><details><summary>Completa Born–Haber para NaCl con datos ficticios y calcula energía de red.</summary>Aplicar balances energéticos.</details></li>
+        <li><details><summary>¿Qué geometría tiene XeF₂?</summary>Lineal (AX₂E₃, pares libres en posiciones ecuatoriales).</details></li>
+        <li><details><summary>Ordena longitudes: C–C, C=C, C≡C.</summary>≡ &lt; = &lt; −.</details></li>
+        <li><details><summary>¿Qué efecto tiene la resonancia en el NO₃⁻?</summary>Iguala enlaces N–O; acorta los simples, alarga el doble ideal.</details></li>
+        <li><details><summary>Predice polaridad neta de CHCl₃.</summary>Polar (geometría tetraédrica con vectores dipolo no cancelados).</details></li>
+        <li><details><summary>¿Qué orbitales combinan para formar σ y π en eteno?</summary>σ: sp²–sp²; π: p–p laterales.</details></li>
+        <li><details><summary>Explica por qué BF₃ es deficiente en octeto.</summary>B tiene 6 e⁻ en valencia; aceptador de pares (ácido de Lewis).</details></li>
+        <li><details><summary>¿Cuál es el orden de enlace de N₂?</summary>3.</details></li>
+        <li><details><summary>Asigna AXE y geometría a ClF₃.</summary>AX₃E₂ → en T.</details></li>
+        <li><details><summary>¿Qué provoca mayor p.f.: HCl o HI?</summary>HI (más fuerzas de dispersión por más e⁻), salvo efectos de H-puente (no aplica aquí).</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== UNIVERSIDAD ===== -->
+    <section id="sec-uni" class="paper level">
+      <h1>Universidad — VB vs MO, Hückel, EDA, QTAIM y campo cristalino</h1>
+      <p class="lead">Teorías modernas del enlace: <em>Valence Bond</em>, <em>Orbitales Moleculares</em>, Hückel para sistemas π, análisis de energía (EDA), <em>QTAIM</em> (Bader) y <em>ligand field</em> en metales de transición.</p>
+      <div class="toc">
+        <a href="#u-vbmo">VB vs MO</a>
+        <a href="#u-huckel">Hückel y aromaticidad</a>
+        <a href="#u-eda">Descomposición de energía (EDA)</a>
+        <a href="#u-qtaim">QTAIM, NBO y órdenes de enlace</a>
+        <a href="#u-campo">Campo cristalino y teoría de ligandos</a>
+        <a href="#u-bandas">Bandas y sólidos</a>
+        <a href="#u-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="u-vbmo">VB vs MO</h2>
+      <ul>
+        <li><strong>VB</strong>: enlaces como solapamientos localizados entre orbitales híbridos; útil en reactividad orgánica.</li>
+        <li><strong>MO</strong>: e⁻ deslocalizados en orbitales de toda la molécula; explica magnetismo, espectros y cargas.</li>
+        <li><strong>Walsh</strong> y <strong>Bent</strong>: cómo cambian niveles con la geometría; <em>Bent’s rule</em> sobre s/p en enlaces más/menos electronegativos.</li>
+      </ul>
+
+      <h2 id="u-huckel">Hückel y aromaticidad</h2>
+      <ul>
+        <li>Modelo Hückel: sólo π, matriz tridiagonal; condición de aromaticidad <strong>4n+2</strong> (n entero) en anillos planos conjugados.</li>
+        <li>Anti-aromaticidad: 4n; pseudoaromaticidad y efectos de sustituyentes.</li>
+      </ul>
+
+      <h2 id="u-eda">Descomposición de energía (EDA)</h2>
+      <ul>
+        <li>Divide ΔE_enlace en términos: <em>electrostático</em>, <em>repulsión de Pauli</em>, <em>interacción orbital</em> (covalencia) y <em>dispersión</em>.</li>
+        <li>Permite distinguir <em>donación</em>/<em>retro-donación</em> (ligandos π-ácidos, CO) y enlaces agósticos.</li>
+      </ul>
+
+      <h2 id="u-qtaim">QTAIM, NBO y órdenes de enlace</h2>
+      <ul>
+        <li><strong>QTAIM</strong>: analiza densidad ρ(r); puntos críticos de enlace (BCP), Laplaciano ∇²ρ para clasificar enlaces.</li>
+        <li><strong>NBO</strong>: orbitales naturales; <em>Wiberg/Mayer bond index</em> como órdenes de enlace efectivos.</li>
+      </ul>
+
+      <h2 id="u-campo">Campo cristalino / teoría de ligandos</h2>
+      <ul>
+        <li>División d en <em>oh</em> (t₂g/e_g) y <em>td</em>; <strong>Δ₀</strong> y serie espectroquímica.</li>
+        <li>Alto/bajo espín, efecto Jahn–Teller, reglas de Tanabe–Sugano (visión cualitativa).</li>
+      </ul>
+
+      <h2 id="u-bandas">Bandas y sólidos</h2>
+      <ul>
+        <li>De MO a bandas (modelo de Bloch): metales, semiconductores y aislantes; banda de valencia/conducción y <em>gap</em>.</li>
+        <li>Enlaces en sólidos iónicos vs covalentes (redes 3D) y metálicos (electrones deslocalizados).</li>
+      </ul>
+
+      <h2 id="u-ejercicios">Ejercicios (16)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Construye el diagrama MO de N₂ y calcula su orden de enlace.</summary>Orden 3; diamagnético.</details></li>
+        <li><details><summary>Usa Hückel para energía del benceno.</summary>Niveles α+2β, α+β (×2), α−β (×2), α−2β; llenar 6 e⁻.</details></li>
+        <li><details><summary>Discute la regla de Bent con CH₃F vs CH₃Li.</summary>Más s hacia el enlace con F; más p hacia Li.</details></li>
+        <li><details><summary>Clasifica O–H···O en QTAIM.</summary>BCP con ρ moderada y ∇²ρ &gt; 0: enlace de H de carácter cerrado.</details></li>
+        <li><details><summary>¿Por qué [Fe(H₂O)₆]²⁺ puede ser alto o bajo espín?</summary>Competencia Δ₀ vs emparejamiento; H₂O ligando de campo intermedio.</details></li>
+        <li><details><summary>Explica paramagnetismo de O₂ con MO.</summary>Dos e⁻ en π* degenerados.</details></li>
+        <li><details><summary>Predice efecto Jahn–Teller para d⁹ octaédrico.</summary>Alargamiento tetragonal.</details></li>
+        <li><details><summary>Descompón la energía de CO→M en términos EDA.</summary>Donación σ (C→M) y retro-donación π (M→CO).</details></li>
+        <li><details><summary>¿Qué índice usarías para comparar orden de enlace en isómeros?</summary>Wiberg o Mayer; comparar en misma base/teoría.</details></li>
+        <li><details><summary>Racionaliza la conductividad en metales.</summary>Bandas parcialmente ocupadas.</details></li>
+        <li><details><summary>Determina si ciclooctatetraeno es aromático.</summary>No (no es plano; 8 πe⁻ → 4n antiaromático si fuera plano).</details></li>
+        <li><details><summary>Propón un experimento espectroscópico para observar Δ₀.</summary>UV-Vis d–d; comparar alto/bajo espín.</details></li>
+        <li><details><summary>¿Cuándo aparecen enlaces 3c–2e?</summary>Deficiencia electrónica (diborano B₂H₆).</details></li>
+        <li><details><summary>Relaciona gap con color de semiconductores.</summary>Absorben a E≈gap; color complementario.</details></li>
+        <li><details><summary>Aplica NBO a hiperconjugación en isopropilo.</summary>Donación σ(C–H) → p vacío.</details></li>
+        <li><details><summary>Compara VB y MO para explicar la adición a dobles enlaces.</summary>VB: sobreposición local; MO: HOMO/LUMO (FMO).</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== MÁSTER ===== -->
+    <section id="sec-master" class="paper level">
+      <h1>Máster — Enlaces multicentro, relatividad, interacciones no covalentes y métodos</h1>
+      <p class="lead">3c–2e y 3c–4e, Wade–Mingos en boranos, efectos relativistas en Au/Hg/Pb, enlaces halógeno/chalcógeno, índices de enlace (Mayer/Wiberg), NCI/ELF y estrategias de DFT/ab initio.</p>
+      <div class="toc">
+        <a href="#m-multic">Multicentro y boranos</a>
+        <a href="#m-rel">Relatividad y enlaces pesados</a>
+        <a href="#m-noncov">No covalentes avanzadas</a>
+        <a href="#m-indices">Índices y mapas (NCI, ELF)</a>
+        <a href="#m-metodos">Métodos: DFT, post-HF</a>
+        <a href="#m-ejercicios">Ejercicios</a>
+      </div>
+
+      <h2 id="m-multic">Enlaces multicentro</h2>
+      <ul>
+        <li><strong>3c–2e</strong>: puentes B–H–B en B₂H₆; <strong>3c–4e</strong>: I₃⁻ lineal.</li>
+        <li><strong>Wade–Mingos</strong>: conteo de e⁻ y tipos (closo, nido, araña).</li>
+      </ul>
+
+      <h2 id="m-rel">Relatividad</h2>
+      <ul>
+        <li>Contracción s/p₁/₂ y expansión d/f → <em>aurofília</em>, <em>mercuriofilia</em>, enlaces metal–metal débiles pero significativos.</li>
+        <li>Estabilización de estados bajos (+1 en Tl, +2 en Pb).</li>
+      </ul>
+
+      <h2 id="m-noncov">No covalentes avanzadas</h2>
+      <ul>
+        <li><strong>Halógeno</strong>, <strong>calcógeno</strong>, <strong>pnicógeno</strong> y <strong>anión–π</strong>; zonas σ-<em>hole</em> y π-<em>hole</em>.</li>
+        <li>Competencia cooperativa/anticooperativa con H-puente.</li>
+      </ul>
+
+      <h2 id="m-indices">Índices y mapas</h2>
+      <ul>
+        <li><strong>Mayer/Wiberg</strong> (orden de enlace), <strong>ELF</strong> (localización de pares), <strong>NCI</strong> (interacciones débiles), <strong>ETS-NOCV</strong> (canales de donación).</li>
+      </ul>
+
+      <h2 id="m-metodos">Métodos</h2>
+      <ul>
+        <li>DFT con función de dispersión (D3/D4/VV10); <em>double-hybrids</em> para enlaces débiles.</li>
+        <li>MP2/CCSD(T) como referencia; multiconfiguracionales (CASSCF/CASPT2) para enlaces múltiples/dirradicales.</li>
+      </ul>
+
+      <h2 id="m-ejercicios">Ejercicios (10)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Clasifica B₁₂H₁₂²⁻ según Wade–Mingos.</summary>Closo (icosaédrico).</details></li>
+        <li><details><summary>Explica linealidad de I₃⁻ (3c–4e).</summary>Ocupación de orbital antienlazante en plano nodal conserva linealidad.</details></li>
+        <li><details><summary>Diseña un sistema con halógeno fuerte.</summary>Usar I o Br con grupo perfluorado para σ-hole grande.</details></li>
+        <li><details><summary>Compara órdenes de enlace Mayer vs Wiberg en un mismo sistema.</summary>Discrepancias por base y partición; discútelas.</details></li>
+        <li><details><summary>¿Por qué Au(I) prefiere linealidad?</summary>Configuración d¹⁰s⁰; repulsión mínima y estabilización relativista.</details></li>
+        <li><details><summary>Predice efecto de inclusión de D3 en complejos π-π.</summary>Mejora energías de apilamiento (más estables).</details></li>
+        <li><details><summary>Identifica enlaces agósticos en un organometálico.</summary>Interacción M···H–C con BCP débil y acortamiento M···H.</details></li>
+        <li><details><summary>Elige método para un dirradical.</summary>CASSCF/CASPT2 o DFT con funciónals con fracción alta de intercambio.</details></li>
+        <li><details><summary>Explica aurofília.</summary>Agrupación Au(I)–Au(I) por correlación/relatividad (6s,5d).</details></li>
+        <li><details><summary>Mapea NCI de una red de H-puentes.</summary>Isosuperficies verdes entre donador y aceptor.</details></li>
+      </ol></div>
+    </section>
+
+    <!-- ===== DOCTORADO ===== -->
+    <section id="sec-phd" class="paper level">
+      <h1>Doctorado — Fronteras del enlace: multirreferencia, materiales y condiciones extremas</h1>
+      <p class="lead">De enlaces en elementos superpesados y f-actínidos a materiales 2D, presiones gigantes, enlaces “exóticos” y métricas alternativas de aromaticidad/bonding.</p>
+      <div class="toc">
+        <a href="#d-mr">Multirreferencia y dirradicales</a>
+        <a href="#d-f">Enlace en f-elementos</a>
+        <a href="#d-2d">2D y enlaces débiles/colectivos</a>
+        <a href="#d-presion">Presión y fases superiónicas</a>
+        <a href="#d-metricas">Métricas y debates</a>
+        <a href="#d-ejercicios">Retos</a>
+      </div>
+
+      <h2 id="d-mr">Multirreferencia</h2>
+      <ul>
+        <li>Enlaces en <em>carbenos, nitrenos, y dirradicales</em>; necesidad de CASSCF/DMRG.</li>
+        <li>Resonancia “no clásica” y estructuras de valencia equivalentes.</li>
+      </ul>
+
+      <h2 id="d-f">f-elementos</h2>
+      <ul>
+        <li>Participación 5f/6d/7s en actínidos; controversias sobre “covalencia” vs polarización; análisis QTAIM/EDA/ELF.</li>
+      </ul>
+
+      <h2 id="d-2d">Materiales 2D</h2>
+      <ul>
+        <li>Enlace sp² en grafeno, defectos y dopado; interacciones vdW entre capas (apilamiento).</li>
+        <li>Disulfuro de molibdeno (MoS₂): enlace mixto covalente/iónico y gaps ajustables.</li>
+      </ul>
+
+      <h2 id="d-presion">Presión</h2>
+      <ul>
+        <li>Formación de polímeros bajo presión (I₂ → redes), fases superiónicas (H₂O, NH₃), metalización del hidrógeno.</li>
+      </ul>
+
+      <h2 id="d-metricas">Métricas y debates</h2>
+      <ul>
+        <li>Aromaticidad no solo por 4n+2: <em>NICS</em>, corrientes de anillo (GIMIC), medidas topológicas (MCI).</li>
+        <li>“¿Qué es un enlace?”: definiciones basadas en energía, densidad o topología.</li>
+      </ul>
+
+      <h2 id="d-ejercicios">Retos (8)</h2>
+      <div class="examples"><ol>
+        <li><details><summary>Elige CAS activo para O₂ y discútelo.</summary>π<sub>g</sub> y π<sub>g</sub>* con ocupaciones fraccionales.</details></li>
+        <li><details><summary>Compara EDA de un enlace U–O vs Zr–O.</summary>Mayor contribución covalente en U–O por 5f/6d.</details></li>
+        <li><details><summary>Propón descriptor de aromaticidad para anillos no planos.</summary>NICS fuera de plano + corrientes calculadas.</details></li>
+        <li><details><summary>Modela fase superiónica de H₂O con MD ab initio.</summary>Difusión de H en red O.</details></li>
+        <li><details><summary>Discute límites del concepto de orden de enlace en multirreferencia.</summary>Valores no enteros y dependientes del método.</details></li>
+        <li><details><summary>Analiza unión Au···Au en un complejo d¹⁰–d¹⁰.</summary>Relatividad + correlación; carácter entre dispersivo y covalente débil.</details></li>
+        <li><details><summary>Predice efecto de presión en redes iónicas.</summary>Gaps y energías de red ↑; posibles transiciones de fase.</details></li>
+        <li><details><summary>Diseña un sistema con enlace 3c–2e estabilizado.</summary>Cluster borano o puente hidruro en organometálico.</details></li>
+      </ol></div>
+    </section>
+  </main>
+
+  <button class="topbtn" id="topbtn" aria-label="Subir">↑</button>
+
+  <script>
+    // --- Persistencia ---
+    const root = document.documentElement;
+    const ls = window.localStorage;
+
+    function applySettings(){
+      const theme = ls.getItem('bonding_theme');
+      if(theme) root.setAttribute('data-theme', theme);
+      const base = ls.getItem('bonding_base');
+      if(base) root.style.setProperty('--base', base);
+      const maxw = ls.getItem('bonding_maxw');
+      if(maxw) root.style.setProperty('--maxw', maxw);
+    }
+    applySettings();
+
+    // --- Barra de nivel ---
+    const sections = {
+      primaria: document.querySelector('#sec-primaria'),
+      eso: document.querySelector('#sec-eso'),
+      bach: document.querySelector('#sec-bach'),
+      uni: document.querySelector('#sec-uni'),
+      master: document.querySelector('#sec-master'),
+      phd: document.querySelector('#sec-phd'),
+    };
+    document.querySelectorAll('#levelBar .pill').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#levelBar .pill').forEach(b=>b.setAttribute('aria-selected','false'));
+        btn.setAttribute('aria-selected','true');
+        const lvl = btn.dataset.level;
+        Object.values(sections).forEach(sec=>sec.removeAttribute('data-active'));
+        sections[lvl].setAttribute('data-active','');
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    });
+
+    // --- Controles de lectura ---
+    document.querySelector('#fs-up').addEventListener('click', ()=>{
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base'));
+      const next = Math.min(cur+1, 24);
+      root.style.setProperty('--base', next+'px'); ls.setItem('bonding_base', next+'px');
+    });
+    document.querySelector('#fs-down').addEventListener('click', ()=>{
+      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base'));
+      const next = Math.max(cur-1, 14);
+      root.style.setProperty('--base', next+'px'); ls.setItem('bonding_base', next+'px');
+    });
+    document.querySelector('#width-up').addEventListener('click', ()=>{
+      const cur = getComputedStyle(root).getPropertyValue('--maxw');
+      const val = parseFloat(cur);
+      const next = Math.min(val+6, 96);
+      root.style.setProperty('--maxw', next+'ch'); ls.setItem('bonding_maxw', next+'ch');
+    });
+    document.querySelector('#width-down').addEventListener('click', ()=>{
+      const cur = getComputedStyle(root).getPropertyValue('--maxw');
+      const val = parseFloat(cur);
+      const next = Math.max(val-6, 60);
+      root.style.setProperty('--maxw', next+'ch'); ls.setItem('bonding_maxw', next+'ch');
+    });
+
+    const themeBtn = document.querySelector('#theme-toggle');
+    themeBtn.addEventListener('click', ()=>{
+      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      ls.setItem('bonding_theme', next);
+    });
+
+    // --- Progreso y botón arriba ---
+    const bar = document.querySelector('#progress');
+    const topbtn = document.querySelector('#topbtn');
+    function onScroll(){
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+      bar.style.width = (scrolled*100)+'%';
+      topbtn.classList.toggle('show', h.scrollTop > 300);
+    }
+    window.addEventListener('scroll', onScroll);
+    topbtn.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+    onScroll();
+  </script>
+</body>
+</html>
