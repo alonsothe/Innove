@@ -305,10 +305,9 @@
   </div>
 
   <button id="toBottom" class="toBottom" aria-label="Ir al final">⬇️ Al final</button>
-
-  <script>
-    // ===== Config (no metas claves en prod) =====
-    const OPENAI_KEY = "fgrgtVtjTkXr2YgnUj2jjCdsSTZXkzdLIu1KryOXQcukqMLWI"; // ⚠️ Vacío por seguridad. Usa proxy.
+ <script>
+    // ===== Config (sin claves en cliente) =====
+    const OPENAI_KEY="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";     // ← Pon tu clave SOLO en local. En prod usa proxy.
     const USE_PROXY=false;    // true para usar tu backend
     const PROXY_URL="/api/ai/chat";
 
@@ -328,7 +327,6 @@
     const ttsEl=document.getElementById('tts');
     const providerLabel=document.getElementById('providerLabel');
     const toBottomBtn=document.getElementById('toBottom');
-    const nav=document.getElementById('nav');
 
     // Perfil
     const avatarEl=document.getElementById('avatar');
@@ -340,14 +338,6 @@
     const xptext=document.getElementById('xptext');
 
     let attachments=[]; let mediaRecorder=null, chunks=[]; let recording=false;
-
-    // ===== Ajusta alturas dinámicas (chat fullscreen en móvil) =====
-    function recalcHeights(){
-      const navH = nav.getBoundingClientRect().height;
-      document.documentElement.style.setProperty('--nav-h', navH + 'px');
-    }
-    new ResizeObserver(recalcHeights).observe(nav);
-    recalcHeights();
 
     // ===== Perfil & niveles =====
     let USER={ emoji: localStorage.getItem('innove-emoji')||'🦉', name: localStorage.getItem('innove-name')||'Sofi', level: parseInt(localStorage.getItem('innove-level')||'1',10), xp: parseInt(localStorage.getItem('innove-xp')||'0',10) };
@@ -386,9 +376,9 @@
     let mode = localStorage.getItem('iaMode')||'informatico';
     document.getElementById('modes')?.querySelectorAll('[data-mode]').forEach(chip=>{ if(chip.dataset.mode===mode) chip.style.outline='2px solid rgba(125,211,252,.6)'; chip.addEventListener('click',()=>{ mode=chip.dataset.mode; localStorage.setItem('iaMode',mode); document.querySelectorAll('#modes [data-mode]').forEach(c=>c.style.outline='none'); chip.style.outline='2px solid rgba(125,211,252,.6)'; addMsg('ai',`Modo activo: <b>${mode}</b>.`); }); });
 
-    // ===== Micro‑interacciones (parallax suave en desktop) =====
+    // ===== Micro‑interacciones =====
+    // Parallax de fondos
     window.addEventListener('pointermove', (e)=>{
-      if (window.matchMedia('(max-width: 720px)').matches) return; // evita coste en móvil
       const {innerWidth:w, innerHeight:h} = window; const x=(e.clientX-w/2)/w, y=(e.clientY-h/2)/h;
       const t = `translate(${x*-8}px, ${y*-6}px)`; const t2=`translate(${x*-16}px, ${y*-10}px)`; const t3=`translate(${x*6}px, ${y*4}px)`;
       document.querySelector('.space-bg')?.style.setProperty('transform', t);
@@ -435,7 +425,8 @@
     function detectProvider(model){ if(/claude/i.test(model)) return 'anthropic'; if(/gemini/i.test(model)) return 'google'; if(/deepseek/i.test(model)) return 'deepseek'; return 'openai'; }
     function systemPrompt(){ const base=SYSTEM_PROMPTS[mode]||''; const depth=Math.min(150,USER.level); let s = `${base}\n\nEres Innove. Usuario: ${USER.name} ${USER.emoji}. Ajusta la explicación a Nivel ${depth}/150.`; if(attachments.some(a=>a.type==='pdf')) s += "\n\nNota: hay PDF adjunto (resumen parcial)."; return s; }
     function buildMessages(userText){ const msgs=[{role:'system',content:systemPrompt()}]; if(userText) msgs.push({role:'user',content:userText}); return msgs; }
-    async function callAI({provider, model, messages, stream}){ if(USE_PROXY){ return fetch(PROXY_URL,{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({provider,model,messages,stream})}); } if(provider==='openai' && OPENAI_KEY){ return fetch('https://api.openai.com/v1/chat/completions',{method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY}, body:JSON.stringify({model,messages,stream})}); } const fallback = {choices:[{message:{content:'(Conecta tu proxy para usar '+provider+')'}}]}; return new Response(new Blob([JSON.stringify(fallback)],{type:'application/json'}),{ok:true}); }
+    async function callAI({provider, model, messages, stream}){ if(USE_PROXY){ return fetch(PROXY_URL,{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({provider,model,messages,stream})}); } if(provider==='openai'){ return fetch('https://api.openai.com/v1/chat/completions',{method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY}, body:JSON.stringify({model,messages,stream})}); } // Otros: requiere proxy por CORS
+      const fallback = {choices:[{message:{content:'(Conecta tu proxy para usar '+provider+')'}}]}; return new Response(new Blob([JSON.stringify(fallback)],{type:'application/json'}),{ok:true}); }
 
     // ===== Scroll helper =====
     chatEl.addEventListener('scroll',()=>{ const nearBottom=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<120; toBottomBtn.style.display=nearBottom?'none':'block'; });
@@ -443,20 +434,21 @@
     function jiggleToBottom(){ toBottomBtn.style.display='block'; toBottomBtn.animate([{transform:'translateY(0)'},{transform:'translateY(-3px)'},{transform:'translateY(0)'}],{duration:380,iterations:1}); }
 
     // ===== Confeti + Misiones =====
-    function confetti(){ const n=60; for(let i=0;i<n;i++){ const p=document.createElement('div'); const size=4+Math.random()*6; const left=10+Math.random()*80; const rot=Math.random()*360; p.style.cssText=`position:fixed;top:-10px;left:${left}vw;width:${size}px;height:${size}px;background:hsl(${Math.random()*360} 90% 60%);border-radius:2px;transform:rotate(${rot}deg);z-index:9999;opacity:.9;`; document.body.appendChild(p); const y=100+Math.random()*100; const x=(Math.random()-.5)*40; p.animate([{transform:`translate(0,0) rotate(${rot}deg)`},{transform:`translate(${x}vw,${y}vh) rotate(${rot+720}deg)`}],{duration:900+Math.random()*700,easing:'ease-out'}).onfinish=()=>p.remove(); } }
+    function confetti(){ const n=90; for(let i=0;i<n;i++){ const p=document.createElement('div'); const size=4+Math.random()*6; const left=10+Math.random()*80; const rot=Math.random()*360; p.style.cssText=`position:fixed;top:-10px;left:${left}vw;width:${size}px;height:${size}px;background:hsl(${Math.random()*360} 90% 60%);border-radius:2px;transform:rotate(${rot}deg);z-index:9999;opacity:.9;`; document.body.appendChild(p); const y=100+Math.random()*100; const x=(Math.random()-.5)*40; p.animate([{transform:`translate(0,0) rotate(${rot}deg)`},{transform:`translate(${x}vw,${y}vh) rotate(${rot+720}deg)`}],{duration:1200+Math.random()*900,easing:'ease-out'}).onfinish=()=>p.remove(); } }
     const QUESTS_BASE=[{id:'saludar', text:'Envía tu primer mensaje', xp:40},{id:'formula', text:'Usa una fórmula ($...$ o \\ce{...})', xp:30},{id:'archivo', text:'Adjunta un archivo', xp:30}];
     const questsEl=document.getElementById('quests');
     const doneQuests=JSON.parse(localStorage.getItem('innove-quests')||'[]');
-    function renderQuests(){ questsEl.innerHTML=''; for(const q of QUESTS_BASE){ const row=document.createElement('div'); row.className='quest'; row.style.cssText='display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border:1px solid var(--border); border-radius:12px; background:var(--glass)'; const left=document.createElement('div'); left.textContent=q.text+` (+${q.xp} XP)`; const btn=document.createElement('button'); btn.className='chip'; btn.textContent=doneQuests.includes(q.id)?'✅ Hecho':'Tomar'; btn.disabled=doneQuests.includes(q.id); btn.onclick=()=>{ if(!doneQuests.includes(q.id)){ doneQuests.push(q.id); localStorage.setItem('innove-quests', JSON.stringify(doneQuests)); addXP(q.xp); renderQuests(); burstEmoji(btn.getBoundingClientRect().left, btn.getBoundingClientRect().top, ['✨','⭐','💫']); } }; row.appendChild(left); row.appendChild(btn); questsEl.appendChild(row);} }
+    function renderQuests(){ questsEl.innerHTML=''; for(const q of QUESTS_BASE){ const row=document.createElement('div'); row.className='quest'; const left=document.createElement('div'); left.textContent=q.text+` (+${q.xp} XP)`; const btn=document.createElement('button'); btn.className='chip'; btn.textContent=doneQuests.includes(q.id)?'✅ Hecho':'Tomar'; btn.disabled=doneQuests.includes(q.id); btn.onclick=()=>{ if(!doneQuests.includes(q.id)){ doneQuests.push(q.id); localStorage.setItem('innove-quests', JSON.stringify(doneQuests)); addXP(q.xp); renderQuests(); burstEmoji(btn.getBoundingClientRect().left, btn.getBoundingClientRect().top, ['✨','⭐','💫']); } }; row.appendChild(left); row.appendChild(btn); questsEl.appendChild(row);} }
     renderQuests();
 
     // ===== Efectos extra =====
-    function animateSendPlane(){ const rect=sendBtn.getBoundingClientRect(); const el=document.createElement('div'); el.className='float-emoji'; el.textContent='🛩️'; el.style.left=rect.left+'px'; el.style.top=rect.top+'px'; el.style.position='fixed'; el.style.fontSize='18px'; el.style.pointerEvents='none'; el.style.zIndex='9999'; document.body.appendChild(el); el.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate(120px,-140px) rotate(25deg)'},{transform:'translate(240px,-260px) rotate(35deg)', opacity:.2}],{duration:900, easing:'ease-out'}).onfinish=()=>el.remove(); }
-    function burstEmoji(x,y,emojis=['✨']){ for(let i=0;i<12;i++){ const e=document.createElement('div'); e.className='float-emoji'; e.textContent=emojis[Math.floor(Math.random()*emojis.length)]; e.style.position='fixed'; e.style.left=(x)+'px'; e.style.top=(y)+'px'; e.style.fontSize='18px'; e.style.pointerEvents='none'; e.style.zIndex='9999'; document.body.appendChild(e); const dx=(Math.random()-.5)*140; const dy=(Math.random()-.8)*200-40; const rot=(Math.random()*90-45); const dur=500+Math.random()*700; e.animate([{transform:'translate(0,0) scale(.8)'},{transform:`translate(${dx}px,${dy}px) rotate(${rot}deg) scale(1.1)`, opacity:0}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>e.remove(); } }
+    function animateSendPlane(){ const rect=sendBtn.getBoundingClientRect(); const el=document.createElement('div'); el.className='float-emoji'; el.textContent='🛩️'; el.style.left=rect.left+'px'; el.style.top=rect.top+'px'; document.body.appendChild(el); el.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate(120px,-140px) rotate(25deg)'},{transform:'translate(240px,-260px) rotate(35deg)', opacity:.2}],{duration:900, easing:'ease-out'}).onfinish=()=>el.remove(); }
+    function burstEmoji(x,y,emojis=['✨']){ for(let i=0;i<12;i++){ const e=document.createElement('div'); e.className='float-emoji'; e.textContent=emojis[Math.floor(Math.random()*emojis.length)]; e.style.left=(x)+'px'; e.style.top=(y)+'px'; document.body.appendChild(e); const dx=(Math.random()-.5)*140; const dy=(Math.random()-.8)*200-40; const rot=(Math.random()*90-45); const dur=500+Math.random()*700; e.animate([{transform:'translate(0,0) scale(.8)'},{transform:`translate(${dx}px,${dy}px) rotate(${rot}deg) scale(1.1)`, opacity:0}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>e.remove(); } }
 
     // Bienvenida
-    addMsg('ai','✨ v4.1 lista. En móvil el chat ocupa toda la pantalla y el composer queda fijo. ¡Prueba enviar un mensaje!');
+    addMsg('ai','✨ Temas del índice activos + modelos (Claude/GPT/Gemini/DeepSeek). Escribe fórmulas con `$a^2+b^2=c^2` o química con `\\ce{2 H2 + O2 -> 2 H2O}`. ¡Completa misiones y desbloquea emojis!');
   </script>
+
 </body>
 </html>
 
