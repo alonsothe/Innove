@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cinemática: De lo Básico a lo Complejo</title>
+<link rel="icon" type="image/png" href="innoveAI.png" />
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root {
+    --bg: #f8fafc; --paper: #ffffff; --ink: #0f172a; --brand: #2563eb;
+    --accent: #0ea5e9; --border: #e2e8f0; --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  /* Modo oscuro automático */
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f172a; --paper: #1e293b; --ink: #f1f5f9; --brand: #60a5fa; --border: #334155; }
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.7; color: var(--ink);
+    background: var(--bg); margin: 0; padding-bottom: 50px;
+  }
+  
+  /* Header y Navegación */
+  .header {
+    position: sticky; top: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border); z-index: 100; padding: 10px 0;
+  }
+  @media (prefers-color-scheme: dark) { .header { background: rgba(30,41,59,0.9); } }
+
+  .nav-wrap {
+    max-width: 900px; margin: 0 auto; padding: 0 15px; display: flex;
+    justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+  }
+  .logo { font-weight: 800; font-size: 1.2rem; color: var(--brand); text-decoration: none; }
+  
+  .tabs { display: flex; gap: 8px; background: var(--border); padding: 4px; border-radius: 99px; }
+  .tab {
+    border: none; background: transparent; color: var(--ink); padding: 6px 16px;
+    border-radius: 99px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+  .tab[aria-selected="true"] { background: var(--paper); color: var(--brand); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+  /* Contenedores */
+  main { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+  section { display: none; animation: fadeUp 0.4s ease; }
+  section[data-active] { display: block; }
+
+  .card {
+    background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 30px; margin-bottom: 25px; box-shadow: var(--shadow);
+  }
+
+  /* Tipografía y Elementos */
+  h1 { color: var(--brand); font-size: 2rem; margin-top: 0; letter-spacing: -0.5px; }
+  h2 { font-size: 1.5rem; margin-top: 2em; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+  h3 { font-size: 1.2rem; margin-top: 1.5em; color: var(--accent); }
+  p { margin-bottom: 1.2em; }
+
+  /* Fórmulas y Callouts */
+  .formula-box {
+    background: color-mix(in srgb, var(--brand) 5%, var(--bg));
+    border-left: 4px solid var(--brand); padding: 15px; margin: 20px 0; overflow-x: auto;
+  }
+  .concept-note {
+    background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+    border: 1px dashed var(--accent); border-radius: 8px; padding: 15px; font-size: 0.95rem;
+  }
+  
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="nav-wrap">
+    <a href="#" class="logo">FISICA PRO ⚛️</a>
+    <nav class="tabs">
+      <button class="tab" onclick="switchTab('eso')" id="btn-eso">ESO</button>
+      <button class="tab" onclick="switchTab('bach')" id="btn-bach" aria-selected="true">Bachillerato</button>
+      <button class="tab" onclick="switchTab('uni')" id="btn-uni">Universidad</button>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+  <section id="sec-eso">
+    <div class="card">
+      <h1>ESO: Fundamentos del Movimiento</h1>
+      <p>Aquí aprendemos a describir el movimiento en línea recta usando álgebra simple. Lo importante es entender la diferencia entre posición, velocidad y aceleración.</p>
+
+      <h2>1. MRU (Velocidad Constante)</h2>
+      <p>El objeto se mueve en línea recta y nunca cambia su rapidez. No hay aceleración.</p>
+      
+      <div class="formula-box">
+        $$ x(t) = x_0 + v \cdot t $$
+      </div>
+      <ul>
+        <li>$x_0$: Dónde empiezas.</li>
+        <li>$v$: Cuántos metros avanzas cada segundo.</li>
+      </ul>
+
+      <h2>2. MRUA (Aceleración Constante)</h2>
+      <p>Aquí la velocidad cambia. Si pisas el acelerador, la velocidad aumenta linealmente, pero la distancia recorrida aumenta cuadráticamente (parábola).</p>
+      <div class="formula-box">
+        $$ v(t) = v_0 + a \cdot t $$
+        $$ x(t) = x_0 + v_0 t + \frac{1}{2} a t^2 $$
+      </div>
+      <div class="concept-note">
+        <strong>Truco:</strong> Si te piden la velocidad y <em>no tienes el tiempo</em>, usa esta fórmula extra:
+        $$ v^2 - v_0^2 = 2 \cdot a \cdot \Delta x $$
+      </div>
+    </div>
+  </section>
+
+  <section id="sec-bach" data-active>
+    <div class="card">
+      <h1>Bachillerato: Vectores y Derivadas Fáciles</h1>
+      <p>Aquí damos un salto de calidad. Dejamos de memorizar fórmulas de "espacio" y empezamos a usar <strong>Vectores</strong> y <strong>Derivadas</strong> para entender el origen de todo.</p>
+
+      
+
+[Image of projectile motion trajectory diagram]
+
+
+      <h2>1. La Herramienta Nueva: La Derivada</h2>
+      <p>En física, "derivar" simplemente significa <strong>calcular el ritmo de cambio</strong>. Es muy fácil con polinomios:</p>
+      <div class="concept-note">
+        <strong>Regla de oro (Potencias):</strong> Bajas el exponente y le restas uno.
+        <br>Ejemplo: Si $x(t) = 5t^3$, entonces la velocidad es $v(t) = 15t^2$.
+      </div>
+      <p>Las definiciones formales son:</p>
+      <div class="formula-box">
+        $$ \vec{v} = \frac{d\vec{r}}{dt} \quad \text{(La velocidad es la derivada de la posición)} $$
+        $$ \vec{a} = \frac{d\vec{v}}{dt} \quad \text{(La aceleración es la derivada de la velocidad)} $$
+      </div>
+
+      <h2>2. Movimiento Parabólico (Tiro de Proyectiles)</h2>
+      <p>Es la combinación de dos movimientos independientes. Imagina una pelota lanzada al aire:</p>
+      <ul>
+        <li><strong>Eje X (Horizontal):</strong> Nadie empuja la pelota. Es un <strong>MRU</strong> ($a_x = 0$).</li>
+        <li><strong>Eje Y (Vertical):</strong> La gravedad tira hacia abajo. Es un <strong>MRUA</strong> ($a_y = -g$).</li>
+      </ul>
+      
+      <h3>Ecuaciones Vectoriales</h3>
+      <p>Si lanzamos con velocidad inicial $v_0$ y ángulo $\alpha$:</p>
+      $$
+      \begin{cases}
+      v_{0x} = v_0 \cos \alpha \\
+      v_{0y} = v_0 \sin \alpha
+      \end{cases}
+      $$
+      <div class="formula-box">
+        $$ \vec{r}(t) = \left( v_0 \cos\alpha \cdot t \right) \vec{i} + \left( H_{ini} + v_0 \sin\alpha \cdot t - \frac{1}{2}g t^2 \right) \vec{j} $$
+      </div>
+      
+      <h3>Fórmulas Útiles (Consecuencias)</h3>
+      <p>Si derivamos e igualamos a cero ($v_y=0$ para altura máxima), obtenemos:</p>
+      <ul>
+        <li><strong>Altura Máxima:</strong> $H_{max} = \frac{v_0^2 \sin^2 \alpha}{2g}$</li>
+        <li><strong>Alcance Máximo:</strong> $R = \frac{v_0^2 \sin(2\alpha)}{g}$</li>
+      </ul>
+
+      <h2>3. Componentes Intrínsecas (¿Giro o Acelero?)</h2>
+      <p>La aceleración total $\vec{a}$ se rompe en dos partes:</p>
+      <ul>
+        <li><strong>Aceleración Tangencial ($a_t$):</strong> Cambia el módulo (pisas el freno/gas).</li>
+        <li><strong>Aceleración Normal ($a_n$):</strong> Cambia la dirección (giras el volante).</li>
+      </ul>
+      <div class="formula-box">
+        $$ a_n = \frac{v^2}{R} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="sec-uni">
+    <div class="card">
+      <h1>Universidad: Coordenadas Polares y Generalización</h1>
+      <p>Aquí la cosa se complica. En la vida real, los ejes cartesianos ($x,y$) suelen ser torpes. Usamos sistemas donde <strong>los propios ejes de referencia giran</strong>.</p>
+
+      
+
+      <h2>1. Vectores Unitarios que Giran</h2>
+      <p>En polares, usamos la base radial $\hat{u}_r$ y transversal $\hat{u}_\theta$. Como la partícula se mueve, estos vectores cambian de dirección. Por tanto, <strong>sus derivadas no son cero</strong>.</p>
+      <div class="formula-box">
+        $$ \frac{d\hat{u}_r}{dt} = \dot{\theta} \hat{u}_\theta \quad ; \quad \frac{d\hat{u}_\theta}{dt} = -\dot{\theta} \hat{u}_r $$
+      </div>
+
+      <h2>2. Velocidad en Polares</h2>
+      <p>Posición $\vec{r} = r \hat{u}_r$. Al derivar aplicamos la regla del producto (derivada del primero por el segundo + el primero por derivada del segundo):</p>
+      $$ \vec{v} = \frac{d}{dt}(r \hat{u}_r) = \dot{r}\hat{u}_r + r \dot{\hat{u}}_r $$
+      <div class="formula-box">
+        $$ \vec{v} = \dot{r}\hat{u}_r + r\dot{\theta}\hat{u}_\theta $$
+      </div>
+      <p><em>Significado:</em> Velocidad de alejamiento ($\dot{r}$) + Velocidad de giro ($r\dot{\theta}$).</p>
+
+      <h2>3. Aceleración General (La Bestia)</h2>
+      <p>Si derivamos de nuevo la velocidad, obtenemos cuatro términos que se agrupan así. Esta es una de las fórmulas más importantes de la mecánica:</p>
+      <div class="formula-box">
+        $$ \vec{a} = (\ddot{r} - r\dot{\theta}^2)\hat{u}_r + (r\ddot{\theta} + 2\dot{r}\dot{\theta})\hat{u}_\theta $$
+      </div>
+      
+      <h3>Desglose Físico de cada término:</h3>
+      <ul>
+        <li>$\ddot{r}$: Aceleración lineal pura (empuje radial).</li>
+        <li>$-r\dot{\theta}^2$: <strong>Aceleración Centrípeta</strong>. Surge por girar. Apunta hacia el centro (signo negativo).</li>
+        <li>$r\ddot{\theta}$: Aceleración angular (si el giro se acelera).</li>
+        <li>$2\dot{r}\dot{\theta}$: <strong>Aceleración de Coriolis</strong>. Aparece cuando te mueves radialmente ($\dot{r}$) en un sistema que gira ($\dot{\theta}$). Fundamental en meteorología y dinámica orbital.</li>
+      </ul>
+
+      <h2>4. Coordenadas Intrínsecas (Frenet-Serret 3D)</h2>
+      <p>Para una curva arbitraria en el espacio, definimos el triedro móvil ($\vec{T}, \vec{N}, \vec{B}$).</p>
+      $$ \vec{v} = v \vec{T} $$
+      $$ \vec{a} = \dot{v} \vec{T} + \frac{v^2}{\rho} \vec{N} $$
+      <p>Donde $\rho$ es el <strong>Radio de Curvatura</strong> y $\vec{N}$ es el vector normal principal.
+      <br>Para calcular $\vec{N}$ y $\vec{T}$ sin geometría, usamos:</p>
+      $$ \vec{T} = \frac{\vec{v}}{|\vec{v}|} \quad ; \quad \vec{N} = \frac{d\vec{T}/dt}{|d\vec{T}/dt|} $$
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function switchTab(level) {
+    // 1. Actualizar botones
+    document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+    document.getElementById('btn-' + level).setAttribute('aria-selected', 'true');
+
+    // 2. Ocultar todas las secciones
+    document.querySelectorAll('section').forEach(s => s.removeAttribute('data-active'));
+
+    // 3. Mostrar la seleccionada
+    document.getElementById('sec-' + level).setAttribute('data-active', '');
+    
+    // 4. Hacer scroll suave arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
