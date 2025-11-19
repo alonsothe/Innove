@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MANEL NIGER | Magnetismo</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧲</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA MANEL NIGER (MAGNETISMO) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --north: #ef4444; /* Rojo (Polo Norte / Fuerza) */
+    --north-glow: rgba(239, 68, 68, 0.08);
+    --south: #3b82f6; /* Azul (Polo Sur / Campo B) */
+    --current: #f59e0b; /* Ámbar (Corriente I) */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #0f172a; /* Dark Blue/Grey */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --north-glow: rgba(239, 68, 68, 0.15);
+    --glass-bg: rgba(15, 23, 42, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de líneas de campo */
+    background-image: 
+        repeating-linear-gradient(45deg, var(--glass-border) 0px, var(--glass-border) 1px, transparent 1px, transparent 30px);
+    background-size: 42px 42px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES DE FONDO */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.35; }
+  .orb-1 { width: 600px; height: 600px; background: var(--north); top: -200px; right: -150px; animation: pulse 8s infinite alternate; }
+  .orb-2 { width: 500px; height: 500px; background: var(--south); bottom: -100px; left: -100px; }
+  @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--north); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--north); color: #fff; border-color: var(--north);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--north); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--north-glow); 
+    border-left: 4px solid var(--north);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--north); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--south); } 
+  .ex-badge.uni { background: var(--current); color: white; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--north-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--north); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(239, 68, 68, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  th, td { padding: 12px; border-bottom: 1px solid var(--glass-border); text-align: left; }
+  th { color: var(--north); font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🧲</div>
+    <div class="logo-text">
+      <div>MANEL NIGER</div>
+      <div>Magnetismo</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="fuerza" aria-selected="true">1. Fuerza Lorentz</button>
+    <button class="nav-btn" data-target="fuentes" aria-selected="false">2. Fuentes (Biot)</button>
+    <button class="nav-btn" data-target="induccion" aria-selected="false">3. Inducción</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="fuerza" class="content-section" data-active>
+    <div class="card">
+      <h1>Campo Magnético y Fuerza de Lorentz</h1>
+      <p>Una carga en movimiento dentro de un campo magnético $\vec{B}$ experimenta una fuerza perpendicular a su velocidad.</p>
+
+      <h2>1.1 Ley de Lorentz</h2>
+      <div class="math-box">
+        $$ \vec{F} = q (\vec{v} \times \vec{B}) $$
+      </div>
+      <p><strong>Módulo:</strong> $F = |q| v B \sin\theta$.</p>
+      <p><strong>Regla de la Mano Derecha:</strong>
+      <br>1. Dedos en dirección de $\vec{v}$.
+      <br>2. Girar hacia $\vec{B}$.
+      <br>3. Pulgar indica $\vec{F}$ (para carga positiva). Invertir si es negativa.</p>
+
+      <h2>1.2 Movimiento de Cargas (Ciclotrón)</h2>
+      <p>Si $\vec{v} \perp \vec{B}$, la fuerza es centrípeta y la partícula describe un MCU.</p>
+      <div class="math-box">
+        $$ qvB = m \frac{v^2}{R} \Rightarrow R = \frac{mv}{qB} $$
+        $$ T = \frac{2\pi R}{v} = \frac{2\pi m}{qB} \quad (\text{Periodo}) $$
+      </div>
+
+      <h2>1.3 Fuerza sobre una Corriente</h2>
+      <p>Si en lugar de una carga tenemos muchas (un cable de longitud $\vec{L}$):</p>
+      <div class="math-box">
+        $$ \vec{F} = I (\vec{L} \times \vec{B}) $$
+      </div>
+    </div>
+  </section>
+
+  <section id="fuentes" class="content-section">
+    <div class="card">
+      <h1>Creación de Campos Magnéticos</h1>
+      <p>Las cargas en movimiento (corrientes) crean campos magnéticos a su alrededor. Ley de Biot-Savart y Ampère.</p>
+      
+      <h2>2.1 Hilo Infinito</h2>
+      <p>Campo creado por una corriente $I$ a una distancia $r$. Líneas circulares.</p>
+      <div class="math-box">
+        $$ B = \frac{\mu_0 I}{2\pi r} $$
+      </div>
+      <p>$\mu_0 = 4\pi \cdot 10^{-7} \, T \cdot m/A$ (Permeabilidad del vacío).</p>
+
+      <h2>2.2 Espira y Solenoide</h2>
+      <ul>
+        <li><strong>Centro de una Espira (radio $R$):</strong>
+          $$ B = \frac{\mu_0 I}{2R} $$
+        </li>
+        <li><strong>Interior de un Solenoide (N espiras, longitud L):</strong>
+          $$ B = \mu_0 \frac{N}{L} I = \mu_0 n I $$
+        </li>
+      </ul>
+
+      <h2>2.3 Ley de Ampère</h2>
+      <p>La circulación del campo magnético a lo largo de una línea cerrada es proporcional a la corriente que atraviesa la superficie.</p>
+      <div class="math-box">
+        $$ \oint \vec{B} \cdot d\vec{l} = \mu_0 I_{encerrada} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="induccion" class="content-section">
+    <div class="card">
+      <h1>Inducción Electromagnética</h1>
+      <p>Un campo magnético variable genera electricidad. Es la base de generadores y transformadores.</p>
+
+      <h2>3.1 Flujo Magnético ($\Phi$)</h2>
+      <p>Medida del número de líneas de campo que atraviesan una superficie.</p>
+      <div class="math-box">
+        $$ \Phi = \vec{B} \cdot \vec{S} = B \cdot S \cdot \cos\theta $$
+      </div>
+      <p>Unidad: Weber (Wb).</p>
+
+      <h2>3.2 Ley de Faraday-Lenz</h2>
+      <p>La Fuerza Electromotriz (FEM, $\varepsilon$) inducida es igual a la rapidez de cambio del flujo.</p>
+      <div class="math-box">
+        $$ \varepsilon = - N \frac{d\Phi}{dt} $$
+      </div>
+      <p><strong>Ley de Lenz (Signo menos):</strong> La corriente inducida tiene un sentido tal que se opone a la variación de flujo que la produce.</p>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (MANEL NIGER)</h2>
+      <p>Ejercicios desde nivel Bachillerato hasta Física Universitaria.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Ciclotrón: Un protón entra perpendicularmente en un campo $B=0.5$ T con velocidad $v=2 \cdot 10^6$ m/s. Calcule el radio de la órbita y el periodo. ($m_p = 1.67 \cdot 10^{-27}$ kg).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Igualar fuerza magnética a centrípeta: $qvB = m v^2 / R$.</span>
+            <span class="step">2. $R = \frac{mv}{qB} = \frac{1.67\cdot 10^{-27} \cdot 2\cdot 10^6}{1.6\cdot 10^{-19} \cdot 0.5}$.</span>
+            <span class="step">3. $R = \frac{3.34\cdot 10^{-21}}{8\cdot 10^{-20}} = 0.04175$ m = 4.18 cm.</span>
+            <span class="step">4. $T = \frac{2\pi R}{v} = \frac{2\pi \cdot 0.0418}{2\cdot 10^6} = 1.31 \cdot 10^{-7}$ s.</span>
+            <div class="res-final">R = 4.18 cm ; T = 131 ns</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Selector de Velocidades: Un haz de electrones atraviesa sin desviarse una región con campos cruzados $E=2000$ V/m y $B=0.05$ T. Calcule la velocidad. Si se apaga el campo eléctrico, ¿qué radio tendrá la órbita?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Sin desviación: $\vec{F}_E + \vec{F}_m = 0 \Rightarrow qE = qvB \Rightarrow v = E/B$.</span>
+            <span class="step">2. $v = 2000 / 0.05 = 40,000$ m/s.</span>
+            <span class="step">3. Si $E=0$, solo actúa $B$. $R = \frac{mv}{qB}$.</span>
+            <span class="step">4. $m_e = 9.11 \cdot 10^{-31}$ kg.</span>
+            <span class="step">5. $R = \frac{9.11\cdot 10^{-31} \cdot 40000}{1.6\cdot 10^{-19} \cdot 0.05} = 4.55 \cdot 10^{-6}$ m.</span>
+            <div class="res-final">v = 40 km/s ; R = 4.55 µm</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Dos Hilos Paralelos: Dos conductores rectilíneos verticales transportan corrientes $I_1=2$ A (arriba) e $I_2=5$ A (arriba) separados 10 cm. Calcule el campo magnético en el punto medio.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Punto medio $r = 0.05$ m.</span>
+            <span class="step">2. Regla mano derecha: $B_1$ entra (x), $B_2$ sale (•). Se restan.</span>
+            <span class="step">3. $B_1 = \frac{4\pi\cdot 10^{-7} \cdot 2}{2\pi \cdot 0.05} = \frac{4\cdot 10^{-7}}{0.05} = 8 \cdot 10^{-6}$ T.</span>
+            <span class="step">4. $B_2 = \frac{4\pi\cdot 10^{-7} \cdot 5}{2\pi \cdot 0.05} = \frac{10\cdot 10^{-7}}{0.05} = 20 \cdot 10^{-6}$ T.</span>
+            <span class="step">5. $B_{neto} = |B_1 - B_2| = 12 \cdot 10^{-6}$ T (Saliente, manda $I_2$).</span>
+            <div class="res-final">B = 12 µT (Saliente)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Espira Cuadrada: Calcule el campo magnético en el centro de una espira cuadrada de lado $L$ que transporta corriente $I$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. El campo es la suma de 4 segmentos finitos de longitud $L$. Distancia al centro $d=L/2$.</span>
+            <span class="step">2. Fórmula hilo finito: $B = \frac{\mu_0 I}{4\pi d} (\sin\theta_1 + \sin\theta_2)$.</span>
+            <span class="step">3. Ángulos $\theta_1 = \theta_2 = 45^\circ$. $\sin 45 = \sqrt{2}/2$.</span>
+            <span class="step">4. $B_{seg} = \frac{\mu_0 I}{4\pi (L/2)} (\sqrt{2})$.</span>
+            <span class="step">5. Total $B = 4 \cdot B_{seg} = 4 \cdot \frac{\mu_0 I \sqrt{2}}{2\pi L} = \frac{2\sqrt{2} \mu_0 I}{\pi L}$.</span>
+            <div class="res-final">B = (2√2 μ₀ I) / (π L)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Varilla Móvil: Una varilla de 20 cm se mueve a 5 m/s sobre raíles en forma de U dentro de un campo $B=0.4$ T perpendicular. Si la resistencia del circuito es $2 \Omega$, calcule la fuerza necesaria para mantener la velocidad.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. FEM Inducida: $\varepsilon = B L v = 0.4 \cdot 0.2 \cdot 5 = 0.4$ V.</span>
+            <span class="step">2. Corriente: $I = \varepsilon / R = 0.4 / 2 = 0.2$ A.</span>
+            <span class="step">3. Fuerza Magnética (Frenado): $F_m = I L B = 0.2 \cdot 0.2 \cdot 0.4 = 0.016$ N.</span>
+            <span class="step">4. Para mantener $v$ constante, $F_{ext} = F_m$. Potencia disipada $P = I^2 R = 0.08$ W. Potencia mecánica $P = F \cdot v = 0.016 \cdot 5 = 0.08$ W. (Coinciden).</span>
+            <div class="res-final">F = 0.016 N</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Bobina Giratoria (AC): Una bobina de 100 espiras y área $0.01$ m² gira a 50 Hz en un campo $B=0.5$ T. Escriba la expresión de la FEM inducida.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Flujo: $\Phi = N B S \cos(\omega t)$.</span>
+            <span class="step">2. $\omega = 2\pi f = 100\pi$ rad/s.</span>
+            <span class="step">3. $\Phi(t) = 100 \cdot 0.5 \cdot 0.01 \cdot \cos(100\pi t) = 0.5 \cos(100\pi t)$.</span>
+            <span class="step">4. FEM: $\varepsilon = -d\Phi/dt = -0.5 \cdot (-100\pi) \sin(100\pi t)$.</span>
+            <span class="step">5. $\varepsilon_{max} = 50\pi \approx 157$ V.</span>
+            <div class="res-final">ε(t) = 157 sen(100πt) V</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Trabajo de la fuerza magnética sobre una carga.</span></summary><div class="solution">CERO. La fuerza es perpendicular a la velocidad. No cambia la energía cinética.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Campo en el interior de un conductor cilíndrico grueso (radio R).</span></summary><div class="solution">Ley de Ampère. $B(r) = (\mu_0 I r) / (2\pi R^2)$. Crece linealmente.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Momento dipolar magnético de un átomo (Modelo Bohr).</span></summary><div class="solution">$\mu = I \cdot S = (ev/2\pi r)(\pi r^2) = evr/2$. Relacionado con el espín.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Definición de Amperio (basada en fuerza).</span></summary><div class="solution">Corriente que en dos hilos paralelos separados 1m produce una fuerza de $2 \cdot 10^{-7}$ N/m.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Inductancia de un solenoide ($N, L, S$).</span></summary><div class="solution">$L = \mu_0 N^2 S / l$. Depende solo de la geometría.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Sentido corriente inducida (Imán acercándose).</span></summary><div class="solution">Si el Norte se acerca, la espira crea un Norte para repelerlo (Lenz).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Ecuación de onda electromagnética en vacío.</span></summary><div class="solution">$\nabla^2 E = \mu_0 \varepsilon_0 \partial^2 E / \partial t^2$. Velocidad $c = 1/\sqrt{\mu_0 \varepsilon_0}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Toroide: Campo magnético en su interior.</span></summary><div class="solution">$B = \mu_0 N I / (2\pi r)$. Es variable con el radio, no uniforme.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Fuerza entre dos hilos con corrientes opuestas.</span></summary><div class="solution">Repulsiva. (Corrientes paralelas se atraen, antiparalelas se repelen).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Energía almacenada en bobina 2H a 3A.</span></summary><div class="solution">$U = 0.5 L I^2 = 0.5 \cdot 2 \cdot 9 = 9$ J.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Efecto Hall: Voltaje transversal.</span></summary><div class="solution">$V_H = I B / (n q t)$. Sirve para medir B o densidad de portadores $n$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Existen monopolos magnéticos?</span></summary><div class="solution">No se han observado. $\oint B \cdot dS = 0$. Las líneas de B son cerradas.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Momento de fuerza (Torque) sobre espira rectangular.</span></summary><div class="solution">$\vec{\tau} = \vec{\mu} \times \vec{B}$. Módulo $\tau = N I S B \sin\theta$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Material ferromagnético vs paramagnético.</span></summary><div class="solution">Ferro: $\mu \gg \mu_0$ (Hierro). Para: $\mu > \mu_0$ (Aluminio). Dia: $\mu < \mu_0$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Corriente de desplazamiento (Maxwell).</span></summary><div class="solution">$I_d = \varepsilon_0 d\Phi_E/dt$. Explica B entre placas de un condensador.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Electrón acelerado por 100V entra en B. Radio.</span></summary><div class="solution">$0.5mv^2 = qV \Rightarrow v$. Luego $R = mv/qB$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Unidad de Campo Magnético.</span></summary><div class="solution">Tesla (T). $1 T = 10^4$ Gauss.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Autoinducción al abrir un interruptor.</span></summary><div class="solution">La corriente cae rápido ($dI/dt$ grande), $\varepsilon = -L dI/dt$ muy grande (chispa).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Fuerza magnética sobre un dipolo no uniforme.</span></summary><div class="solution">Si B no es uniforme, $F = \nabla (\vec{\mu} \cdot \vec{B})$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Permeabilidad relativa $\mu_r$.</span></summary><div class="solution">$\mu = \mu_r \mu_0$. Indica cuánto se magnetiza el material.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Espectrómetro: Separación de isótopos.</span></summary><div class="solution">$R \propto \sqrt{m}$ (si entran con misma E) o $R \propto m$ (si entran con misma v).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Transformador ideal.</span></summary><div class="solution">$V_1/V_2 = N_1/N_2 = I_2/I_1$. Conserva potencia.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿B es conservativo?</span></summary><div class="solution">No. Su circulación no es cero (Ley de Ampère). No deriva de un potencial escalar.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Campo terrestre y auroras.</span></summary><div class="solution">El campo desvía partículas cargadas (viento solar) hacia los polos (espirales).</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
