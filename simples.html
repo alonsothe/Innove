@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Sustancias Simples</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+    /* --- VARIABLES DE DISEÑO (SISTEMA FRIENDLY) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f3f6fd;
+        --surface: #ffffff;
+        --text-main: #2d3748;
+        --text-soft: #718096;
+        --border: #e2e8f0;
+        
+        /* Paleta Específica para este tema */
+        --primary: #0ea5e9;      /* Azul Cielo */
+        --primary-soft: #e0f2fe;
+        --secondary: #8b5cf6;    /* Violeta */
+        --secondary-soft: #ede9fe;
+        --tertiary: #f43f5e;     /* Rosa/Rojo */
+        --tertiary-soft: #ffe4e6;
+        --accent: #f59e0b;       /* Ambar */
+        --accent-soft: #fef3c7;
+
+        --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(14, 165, 233, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f1f5f9;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --primary-soft: rgba(14, 165, 233, 0.2);
+        --secondary-soft: rgba(139, 92, 246, 0.2);
+        --tertiary-soft: rgba(244, 63, 94, 0.2);
+        --accent-soft: rgba(245, 158, 11, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-blue .icon-box { background: var(--primary-soft); }
+    .c-purple .icon-box { background: var(--secondary-soft); }
+    .c-red .icon-box { background: var(--tertiary-soft); }
+    .c-amber .icon-box { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+    
+    .example-tag {
+        display: inline-block; padding: 4px 10px; border-radius: 8px; 
+        font-weight: 700; font-size: 0.85rem; margin-right: 5px; margin-top: 5px;
+        background: var(--bg); color: var(--text-main); border: 1px solid var(--border);
+    }
+
+    /* ALOTROPÍA SECTION */
+    .allo-card {
+        background: var(--surface); border-radius: var(--radius); padding: 40px;
+        display: flex; flex-direction: column; gap: 20px; border: 1px solid var(--border);
+        position: relative; overflow: hidden;
+    }
+    .allo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+    .allo-item { 
+        background: var(--bg); padding: 20px; border-radius: 20px; text-align: center;
+        border: 1px solid var(--border);
+    }
+    .allo-symbol { font-size: 2.5rem; font-weight: 800; color: var(--text-main); display: block; margin-bottom: 5px; }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+
+    details {
+        background: var(--surface); border-radius: 20px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.02); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px 20px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.95rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '-'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); border-bottom: 1px solid var(--border); }
+
+    .answer { 
+        padding: 15px 20px; background: var(--primary-soft); color: var(--primary); 
+        font-weight: 700; font-size: 0.9rem; 
+        animation: fadeIn 0.3s ease;
+    }
+    .answer strong { color: var(--text-main); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- IDIOMAS --- */
+    [data-lang] { display: none; }
+    body.lang-ca [data-lang="ca"] { display: block; }
+    body.lang-es [data-lang="es"] { display: block; }
+    body.lang-en [data-lang="en"] { display: block; }
+    body.lang-ca span[data-lang="ca"] { display: inline; }
+    body.lang-es span[data-lang="es"] { display: inline; }
+    body.lang-en span[data-lang="en"] { display: inline; }
+
+    @media (max-width: 768px) { .allo-grid { grid-template-columns: 1fr; } }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Volver al Hub</span>
+            <span data-lang="ca">Tornar al Hub</span>
+            <span data-lang="en">Back to Hub</span>
+        </a>
+        
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">⚛️</span>
+            <h1 data-lang="es">Sustancias <span>Simples</span></h1>
+            <h1 data-lang="ca">Substàncies <span>Simples</span></h1>
+            <h1 data-lang="en">Simple <span>Substances</span></h1>
+            
+            <p class="intro" data-lang="es">Son aquellas formadas por <strong>un solo tipo de elemento</strong>. Pero cuidado, ¡pueden agruparse de formas muy diferentes!</p>
+            <p class="intro" data-lang="ca">Són aquelles formades per <strong>un sol tipus d'element</strong>. Però compte, poden agrupar-se de formes molt diferents!</p>
+            <p class="intro" data-lang="en">Those formed by <strong>a single type of element</strong>. But watch out, they can group in very different ways!</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card c-blue">
+                <div class="icon-box">🎈</div>
+                <h3 data-lang="es">Gases Nobles (Monoatómicos)</h3><h3 data-lang="ca">Gasos Nobles</h3><h3 data-lang="en">Noble Gases</h3>
+                <p data-lang="es">Son los "solitarios" de la tabla. No se juntan con nadie, ni con ellos mismos. Su fórmula es simplemente su símbolo.</p>
+                <p data-lang="ca">Són els "solitaris". No s'ajunten amb ningú. La seva fórmula és el seu símbol.</p>
+                <p data-lang="en">The loners. They don't bond with anyone. Formula is just their symbol.</p>
+                <div>
+                    <span class="example-tag">He (Helio)</span>
+                    <span class="example-tag">Ne (Neón)</span>
+                    <span class="example-tag">Ar (Argón)</span>
+                </div>
+            </div>
+
+            <div class="card c-purple">
+                <div class="icon-box">👯</div>
+                <h3 data-lang="es">Moleculares (Diatómicos)</h3><h3 data-lang="ca">Moleculars (Diatòmics)</h3><h3 data-lang="en">Diatomic Molecules</h3>
+                <p data-lang="es">Van siempre en pareja. Son los 7 magníficos: H, N, O, F, Cl, Br, I. Siempre llevan un subíndice 2.</p>
+                <p data-lang="ca">Van sempre en parella. Són els 7 magnífics. Sempre porten un subíndex 2.</p>
+                <p data-lang="en">They always go in pairs. The magnificent 7. Always with subscript 2.</p>
+                <div>
+                    <span class="example-tag">H₂</span>
+                    <span class="example-tag">O₂</span>
+                    <span class="example-tag">N₂</span>
+                    <span class="example-tag">Cl₂</span>
+                </div>
+            </div>
+
+            <div class="card c-red">
+                <div class="icon-box">🔩</div>
+                <h3 data-lang="es">Metales (Redes)</h3><h3 data-lang="ca">Metalls (Xarxes)</h3><h3 data-lang="en">Metals (Lattices)</h3>
+                <p data-lang="es">Aunque son millones de átomos juntos en una red cristalina, se representan con un solo símbolo (como si fueran uno solo).</p>
+                <p data-lang="ca">Tot i ser milions d'àtoms junts, es representen amb un sol símbol.</p>
+                <p data-lang="en">Even though they are millions of atoms, they are represented by a single symbol.</p>
+                <div>
+                    <span class="example-tag">Fe (Hierro)</span>
+                    <span class="example-tag">Cu (Cobre)</span>
+                    <span class="example-tag">Au (Oro)</span>
+                </div>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🎭 El Fenómeno de la Alotropía</h2>
+        <h2 data-lang="ca">🎭 El Fenomen de l'Al·lotropia</h2>
+        <h2 data-lang="en">🎭 The Allotropy Phenomenon</h2>
+
+        <div class="allo-card">
+            <p data-lang="es">Un mismo elemento puede ordenarse de formas distintas. ¡Es como tener las mismas piezas de Lego pero construir cosas diferentes!</p>
+            <p data-lang="ca">Un mateix element pot ordenar-se de formes diferents. És com tenir les mateixes peces de Lego però construir coses diferents!</p>
+            <p data-lang="en">The same element can be arranged differently. Same Legos, different structures!</p>
+            
+            <div class="allo-grid">
+                <div class="allo-item">
+                    <span class="allo-symbol">O₂ vs O₃</span>
+                    <strong data-lang="es">Oxígeno</strong>
+                    <p data-lang="es" style="font-size:0.9rem; margin-top:10px;">O₂ es el que respiras. <br>O₃ (Ozono) es tóxico pero nos protege del sol.</p>
+                    <p data-lang="ca" style="font-size:0.9rem; margin-top:10px;">O₂ és el que respires. <br>O₃ (Ozó) és tòxic però ens protegeix.</p>
+                </div>
+                <div class="allo-item">
+                    <span class="allo-symbol">C</span>
+                    <strong data-lang="es">Carbono</strong>
+                    <p data-lang="es" style="font-size:0.9rem; margin-top:10px;">Puede ser <strong>Grafito</strong> (minas de lápiz) o <strong>Diamante</strong> (joyas duras). ¡Todo depende de cómo se unan!</p>
+                    <p data-lang="ca" style="font-size:0.9rem; margin-top:10px;">Pot ser <strong>Grafit</strong> o <strong>Diamant</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 data-lang="es">📏 Reglas de Nomenclatura (2005)</h2>
+        <h2 data-lang="ca">📏 Regles de Nomenclatura (2005)</h2>
+        <h2 data-lang="en">📏 Naming Rules (2005)</h2>
+        <p data-lang="es">Se nombran indicando el número de átomos con prefijos numerales griegos.</p>
+        
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:40px;">
+            <span class="example-tag" style="background:var(--primary-soft)">Mono- (1)</span>
+            <span class="example-tag" style="background:var(--primary-soft)">Di- (2)</span>
+            <span class="example-tag" style="background:var(--primary-soft)">Tri- (3)</span>
+            <span class="example-tag" style="background:var(--primary-soft)">Tetra- (4)</span>
+            <span class="example-tag" style="background:var(--primary-soft)">Penta- (5)</span>
+            <span class="example-tag" style="background:var(--primary-soft)">Hexa- (6)</span>
+        </div>
+
+
+        <h2 data-lang="es">🏋️ Gimnasio Químico (20 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs Químic (20 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Chemistry Gym (20 Exercises)</h2>
+
+        <div class="gym-grid">
+            
+            <details><summary>1. Helio</summary><div class="answer">He</div></details>
+            <details><summary>2. Neón</summary><div class="answer">Ne</div></details>
+            <details><summary>3. Argón</summary><div class="answer">Ar</div></details>
+            <details><summary>4. Criptón</summary><div class="answer">Kr</div></details>
+            <details><summary>5. Xenón</summary><div class="answer">Xe</div></details>
+
+            <details><summary>6. Hidrógeno</summary><div class="answer">H₂ <br><small>(Dihidrógeno)</small></div></details>
+            <details><summary>7. Oxígeno</summary><div class="answer">O₂ <br><small>(Dioxígeno)</small></div></details>
+            <details><summary>8. Nitrógeno</summary><div class="answer">N₂ <br><small>(Dinitrógeno)</small></div></details>
+            <details><summary>9. Flúor</summary><div class="answer">F₂ <br><small>(Diflúor)</small></div></details>
+            <details><summary>10. Cloro</summary><div class="answer">Cl₂ <br><small>(Dicloro)</small></div></details>
+            <details><summary>11. Bromo</summary><div class="answer">Br₂ <br><small>(Dibromo - Líquido)</small></div></details>
+            <details><summary>12. Yodo</summary><div class="answer">I₂ <br><small>(Diyodo - Sólido)</small></div></details>
+
+            <details><summary>13. Hierro</summary><div class="answer">Fe</div></details>
+            <details><summary>14. Ozono</summary><div class="answer">O₃ <br><small>(Trioxígeno)</small></div></details>
+            <details><summary>15. Fósforo Blanco</summary><div class="answer">P₄ <br><small>(Tetrafósforo)</small></div></details>
+            <details><summary>16. Azufre</summary><div class="answer">S₈ <br><small>(Octaazufre)</small></div></details>
+            <details><summary>17. Oro</summary><div class="answer">Au</div></details>
+            <details><summary>18. Mercurio</summary><div class="answer">Hg <br><small>(Líquido)</small></div></details>
+            <details><summary>19. Carbono (Diamante)</summary><div class="answer">C</div></details>
+            <details><summary>20. Plata</summary><div class="answer">Ag</div></details>
+
+        </div>
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
