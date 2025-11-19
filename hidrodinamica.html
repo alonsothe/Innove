@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mecánica de Fluidos | Nivel Ingeniería</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA DEEP OCEAN (INGENIERÍA NAVAL/CIVIL) --- */
+    --bg-color: #0f172a; /* Slate 900 */
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    
+    --accent: #0ea5e9; /* Sky 500 (Fluidos ideales) */
+    --accent-dark: #0284c7;
+    --accent-glow: rgba(14, 165, 233, 0.15);
+    
+    --energy: #f59e0b; /* Ámbar (Pérdidas/Energía) */
+    --force: #ef4444; /* Rojo (Momento/Fuerzas) */
+    
+    --glass-bg: rgba(30, 41, 59, 0.7); /* Slate 800 + Opacity */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    --radius: 4px; /* Bordes más rectos, más técnico */
+    --font-ui: 'Inter', sans-serif;
+    --font-heading: 'Roboto Slab', serif; /* Toque académico */
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de líneas de flujo */
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 20px);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 100px;
+  }
+
+  /* HEADER TÉCNICO */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 0; z-index: 100; padding: 16px 0;
+    background: rgba(15, 23, 42, 0.95); border-bottom: 1px solid var(--glass-border);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo-icon { font-size: 2rem; }
+  .logo-text div:first-child { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; color: var(--text-primary); }
+  .logo-text div:last-child { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+
+  .nav-menu { display: flex; gap: 4px; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 16px; font-weight: 600; cursor: pointer; font-size: 0.85rem; text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  .nav-btn[aria-selected="true"] { color: var(--text-primary); border-bottom: 2px solid var(--accent); background: var(--accent-glow); }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.5s ease; padding-top: 40px; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    border-left: 4px solid var(--accent);
+    padding: 30px; margin-bottom: 30px; 
+  }
+
+  h1 { font-family: var(--font-heading); font-size: 2.2rem; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-family: var(--font-heading); font-size: 1.5rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--glass-border); padding-bottom: 8px; }
+  h3 { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 0.5rem; color: var(--text-primary); }
+  
+  /* MATH & FORMULAS */
+  .math-box {
+    background: rgba(0,0,0,0.3); 
+    border: 1px solid var(--glass-border);
+    padding: 20px; margin: 20px 0; 
+    overflow-x: auto;
+    text-align: center;
+    color: var(--accent);
+    font-family: var(--font-math);
+  }
+
+  /* TABLAS */
+  .fluid-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+  .fluid-table th { text-align: left; color: var(--accent); border-bottom: 1px solid var(--text-secondary); padding: 10px; font-family: var(--font-heading); }
+  .fluid-table td { padding: 10px; border-bottom: 1px solid var(--glass-border); color: var(--text-secondary); }
+
+  /* EJERCICIOS COMPLEX */
+  .ex-grid { display: grid; gap: 20px; margin-top: 30px; }
+  
+  details.ex {
+    background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border);
+    transition: all 0.2s;
+  }
+  details.ex:hover { border-color: var(--accent); background: rgba(15, 23, 42, 0.9); }
+  
+  summary {
+    padding: 20px; font-weight: 600; list-style: none; cursor: pointer; position: relative;
+    padding-right: 50px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 20px; font-size: 1.2rem; color: var(--text-secondary); }
+  details[open] summary::after { content: '-'; color: var(--accent); }
+  
+  /* Badges de dificultad */
+  .badge {
+    display: inline-block; font-size: 0.7rem; padding: 2px 8px; margin-right: 10px;
+    border: 1px solid; text-transform: uppercase; font-weight: 700; vertical-align: middle;
+  }
+  .b-parcial { border-color: var(--accent); color: var(--accent); }
+  .b-final { border-color: var(--force); color: var(--force); }
+  .b-ing { border-color: var(--energy); color: var(--energy); }
+
+  .solution {
+    padding: 30px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--glass-border);
+    font-family: var(--font-ui); font-size: 0.95rem; color: #cbd5e1;
+  }
+  
+  .res-final {
+    display: inline-block; margin-top: 15px; padding: 8px 16px; 
+    border: 1px solid var(--accent); background: rgba(14, 165, 233, 0.1);
+    color: var(--accent); font-weight: 700; font-family: var(--font-math);
+  }
+
+  .step-num { color: var(--accent); font-weight: bold; margin-right: 8px; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header class="header">
+  <a href="#" class="logo">
+    <div class="logo-icon">🌊</div>
+    <div class="logo-text">
+      <div>Mecánica de Fluidos</div>
+      <div>Ingeniería & Física</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="bernoulli" aria-selected="true">1. Energía & Pérdidas</button>
+    <button class="nav-btn" data-target="momento" aria-selected="false">2. Cantidad de Movimiento</button>
+    <button class="nav-btn" data-target="viscoso" aria-selected="false">3. Flujo Viscoso</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+</header>
+
+<main>
+
+  <section id="bernoulli" class="content-section" data-active>
+    <div class="card">
+      <h1>Balance de Energía (Bernoulli Generalizado)</h1>
+      <p>Para flujo incompresible en tuberías, considerando máquinas hidráulicas y pérdidas por fricción.</p>
+
+      <h2>1.1 Ecuación de la Energía</h2>
+      <p>Aplicada entre dos puntos (1 y 2) de una línea de corriente o volumen de control:</p>
+      <div class="math-box">
+        $$ \frac{P_1}{\gamma} + z_1 + \frac{v_1^2}{2g} + H_{bomba} = \frac{P_2}{\gamma} + z_2 + \frac{v_2^2}{2g} + H_{turbina} + h_L $$
+      </div>
+      <ul>
+        <li>$\gamma = \rho g$: Peso específico ($N/m^3$).</li>
+        <li>$H_{bomba}$: Altura manométrica añadida por la bomba ($m$).</li>
+        <li>$h_L$: Pérdidas de carga totales (primarias + secundarias).</li>
+      </ul>
+
+      <h2>1.2 Potencia de una Bomba</h2>
+      <p>La potencia que el fluido recibe ($\dot{W}$) depende del caudal ($Q$) y la altura útil ($H_B$).</p>
+      <div class="math-box">
+        $$ \dot{W}_{fluido} = \gamma \cdot Q \cdot H_B $$
+        $$ \dot{W}_{eje} = \frac{\gamma Q H_B}{\eta} \quad (\eta = \text{Rendimiento}) $$
+      </div>
+    </div>
+  </section>
+
+  <section id="momento" class="content-section">
+    <div class="card" style="border-left-color: var(--force);">
+      <h1>Teorema del Transporte de Reynolds: Momento Lineal</h1>
+      <p>Fundamental para calcular fuerzas sobre codos, álabes y compuertas. Newton aplicado a fluidos.</p>
+      
+      <div class="math-box">
+        $$ \sum \vec{F}_{ext} = \frac{\partial}{\partial t} \int_{VC} \vec{v} \rho dV + \int_{SC} \vec{v} (\rho \vec{v} \cdot d\vec{A}) $$
+      </div>
+
+      <h3>Para flujo estacionario ($\partial/\partial t = 0$):</h3>
+      <p>La suma de fuerzas (presión + gravedad + reacción mecánica) es igual al flujo neto de cantidad de movimiento.</p>
+      <div class="math-box">
+        $$ \sum \vec{F} = \dot{m}_{sal} \vec{v}_{sal} - \dot{m}_{ent} \vec{v}_{ent} $$
+      </div>
+      
+      <p><strong>OJO:</strong> $\sum \vec{F}$ incluye:</p>
+      <ul>
+        <li>Fuerzas de Presión sobre las caras de entrada/salida ($P \cdot A$).</li>
+        <li>Peso del fluido en el volumen de control.</li>
+        <li>Fuerza de reacción ($R_x, R_y$) que la tubería ejerce sobre el fluido.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="viscoso" class="content-section">
+    <div class="card" style="border-left-color: var(--energy);">
+      <h1>Flujo Real y Pérdidas de Carga</h1>
+      
+      <h2>3.1 Número de Reynolds ($Re$)</h2>
+      <p>Determina el régimen de flujo (Laminar o Turbulento).</p>
+      <div class="math-box">
+        $$ Re = \frac{\rho v D}{\mu} = \frac{v D}{\nu} $$
+      </div>
+      <p>Si $Re < 2300$ (Laminar), si $Re > 4000$ (Turbulento).</p>
+
+      <h2>3.2 Pérdidas Primarias (Darcy-Weisbach)</h2>
+      <p>Válida para cualquier régimen.</p>
+      <div class="math-box">
+        $$ h_f = f \frac{L}{D} \frac{v^2}{2g} $$
+      </div>
+      <p>El factor de fricción $f$ se obtiene del <strong>Diagrama de Moody</strong> o:</p>
+      <ul>
+        <li>Laminar: $f = 64/Re$.</li>
+        <li>Turbulento liso: Ec. Blasius.</li>
+        <li>Turbulento rugoso: Ec. Colebrook-White (iterativa).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Problemas de Parcial y Final (30)</h2>
+      <p>Ejercicios tipo examen de ingeniería. Requieren calculadora y diagramas de cuerpo libre.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="badge b-parcial">PARCIAL</span>
+            Tubo Venturi con Manómetro Diferencial: Calcule el caudal de agua si el manómetro de mercurio ($\rho_{Hg}=13.6$) marca $\Delta h = 20$ cm. Diámetros: $D_1=30$ cm, $D_2=15$ cm.
+          </summary>
+          <div class="solution">
+            <p><span class="step-num">1.</span> Ecuación de Continuidad: $v_1 A_1 = v_2 A_2$. Como $D_1 = 2D_2 \Rightarrow A_1 = 4A_2 \Rightarrow v_2 = 4v_1$.</p>
+            <p><span class="step-num">2.</span> Bernoulli (z iguales): $\frac{P_1 - P_2}{\gamma_w} = \frac{v_2^2 - v_1^2}{2g} = \frac{15v_1^2}{2g}$.</p>
+            <p><span class="step-num">3.</span> Manometría: $P_1 + \gamma_w h - \gamma_{Hg} \Delta h - \gamma_w (h-\Delta h) = P_2$.<br>
+            $P_1 - P_2 = (\gamma_{Hg} - \gamma_w) \Delta h = \gamma_w (S_{Hg}-1) \Delta h$.</p>
+            <p><span class="step-num">4.</span> Igualando alturas piezométricas: $\frac{P_1-P_2}{\gamma_w} = (13.6 - 1)(0.2) = 2.52$ m.</p>
+            <p><span class="step-num">5.</span> Despejar v: $2.52 = \frac{15 v_1^2}{19.6} \Rightarrow v_1 = 1.81$ m/s.</p>
+            <p><span class="step-num">6.</span> $Q = v_1 A_1 = 1.81 \cdot \pi (0.15)^2$.</p>
+            <div class="res-final">Q = 0.128 m³/s (128 L/s)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="badge b-ing">FINAL</span>
+            Sistema de Bombeo: Una bomba eleva agua desde un depósito inferior a uno superior ($H_{geo}=40$ m). $Q=50$ L/s. Tubería $L=200$ m, $D=150$ mm, $f=0.02$. Pérdidas secundarias totales $K_{tot}=5$. Eficiencia $\eta=75\%$. Calcule potencia al eje.
+          </summary>
+          <div class="solution">
+            <p><span class="step-num">1.</span> Velocidad: $v = Q/A = 0.05 / (\pi \cdot 0.075^2) = 2.83$ m/s. Carga velocidad $v^2/2g = 0.41$ m.</p>
+            <p><span class="step-num">2.</span> Pérdidas primarias: $h_f = 0.02 \cdot (200/0.15) \cdot 0.41 = 10.93$ m.</p>
+            <p><span class="step-num">3.</span> Pérdidas secundarias: $h_m = 5 \cdot 0.41 = 2.05$ m.</p>
+            <p><span class="step-num">4.</span> Altura Manométrica Bomba ($H_B$): Bernoulli entre superficies libres ($P=0, v=0$).<br>
+            $H_B = \Delta z + h_L = 40 + 10.93 + 2.05 = 53$ m.</p>
+            <p><span class="step-num">5.</span> Potencia Hidráulica: $P_h = \gamma Q H_B = 9800 \cdot 0.05 \cdot 53 = 25970$ W.</p>
+            <p><span class="step-num">6.</span> Potencia Eje: $P_{eje} = 25970 / 0.75$.</p>
+            <div class="res-final">P = 34.6 kW (46.4 CV)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="badge b-final">FINAL</span>
+            Fuerza en Codo Reductor: Codo horizontal de 90º que reduce de $D_1=60$ cm a $D_2=30$ cm. $Q=0.5$ m³/s. $P_1=150$ kPa. Desprecie pérdidas. Calcule la fuerza resultante del fluido sobre el codo.
+          </summary>
+          <div class="solution">
+            <p><span class="step-num">1.</span> Geometría: Entra en X+, Sale en Y+. <br>
+            $v_1 = Q/A_1 = 1.77$ m/s. $v_2 = Q/A_2 = 7.07$ m/s.</p>
+            <p><span class="step-num">2.</span> Bernoulli para hallar $P_2$: <br>
+            $P_1 + 0.5\rho v_1^2 = P_2 + 0.5\rho v_2^2$. <br>
+            $150000 + 500(1.77^2) = P_2 + 500(7.07^2) \Rightarrow P_2 = 126.6$ kPa.</p>
+            <p><span class="step-num">3.</span> Balance Momento X: $P_1 A_1 - R_x = \rho Q (0 - v_1)$. (Ojo signos).<br>
+            $150000(0.283) - R_x = 1000(0.5)(-1.77) \Rightarrow R_x = 42450 + 885 = 43335$ N.</p>
+            <p><span class="step-num">4.</span> Balance Momento Y: $R_y - P_2 A_2 = \rho Q (v_2 - 0)$.<br>
+            $R_y - 126600(0.0707) = 1000(0.5)(7.07) \Rightarrow R_y = 3535 + 8950 = 12485$ N.</p>
+            <p><span class="step-num">5.</span> Fuerza sobre el codo es la reacción: $\vec{F} = R_x \hat{i} - R_y \hat{j}$. (La tubería empuja al fluido, el fluido empuja a la tubería al revés).</p>
+            <div class="res-final">F = √(43.3² + 12.5²) = 45.1 kN</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="badge b-ing">ING</span>
+            Chorro contra Placa Inclinada: Un chorro de agua ($D=5$ cm, $v=20$ m/s) golpea una placa plana estacionaria inclinada 30º respecto a la vertical. Calcule la fuerza normal ejercida sobre la placa y la distribución de caudales ($Q_{arriba}, Q_{abajo}$).
+          </summary>
+          <div class="solution">
+            <p><span class="step-num">1.</span> Ejes: N (normal placa), T (tangencial). Ángulo incidencia $\theta = 60^\circ$ con la placa.</p>
+            <p><span class="step-num">2.</span> Fuerza Normal: $F_n = \rho Q v_{n,in} = \rho (Av) (v \sin 60)$.<br>
+            $Q = 0.039$ m³/s. $F_n = 1000 \cdot 0.039 \cdot 20 \cdot 0.866 = 675$ N.</p>
+            <p><span class="step-num">3.</span> Caudales: Conservación de masa y Momento en eje T (Fuerza T = 0 si no hay fricción).<br>
+            $Q_{ent} = Q_1 + Q_2$ <br>
+            $\rho Q_{ent} v \cos 60 = \rho Q_1 v - \rho Q_2 v$ (Velocidad se conserva en módulo).</p>
+            <p><span class="step-num">4.</span> Sistema: $Q_1 + Q_2 = Q$ y $Q_1 - Q_2 = Q \cos 60 = 0.5Q$.<br>
+            $2Q_1 = 1.5Q \Rightarrow Q_1 = 0.75Q$.</p>
+            <div class="res-final">Fn = 675 N ; 75% sube, 25% baja</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="badge b-parcial">PARCIAL</span>
+            Régimen y Viscosidad: Aceite ($\rho=900$ kg/m³, $\mu=0.1$ Pa·s) fluye por tubería $D=5$ cm. Si el gradiente de presión es 2000 Pa/m, calcule el caudal y verifique si es laminar.
+          </summary>
+          <div class="solution">
+            <p><span class="step-num">1.</span> Asumiendo laminar (Hagen-Poiseuille): $\Delta P = \frac{128 \mu L Q}{\pi D^4}$.</p>
+            <p><span class="step-num">2.</span> $\frac{\Delta P}{L} = 2000$. Despejar Q:<br>
+            $Q = \frac{2000 \pi (0.05)^4}{128 \cdot 0.1} = \frac{2000 \pi (6.25e-6)}{12.8} = 0.00307$ m³/s.</p>
+            <p><span class="step-num">3.</span> Velocidad media: $v = Q/A = 0.00307 / 0.00196 = 1.56$ m/s.</p>
+            <p><span class="step-num">4.</span> Reynolds: $Re = \frac{\rho v D}{\mu} = \frac{900 \cdot 1.56 \cdot 0.05}{0.1} = 702$.</p>
+            <p><span class="step-num">5.</span> Como $702 < 2300$, es laminar. La asunción es correcta.</p>
+            <div class="res-final">Q = 3.07 L/s (Laminar)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="badge b-final">FINAL</span>
+            Problema de los 3 Depósitos: Dados 3 depósitos conectados a un nodo común J. Conocemos cotas $z_A=100, z_B=80, z_C=60$. Tuberías iguales ($L, D, f$). ¿Hacia dónde fluye el agua en B?
+          </summary>
+          <div class="solution">
+            <p><span class="step-num">1.</span> Asumir una altura piezométrica en el nodo $H_J$.</p>
+            <p><span class="step-num">2.</span> Si $H_J > z_B$, el agua entra a B. Si $H_J < z_B$, sale de B.</p>
+            <p><span class="step-num">3.</span> Ecuación de continuidad en el nodo: $\sum Q = 0$.</p>
+            <p><span class="step-num">4.</span> Expresar $Q = C \sqrt{|z - H_J|}$.</p>
+            <p><span class="step-num">5.</span> Iterar hasta que el balance de masas sea cero. Problema clásico de examen.</p>
+            <div class="res-final">Requiere iteración (Hardy Cross o similar)</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="badge b-ing">ING</span> NPSH y Cavitación.</summary><div class="solution">Para evitar cavitación: $(P_{atm}/\gamma - z_{suc} - h_{f,suc} - P_{vapor}/\gamma) > NPSH_{req}$.</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Lectura Manómetro U diferencial.</summary><div class="solution">$P_A - P_B = \Delta h (\gamma_m - \gamma_f)$.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Sifón: Altura máxima.</summary><div class="solution">Limitada por la presión de vapor en la cima. $P_{cima} > P_{vapor}$. Aprox 10m agua teóricos.</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Tiempo de vaciado depósito (Torricelli variable).</summary><div class="solution">$t = \int_{h1}^{h2} \frac{A_{tanque}}{-C_d A_{orificio} \sqrt{2gh}} dh$.</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Empuje sobre compuerta curva.</summary><div class="solution">Horizontal: Proyección vertical. Vertical: Peso del fluido sobre ella. Resultante pasa por centro curvatura.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Golpe de Ariete.</summary><div class="solution">Sobrepresión por cierre rápido. $\Delta P = \rho c \Delta v$. ($c$ = celeridad onda).</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Arrastre (Drag) sobre esfera.</summary><div class="solution">$F_D = 0.5 \rho v^2 A C_D$. Stokes si Re bajo.</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Flotabilidad y Estabilidad.</summary><div class="solution">Metacentro $M$ debe estar sobre el centro de gravedad $G$ para estabilidad.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Tubo de Pitot.</summary><div class="solution">Mide presión estancamiento. $v = \sqrt{2(P_{est} - P_{estat})/\rho}$.</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Capa Límite (Concepto).</summary><div class="solution">Zona donde los efectos viscosos son importantes. $\delta \propto \sqrt{x}$.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Ecuación Euler Turbomáquinas.</summary><div class="solution">$H = (u_2 v_{u2} - u_1 v_{u1}) / g$. Triángulos de velocidad.</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Viscosímetro de esfera cayendo.</summary><div class="solution">Equilibrio: Peso = Empuje + Stokes. Despejar $\mu$.</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Tuberías en Paralelo.</summary><div class="solution">$h_L$ es igual en ambas ramas. $Q_{total} = Q_1 + Q_2$.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Tuberías en Serie.</summary><div class="solution">$Q$ constante. $h_{L,total} = \sum h_i$.</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Presión en pared de tanque acelerado.</summary><div class="solution">La superficie libre se inclina $\tan\theta = -a_x/g$. Distribución hidrostática modificada.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Número de Mach.</summary><div class="solution">$Ma = v/c$. Compresibilidad importante si $Ma > 0.3$.</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Teorema de Vaschy-Buckingham ($\pi$).</summary><div class="solution">Análisis dimensional para hallar grupos adimensionales (Re, Fr, We...).</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Fuerza sobre álabe móvil.</summary><div class="solution">Usar velocidad relativa $v_{rel} = v_{chorro} - v_{alabe}$ en la ecuación de momento.</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Radio Hidráulico $R_h$.</summary><div class="solution">$A / P_{mojado}$. En tubería llena $D/4$. Canales abiertos es clave.</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Canal Abierto (Manning).</summary><div class="solution">$v = (1/n) R_h^{2/3} S^{1/2}$. Flujo por gravedad.</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Principio de Pascal.</summary><div class="solution">La presión se transmite igual en todas direcciones (Prensas hidráulicas).</div></details>
+        <details class="ex"><summary><span class="badge b-ing">ING</span> Potencia de turbina.</summary><div class="solution">$P = \gamma Q H_T \eta$. Extrae energía del fluido.</div></details>
+        <details class="ex"><summary><span class="badge b-final">FINAL</span> Rotacional y Vorticidad.</summary><div class="solution">$\vec{\omega} = \nabla \times \vec{v}$. Si es 0, flujo irrotacional (Potencial).</div></details>
+        <details class="ex"><summary><span class="badge b-parcial">PARCIAL</span> Paradoja de D'Alembert.</summary><div class="solution">En flujo ideal (no viscoso) la fuerza de arrastre teórica sobre un cuerpo es cero.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // NAVIGATION LOGIC
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</div>
+</body>
+</html>
