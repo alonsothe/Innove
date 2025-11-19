@@ -1,0 +1,432 @@
+<html lang="es" data-scheme="dark" data-theme="matrix">
+<head>
+  <link rel="icon" type="image/png" href="innoveAI.png" />
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Informática — Innove</title>
+  <meta name="color-scheme" content="dark light"/>
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)"/>
+  <style>
+    /* ================= TOKENS ================= */
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      
+      --bg:#0d1117; --bg2:#161b22; --text:#c9d1d9; --muted:#8b949e;
+      --glass:rgba(22,27,34,.65); --glass-strong:rgba(22,27,34,.85); --border:rgba(48,54,61,.6);
+      --shadow:0 18px 48px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+      --ink:#58a6ff; --inkGlow:rgba(88,166,255,.18);
+      --r-2xl:22px; --r-3xl:28px;
+      --maxw:1200px; --narrow:900px;
+      --appH:72px; --themeBarH:64px;
+      --card-text:#f0f6fc; --card-muted:#8b949e;
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+    }
+    /*
+      Modo claro y oscuro controlados mediante el atributo data-scheme en la
+      etiqueta <html>.
+    */
+    html[data-scheme="light"]{
+      --bg:#ffffff;
+      --bg2:#f6f8fa;
+      --text:#24292f;
+      --muted:#57606a;
+      --glass:rgba(255,255,255,.85);
+      --glass-strong:#fff;
+      --border:rgba(208,215,222,.6);
+      --ink:#0969da;
+      --inkGlow:rgba(9,105,218,.15);
+      --card-text:#24292f;
+      --card-muted:#57606a;
+    }
+    html[data-scheme="dark"]{
+      /* valores idénticos a los de :root para mayor claridad */
+      --bg:#0d1117;
+      --bg2:#161b22;
+      --text:#c9d1d9;
+      --muted:#8b949e;
+      --glass:rgba(22,27,34,.65);
+      --glass-strong:rgba(22,27,34,.85);
+      --border:rgba(48,54,61,.6);
+      --ink:#58a6ff;
+      --inkGlow:rgba(88,166,255,.18);
+      --card-text:#f0f6fc;
+      --card-muted:#8b949e;
+    }
+    html{background:var(--bg)}
+    body{
+      margin:0;
+      font-family:ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace; /* Fuente monoespaciada estilo dev */
+      color:var(--text);
+      background:
+        radial-gradient(1400px 900px at 70% -10%, var(--bg2), transparent 60%),
+        radial-gradient(1200px 800px at 10% 110%, #0a0c10, transparent 65%),
+        var(--bg);
+      line-height:1.55;
+      overflow-x:hidden;
+      min-height:100svh;
+      padding-bottom: calc(var(--themeBarH) + var(--safeBottom) + 20px);
+    }
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+    .panel{background:var(--glass); backdrop-filter: blur(16px) saturate(170%); border:1px solid var(--border); border-radius:var(--r-3xl); box-shadow:var(--shadow)}
+
+    /* ===== BACKGROUNDS by THEME (capas) ===== */
+    .bg-layer{position:fixed; inset:0; z-index:-3; pointer-events:none; display:none}
+    
+    /* Matrix (Verde código) */
+    .bg-matrix-rain{
+        background: linear-gradient(180deg, rgba(0, 50, 0, 0) 0%, rgba(0, 255, 65, 0.05) 50%, rgba(0, 50, 0, 0) 100%);
+        background-size: 100% 3px; opacity: 0.4; animation: scanline 8s linear infinite;
+    }
+    /* Synthwave (Retro) */
+    .bg-synth-grid{
+        background: 
+            linear-gradient(rgba(18, 16, 44, 0.9), rgba(18, 16, 44, 0.9)),
+            repeating-linear-gradient(0deg, transparent, transparent 2px, #ff00de 3px, #ff00de 3px),
+            repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0, 255, 255, 0.2) 40px, rgba(0, 255, 255, 0.2) 41px);
+        background-size: 100% 100%, 100% 100%, 100% 100%;
+        perspective: 500px; transform-style: preserve-3d; opacity: 0.3;
+    }
+    /* Cyberpunk (Neón) */
+    .bg-cyber{background:
+      radial-gradient(600px 400px at 80% 20%, rgba(255, 255, 0, 0.15), transparent 60%),
+      radial-gradient(600px 400px at 20% 80%, rgba(0, 243, 255, 0.15), transparent 60%);
+      filter:saturate(130%) blur(2px); opacity:.75}
+    /* Github (Limpio) */
+    .bg-github{background-color: var(--bg);}
+    /* Cloud (Suave) */
+    .bg-cloud{background:
+      radial-gradient(800px 800px at 50% 50%, rgba(255,255,255,0.05), rgba(224,224,224,0.02) 60%, transparent 80%),
+      linear-gradient(180deg, var(--bg), var(--bg2)); opacity:.8}
+
+    /* Mostrar por tema */
+    html[data-theme="matrix"] .bg-matrix-rain{display:block}
+    html[data-theme="synth"] .bg-synth-grid{display:block}
+    html[data-theme="cyber"] .bg-cyber{display:block}
+    html[data-theme="github"] .bg-github{display:block}
+    html[data-theme="cloud"] .bg-cloud{display:block}
+
+    @keyframes scanline{0%{background-position: 0 0;} 100%{background-position: 0 100%;}}
+
+    /* ===== Canvas de partículas ===== */
+    #bgParticles{position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.85}
+
+    /* ===== NAVBAR ÚNICO ===== */
+    .appbar-wrap{position:sticky; top:0; z-index:90}
+    .appbar{
+      height:var(--appH);
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+      margin:10px auto; padding:10px 12px;
+      border-radius:18px; background:linear-gradient(180deg, var(--glass-strong), rgba(255,255,255,.05));
+      border:1px solid var(--border); box-shadow:var(--shadow); position:relative; overflow:hidden;
+    }
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:800; letter-spacing:-.5px}
+    /* Logo estilo terminal/código */
+    .logo{--tx:0px; --ty:0px; width:44px; height:44px; display:grid; place-items:center; border-radius:12px; position:relative; transform:translate3d(var(--tx),var(--ty),0); transition:transform .15s ease; background: var(--ink); color: white; font-family: monospace; font-size: 1.2rem;}
+    
+    .tabs{position:relative; display:flex; align-items:center; gap:8px; overflow:auto; scrollbar-width:thin; padding:4px}
+    .tabs::-webkit-scrollbar{height:6px}
+    .pill{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
+      border-radius:14px; border:1px solid var(--border); background:transparent; color:var(--text);
+      font-weight:800; cursor:pointer; white-space:nowrap; font-size:1rem; transition:background .2s ease, transform .15s ease;
+    }
+    .pill:hover{background:var(--glass); transform:translateY(-1px)}
+    .pill[aria-selected="true"]{background:var(--glass)}
+    .ink{position:absolute; height:3px; background:var(--ink); bottom:2px; left:0; width:0; border-radius:2px; transition:transform .25s ease,width .25s ease; box-shadow:0 0 0 6px var(--inkGlow)}
+    .ink-dot{position:absolute; bottom:7px; width:8px; height:8px; border-radius:50%; background:var(--ink); box-shadow:0 0 12px var(--ink); transform:translateX(0); transition:transform .25s ease}
+
+    /* ===== Controles (Oscuro/Claro) ===== */
+    .controls{display:flex; align-items:center; gap:8px}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); font-weight:700; cursor:pointer}
+    .btn:hover{background:var(--glass-strong)}
+
+    /* ===== HERO ===== */
+    .hero{margin:14px auto 6px; padding:10px 0}
+    .hero h1{margin:0; font-size: clamp(28px,4.4vw,58px); letter-spacing:-.03em}
+    .hero p{color:var(--muted); margin:8px 0 0; font-family: system-ui, sans-serif;}
+    
+    /* Ticker de código */
+    .ticker{margin-top:12px; overflow:hidden; mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); background: rgba(0,0,0,0.2); border-radius: 8px; padding: 8px 0; border: 1px solid var(--border);}
+    .ticker-row{display:flex; gap:28px; white-space:nowrap; animation:ticker 35s linear infinite; font-family: monospace; font-size: 0.9em;}
+    .ticker span{opacity:.85; color: var(--ink);}
+    @keyframes ticker{to{transform:translateX(-50%)}}
+
+    /* ===== GRID / CARDS ===== */
+    @property --fy { syntax:"<length>"; inherits:false; initial-value:0px }
+    @property --rx { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    @property --ry { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:18px}
+    .card{position:relative; overflow:hidden; padding:18px; border-radius:20px; isolation:isolate; background:var(--glass); border:1px solid var(--border); transform:translateY(var(--fy)) rotateY(var(--ry)) rotateX(var(--rx)); animation:float 9s ease-in-out infinite; text-decoration:none; color:inherit}
+    @keyframes float{0%,100%{--fy:0px} 50%{--fy:-6px}}
+    .card .title{display:flex; align-items:center; gap:10px; font-weight:800; color:var(--card-text)}
+    .card .desc{color:var(--card-muted); margin-top:6px; font-family: system-ui, sans-serif;}
+    /* Efecto borde arcoíris sutil */
+    .card::before{content:""; position:absolute; inset:-1px; z-index:-2; border-radius:inherit; padding:1px; background: conic-gradient(from 220deg, rgba(255,255,255,.10), rgba(255,255,255,0) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,.10)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:.45; animation:borderSweep 6s linear infinite}
+    @keyframes borderSweep{to{transform:rotate(360deg)}}
+    .card::after{content:""; position:absolute; inset:-1px; z-index:-1; pointer-events:none; background:radial-gradient(160px 120px at calc(var(--px,.5)*100%) calc(var(--py,.5)*100%), rgba(255,255,255,.35), transparent 60%)}
+    .card .title>span:first-child{display:inline-block; animation:emoji-bounce 5s ease-in-out infinite}
+    @keyframes emoji-bounce{0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)}}
+    .emoji-bg{position:absolute; inset:auto 8px 8px auto; font-size:120px; line-height:1; opacity:.15; filter:blur(1px); pointer-events:none; user-select:none; z-index:0; animation:floatDecor 12s ease-in-out infinite}
+    @keyframes floatDecor{0%,100%{transform:translate(4px,2px) scale(1)} 50%{transform:translate(-6px,-4px) scale(1.04)}}
+
+    /* ===== VARIANTES COLOR TARJETAS (Adaptadas a Lenguajes) ===== */
+    .v-python{background:linear-gradient(180deg, rgba(55,118,171,.26), rgba(55,118,171,.14)), var(--glass)}
+    .v-java{background:linear-gradient(180deg, rgba(248,152,32,.26), rgba(248,152,32,.14)), var(--glass)}
+    .v-cpp{background:linear-gradient(180deg, rgba(0,89,156,.26), rgba(0,89,156,.14)), var(--glass)}
+    .v-web{background:linear-gradient(180deg, rgba(227,79,38,.26), rgba(227,79,38,.14)), var(--glass)}
+    .v-sql{background:linear-gradient(180deg, rgba(0,117,143,.26), rgba(0,117,143,.14)), var(--glass)}
+    .v-git{background:linear-gradient(180deg, rgba(240,80,50,.26), rgba(240,80,50,.14)), var(--glass)}
+    .v-algo{background:linear-gradient(180deg, rgba(142,68,173,.26), rgba(142,68,173,.14)), var(--glass)}
+    .v-cyber{background:linear-gradient(180deg, rgba(46,204,113,.26), rgba(46,204,113,.14)), var(--glass)}
+    .v-docker{background:linear-gradient(180deg, rgba(36,150,237,.26), rgba(36,150,237,.14)), var(--glass)}
+    
+    /* ===== FOOTER: Selector de TEMAS (barra flotante) ===== */
+    .theme-footer{
+      position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:88;
+      width:90%; max-width:620px; padding:12px 16px; border-radius:26px;
+      backdrop-filter: blur(20px) saturate(180%); background:var(--glass-strong);
+      border:1px solid var(--border); box-shadow:var(--shadow);
+    }
+    .theme-scroller{
+      display:flex; gap:12px; overflow:auto; scrollbar-width:thin; padding-bottom:4px; justify-content:center; flex-wrap:wrap;
+    }
+    .theme-chip{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+      border-radius:999px; border:1px solid var(--border); background:var(--glass);
+      color:var(--text); font-weight:700; white-space:nowrap; cursor:pointer; user-select:none; flex:0 0 auto;
+      transition:background .2s ease, transform .15s ease;
+    }
+    .theme-chip:hover{background:var(--glass-strong); transform:translateY(-2px)}
+    .theme-chip[aria-pressed="true"]{outline:2px solid var(--ink); box-shadow:0 0 0 6px var(--inkGlow);}
+    
+    /* Responsive */
+    @media (max-width:980px){ .appbar{grid-template-columns:auto 1fr auto} .tabs{justify-self:stretch} }
+    @media (max-width:660px){ .brand span.txt{display:none} .pill{padding:10px 12px; font-size:.96rem} }
+  </style>
+</head>
+<body>
+  <canvas id="bgParticles"></canvas>
+  <div class="bg-layer bg-matrix-rain"></div>
+  <div class="bg-layer bg-synth-grid"></div>
+  <div class="bg-layer bg-cyber"></div>
+  <div class="bg-layer bg-github"></div>
+  <div class="bg-layer bg-cloud"></div>
+
+  <header class="appbar-wrap">
+    <div class="appbar container panel">
+      <a href="#" class="brand" aria-label="Inicio">
+        <span class="logo" id="brandLogo" aria-hidden="true">&lt;/&gt;</span>
+        <span class="txt">InnoveDev</span>
+      </a>
+
+      <div class="tabs" id="tabs" role="tablist" aria-label="Secciones">
+        <button class="pill" role="tab" aria-selected="true" data-tab="lenguajes" id="tab-lenguajes">Lenguajes</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="tecnologias" id="tab-tecnologias">Tecnologías</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="teoria" id="tab-teoria">CS Theory</button>
+        <span class="ink" id="ink" aria-hidden="true"></span>
+        <span class="ink-dot" id="inkDot" aria-hidden="true"></span>
+      </div>
+
+      <div class="controls">
+        <button id="schemeToggle" class="btn" title="Oscuro/Claro" aria-pressed="true">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero container">
+    <h1>Computer Science</h1>
+    <p>Plataforma de aprendizaje interactivo: algoritmos, desarrollo web y sistemas.</p>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-row">
+        <span>print("Hello World")</span><span> const app = express();</span><span> SELECT * FROM users;</span>
+        <span> git commit -m "init"</span><span> #include &lt;stdio.h&gt;</span><span> docker-compose up</span>
+        <span> npm install react</span><span> public static void main(String[] args)</span><span> sudo apt-get update</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="container" id="content">
+    <section id="lenguajes" role="tabpanel" aria-labelledby="tab-lenguajes" data-active>
+      <h2>Lenguajes de Programación</h2>
+      <div class="grid">
+        <a class="card v-python" href="#"><div class="title"><span style="font-size:1.6em">🐍</span><span>Python</span></div><p class="desc">Scripting, Ciencia de Datos e IA.</p><span class="emoji-bg">🐍</span></a>
+        <a class="card v-java" href="#"><div class="title"><span style="font-size:1.6em">☕</span><span>Java</span></div><p class="desc">Desarrollo Enterprise y Android.</p><span class="emoji-bg">☕</span></a>
+        <a class="card v-cpp" href="#"><div class="title"><span style="font-size:1.6em">⚙️</span><span>C++</span></div><p class="desc">Sistemas y alto rendimiento.</p><span class="emoji-bg">⚙️</span></a>
+        <a class="card v-web" href="#"><div class="title"><span style="font-size:1.6em">🌐</span><span>JavaScript</span></div><p class="desc">Frontend, Backend y Web moderna.</p><span class="emoji-bg">🌐</span></a>
+        <a class="card v-sql" href="#"><div class="title"><span style="font-size:1.6em">🗃️</span><span>SQL</span></div><p class="desc">Bases de datos relacionales.</p><span class="emoji-bg">🗃️</span></a>
+        <a class="card v-web" href="#"><div class="title"><span style="font-size:1.6em">💎</span><span>C#</span></div><p class="desc">Desarrollo .NET y Unity.</p><span class="emoji-bg">💎</span></a>
+      </div>
+    </section>
+
+    <section id="tecnologias" role="tabpanel" aria-labelledby="tab-tecnologias" hidden>
+      <h2>Herramientas & Frameworks</h2>
+      <div class="grid">
+        <a class="card v-docker" href="#"><div class="title"><span style="font-size:1.6em">🐳</span><span>Docker</span></div><p class="desc">Contenedores y despliegue.</p><span class="emoji-bg">🐳</span></a>
+        <a class="card v-git" href="#"><div class="title"><span style="font-size:1.6em">🌳</span><span>Git</span></div><p class="desc">Control de versiones distribuido.</p><span class="emoji-bg">🌳</span></a>
+        <a class="card v-web" href="#"><div class="title"><span style="font-size:1.6em">⚛️</span><span>React</span></div><p class="desc">Librería de UI para la web.</p><span class="emoji-bg">⚛️</span></a>
+        <a class="card v-cpp" href="#"><div class="title"><span style="font-size:1.6em">📐</span><span>SolidWorks</span></div><p class="desc">Diseño CAD 3D.</p><span class="emoji-bg">📐</span></a>
+      </div>
+    </section>
+
+    <section id="teoria" role="tabpanel" aria-labelledby="tab-teoria" hidden>
+      <h2>Teoría Computacional</h2>
+      <div class="grid">
+        <a class="card v-algo" href="#"><div class="title"><span style="font-size:1.6em">🧠</span><span>Algoritmos</span></div><p class="desc">Complejidad y estructuras de datos.</p><span class="emoji-bg">🧠</span></a>
+        <a class="card v-cyber" href="#"><div class="title"><span style="font-size:1.6em">🔒</span><span>Ciberseguridad</span></div><p class="desc">Redes, criptografía y hacking ético.</p><span class="emoji-bg">🔒</span></a>
+        <a class="card v-java" href="#"><div class="title"><span style="font-size:1.6em">📜</span><span>Historia</span></div><p class="desc">De Turing a la era de la IA.</p><span class="emoji-bg">📜</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="theme-footer">
+    <div class="theme-scroller">
+      <button class="theme-chip" data-theme="matrix" aria-pressed="true">Matrix</button>
+      <button class="theme-chip" data-theme="synth" aria-pressed="false">Synthwave</button>
+      <button class="theme-chip" data-theme="cyber" aria-pressed="false">Cyberpunk</button>
+      <button class="theme-chip" data-theme="github" aria-pressed="false">Github</button>
+      <button class="theme-chip" data-theme="cloud" aria-pressed="false">Cloud</button>
+    </div>
+  </footer>
+
+  <script>
+    /* ===== Helpers ===== */
+    const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+    /* ===== Dark/Light ===== */
+    const schemeToggle = $('#schemeToggle');
+    function setScheme(mode){ // 'dark' | 'light'
+      document.documentElement.setAttribute('data-scheme', mode);
+      localStorage.setItem('innove-dev-scheme', mode);
+      schemeToggle.textContent = (mode==='dark') ? '🌙 Oscuro' : '☀️ Claro';
+      schemeToggle.setAttribute('aria-pressed', String(mode==='dark'));
+    }
+    const pref = localStorage.getItem('innove-dev-scheme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setScheme(pref);
+    schemeToggle.addEventListener('click',()=> setScheme(document.documentElement.getAttribute('data-scheme')==='dark' ? 'light' : 'dark'));
+
+    /* ===== Tabs + ink ===== */
+    const tabs=$('#tabs'), ink=$('#ink'), dot=$('#inkDot');
+    const sections={ lenguajes:$('#lenguajes'), tecnologias:$('#tecnologias'), teoria:$('#teoria') };
+    function positionInk(btn){
+      const c=tabs.getBoundingClientRect(), b=btn.getBoundingClientRect();
+      const left=b.left - c.left + tabs.scrollLeft + 4;
+      ink.style.width=(b.width-8)+'px';
+      ink.style.transform=`translateX(${left}px)`;
+      dot.style.transform=`translateX(${left + (b.width-8) - 4}px)`;
+    }
+    function showTab(name){
+      Object.keys(sections).forEach(k=>{
+        const s=sections[k]; const active=(k===name);
+        s.hidden=!active; active ? s.setAttribute('data-active','') : s.removeAttribute('data-active');
+      });
+      $$('.pill').forEach(p=>p.setAttribute('aria-selected', String(p.dataset.tab===name)));
+      const btn=tabs.querySelector(`.pill[data-tab="${name}"]`);
+      if(btn){ btn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'}); positionInk(btn); }
+    }
+    $$('.pill').forEach(p=> p.addEventListener('click',()=> showTab(p.dataset.tab)));
+    const firstBtn=$('.pill[data-tab="lenguajes"]');
+    positionInk(firstBtn);
+    
+    /* ===== TEMAS ===== */
+    const themeBtns=$$('.theme-chip');
+    const PALETTES = {
+      matrix:['#00ff41','#008f11','#003b00'],
+      synth:['#ff00de','#05d9e8','#7a00ff'],
+      cyber:['#fcee0a','#00f0ff','#ff003c'],
+      github:['#2da44e','#8b949e','#f0f6fc'],
+      cloud:['#4fc3f7','#e1f5fe','#ffffff']
+    };
+    let currentPalette = PALETTES['matrix'];
+
+    function setTheme(name){
+      document.documentElement.setAttribute('data-theme', name);
+      localStorage.setItem('innove-dev-theme', name);
+      themeBtns.forEach(b=> b.setAttribute('aria-pressed', String(b.dataset.theme===name)));
+      currentPalette = PALETTES[name] || PALETTES['matrix'];
+      spawnParticles();
+    }
+    setTheme(localStorage.getItem('innove-dev-theme') || 'matrix');
+    themeBtns.forEach(b=> b.addEventListener('click',()=> setTheme(b.dataset.theme)));
+
+    /* ===== PARTÍCULAS ===== */
+    const canvas = document.getElementById('bgParticles');
+    const ctx = canvas.getContext('2d');
+    let particles=[], W=0, H=0, DPR=Math.min(window.devicePixelRatio||1, 2);
+    let mouse={x:-9999,y:-9999};
+
+    function resize(){
+      W = canvas.width = Math.floor(innerWidth * DPR);
+      H = canvas.height = Math.floor(innerHeight * DPR);
+      canvas.style.width = innerWidth+'px';
+      canvas.style.height = innerHeight+'px';
+      spawnParticles();
+    }
+    function rand(a,b){return a+Math.random()*(b-a)}
+    function spawnParticles(){
+      const count = Math.floor(Math.min(140, 70 + (innerWidth*innerHeight)/50000));
+      particles = [];
+      for(let i=0;i<count;i++){
+        const color = currentPalette[i % currentPalette.length];
+        particles.push({
+          x: rand(0,W), y: rand(0,H),
+          vx: rand(-0.08,0.08)*DPR, vy: rand(-0.08,0.08)*DPR,
+          r: rand(0.7,2.2)*DPR, c: color, a: rand(0.35,0.8)
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation='lighter';
+      for(const p of particles){
+        const dx = (mouse.x - p.x), dy = (mouse.y - p.y);
+        const d2 = dx*dx + dy*dy;
+        if(d2 < (120*DPR)*(120*DPR)){
+          p.vx -= dx * 0.000003;
+          p.vy -= dy * 0.000003;
+        }
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -10) p.x = W+10; else if(p.x > W+10) p.x = -10;
+        if(p.y < -10) p.y = H+10; else if(p.y > H+10) p.y = -10;
+        ctx.beginPath();
+        const h = p.c.replace('#','');
+        const r=parseInt(h.substring(0,2),16), g=parseInt(h.substring(2,4),16), b=parseInt(h.substring(4,6),16);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.a})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    
+    // Logo Parallax
+    const logo=$('#brandLogo');
+    if(logo){
+      const move=e=>{
+        const r=logo.getBoundingClientRect();
+        logo.style.setProperty('--tx', ((e.clientX-(r.left+r.width/2))/7).toFixed(1)+'px');
+        logo.style.setProperty('--ty', ((e.clientY-(r.top+r.height/2))/7).toFixed(1)+'px');
+      };
+      logo.addEventListener('pointerenter',()=>addEventListener('pointermove',move));
+      logo.addEventListener('pointerleave',()=>{removeEventListener('pointermove',move);logo.style.setProperty('--tx','0px');logo.style.setProperty('--ty','0px');});
+    }
+
+    // Cards Tilt
+    $$('.card').forEach(card=>{
+      let rect;
+      function move(x,y){ card.style.setProperty('--ry',(x*10)+'deg'); card.style.setProperty('--rx',(-y*10)+'deg'); }
+      card.addEventListener('pointermove',e=>{
+        rect=rect||card.getBoundingClientRect();
+        const x=(e.clientX-rect.left)/rect.width - .5, y=(e.clientY-rect.top)/rect.height - .5;
+        move(x,y); card.style.setProperty('--px',(x+.5).toFixed(3)); card.style.setProperty('--py',(y+.5).toFixed(3));
+      });
+      card.addEventListener('pointerleave',()=>{card.style.removeProperty('--ry');card.style.removeProperty('--rx');rect=null;});
+    });
+
+    addEventListener('resize', resize);
+    addEventListener('pointermove', e=>{ mouse.x = e.clientX * DPR; mouse.y = e.clientY * DPR; });
+    resize(); draw();
+
+  </script>
+</body>
+</html>
