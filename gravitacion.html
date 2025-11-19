@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Física | Gravitación Universal</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA GRAVITACIÓN (COSMOS) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --accent: #4338ca; /* Índigo Profundo (Espacio) */
+    --accent-glow: rgba(67, 56, 202, 0.08);
+    --highlight: #eab308; /* Oro (Estrellas) */
+    --field: #0ea5e9; /* Cian (Líneas de Campo) */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #02040a; /* Negro profundo */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-glow: rgba(67, 56, 202, 0.2);
+    --glass-bg: rgba(10, 10, 25, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de estrellas sutil */
+    background-image: 
+        radial-gradient(var(--glass-border) 1px, transparent 1px),
+        radial-gradient(var(--glass-border) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES DE FONDO */
+  .orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.3; }
+  .orb-1 { width: 700px; height: 700px; background: var(--accent); top: -300px; left: -200px; animation: orbit 30s infinite linear; }
+  .orb-2 { width: 400px; height: 400px; background: var(--highlight); bottom: -100px; right: -100px; }
+  @keyframes orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(67, 56, 202, 0.3);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--accent); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--highlight); color: #000; } 
+  .ex-badge.uni { background: var(--field); color: #fff; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--accent); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(67, 56, 202, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🪐</div>
+    <div class="logo-text">
+      <div>Física Master</div>
+      <div>Gravitación</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="ley" aria-selected="true">1. Ley Universal</button>
+    <button class="nav-btn" data-target="campo" aria-selected="false">2. Campo y Energía</button>
+    <button class="nav-btn" data-target="orbitas" aria-selected="false">3. Mecánica Orbital</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="ley" class="content-section" data-active>
+    <div class="card">
+      <h1>Ley de la Gravitación Universal</h1>
+      <p>Newton unificó la física terrestre y celeste. La fuerza gravitatoria es una interacción atractiva, central y conservativa.</p>
+
+      <h2>1.1 Fuerza Gravitatoria ($\vec{F}$)</h2>
+      <p>Dos masas puntuales se atraen con una fuerza proporcional al producto de sus masas e inversamente proporcional al cuadrado de la distancia.</p>
+      <div class="math-box">
+        $$ \vec{F} = - G \frac{M \cdot m}{r^2} \hat{u}_r $$
+      </div>
+      <ul>
+        <li>$G = 6.67 \cdot 10^{-11} \, N \cdot m^2 / kg^2$ (Constante de Cavendish).</li>
+        <li>El signo menos indica que es <strong>atractiva</strong> (opuesta al vector radial).</li>
+      </ul>
+
+      <h2>1.2 Principio de Superposición</h2>
+      <p>Si hay varias masas, la fuerza total sobre una partícula es la suma vectorial de las fuerzas ejercidas por cada una de las otras.</p>
+      <div class="math-box">
+        $$ \vec{F}_{total} = \sum \vec{F}_i = \vec{F}_1 + \vec{F}_2 + \dots $$
+      </div>
+    </div>
+  </section>
+
+  <section id="campo" class="content-section">
+    <div class="card">
+      <h1>Campo Gravitatorio y Potencial</h1>
+      
+      <h2>2.1 Intensidad del Campo ($\vec{g}$)</h2>
+      <p>Fuerza por unidad de masa. Es un campo vectorial.</p>
+      <div class="math-box">
+        $$ \vec{g} = \frac{\vec{F}}{m} = - G \frac{M}{r^2} \hat{u}_r $$
+      </div>
+      <p>En la superficie terrestre, $|\vec{g}_0| \approx 9.8 \, m/s^2$.</p>
+
+      <h2>2.2 Energía Potencial ($E_p$)</h2>
+      <p>El trabajo realizado por el campo es $W = -\Delta E_p$. Tomando el origen de energía en el infinito ($E_p(\infty) = 0$):</p>
+      <div class="math-box">
+        $$ E_p(r) = - G \frac{M \cdot m}{r} $$
+      </div>
+      <p><strong>¡Importante!</strong> Siempre es negativa para sistemas ligados.</p>
+
+      <h2>2.3 Potencial Gravitatorio ($V$)</h2>
+      <p>Energía potencial por unidad de masa (Escalar).</p>
+      <div class="math-box">
+        $$ V = \frac{E_p}{m} = - G \frac{M}{r} \quad [J/kg] $$
+      </div>
+
+      <h3>Teorema de Gauss (Nivel UNI)</h3>
+      <p>El flujo del campo gravitatorio a través de una superficie cerrada es proporcional a la masa encerrada.</p>
+      <div class="math-box">
+        $$ \oint \vec{g} \cdot d\vec{S} = -4\pi G M_{int} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="orbitas" class="content-section">
+    <div class="card">
+      <h1>Mecánica Orbital y Satélites</h1>
+      <p>Estudio del movimiento de cuerpos bajo la influencia de la gravedad (Kepler + Newton).</p>
+
+      <h2>3.1 Dinámica Circular (Satélites)</h2>
+      <p>La fuerza gravitatoria actúa como fuerza centrípeta (normal).</p>
+      <div class="math-box">
+        $$ F_g = F_c \Rightarrow G \frac{Mm}{r^2} = m \frac{v^2}{r} = m \omega^2 r $$
+      </div>
+      <p>De aquí deducimos la <strong>Velocidad Orbital</strong>:</p>
+      <div class="math-box">
+        $$ v_{orb} = \sqrt{\frac{GM}{r}} $$
+      </div>
+
+      <h2>3.2 Tercera Ley de Kepler</h2>
+      <p>Relaciona el periodo ($T$) y el radio de órbita ($r$).</p>
+      <div class="math-box">
+        $$ T^2 = \frac{4\pi^2}{GM} r^3 \quad \Rightarrow \quad \frac{T^2}{r^3} = \text{cte} $$
+      </div>
+
+      <h2>3.3 Energía Mecánica y Velocidades Cósmicas</h2>
+      <p>La energía total de un satélite en órbita circular es constante y negativa:</p>
+      <div class="math-box">
+        $$ E_m = E_c + E_p = \frac{1}{2} E_p = - G \frac{Mm}{2r} $$
+      </div>
+
+      <h3>Velocidad de Escape ($v_e$)</h3>
+      <p>Velocidad mínima para escapar de la atracción (llegar al infinito con velocidad 0). $E_m = 0$.</p>
+      <div class="math-box">
+        $$ \frac{1}{2}mv_e^2 - G\frac{Mm}{R} = 0 \Rightarrow v_e = \sqrt{\frac{2GM}{R}} = \sqrt{2 g_0 R} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (Cosmic Level)</h2>
+      <p>Desde cálculos de satélites hasta distribuciones de masa y energía de transferencia.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Gravedad en Marte: Sabiendo que la masa de Marte es 0.11 veces la de la Tierra y su radio 0.53 veces el terrestre, calcule $g_{Marte}$. ($g_0=9.8$).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Fórmula: $g = G M / R^2$.</span>
+            <span class="step">2. Relación: $g_M = G (0.11 M_T) / (0.53 R_T)^2$.</span>
+            <span class="step">3. $g_M = \frac{0.11}{0.53^2} \left( G \frac{M_T}{R_T^2} \right) = \frac{0.11}{0.2809} g_0$.</span>
+            <span class="step">4. $g_M = 0.391 \cdot 9.8 = 3.84 \, m/s^2$.</span>
+            <div class="res-final">g = 3.84 m/s²</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Punto de Gravedad Nula: Distancia Tierra-Luna $D = 384000$ km. $M_T = 81 M_L$. ¿Dónde se anula el campo?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Punto a distancia $x$ de la Tierra. $g_T = g_L$.</span>
+            <span class="step">2. $G \frac{M_T}{x^2} = G \frac{M_L}{(D-x)^2}$.</span>
+            <span class="step">3. Raíz cuadrada: $\frac{\sqrt{M_T}}{x} = \frac{\sqrt{M_L}}{D-x}$.</span>
+            <span class="step">4. $\frac{9}{x} = \frac{1}{D-x} \Rightarrow 9(D-x) = x \Rightarrow 9D = 10x$.</span>
+            <span class="step">5. $x = 0.9 D = 0.9 \cdot 384000 = 345600$ km.</span>
+            <div class="res-final">x = 345600 km</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Gravedad Interior: Demuestre usando Gauss que dentro de un planeta (esfera homogénea), $g$ es proporcional al radio ($g \propto r$).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Gauss: $\oint \vec{g} \cdot d\vec{S} = -4\pi G M_{int}$. Esfera radio $r < R$.</span>
+            <span class="step">2. $g(r) \cdot 4\pi r^2 = -4\pi G (\rho \cdot \frac{4}{3}\pi r^3)$.</span>
+            <span class="step">3. $g(r) = - \frac{4}{3} \pi G \rho \cdot r$.</span>
+            <span class="step">4. Como $\rho$ es cte, $g$ crece linealmente con $r$ desde el centro.</span>
+            <div class="res-final">g = - k · r</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Lanzamiento Vertical: Se lanza un cohete desde la Tierra con velocidad $v_0 = v_{escape}/2$. ¿Qué altura máxima alcanza? (Radio Tierra $R$).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Cons. Energía: $E_{sup} = E_{max}$. $E_p = -GmM/r$.</span>
+            <span class="step">2. $\frac{1}{2}m(v_e/2)^2 - G\frac{mM}{R} = 0 - G\frac{mM}{r_{max}}$.</span>
+            <span class="step">3. Sabemos $v_e^2 = 2GM/R$. Sustituimos: $\frac{1}{2}m(\frac{2GM}{4R}) - \frac{GMm}{R} = -\frac{GMm}{r_{max}}$.</span>
+            <span class="step">4. $\frac{GM}{4R} - \frac{GM}{R} = -\frac{GM}{r_{max}} \Rightarrow -\frac{3}{4R} = -\frac{1}{r_{max}}$.</span>
+            <span class="step">5. $r_{max} = \frac{4}{3}R$. Altura $h = r_{max} - R = R/3$.</span>
+            <div class="res-final">h = R/3</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Sistema Binario: Dos estrellas de igual masa $M$ giran alrededor de su CM bajo su atracción mutua. Distancia entre ellas $D$. Halle el periodo.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Radio de giro de cada una: $R = D/2$. Fuerza: $F = G M^2 / D^2$.</span>
+            <span class="step">2. Dinámica: $F = M \omega^2 R$.</span>
+            <span class="step">3. $G \frac{M^2}{D^2} = M \left(\frac{2\pi}{T}\right)^2 \frac{D}{2}$.</span>
+            <span class="step">4. Simplificar M: $G \frac{M}{D^2} = \frac{4\pi^2}{T^2} \frac{D}{2}$.</span>
+            <span class="step">5. $T^2 = \frac{2\pi^2 D^3}{GM}$.</span>
+            <div class="res-final">T = √(2π²D³/GM)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Satélite Geoestacionario: ¿A qué altura debe orbitar para tener un periodo de 24h? ($M_T = 5.97 \cdot 10^{24}$ kg).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Kepler 3: $r^3 = \frac{GM T^2}{4\pi^2}$. $T = 86400$ s.</span>
+            <span class="step">2. $r^3 = \frac{6.67\cdot 10^{-11} \cdot 5.97\cdot 10^{24} \cdot 86400^2}{4\pi^2} \approx 7.54 \cdot 10^{22}$.</span>
+            <span class="step">3. $r = \sqrt[3]{7.54 \cdot 10^{22}} \approx 4.22 \cdot 10^7$ m (42200 km).</span>
+            <span class="step">4. Altura $h = r - R_T = 42200 - 6370 = 35830$ km.</span>
+            <div class="res-final">h ≈ 36000 km</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Cambio de Órbita: Energía necesaria para pasar un satélite de 500 kg de una órbita $2R_T$ a $3R_T$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Energía orbital total: $E_m = - G \frac{mM}{2r}$.</span>
+            <span class="step">2. $\Delta E = E_f - E_i = - G \frac{mM}{2(3R)} - \left( - G \frac{mM}{2(2R)} \right)$.</span>
+            <span class="step">3. $\Delta E = \frac{GMm}{2R} \left( \frac{1}{2} - \frac{1}{3} \right) = \frac{GMm}{2R} \left( \frac{1}{6} \right) = \frac{GMm}{12R}$.</span>
+            <span class="step">4. Sustituir $GM/R^2 = g_0 \Rightarrow GM/R = g_0 R$.</span>
+            <span class="step">5. $\Delta E = \frac{mg_0 R}{12}$.</span>
+            <div class="res-final">ΔE = mg₀R / 12</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿El trabajo del campo gravitatorio en órbita circular es 0?</span></summary><div class="solution">Sí, la fuerza es perpendicular al desplazamiento en todo momento.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Velocidad de impacto de un meteorito desde el infinito ($v_0=0$).</span></summary><div class="solution">Es igual a la velocidad de escape: $v = \sqrt{2GM/R}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Potencial de un anillo en su eje.</span></summary><div class="solution">$V(z) = -GM / \sqrt{R^2+z^2}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Si el radio de órbita se cuadruplica, ¿periodo?</span></summary><div class="solution">$T^2 \propto r^3$. Si $r$ x4, $T$ x8.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Pérdida de energía por rozamiento atmosférico.</span></summary><div class="solution">El satélite cae a una órbita más baja y, paradójicamente, aumenta su velocidad.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Peso en la ISS (Estación Espacial).</span></summary><div class="solution">No es cero. Hay microgravedad (aprox 90% de $g_0$). Flotan por estar en caída libre continua.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Esfera hueca: Campo en el interior.</span></summary><div class="solution">Cero. (Teorema de los cascarones de Newton).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Velocidad angular para gravedad cero en el ecuador.</span></summary><div class="solution">$g = \omega^2 R$. La fuerza centrífuga igualaría la atracción.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Relación $g_0$ y $G$.</span></summary><div class="solution">$g_0 = GM/R^2$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Momento Angular ($L$) en órbitas.</span></summary><div class="solution">Es constante (Fuerza central, torque nulo). $L = mvr$ (en perihelio/afelio).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Relación velocidades Perihelio/Afelio.</span></summary><div class="solution">$v_p r_p = v_a r_a \Rightarrow v_p/v_a = r_a/r_p$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Puede ser positivo el potencial gravitatorio?</span></summary><div class="solution">No, con la referencia en infinito es siempre negativo (atractivo).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Marea: Origen físico.</span></summary><div class="solution">Diferencia de fuerza gravitatoria de la Luna entre el centro de la Tierra y la superficie.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Energía de ionización gravitatoria.</span></summary><div class="solution">Energía para llevar un satélite de $r$ al infinito. $E_{ion} = -E_m = GMm/2r$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Vector campo gravitatorio creado por 2 masas iguales.</span></summary><div class="solution">En el punto medio se anulan.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Densidad planetaria si $g$ y $R$ son dobles.</span></summary><div class="solution">$g \propto \rho R$. Si $g$ x2 y $R$ x2, $\rho$ es la misma.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Potencial efectivo.</span></summary><div class="solution">$U_{eff} = U(r) + L^2/(2mr^2)$. Explica órbitas estables.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Trabajo para mover carga en equipotencial.</span></summary><div class="solution">Cero.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Velocidad de escape en un Agujero Negro.</span></summary><div class="solution">$v_e = c$. Radio de Schwarzschild $R_s = 2GM/c^2$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Superficies equipotenciales alrededor de masa puntual.</span></summary><div class="solution">Esferas concéntricas.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Satélite frenado brusco (parada). Energía impacto.</span></summary><div class="solution">Cae vertical. $E_c(impacto) = E_p(R) - E_p(r) = GMm(1/R - 1/r)$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Fuerza marea es proporcional a...</span></summary><div class="solution">$1/r^3$ (Gradiente del campo).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Dimensiones de G.</span></summary><div class="solution">$L^3 M^{-1} T^{-2}$ ($N m^2/kg^2$).</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
