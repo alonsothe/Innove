@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cinética Química | Nivel EBAU</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱️</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* --- PALETA CINÉTICA (ENERGÍA & VELOCIDAD) --- */
+    --bg-color: #ffffff;
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    
+    --accent: #e11d48; /* Rose 600 - Energía */
+    --accent-glow: rgba(225, 29, 72, 0.12);
+    --highlight: #f59e0b; /* Amber - Activación */
+    
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    
+    --accent: #fb7185; /* Rose 400 */
+    --accent-glow: rgba(251, 113, 133, 0.15);
+    
+    --glass-bg: rgba(24, 24, 27, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    
+    --card-hover: rgba(39, 39, 42, 0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* ORBES */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.4; }
+  .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; animation: pulse 10s infinite; }
+  .orb-2 { width: 300px; height: 300px; background: var(--highlight); bottom: -50px; left: -50px; opacity: 0.2; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+  /* GLASS */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+  }
+
+  /* TIPOGRAFÍA */
+  h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+  h2 { font-size: 1.8rem; margin: 3rem 0 1.5rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
+  h3 { font-size: 1.3rem; margin: 1.5rem 0 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+  strong { color: var(--text-primary); font-weight: 600; }
+
+  .chem {
+    font-family: var(--font-chem); font-size: 0.9em; color: var(--accent);
+    background: var(--accent-glow); padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+  }
+
+  .math-box {
+    background: var(--accent-glow); border-left: 4px solid var(--accent);
+    padding: 15px 20px; margin: 20px 0; font-family: var(--font-chem); font-size: 1.05rem;
+    color: var(--text-primary); text-align: center; border-radius: 0 4px 4px 0;
+  }
+
+  /* NAV & HEADER */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .header {
+    position: sticky; top: 20px; z-index: 100; padding: 16px 24px; margin-bottom: 40px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 2rem; line-height: 1; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; }
+  .logo-text div:last-child { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 16px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--accent-glow); color: var(--accent); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary); color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.5s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden; }
+
+  /* TABLAS */
+  .chem-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+  .chem-table th { text-align: left; color: var(--text-secondary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .chem-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-primary); }
+  .chem-table tr:hover td { background: var(--accent-glow); }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+  
+  details.ex {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { background: var(--card-hover); border-color: var(--accent); }
+  
+  summary {
+    padding: 20px; font-weight: 500; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid;
+    white-space: nowrap; align-self: start; margin-top: 2px; font-weight: 700;
+  }
+  .b-ebau { border-color: var(--accent); color: var(--accent); }
+  .b-hard { border-color: var(--highlight); color: var(--highlight); }
+  
+  .ex-text { font-size: 1rem; color: var(--text-primary); line-height: 1.5; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.02); }
+
+  .solution {
+    padding: 24px; background: var(--bg-color);
+    font-family: var(--font-ui); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;
+    border-top: 1px solid var(--glass-border);
+  }
+  .res-box {
+    margin-top: 15px; padding: 10px; border: 1px dashed var(--accent); border-radius: 6px;
+    font-family: var(--font-chem); color: var(--text-primary); text-align: center; font-weight: bold;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="#" class="logo">
+    <div class="logo-icon">⏱️</div>
+    <div class="logo-text">
+      <div>Cinética Química</div>
+      <div>Velocidad & Mecanismos</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="teoria1" aria-selected="true">1. Ley de Velocidad</button>
+    <button class="nav-btn" data-target="teoria2" aria-selected="false">2. Ecuaciones Integradas</button>
+    <button class="nav-btn" data-target="teoria3" aria-selected="false">3. Arrhenius</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas EBAU (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="teoria1" class="content-section" data-active>
+    <div class="card glass">
+      <h1>Concepto de Velocidad y Ley Diferencial</h1>
+      <p>La cinética estudia la rapidez de las reacciones. La velocidad se define como la variación de concentración con el tiempo. Para una reacción <span class="chem">aA + bB → Productos</span>:</p>
+      
+      <div class="math-box">
+        v = - (1/a)·d[A]/dt = (1/c)·d[C]/dt
+      </div>
+
+      <h3>La Ecuación de Velocidad</h3>
+      <p>Relaciona la velocidad con las concentraciones. <strong>Los exponentes (órdenes) se determinan experimentalmente</strong>, no por la estequiometría (salvo en reacciones elementales).</p>
+      <div class="math-box">v = k · [A]ᵐ · [B]ⁿ</div>
+      <ul>
+        <li><strong>k:</strong> Constante de velocidad (depende de T).</li>
+        <li><strong>m, n:</strong> Órdenes parciales de reacción.</li>
+        <li><strong>m + n:</strong> Orden total.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="teoria2" class="content-section">
+    <div class="card glass">
+      <h1>Leyes Integradas y Vida Media</h1>
+      <p>Permiten calcular concentraciones en función del tiempo. Son fundamentales para la EBAU.</p>
+
+      <table class="chem-table">
+        <thead><tr><th>Orden</th><th>Ley Diferencial</th><th>Ecuación Integrada (Recta)</th><th>Vida Media (t½)</th><th>Unidades de k</th></tr></thead>
+        <tbody>
+          <tr><td><strong>0</strong></td><td>v = k</td><td>[A] = [A]₀ - k·t</td><td>[A]₀ / 2k</td><td>mol·L⁻¹·s⁻¹</td></tr>
+          <tr><td><strong>1</strong></td><td>v = k[A]</td><td>ln[A] = ln[A]₀ - k·t</td><td>ln(2) / k</td><td>s⁻¹</td></tr>
+          <tr><td><strong>2</strong></td><td>v = k[A]²</td><td>1/[A] = 1/[A]₀ + k·t</td><td>1 / (k[A]₀)</td><td>L·mol⁻¹·s⁻¹</td></tr>
+        </tbody>
+      </table>
+      
+      <p><strong>Nota Clave:</strong> En orden 1 (ej. desintegración radiactiva), la vida media es <strong>constante</strong> e independiente de la concentración inicial.</p>
+    </div>
+  </section>
+
+  <section id="teoria3" class="content-section">
+    <div class="card glass">
+      <h1>Energía de Activación y Temperatura</h1>
+      
+
+[Image of reaction coordinate diagram showing activation energy]
+
+
+      <h3>Teoría de Colisiones</h3>
+      <p>Para que haya reacción, los choques deben ser <strong>eficaces</strong>: tener suficiente energía (Ea) y orientación adecuada.</p>
+
+      <h3>Ecuación de Arrhenius</h3>
+      <p>Relaciona la constante <span class="chem">k</span> con la temperatura <span class="chem">T</span> y la energía de activación <span class="chem">Ea</span>.</p>
+      <div class="math-box">
+        k = A · e^(-Ea / RT) <br>
+        ln(k) = ln(A) - (Ea/R) · (1/T)
+      </div>
+      <p>Donde <strong>R = 8.314 J/mol·K</strong>. Al aumentar T, aumenta k exponencialmente.</p>
+
+      <h3>Mecanismos de Reacción</h3>
+      <p>La reacción global es la suma de etapas elementales. La etapa <strong>lenta</strong> determina la ecuación de velocidad global.</p>
+      <p><strong>Catalizador:</strong> Disminuye la Ea (ofrece un camino alternativo), aumentando la velocidad, pero NO cambia la termodinámica (ΔH) ni el equilibrio (Kc).</p>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card glass">
+      <h2>Problemas Tipo Examen (30)</h2>
+      <p>Incluye método de velocidades iniciales, datación radiactiva y cálculos de Arrhenius. Usa calculadora.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Para la reacción A + B → C, se obtuvieron los siguientes datos de velocidad inicial:
+            <br>Exp 1: [A]=0.1, [B]=0.1, v=2·10⁻³
+            <br>Exp 2: [A]=0.2, [B]=0.1, v=8·10⁻³
+            <br>Exp 3: [A]=0.1, [B]=0.2, v=4·10⁻³
+            <br>Determine la ecuación de velocidad y el valor de k.</span>
+          </summary>
+          <div class="solution">
+            1. Comparar Exp 1 y 2 ([B] cte): Al duplicar [A] (0.1 a 0.2), la velocidad se cuadruplica (2 a 8). Por tanto, orden respecto a A (m) = 2.<br>
+            2. Comparar Exp 1 y 3 ([A] cte): Al duplicar [B] (0.1 a 0.2), la velocidad se duplica (2 a 4). Por tanto, orden respecto a B (n) = 1.<br>
+            3. Ecuación: v = k[A]²[B].<br>
+            4. Despejar k (usando Exp 1): 2·10⁻³ = k(0.1)²(0.1) → k = 2·10⁻³ / 10⁻³ = 2.
+            <div class="res-box">v = 2[A]²[B] ; k = 2 L²·mol⁻²·s⁻¹</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">La reacción 2NO + O₂ → 2NO₂ es de segundo orden respecto al NO y de primer orden respecto al O₂. Si las concentraciones se expresan en mol/L y el tiempo en segundos, k = 3·10³. Calcule la velocidad cuando [NO]=0.02 M y [O₂]=0.01 M. ¿Cómo cambia la velocidad si se reduce el volumen del recipiente a la mitad?</span>
+          </summary>
+          <div class="solution">
+            1. Ley: v = k[NO]²[O₂].<br>
+            2. Cálculo: v = 3·10³ · (0.02)² · (0.01) = 3000 · 0.0004 · 0.01 = 0.012 mol·L⁻¹·s⁻¹.<br>
+            3. Reducir volumen a la mitad implica DUPLICAR todas las concentraciones.<br>
+            4. v' = k(2[NO])²(2[O₂]) = k·4[NO]²·2[O₂] = 8 · v.<br>
+            La velocidad se multiplica por 8.
+            <div class="res-box">v = 0.012 M/s ; v' = 8v</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">El periodo de semidesintegración (vida media) del Carbono-14 es 5730 años (cinética de primer orden). Si un hueso antiguo contiene el 25% de la cantidad original de C-14, ¿cuál es su antigüedad?</span>
+          </summary>
+          <div class="solution">
+            1. Calcular k: k = ln(2) / t½ = 0.693 / 5730 = 1.21·10⁻⁴ año⁻¹.<br>
+            2. Ecuación integrada (orden 1): ln(N/N₀) = -k·t.<br>
+            3. N = 0.25 N₀ (queda el 25%). ln(0.25) = -1.21·10⁻⁴ · t.<br>
+            4. t = ln(0.25) / -1.21·10⁻⁴ = -1.386 / -1.21·10⁻⁴.
+            <div class="res-box">t ≈ 11460 años</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Una reacción de primer orden tiene una constante de velocidad k = 1,5·10⁻³ s⁻¹. Calcule el tiempo necesario para que la concentración de reactivo disminuya desde 0,5 M hasta 0,1 M.</span>
+          </summary>
+          <div class="solution">
+            1. Ecuación orden 1: ln([A]₀/[A]) = k·t.<br>
+            2. ln(0.5 / 0.1) = 1.5·10⁻³ · t.<br>
+            3. ln(5) = 1.609.<br>
+            4. t = 1.609 / 1.5·10⁻³.
+            <div class="res-box">t = 1073 s (17.9 min)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">La descomposición de una sustancia sigue una cinética de orden cero con k = 0,05 M/min. Si la concentración inicial es 2 M, ¿cuánto tiempo tardará en desaparecer el 80% de la sustancia?</span>
+          </summary>
+          <div class="solution">
+            1. Orden 0: [A] = [A]₀ - kt.<br>
+            2. Si desaparece el 80%, queda el 20%. [A] = 0.20 · 2 = 0.4 M.<br>
+            3. 0.4 = 2 - 0.05 · t.<br>
+            4. 0.05t = 1.6 → t = 1.6 / 0.05.
+            <div class="res-box">t = 32 min</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Arrhenius: La constante de velocidad de una reacción se duplica al pasar de 20°C a 30°C. Calcule la Energía de Activación (Ea). R = 8,314 J/mol·K.</span>
+          </summary>
+          <div class="solution">
+            1. Usar forma logarítmica de dos puntos: ln(k₂/k₁) = (Ea/R) · (1/T₁ - 1/T₂).<br>
+            2. Datos: k₂ = 2k₁ → k₂/k₁ = 2. T₁ = 293 K, T₂ = 303 K.<br>
+            3. ln(2) = (Ea / 8.314) · (1/293 - 1/303).<br>
+            4. 0.693 = (Ea / 8.314) · (1.126·10⁻⁴).<br>
+            5. Ea = (0.693 · 8.314) / 1.126·10⁻⁴.
+            <div class="res-box">Ea = 51168 J/mol (51.2 kJ/mol)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Dada la reacción A → B con Ea = 40 kJ/mol y ΔH = -20 kJ/mol. Dibuje el diagrama entálpico y calcule la Ea de la reacción inversa.</span>
+          </summary>
+          <div class="solution">
+            1. Ea (directa) es la barrera desde reactivos al complejo activado: 40 kJ.<br>
+            2. La reacción es exotérmica (ΔH = -20), los productos están 20 kJ "más abajo".<br>
+            3. Para volver de productos a reactivos, hay que subir los 20 kJ de la entalpía más los 40 kJ de la barrera original.<br>
+            4. Ea (inversa) = Ea (directa) - ΔH (cuidado signos) = 40 - (-20).
+            <div class="res-box">Ea(inversa) = 60 kJ/mol</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Mecanismo propuesto: <br>1) NO₂ + NO₂ → NO₃ + NO (Lenta) <br>2) NO₃ + CO → NO₂ + CO₂ (Rápida). <br>Justifique la ecuación de velocidad, el orden global y la molecularidad de la etapa lenta.</span>
+          </summary>
+          <div class="solution">
+            1. La etapa LENTA determina la velocidad. v = k[NO₂][NO₂] = k[NO₂]².<br>
+            2. Orden global: 2.<br>
+            3. Molecularidad etapa lenta: Bimolecular (chocan 2 moléculas de NO₂).<br>
+            4. Intermedio de reacción: NO₃ (se produce y se consume).
+            <div class="res-box">v = k[NO₂]²</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Justifique cómo afecta un catalizador a: a) La velocidad de reacción, b) La energía de activación, c) La entalpía de reacción (ΔH), d) La constante de equilibrio.</span>
+          </summary>
+          <div class="solution">
+            a) Aumenta la velocidad (tanto directa como inversa).<br>
+            b) Disminuye la Energía de Activación (ofrece un camino alternativo).<br>
+            c) NO afecta a la ΔH (función de estado, depende solo de reactivos y productos).<br>
+            d) NO afecta a la constante de equilibrio Kc.
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Unidades de k para orden 3.</span></summary><div class="solution">v = k[A]³. M/s = k·M³. k = M⁻²·s⁻¹ = <span class="res-box">L²·mol⁻²·s⁻¹</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Vida media orden 2. Si [A]₀ se duplica, t½...</span></summary><div class="solution">t½ = 1/(k[A]₀). Si [A]₀ se duplica, t½ se reduce a la mitad.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Por qué la velocidad disminuye al avanzar la reacción?</span></summary><div class="solution">Porque disminuye la concentración de reactivos, reduciendo la frecuencia de choques eficaces.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">Pasar k=0.5 min⁻¹ a s⁻¹.</span></summary><div class="solution">0.5 / 60 = <span class="res-box">8.33·10⁻³ s⁻¹</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Qué es el Complejo Activado?</span></summary><div class="solution">Especie inestable de máxima energía en el estado de transición, con enlaces rompiéndose y formándose.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">A+2B→C es de orden 0 respecto a A y 1 a B.</span></summary><div class="solution">v = k[B]. La concentración de A no afecta a la velocidad.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Si Ea=0, ¿cómo afecta T a k?</span></summary><div class="solution">Si Ea=0, k=A. La temperatura no afectaría a la velocidad (caso teórico, imposible en reacciones químicas normales).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">Tiempo para que 10M pase a 2.5M en orden 1 (t½=10s).</span></summary><div class="solution">10→5 (1 vida), 5→2.5 (2 vidas). t = 2·10 = <span class="res-box">20 s</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Factores que afectan a la velocidad.</span></summary><div class="solution">Naturaleza reactivos, Concentración, Temperatura, Superficie contacto (sólidos), Catalizadores.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Gráfico ln k vs 1/T. Pendiente.</span></summary><div class="solution">La pendiente es <span class="res-box">-Ea / R</span>.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Molecularidad de Cl· + H₂ → HCl + H·</span></summary><div class="solution">Bimolecular (chocan dos especies).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">Si v duplicada al duplicar [A], orden?</span></summary><div class="solution">2¹ = 2. Orden 1.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">Si v cuadruplicada al duplicar [A], orden?</span></summary><div class="solution">2² = 4. Orden 2.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Catálisis Homogénea vs Heterogénea.</span></summary><div class="solution">Homogénea: Catalizador en misma fase que reactivos. Heterogénea: Distinta fase (ej. sólido con gas), ocurre adsorción.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">v media de aparición de C si v desaparición A es 0.1 en A→2C.</span></summary><div class="solution">v = -(d[A]/dt) = (1/2)d[C]/dt. 0.1 = 0.5 v(C). v(C) = <span class="res-box">0.2 M/s</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Puede ser negativa la Ea?</span></summary><div class="solution">No, siempre hay una barrera energética que superar.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Diferencia Orden vs Molecularidad.</span></summary><div class="solution">Orden: Experimental, macroscópico, puede ser fraccionario. Molecularidad: Teórico (etapa elemental), entero positivo.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">Valor de R en Arrhenius (unidades energía).</span></summary><div class="solution">8.314 J·mol⁻¹·K⁻¹ (NO usar 0.082).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Pseudo-orden 1.</span></summary><div class="solution">Si en A+B→C, [B] es muy grande (en exceso), [B]≈cte. v = k'[A].</div></details>
+        <details class="ex"><summary><span class="ex-badge b-calc">CALC</span><span class="ex-text">Velocidad instantánea en gráfico [A] vs t.</span></summary><div class="solution">Es la pendiente de la recta tangente en el tiempo t.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Afecta la luz a la velocidad?</span></summary><div class="solution">Sí, en reacciones fotoquímicas (aporta energía).</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
