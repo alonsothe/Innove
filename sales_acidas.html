@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Sales Ácidas</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA LIMA/ÁCIDA) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f7fee7; /* Lima muy pálido */
+        --surface: #ffffff;
+        --text-main: #365314;
+        --text-soft: #4d7c0f;
+        --border: #d9f99d;
+        
+        /* Paleta Ácida */
+        --primary: #65a30d;      /* Lima Fuerte */
+        --primary-soft: #ecfccb;
+        --secondary: #0891b2;    /* Cian (Contraste) */
+        --secondary-soft: #cffafe;
+        --tertiary: #d97706;     /* Ámbar */
+        --tertiary-soft: #fef3c7;
+        --accent: #be185d;       /* Magenta */
+        --accent-soft: #fce7f3;
+
+        --shadow: 0 10px 30px -5px rgba(101, 163, 13, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(101, 163, 13, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #ecfccb;
+        --text-soft: #bef264;
+        --border: #334155;
+        --primary-soft: rgba(101, 163, 13, 0.2);
+        --secondary-soft: rgba(8, 145, 178, 0.2);
+        --tertiary-soft: rgba(217, 119, 6, 0.2);
+        --accent-soft: rgba(190, 24, 93, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: shake 4s infinite ease-in-out; }
+    @keyframes shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-lime .icon-box { background: var(--primary-soft); }
+    .c-cyan .icon-box { background: var(--secondary-soft); }
+    .c-amber .icon-box { background: var(--tertiary-soft); }
+    .c-rose .icon-box { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+
+    /* CAJA DE REGLA VISUAL */
+    .rule-box {
+        background: var(--surface); border: 2px solid var(--primary);
+        border-radius: var(--radius); padding: 20px; text-align: center;
+        margin-bottom: 20px;
+    }
+    .rule-big { font-size: 1.2rem; font-weight: 800; margin: 10px 0; color: var(--primary); }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { 
+        background: var(--bg); padding: 10px 20px; border-radius: 15px; 
+        font-weight: 800; color: var(--text-soft); text-transform: uppercase; 
+        letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;
+        border: 1px solid var(--border);
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.03); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '?'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '✓'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); }
+
+    .answer { 
+        padding: 15px; background: var(--surface); color: var(--primary); 
+        font-weight: 700; font-size: 1rem; text-align: center;
+        border-top: 1px solid var(--border);
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🍋</span>
+            <h1 data-lang="es">Sales <span>Ácidas</span></h1>
+            <h1 data-lang="ca">Sals <span>Àcides</span></h1>
+            <h1 data-lang="en">Acid <span>Salts</span></h1>
+            
+            <p class="intro" data-lang="es">Son sales a medio hacer. El ácido no ha perdido todos sus hidrógenos, así que la sal conserva un carácter ácido.</p>
+            <p class="intro" data-lang="ca">Són sals a mig fer. L'àcid no ha perdut tots els seus hidrògens, així que la sal conserva un caràcter àcid.</p>
+            <p class="intro" data-lang="en">Half-baked salts. The acid hasn't lost all its hydrogens, so the salt retains an acidic character.</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card c-lime">
+                <div class="icon-box">🔋</div>
+                <h3 data-lang="es">¿Qué son?</h3>
+                <h3 data-lang="ca">Què són?</h3>
+                <h3 data-lang="en">What are they?</h3>
+                <p data-lang="es">Provienen de ácidos con 2 o más hidrógenos (Polipróticos). Si sustituimos solo una parte, nos queda una sal ácida.</p>
+                <p data-lang="ca">Provenen d'àcids amb 2 o més hidrògens. Si en substituïm només una part, ens queda una sal àcida.</p>
+                <p data-lang="en">From acids with 2+ hydrogens. If we replace only some, we get an acid salt.</p>
+                <div class="rule-box">
+                    \( H_2SO_4 \xrightarrow{-1H} \mathbf{HSO_4^-} \)
+                </div>
+            </div>
+
+            <div class="card c-cyan">
+                <div class="icon-box">🏷️</div>
+                <h3 data-lang="es">Nomenclatura</h3>
+                <h3 data-lang="ca">Nomenclatura</h3>
+                <h3 data-lang="en">Naming</h3>
+                <p data-lang="es">Se añade la palabra <strong>Hidrógeno-</strong> (o Dihidrógeno) delante del nombre del anión.</p>
+                <p data-lang="ca">S'afegeix la paraula <strong>Hidrogen-</strong> (o Dihidrogen) davant del nom de l'anió.</p>
+                <p data-lang="en">Add <strong>Hydrogen-</strong> (or Dihydrogen) before the anion name.</p>
+                
+                <div style="margin-top:10px; font-size:0.9rem;">
+                    <strong data-lang="es">Tradicional (Vieja):</strong><strong data-lang="ca">Tradicional (Vella):</strong><strong data-lang="en">Old School:</strong><br>
+                    <span style="color:var(--secondary)">Bi-</span>carbonato<br>
+                    <strong data-lang="es">Sistemática (Nueva):</strong><strong data-lang="ca">Sistemàtica (Nova):</strong><strong data-lang="en">Systematic:</strong><br>
+                    <span style="color:var(--secondary)">Hidrógeno</span>carbonato
+                </div>
+            </div>
+
+            <div class="card c-amber">
+                <div class="icon-box">🚦</div>
+                <h3 data-lang="es">El Semáforo del Fósforo</h3>
+                <h3 data-lang="ca">El Semàfor del Fòsfor</h3>
+                <h3 data-lang="en">Phosphorus Traffic Light</h3>
+                <p data-lang="es">El ácido fosfórico ($H_3PO_4$) tiene 3 hidrógenos. Puede perder 1, 2 o los 3.</p>
+                <p data-lang="ca">L'àcid fosfòric ($H_3PO_4$) té 3 hidrògens. Pot perdre'n 1, 2 o els 3.</p>
+                <p data-lang="en">Phosphoric acid ($H_3PO_4$) has 3 hydrogens. Can lose 1, 2, or 3.</p>
+                
+                <ul style="font-size:0.85rem; padding-left:15px;">
+                    <li>\( H_2PO_4^- \) (Dihidrógeno...)</li>
+                    <li>\( HPO_4^{2-} \) (Hidrógeno...)</li>
+                    <li>\( PO_4^{3-} \) (Fosfato neutro)</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Sales Ácidas (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs de Sals Àcides (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Acid Salts Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Los Clásicos (Bi-)</span>
+            <div class="gym-grid">
+                <details><summary>Bicarbonato de sodio</summary><div class="answer">NaHCO₃</div></details>
+                <details><summary>Hidrogenocarbonato de potasio</summary><div class="answer">KHCO₃</div></details>
+                <details><summary>Bisulfato de sodio</summary><div class="answer">NaHSO₄</div></details>
+                <details><summary>Hidrogenosulfato de potasio</summary><div class="answer">KHSO₄</div></details>
+                <details><summary>Bicarbonato de calcio</summary><div class="answer">Ca(HCO₃)₂</div></details>
+                <details><summary>Bisulfito de sodio</summary><div class="answer">NaHSO₃</div></details>
+                <details><summary>Hidrogenosulfito de litio</summary><div class="answer">LiHSO₃</div></details>
+                <details><summary>Bicarbonato de magnesio</summary><div class="answer">Mg(HCO₃)₂</div></details>
+                <details><summary>Hidrogenoseleniato de sodio</summary><div class="answer">NaHSeO₄</div></details>
+                <details><summary>Bisulfato de calcio</summary><div class="answer">Ca(HSO₄)₂</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 2: Fosfatos y Arsénicos</span>
+            <div class="gym-grid">
+                <details><summary>Dihidrogenofosfato de sodio</summary><div class="answer">NaH₂PO₄</div></details>
+                <details><summary>Hidrogenofosfato de sodio</summary><div class="answer">Na₂HPO₄</div></details>
+                <details><summary>Dihidrogenofosfato de calcio</summary><div class="answer">Ca(H₂PO₄)₂</div></details>
+                <details><summary>Hidrogenofosfato de calcio</summary><div class="answer">CaHPO₄</div></details>
+                <details><summary>Dihidrogenoarseniato de potasio</summary><div class="answer">KH₂AsO₄</div></details>
+                <details><summary>Hidrogenoarseniato de sodio</summary><div class="answer">Na₂HAsO₄</div></details>
+                <details><summary>Dihidrogenofosfato de potasio</summary><div class="answer">KH₂PO₄</div></details>
+                <details><summary>Hidrogenofosfato de magnesio</summary><div class="answer">MgHPO₄</div></details>
+                <details><summary>Dihidrogenoantimonito de sodio</summary><div class="answer">NaH₂SbO₃</div></details>
+                <details><summary>Hidrogenofosfato de aluminio</summary><div class="answer">Al₂(HPO₄)₃</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 3: Metales y Raras</span>
+            <div class="gym-grid">
+                <details><summary>Hidrogenocarbonato de hierro(III)</summary><div class="answer">Fe(HCO₃)₃</div></details>
+                <details><summary>Hidrogenosulfato de cobre(II)</summary><div class="answer">Cu(HSO₄)₂</div></details>
+                <details><summary>Hidrogenosulfito de hierro(II)</summary><div class="answer">Fe(HSO₃)₂</div></details>
+                <details><summary>Hidrogenofosfato de plomo(IV)</summary><div class="answer">Pb(HPO₄)₂</div></details>
+                <details><summary>Dihidrogenofosfato de hierro(III)</summary><div class="answer">Fe(H₂PO₄)₃</div></details>
+                <details><summary>Hidrogenotelurito de potasio</summary><div class="answer">KHTeO₃</div></details>
+                <details><summary>Hidrogenocromato de sodio</summary><div class="answer">NaHCrO₄</div></details>
+                <details><summary>Hidrogenosilicato de sodio</summary><div class="answer">NaHSiO₃</div></details>
+                <details><summary>Hidrogenocarbonato de amonio</summary><div class="answer">NH₄HCO₃</div></details>
+                <details><summary>Hidrogenosulfato de aluminio</summary><div class="answer">Al(HSO₄)₃</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--accent-soft); color:var(--accent)">Nivel 4: ¿Cómo se llama?</span>
+            <div class="gym-grid">
+                <details><summary>LiHCO₃</summary><div class="answer">Hidrogenocarbonato de litio</div></details>
+                <details><summary>K₂HPO₄</summary><div class="answer">Hidrogenofosfato de potasio</div></details>
+                <details><summary>Ca(HSO₃)₂</summary><div class="answer">Hidrogenosulfito de calcio</div></details>
+                <details><summary>Fe(H₂PO₄)₂</summary><div class="answer">Dihidrogenofosfato de hierro(II)</div></details>
+                <details><summary>CuHCO₃</summary><div class="answer">Hidrogenocarbonato de cobre(I)</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
