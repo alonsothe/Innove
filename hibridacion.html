@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orgánica | Hibridación</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700;800&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA ORBITAL) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text-main: #334155;
+        --text-soft: #64748b;
+        --border: #e2e8f0;
+        
+        /* Colores Específicos por Hibridación */
+        --sp3: #3b82f6;      /* Azul (Tranquilo, simple) */
+        --sp3-soft: #dbeafe;
+        
+        --sp2: #10b981;      /* Verde (Doble, natural) */
+        --sp2-soft: #d1fae5;
+        
+        --sp: #f43f5e;       /* Rosa/Rojo (Tenso, triple) */
+        --sp-soft: #ffe4e6;
+
+        --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
+        --radius: 24px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f1f5f9;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        
+        --sp3-soft: rgba(59, 130, 246, 0.15);
+        --sp2-soft: rgba(16, 185, 129, 0.15);
+        --sp-soft: rgba(244, 63, 94, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        min-height: 100vh;
+        padding: 20px;
+        /* Patrón sutil de orbitales */
+        background-image: radial-gradient(var(--border) 1px, transparent 1px);
+        background-size: 30px 30px;
+    }
+
+    /* --- NAV --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1200px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .back-btn { text-decoration: none; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--text-main); font-size: 1.2rem; }
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { background: transparent; border: none; padding: 5px 10px; cursor: pointer; font-weight: 700; color: var(--text-soft); border-radius: 15px; }
+    .btn-lang.active { background: var(--text-main); color: var(--bg); }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- HEADER --- */
+    .container { max-width: 1200px; margin: 0 auto; padding-bottom: 100px; }
+    
+    header { text-align: center; margin-bottom: 60px; }
+    .main-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: spin 20s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3.5rem; line-height: 1; margin-bottom: 15px; background: linear-gradient(to right, var(--sp3), var(--sp)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    p.intro { max-width: 700px; margin: 0 auto; font-size: 1.1rem; color: var(--text-soft); }
+
+    /* --- LAS 3 TARJETAS PRINCIPALES (GRID) --- */
+    .hybrid-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px; margin-bottom: 60px;
+    }
+
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        border: 1px solid var(--border); position: relative; overflow: hidden;
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        box-shadow: var(--shadow);
+    }
+    .card:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
+
+    /* Estilos Específicos por Tipo */
+    .card.sp3 { border-top: 6px solid var(--sp3); }
+    .card.sp2 { border-top: 6px solid var(--sp2); }
+    .card.sp  { border-top: 6px solid var(--sp); }
+
+    .badge {
+        padding: 6px 12px; border-radius: 20px; font-weight: 800; font-size: 0.8rem;
+        text-transform: uppercase; margin-bottom: 20px;
+    }
+    .sp3 .badge { background: var(--sp3-soft); color: var(--sp3); }
+    .sp2 .badge { background: var(--sp2-soft); color: var(--sp2); }
+    .sp  .badge { background: var(--sp-soft); color: var(--sp); }
+
+    .geo-icon {
+        width: 100px; height: 100px; margin-bottom: 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 3rem;
+        background: var(--bg); border-radius: 50%;
+    }
+
+    .card h2 { font-family: 'Outfit', sans-serif; margin-bottom: 10px; font-size: 2rem; }
+    .angle { font-size: 1.5rem; font-weight: 700; color: var(--text-soft); margin-bottom: 15px; }
+    .desc { font-size: 0.95rem; color: var(--text-soft); line-height: 1.5; }
+
+    /* ENLACES SIGMA Y PI */
+    .bond-info {
+        margin-top: auto; width: 100%; padding-top: 20px;
+        border-top: 1px solid var(--border);
+        display: flex; justify-content: space-around;
+    }
+    .bond-count { display: flex; flex-direction: column; font-weight: 700; }
+    .bond-count span:first-child { font-size: 1.2rem; }
+    .bond-count small { font-size: 0.75rem; text-transform: uppercase; color: var(--text-soft); }
+
+    /* --- SECCIÓN INTERACTIVA (GYM) --- */
+    .gym-section { max-width: 800px; margin: 0 auto; }
+    .gym-title { 
+        text-align: center; font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin-bottom: 30px;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+
+    .molecule-test {
+        background: var(--surface); padding: 20px; margin-bottom: 15px;
+        border-radius: 20px; border: 1px solid var(--border);
+        display: flex; justify-content: space-between; align-items: center;
+        cursor: pointer;
+    }
+    .molecule-test:hover { border-color: var(--text-soft); }
+    
+    .chem-structure { font-size: 1.3rem; font-weight: 700; font-family: 'Outfit', sans-serif; }
+    .target { color: var(--sp); text-decoration: underline; text-decoration-style: wavy; }
+
+    .reveal { 
+        display: none; font-weight: 700; font-size: 1.1rem;
+        padding: 5px 15px; border-radius: 10px;
+    }
+    
+    /* Lógica de colores para respuestas */
+    .ans-sp3 { color: var(--sp3); background: var(--sp3-soft); }
+    .ans-sp2 { color: var(--sp2); background: var(--sp2-soft); }
+    .ans-sp  { color: var(--sp); background: var(--sp-soft); }
+
+    /* IDIOMAS */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">⚛️ Hub</a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <header>
+            <span class="main-icon">🎈</span>
+            <h1 data-lang="es">Hibridación</h1>
+            <h1 data-lang="ca">Hibridació</h1>
+            <h1 data-lang="en">Hybridization</h1>
+            
+            <p class="intro" data-lang="es">El carbono mezcla sus orbitales para crear nuevas formas geométricas. Es la clave para entender la forma de las moléculas.</p>
+            <p class="intro" data-lang="ca">El carboni barreja els seus orbitals per crear noves formes geomètriques. És la clau per entendre la forma de les molècules.</p>
+            <p class="intro" data-lang="en">Carbon mixes its orbitals to create new geometric shapes. It is the key to understanding the shape of molecules.</p>
+        </header>
+
+        <div class="hybrid-grid">
+
+            <div class="card sp3">
+                <div class="badge">Alcanos / Alkanes</div>
+                <div class="geo-icon">🧊</div> <h2>sp³</h2>
+                <div class="angle">$$ 109.5^\circ $$</div>
+                
+                <p class="desc" data-lang="es"><strong>Tetraédrica.</strong><br>4 nubes electrónicas.<br>Enlaces sencillos.</p>
+                <p class="desc" data-lang="ca"><strong>Tetraèdrica.</strong><br>4 núvols electrònics.<br>Enllaços senzills.</p>
+                <p class="desc" data-lang="en"><strong>Tetrahedral.</strong><br>4 electron clouds.<br>Single bonds.</p>
+
+                <div class="bond-info">
+                    <div class="bond-count"><span style="color:var(--sp3)">4</span><small>&sigma; (Sigma)</small></div>
+                    <div class="bond-count"><span>0</span><small>&pi; (Pi)</small></div>
+                </div>
+            </div>
+
+            <div class="card sp2">
+                <div class="badge">Alquenos / Alkenes</div>
+                <div class="geo-icon">📐</div> <h2>sp²</h2>
+                <div class="angle">$$ 120^\circ $$</div>
+
+                <p class="desc" data-lang="es"><strong>Trigonal Plana.</strong><br>3 nubes electrónicas.<br>Un doble enlace.</p>
+                <p class="desc" data-lang="ca"><strong>Trigonal Plana.</strong><br>3 núvols electrònics.<br>Un doble enllaç.</p>
+                <p class="desc" data-lang="en"><strong>Trigonal Planar.</strong><br>3 electron clouds.<br>One double bond.</p>
+
+                <div class="bond-info">
+                    <div class="bond-count"><span style="color:var(--sp2)">3</span><small>&sigma; (Sigma)</small></div>
+                    <div class="bond-count"><span>1</span><small>&pi; (Pi)</small></div>
+                </div>
+            </div>
+
+            <div class="card sp">
+                <div class="badge">Alquinos / Alkynes</div>
+                <div class="geo-icon">📏</div> <h2>sp</h2>
+                <div class="angle">$$ 180^\circ $$</div>
+
+                <p class="desc" data-lang="es"><strong>Lineal.</strong><br>2 nubes electrónicas.<br>Un triple enlace.</p>
+                <p class="desc" data-lang="ca"><strong>Lineal.</strong><br>2 núvols electrònics.<br>Un triple enllaç.</p>
+                <p class="desc" data-lang="en"><strong>Linear.</strong><br>2 electron clouds.<br>One triple bond.</p>
+
+                <div class="bond-info">
+                    <div class="bond-count"><span style="color:var(--sp)">2</span><small>&sigma; (Sigma)</small></div>
+                    <div class="bond-count"><span>2</span><small>&pi; (Pi)</small></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="gym-section">
+            <h3 class="gym-title">
+                <span style="font-size:2rem">👁️</span> 
+                <span data-lang="es">Test Visual: Toca para revelar</span>
+                <span data-lang="ca">Test Visual: Toca per revelar</span>
+                <span data-lang="en">Visual Test: Tap to reveal</span>
+            </h3>
+
+            <div class="molecule-test" onclick="reveal(this)">
+                <div class="chem-structure">CH₃ — <span class="target">C</span>H₃</div>
+                <div class="reveal ans-sp3">sp³</div>
+            </div>
+
+            <div class="molecule-test" onclick="reveal(this)">
+                <div class="chem-structure">CH₂ = <span class="target">C</span>H₂</div>
+                <div class="reveal ans-sp2">sp²</div>
+            </div>
+
+            <div class="molecule-test" onclick="reveal(this)">
+                <div class="chem-structure">HC ≡ <span class="target">C</span>H</div>
+                <div class="reveal ans-sp">sp</div>
+            </div>
+
+            <div class="molecule-test" onclick="reveal(this)">
+                <div class="chem-structure">CH₃ — <span class="target">C</span>H = CH₂</div>
+                <div class="reveal ans-sp2">sp²</div>
+            </div>
+
+            <div class="molecule-test" onclick="reveal(this)">
+                <div class="chem-structure">CH₃ — <span class="target">C</span> ≡ N</div>
+                <div class="reveal ans-sp">sp</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // SISTEMA DE IDIOMAS
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // LOGICA DEL TEST
+        function reveal(element) {
+            const answer = element.querySelector('.reveal');
+            // Toggle display
+            if(answer.style.display === 'block') {
+                answer.style.display = 'none';
+            } else {
+                answer.style.display = 'block';
+                // Pequeña animación
+                answer.style.opacity = 0;
+                setTimeout(() => answer.style.opacity = 1, 50);
+            }
+        }
+
+        // INICIALIZAR PREFERENCIAS
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.innerText.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
