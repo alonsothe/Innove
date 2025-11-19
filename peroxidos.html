@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Peróxidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA PERÓXIDO) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #fdf4ff; /* Magenta muy pálido */
+        --surface: #ffffff;
+        --text-main: #701a75;
+        --text-soft: #a21caf;
+        --border: #f5d0fe;
+        
+        /* Paleta Vibrante */
+        --primary: #d946ef;      /* Magenta Neón */
+        --primary-soft: #fae8ff;
+        --secondary: #6366f1;    /* Índigo */
+        --secondary-soft: #e0e7ff;
+        --tertiary: #0ea5e9;     /* Cian */
+        --tertiary-soft: #e0f2fe;
+        --accent: #f59e0b;       /* Ámbar (Warning) */
+        --accent-soft: #fef3c7;
+
+        --shadow: 0 10px 30px -5px rgba(217, 70, 239, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(217, 70, 239, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f5d0fe;
+        --text-soft: #e879f9;
+        --border: #334155;
+        --primary-soft: rgba(217, 70, 239, 0.2);
+        --secondary-soft: rgba(99, 102, 241, 0.2);
+        --tertiary-soft: rgba(14, 165, 233, 0.2);
+        --accent-soft: rgba(245, 158, 11, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-mag { background: var(--primary-soft); }
+    .c-ind { background: var(--secondary-soft); }
+    .c-cyan { background: var(--tertiary-soft); }
+    .c-warn { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+
+    /* CAJA GRUPO PEROXO */
+    .molecule-box {
+        background: var(--surface); border: 2px solid var(--primary);
+        border-radius: var(--radius); padding: 30px; margin-bottom: 40px;
+        text-align: center; position: relative; overflow: hidden;
+    }
+    .molecule-visual {
+        font-size: 3rem; font-weight: 800; color: var(--text-main);
+        display: flex; justify-content: center; align-items: center; gap: 10px;
+        margin: 20px 0;
+    }
+    .bond { height: 5px; width: 40px; background: var(--text-main); border-radius: 5px; }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { 
+        background: var(--bg); padding: 10px 20px; border-radius: 15px; 
+        font-weight: 800; color: var(--text-soft); text-transform: uppercase; 
+        letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;
+        border: 1px solid var(--border);
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.03); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '?'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '✓'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); }
+
+    .answer { 
+        padding: 15px; background: var(--surface); color: var(--primary); 
+        font-weight: 700; font-size: 1rem; text-align: center;
+        border-top: 1px solid var(--border);
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">⭕</span>
+            <h1 data-lang="es">Los <span>Peróxidos</span></h1>
+            <h1 data-lang="ca">Els <span>Peròxids</span></h1>
+            <h1 data-lang="en">The <span>Peroxides</span></h1>
+            
+            <p class="intro" data-lang="es">Son compuestos donde el oxígeno tiene más oxígeno de lo normal. El grupo funcional es como dos átomos de oxígeno dándose la mano.</p>
+            <p class="intro" data-lang="ca">Són compostos on l'oxigen té més oxigen del normal. El grup funcional és com dos àtoms d'oxigen donant-se la mà.</p>
+            <p class="intro" data-lang="en">Compounds where oxygen has more oxygen than usual. The functional group is like two oxygen atoms holding hands.</p>
+        </header>
+
+        <div class="molecule-box">
+            <h3 data-lang="es">El Grupo Peroxo</h3>
+            <h3 data-lang="ca">El Grup Peroxo</h3>
+            <h3 data-lang="en">The Peroxo Group</h3>
+            
+            <div class="molecule-visual">
+                <span>O</span><div class="bond"></div><span>O</span>
+            </div>
+            <div style="font-size: 1.2rem; color: var(--primary); font-weight: bold;">
+                $$ (O_2)^{-2} $$
+            </div>
+            
+            <p data-lang="es">Cada oxígeno actúa con valencia <strong>-1</strong> (en total -2).</p>
+            <p data-lang="ca">Cada oxigen actua amb valència <strong>-1</strong> (en total -2).</p>
+            <p data-lang="en">Each oxygen acts with valence <strong>-1</strong> (total -2).</p>
+        </div>
+
+        <div class="theory-grid">
+            
+            <div class="card">
+                <div class="icon-box c-mag">📐</div>
+                <h3 data-lang="es">Cómo formular</h3>
+                <h3 data-lang="ca">Com formular</h3>
+                <h3 data-lang="en">How to write</h3>
+                <p data-lang="es">Combina el metal (valencia n) con el grupo peroxo (valencia 2). Se cruzan.</p>
+                <p data-lang="ca">Combina el metall (valència n) amb el grup peroxo (valència 2).</p>
+                <p data-lang="en">Combine the metal (valence n) with the peroxo group (valence 2).</p>
+                
+                <div style="font-size:1.1rem; font-weight:bold; text-align:center; background:var(--bg); padding:10px; border-radius:15px;">
+                    $$ M_2 (O_2)_n $$
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon-box c-warn">⚠️</div>
+                <h3 data-lang="es">¡OJO! No Simplifiques</h3>
+                <h3 data-lang="ca">ALERTA! No Simplifiquis</h3>
+                <h3 data-lang="en">WARNING! Don't Simplify</h3>
+                <p data-lang="es">No puedes romper el grupo \(O_2\). Solo puedes simplificar si los números de fuera son pares.</p>
+                <p data-lang="ca">No pots trencar el grup \(O_2\). Només pots simplificar si els números de fora són parells.</p>
+                <p data-lang="en">You cannot break the \(O_2\) group. Simplify only if outer numbers are even.</p>
+                <div style="font-size:0.9rem; margin-top:10px;">
+                    \( H_2(O_2)_1 \rightarrow H_2O_2 \) (Correcto)<br>
+                    \( H_2O_2 \rightarrow HO \) (Incorrecto ❌)
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon-box c-cyan">🆚</div>
+                <h3 data-lang="es">Óxido vs Peróxido</h3>
+                <h3 data-lang="ca">Òxid vs Peròxid</h3>
+                <h3 data-lang="en">Oxide vs Peroxide</h3>
+                
+                <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:0.9rem;">
+                    <div style="text-align:center;">
+                        <strong>Óxido Ba</strong><br>
+                        \( Ba^{+2} + O^{-2} \)<br>
+                        \( Ba_2O_2 \rightarrow \mathbf{BaO} \)
+                    </div>
+                    <div style="border-left:1px solid var(--border);"></div>
+                    <div style="text-align:center;">
+                        <strong>Peróxido Ba</strong><br>
+                        \( Ba^{+2} + O_2^{-2} \)<br>
+                        \( Ba_2(O_2)_2 \rightarrow \mathbf{BaO_2} \)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Peróxidos (30 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs de Peròxids (30 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Peroxide Gym (30 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Los Famosos (Grupos 1 y 2)</span>
+            <div class="gym-grid">
+                <details><summary>Peróxido de hidrógeno</summary><div class="answer">H₂O₂ <br><small>(Agua oxigenada)</small></div></details>
+                <details><summary>Peróxido de sodio</summary><div class="answer">Na₂O₂</div></details>
+                <details><summary>Peróxido de potasio</summary><div class="answer">K₂O₂</div></details>
+                <details><summary>Peróxido de litio</summary><div class="answer">Li₂O₂</div></details>
+                <details><summary>Peróxido de calcio</summary><div class="answer">CaO₂</div></details>
+                <details><summary>Peróxido de bario</summary><div class="answer">BaO₂</div></details>
+                <details><summary>Peróxido de magnesio</summary><div class="answer">MgO₂</div></details>
+                <details><summary>Peróxido de estroncio</summary><div class="answer">SrO₂</div></details>
+                <details><summary>Peróxido de rubidio</summary><div class="answer">Rb₂O₂</div></details>
+                <details><summary>Peróxido de cesio</summary><div class="answer">Cs₂O₂</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 2: Metales de Transición</span>
+            <div class="gym-grid">
+                <details><summary>Peróxido de zinc</summary><div class="answer">ZnO₂</div></details>
+                <details><summary>Peróxido de cadmio</summary><div class="answer">CdO₂</div></details>
+                <details><summary>Peróxido de cobre(I)</summary><div class="answer">Cu₂O₂</div></details>
+                <details><summary>Peróxido de cobre(II)</summary><div class="answer">CuO₂</div></details>
+                <details><summary>Peróxido de mercurio(II)</summary><div class="answer">HgO₂</div></details>
+                <details><summary>Peróxido de plata</summary><div class="answer">Ag₂O₂</div></details>
+                <details><summary>Peróxido de oro(I)</summary><div class="answer">Au₂O₂</div></details>
+                <details><summary>Peróxido de níquel(II)</summary><div class="answer">NiO₂</div></details>
+                <details><summary>Peróxido de cobalto(II)</summary><div class="answer">CoO₂</div></details>
+                <details><summary>Peróxido de hierro(II)</summary><div class="answer">FeO₂</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 3: ¿Cómo se llama?</span>
+            <div class="gym-grid">
+                <details><summary>H₂O₂</summary><div class="answer">Peróxido de hidrógeno</div></details>
+                <details><summary>Na₂O₂</summary><div class="answer">Peróxido de sodio</div></details>
+                <details><summary>BaO₂</summary><div class="answer">Peróxido de bario</div></details>
+                <details><summary>CuO₂</summary><div class="answer">Peróxido de cobre(II)</div></details>
+                <details><summary>ZnO₂</summary><div class="answer">Peróxido de zinc</div></details>
+                <details><summary>K₂O₂</summary><div class="answer">Peróxido de potasio</div></details>
+                <details><summary>CaO₂</summary><div class="answer">Peróxido de calcio</div></details>
+                <details><summary>Li₂O₂</summary><div class="answer">Peróxido de litio</div></details>
+                <details><summary>MgO₂</summary><div class="answer">Peróxido de magnesio</div></details>
+                <details><summary>Ag₂O₂</summary><div class="answer">Peróxido de plata</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
