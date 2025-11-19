@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vectores | Álgebra y Geometría</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↗️</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- DISEÑO WHITE DOTS (LIMPIO) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #18181b; /* Zinc 900 */
+    --text-secondary: #52525b; /* Zinc 600 */
+    
+    --accent: #3b82f6; /* Azul Matemático */
+    --accent-glow: #eff6ff; /* Fondo azul muy claro */
+    --highlight: #f59e0b; /* Naranja para alertas/hard */
+    
+    --nav-active: #18181b; 
+    --nav-text-active: #ffffff; 
+    
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --accent-glow: rgba(59, 130, 246, 0.1);
+    --glass-bg: rgba(24, 24, 27, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --nav-active: #ffffff;
+    --nav-text-active: #09090b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* PATRÓN DE PUNTOS EXACTO */
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER FLOTANTE */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  
+  .header {
+    position: sticky; top: 20px; z-index: 100; padding: 16px 24px; margin-bottom: 40px;
+    background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: var(--radius); box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo-icon { font-size: 2rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: none; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--nav-active); color: var(--nav-text-active);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.4s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 40px; margin-bottom: 24px; 
+  }
+
+  /* TIPOGRAFÍA Y FORMULAS */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.5rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--accent); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text-primary); }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+  
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 20px; margin: 24px 0; 
+    font-family: var(--font-chem); 
+    color: var(--text-primary); 
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 1.05rem;
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-2px); }
+  
+  summary {
+    padding: 20px; font-weight: 500; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 2px;
+  }
+  .ex-badge.hard { background: var(--highlight); } 
+  
+  .ex-text { font-size: 1rem; color: var(--text-primary); line-height: 1.5; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 24px; background: var(--bg-color);
+    font-family: var(--font-ui); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;
+  }
+  .res-final {
+    display: block; margin-top: 15px; padding: 10px; 
+    border: 1px dashed var(--accent); border-radius: 8px;
+    font-family: var(--font-chem); color: var(--text-primary); text-align: center; font-weight: 700;
+  }
+
+  ul { padding-left: 20px; color: var(--text-secondary); margin-bottom: 1rem; }
+  li { margin-bottom: 6px; }
+
+</style>
+</head>
+<body>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">↗️</div>
+    <div class="logo-text">
+      <div>Álgebra Vectorial</div>
+      <div>Geometría Analítica</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="basicos" aria-selected="true">1. Fundamentos</button>
+    <button class="nav-btn" data-target="productos" aria-selected="false">2. Productos</button>
+    <button class="nav-btn" data-target="aplicaciones" aria-selected="false">3. Aplicaciones</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="basicos" class="content-section" data-active>
+    <div class="card">
+      <h1>Fundamentos del Espacio Vectorial</h1>
+      <p>Un vector fijo $\vec{AB}$ está determinado por dos puntos: Origen A y Extremo B. Se caracteriza por Módulo (longitud), Dirección (recta) y Sentido (flecha).</p>
+      
+      <h3>1.1 Definición Algebraica</h3>
+      <p>En una base ortonormal $\{\hat{i}, \hat{j}, \hat{k}\}$, un vector se expresa por sus componentes:</p>
+      <div class="math-box">
+        $$ \vec{v} = v_x \hat{i} + v_y \hat{j} + v_z \hat{k} = (v_x, v_y, v_z) $$
+        $$ \vec{AB} = B - A = (x_2-x_1, y_2-y_1, z_2-z_1) $$
+      </div>
+
+      <h3>1.2 Módulo y Vector Unitario</h3>
+      <div class="math-box">
+        $$ |\vec{v}| = \sqrt{v_x^2 + v_y^2 + v_z^2} $$
+        $$ \vec{u} = \frac{\vec{v}}{|\vec{v}|} \quad \text{(Vector unitario en la dirección de } \vec{v}) $$
+      </div>
+
+      <h3>1.3 Dependencia Lineal</h3>
+      <p>Un conjunto de vectores es <strong>Linealmente Dependiente (LD)</strong> si uno de ellos puede escribirse como combinación lineal de los otros. En $\mathbb{R}^3$, si el determinante de tres vectores es 0, son coplanarios (LD).</p>
+    </div>
+  </section>
+
+  <section id="productos" class="content-section">
+    <div class="card">
+      <h1>Operaciones Vectoriales</h1>
+      
+      <h2>2.1 Producto Escalar (Dot Product)</h2>
+      <p>El resultado es un <strong>número</strong> (escalar). Mide la proyección de un vector sobre otro.</p>
+      <div class="math-box">
+        $$ \vec{u} \cdot \vec{v} = |\vec{u}| |\vec{v}| \cos\alpha $$
+        $$ \vec{u} \cdot \vec{v} = x_1x_2 + y_1y_2 + z_1z_2 $$
+      </div>
+      <ul>
+        <li>Si $\vec{u} \cdot \vec{v} = 0$, los vectores son <strong>PERPENDICULARES</strong> (Ortogonales).</li>
+        <li>Permite calcular el ángulo $\alpha$.</li>
+      </ul>
+
+      <h2>2.2 Producto Vectorial (Cross Product)</h2>
+      <p>El resultado es un <strong>vector</strong> perpendicular a ambos. Su módulo es el área del paralelogramo que forman.</p>
+      <div class="math-box">
+        $$ \vec{w} = \vec{u} \times \vec{v} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ u_x & u_y & u_z \\ v_x & v_y & v_z \end{vmatrix} $$
+        $$ |\vec{u} \times \vec{v}| = |\vec{u}| |\vec{v}| \sin\alpha $$
+      </div>
+
+      <h2>2.3 Producto Mixto</h2>
+      <p>Combina escalar y vectorial. Su valor absoluto es el <strong>Volumen</strong> del paralelepípedo formado por los tres vectores.</p>
+      <div class="math-box">
+        $$ [\vec{u}, \vec{v}, \vec{w}] = \vec{u} \cdot (\vec{v} \times \vec{w}) = \det(\vec{u}, \vec{v}, \vec{w}) $$
+      </div>
+    </div>
+  </section>
+
+  <section id="aplicaciones" class="content-section">
+    <div class="card">
+      <h1>Aplicaciones Geométricas</h1>
+
+      <h3>3.1 Proyección Ortogonal</h3>
+      <p>La sombra de un vector $\vec{u}$ sobre otro $\vec{v}$.</p>
+      <div class="math-box">
+        $$ \text{Proy}_{\vec{v}}(\vec{u}) = \left( \frac{\vec{u} \cdot \vec{v}}{|\vec{v}|^2} \right) \vec{v} $$
+        $$ |\text{Proy}| = \frac{|\vec{u} \cdot \vec{v}|}{|\vec{v}|} $$
+      </div>
+
+      <h3>3.2 Cálculo de Áreas y Volúmenes</h3>
+      <ul>
+        <li><strong>Área Triángulo (ABC):</strong> Mitad del área del paralelogramo.
+          $$ A = \frac{1}{2} |\vec{AB} \times \vec{AC}| $$
+        </li>
+        <li><strong>Volumen Tetraedro (ABCD):</strong> Un sexto del paralelepípedo.
+          $$ V = \frac{1}{6} |[\vec{AB}, \vec{AC}, \vec{AD}]| $$
+        </li>
+      </ul>
+
+      <h3>3.3 Ecuación de la Recta y Plano</h3>
+      <ul>
+        <li><strong>Recta:</strong> Definida por Punto $P$ y Vector Director $\vec{d}$.</li>
+        <li><strong>Plano:</strong> Definido por Punto $P$ y Vector Normal $\vec{n}$ (perpendicular al plano).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de Problemas (30)</h2>
+      <p>Ejercicios de Selectividad (EBAU) y retos de Álgebra Lineal para Ingeniería.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Determine el valor de \(m\) para que los vectores \(\vec{u}=(1, m, 2)\) y \(\vec{v}=(m, 3, -4)\) sean ortogonales.</span>
+          </summary>
+          <div class="solution">
+            1. Condición de ortogonalidad: Producto escalar nulo (\(\vec{u} \cdot \vec{v} = 0\)).<br>
+            2. \((1)(m) + (m)(3) + (2)(-4) = 0\).<br>
+            3. \(m + 3m - 8 = 0 \Rightarrow 4m = 8 \Rightarrow m = 2\).
+            <div class="res-final">m = 2</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Calcule el ángulo que forman los vectores \(\vec{a}=(1, 1, 0)\) y \(\vec{b}=(0, 1, 1)\).</span>
+          </summary>
+          <div class="solution">
+            1. \(\cos \alpha = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}\).<br>
+            2. Producto escalar: \(1(0) + 1(1) + 0(1) = 1\).<br>
+            3. Módulos: \(|\vec{a}| = \sqrt{1^2+1^2} = \sqrt{2}\). \(|\vec{b}| = \sqrt{2}\).<br>
+            4. \(\cos \alpha = \frac{1}{\sqrt{2}\sqrt{2}} = \frac{1}{2}\).
+            <div class="res-final">α = 60º</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Vector Bisectriz: Halle un vector unitario que divida por la mitad el ángulo formado por \(\vec{u}=(3, 4)\) y \(\vec{v}=(5, 12)\).</span>
+          </summary>
+          <div class="solution">
+            1. Para sumar direcciones equitativamente, los vectores deben tener el mismo módulo (ser unitarios).<br>
+            2. \(\vec{u}' = \vec{u}/|\vec{u}| = (3/5, 4/5)\).<br>
+            3. \(\vec{v}' = \vec{v}/|\vec{v}| = (5/13, 12/13)\).<br>
+            4. Vector bisectriz \(\vec{w} = \vec{u}' + \vec{v}' = (3/5+5/13, 4/5+12/13) = (64/65, 112/65)\).<br>
+            5. Simplificando la dirección: \((64, 112)\) o \((4, 7)\). Normalizar si pide unitario.
+            <div class="res-final">dir(4, 7)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Dados \(A(1, 2, 3)\), \(B(0, -1, 2)\) y \(C(2, 1, 1)\). Calcule el área del triángulo ABC.</span>
+          </summary>
+          <div class="solution">
+            1. Vectores: \(\vec{AB} = (-1, -3, -1)\), \(\vec{AC} = (1, -1, -2)\).<br>
+            2. Producto vectorial \(\vec{AB} \times \vec{AC} = \begin{vmatrix} i & j & k \\ -1 & -3 & -1 \\ 1 & -1 & -2 \end{vmatrix} = (5, -3, 4)\).<br>
+            3. Área = \(\frac{1}{2} |\vec{w}| = \frac{1}{2} \sqrt{25 + 9 + 16} = \frac{1}{2} \sqrt{50}\).<br>
+            4. \(\frac{5\sqrt{2}}{2}\).
+            <div class="res-final">Area ≈ 3.54 u²</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Vector Perpendicular a dos: Halle un vector unitario ortogonal simultáneamente a \(\vec{u}=(2, -1, 5)\) y \(\vec{v}=(-1, 3, 0)\).</span>
+          </summary>
+          <div class="solution">
+            1. Usamos el producto vectorial \(\vec{w} = \vec{u} \times \vec{v}\).<br>
+            2. \(\vec{w} = (-15, -5, 5)\). Podemos simplificar usando la dirección \((-3, -1, 1)\).<br>
+            3. Módulo de \((-3, -1, 1)\) es \(\sqrt{9+1+1} = \sqrt{11}\).<br>
+            4. Vector unitario: \(\frac{1}{\sqrt{11}}(-3, -1, 1)\).
+            <div class="res-final">1/√11 (-3, -1, 1)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Volumen Tetraedro: Vértices en el origen \(O\) y los puntos \(A(1,0,0)\), \(B(0,2,0)\) y \(C(0,0,3)\).</span>
+          </summary>
+          <div class="solution">
+            1. Vectores desde el origen coinciden con las coordenadas.<br>
+            2. Producto mixto: Determinante de la matriz diagonal 3x3.<br>
+            3. \(\det = 1 \cdot 2 \cdot 3 = 6\).<br>
+            4. Volumen Tetraedro = \(\frac{1}{6} |det| = 1\).
+            <div class="res-final">V = 1 u³</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">UNI</span>
+            <span class="ex-text">Coplanaridad: Determine \(k\) para que los vectores \(\vec{u}=(1, 2, 3)\), \(\vec{v}=(0, k, 1)\) y \(\vec{w}=(1, 0, 1)\) sean linealmente dependientes (coplanarios).</span>
+          </summary>
+          <div class="solution">
+            1. Condición: Su determinante (producto mixto) debe ser 0.<br>
+            2. \(\begin{vmatrix} 1 & 2 & 3 \\ 0 & k & 1 \\ 1 & 0 & 1 \end{vmatrix} = (k + 2 + 0) - (3k + 0 + 0) = 2 - 2k\).<br>
+            3. \(2 - 2k = 0 \Rightarrow k = 1\).
+            <div class="res-final">k = 1</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">UNI</span>
+            <span class="ex-text">Proyección Ortogonal: Calcule la proyección del vector \(\vec{a}=(2, 1)\) sobre la dirección del vector \(\vec{b}=(3, 4)\).</span>
+          </summary>
+          <div class="solution">
+            1. Fórmula: \(|\text{Proy}| = \frac{\vec{a} \cdot \vec{b}}{|\vec{b}|}\).<br>
+            2. Producto escalar: \(6 + 4 = 10\). Módulo de b: 5.<br>
+            3. Longitud proyección = \(10/5 = 2\).<br>
+            4. Vector proyección: Longitud por vector unitario de b. \(2 \cdot (3/5, 4/5)\).
+            <div class="res-final">(6/5, 8/5)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">UNI</span>
+            <span class="ex-text">Base Ortonormal (Gram-Schmidt): Dada la base \(B = \{(1,1), (1,0)\}\), construya una base ortonormal a partir de ella.</span>
+          </summary>
+          <div class="solution">
+            1. Primer vector \(\vec{u}_1 = (1,1)\). Normalizar: \(\vec{e}_1 = (1/\sqrt{2}, 1/\sqrt{2})\).<br>
+            2. Segundo vector \(\vec{v}_2 = (1,0)\). Restar proyección sobre \(\vec{e}_1\).<br>
+            3. \(\vec{u}_2 = \vec{v}_2 - (\vec{v}_2 \cdot \vec{e}_1)\vec{e}_1\).<br>
+            4. \(\vec{u}_2 = (1,0) - \frac{1}{\sqrt{2}}(1/\sqrt{2}, 1/\sqrt{2}) = (1,0) - (0.5, 0.5) = (0.5, -0.5)\).<br>
+            5. Normalizar \(\vec{u}_2\) para obtener \(\vec{e}_2\).
+            <div class="res-final">{(1/√2, 1/√2), (1/√2, -1/√2)}</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿El producto escalar es conmutativo?</span></summary><div class="solution">Sí. \(\vec{u} \cdot \vec{v} = \vec{v} \cdot \vec{u}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿El producto vectorial es conmutativo?</span></summary><div class="solution">No. Es anticonmutativo: \(\vec{u} \times \vec{v} = -(\vec{v} \times \vec{u})\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">UNI</span><span class="ex-text">Identidad de Lagrange: \(|\vec{u} \times \vec{v}|^2\).</span></summary><div class="solution">Es igual a \(|\vec{u}|^2 |\vec{v}|^2 - (\vec{u} \cdot \vec{v})^2\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Distancia entre puntos A(1,2) y B(4,6).</span></summary><div class="solution">Módulo de \(\vec{AB} = (3,4)\). \(d=5\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Vector director de la recta \(2x + 3y = 5\).</span></summary><div class="solution">Normal \(\vec{n}=(2,3)\). Director \(\vec{d}=(-3, 2)\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Área de paralelogramo con diagonales \(\vec{d}_1, \vec{d}_2\).</span></summary><div class="solution">\(A = \frac{1}{2} |\vec{d}_1 \times \vec{d}_2|\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">UNI</span><span class="ex-text">Distancia punto a plano \(Ax+By+Cz+D=0\).</span></summary><div class="solution">\(\frac{|Ax_0 + By_0 + Cz_0 + D|}{\sqrt{A^2+B^2+C^2}}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Módulo del vector \(\vec{v} = (2, 3, \sqrt{3})\).</span></summary><div class="solution">\(\sqrt{4+9+3} = \sqrt{16} = 4\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Condición para que dos vectores sean paralelos.</span></summary><div class="solution">Sus componentes son proporcionales (\(\vec{u} = k\vec{v}\)) o su producto vectorial es 0.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Punto simétrico de P respecto a Q.</span></summary><div class="solution">\(P' = Q + \vec{PQ}\) o \(Q = (P+P')/2\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">UNI</span><span class="ex-text">Volumen paralelepípedo dados 4 vértices.</span></summary><div class="solution">Formar 3 vectores desde un vértice común y hacer producto mixto.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Vector unitario eje Z.</span></summary><div class="solution">\(\vec{k} = (0, 0, 1)\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Valor de \(k\) para que \(|\vec{v}=(3, k)| = 5\).</span></summary><div class="solution">\(9 + k^2 = 25 \Rightarrow k = \pm 4\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Ángulo entre diagonales de un cubo.</span></summary><div class="solution">Vectores \((1,1,1)\) y \((1,1,-1)\) (ejemplo). \(\cos\alpha = 1/3 \Rightarrow \alpha \approx 70.5^\circ\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">UNI</span><span class="ex-text">Descomponer vector \(\vec{v}\) en componente paralela y normal a \(\vec{u}\).</span></summary><div class="solution">\(\vec{v}_{\parallel} = \text{Proy}_{\vec{u}}(\vec{v})\), \(\vec{v}_{\perp} = \vec{v} - \vec{v}_{\parallel}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Cuánto vale \(\vec{i} \times \vec{j}\)?</span></summary><div class="solution">\(\vec{k}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Cuánto vale \(\vec{i} \cdot \vec{k}\)?</span></summary><div class="solution">\(0\) (son perpendiculares).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Baricentro de un triángulo vértices ABC.</span></summary><div class="solution">\(G = \frac{A+B+C}{3}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">UNI</span><span class="ex-text">Momento de una fuerza \(\vec{F}\) respecto a \(O\) aplicada en \(P\).</span></summary><div class="solution">\(\vec{M} = \vec{OP} \times \vec{F}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Combinación lineal de vectores.</span></summary><div class="solution">\(\vec{w} = a\vec{u} + b\vec{v}\).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Ecuación del plano que pasa por A, B, C.</span></summary><div class="solution">Vector normal \(\vec{n} = \vec{AB} \times \vec{AC}\). Luego \(n_x x + n_y y + n_z z + D = 0\).</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
