@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Isomería y Estereoquímica Avanzada</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (SISTEMA AMIGABLE Y PRECISO) --- */
+    :root {
+        /* MODO CLARO (Por defecto) */
+        --bg: #f9f7ff;
+        --surface: #ffffff;
+        --text-main: #4c1d95; /* Morado Oscuro */
+        --text-soft: #6d28d9;
+        --border: #ddd6fe;
+        
+        /* Paleta Óptica/Estructural */
+        --primary: #7c3aed;      /* Violeta Vivo (Concepto Estructural) */
+        --primary-soft: #ede9fe;
+        --secondary: #db2777;    /* Rosa Neón (Estereoquímica) */
+        --secondary-soft: #fce7f3;
+        --tertiary: #10b981;     /* Verde (Justificación) */
+        --tertiary-soft: #d1fae5;
+        --accent: #f59e0b;       /* Naranja (Advertencia) */
+
+        --shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.08);
+        --shadow-hover: 0 20px 40px -5px rgba(124, 58, 237, 0.2);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO (Monocromático suave) */
+    body.dark-mode {
+        --bg: #1a1a2e;
+        --surface: #2d3748;
+        --text-main: #f5f3ff;
+        --text-soft: #a78bfa;
+        --border: #334155;
+        --primary-soft: rgba(124, 58, 237, 0.25);
+        --secondary-soft: rgba(219, 39, 119, 0.2);
+    }
+
+    /* GENERAL RESET AND TRANSITIONS */
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    body { background-color: var(--bg); color: var(--text-main); font-family: 'Nunito', sans-serif; line-height: 1.7; min-height: 100vh; padding: 20px; }
+
+    /* --- NAVEGACIÓN Y CONTROLES (Estilo Pill) --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .back-btn:hover { color: var(--primary); transform: translateX(-3px); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { border: none; background: transparent; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO GENERAL --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: rotate-slow 20s linear infinite; }
+    @keyframes rotate-slow { 100% { transform: rotate(360deg); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+    .icon-box { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; }
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 10px; }
+
+    /* REGLA DE ORO */
+    .rule-box { background: var(--primary-soft); border-radius: var(--radius); padding: 20px; text-align: center; margin-bottom: 40px; font-weight: 700; color: var(--primary); }
+    .rule-big { font-size: 1.5rem; margin: 10px 0; }
+    .sub-rule { font-size: 0.9rem; color: var(--text-soft); margin-top: 10px; }
+
+    /* EJERCICIOS SELECTIVIDAD */
+    .gym-section { margin-top: 50px; }
+    .ex-card { background: var(--surface); border-radius: var(--radius); padding: 30px; margin-bottom: 30px; box-shadow: var(--shadow); border-left: 5px solid var(--secondary); }
+    
+    .justificacion { 
+        background: var(--tertiary-soft); 
+        padding: 20px; border-radius: 15px; 
+        border: 1px solid var(--tertiary);
+        margin-top: 20px;
+        font-size: 1rem;
+    }
+    .justificacion strong { color: var(--tertiary); }
+
+    /* --- DETALLES DE IDIOMA --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🔬</span>
+            <h1 data-lang="es">Isomería y <span>Estereoquímica</span></h1>
+            <h1 data-lang="ca">Isomeria i <span>Estereoquímica</span></h1>
+            <h1 data-lang="en">Isomerism & <span>Stereochemistry</span></h1>
+            
+            <p class="intro" data-lang="es">Nivel Selectividad/Universidad. Compuestos con la misma fórmula molecular pero diferente estructura o disposición espacial. ¡Dos mundos en una sola fórmula!</p>
+            <p class="intro" data-lang="ca">Nivell Selectivitat/Universitat. Compostos amb la mateixa fórmula molecular però diferent estructura o disposició espacial. Dos mons en una sola fórmula!</p>
+            <p class="intro" data-lang="en">University Level. Compounds with the same molecular formula but different structure or spatial arrangement. Two worlds in one formula!</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card" style="border-left: 5px solid var(--primary);">
+                <div class="icon-box" style="background:var(--primary-soft);">🧱</div>
+                <h3 data-lang="es">Isomería Estructural</h3>
+                <h3 data-lang="ca">Isomeria Estructural</h3>
+                <h3 data-lang="en">Structural Isomerism</h3>
+                <p data-lang="es">Los átomos se conectan de forma diferente.</p>
+                <p data-lang="ca">Els àtoms es connecten de manera diferent.</p>
+                <p data-lang="en">Atoms are connected differently.</p>
+                
+                <ul style="padding-left:20px; font-size:0.95rem; color:var(--text-soft);">
+                    <li>Cadena (Butano vs 2-metilpropano)</li>
+                    <li>Posición (Propan-1-ol vs Propan-2-ol)</li>
+                    <li>Función (Etanol vs Dimetileter)</li>
+                </ul>
+            </div>
+
+            <div class="card" style="border-left: 5px solid var(--secondary);">
+                <div class="icon-box" style="background:var(--secondary-soft);">➗</div>
+                <h3 data-lang="es">Isomería Geométrica (E/Z)</h3>
+                <h3 data-lang="ca">Isomeria Geomètrica (E/Z)</h3>
+                <h3 data-lang="en">Geometric Isomerism (E/Z)</h3>
+                <p data-lang="es">Se da en dobles enlaces o ciclos. La rotación está impedida, por lo que la posición espacial de los grupos es fija.</p>
+                <p data-lang="ca">Es dóna en dobles enllaços o cicles. La rotació està impedida.</p>
+                <p data-lang="en">Occurs in double bonds/rings. Rotation is restricted.</p>
+                <div style="font-size:0.95rem; margin-top:10px;">
+                    <strong style="color:var(--secondary);">CIS (Z):</strong> <span data-lang="es">Mismos grupos en el mismo lado.</span><span data-lang="ca">Mateix costat.</span><br>
+                    <strong style="color:var(--secondary);">TRANS (E):</strong> <span data-lang="es">Mismos grupos en lados opuestos.</span><span data-lang="ca">Costats oposats.</span>
+                </div>
+            </div>
+
+            <div class="card" style="border-left: 5px solid var(--tertiary);">
+                <div class="icon-box" style="background:var(--tertiary-soft);">🖐️</div>
+                <h3 data-lang="es">Isomería Óptica (Quiralidad)</h3>
+                <h3 data-lang="ca">Isomeria Òptica (Quiralitat)</h3>
+                <h3 data-lang="en">Optical Isomerism (Chirality)</h3>
+                <p data-lang="es">Moléculas imagen especular **no superponibles** (como tus manos). Requiere un <strong>Carbono Asimétrico</strong> ($C^*$).</p>
+                <p data-lang="ca">Molècules imatge especular **no superposables**. Requereix un Carboni Asimètric ($C^*$).</p>
+                <p data-lang="en">Non-superimposable mirror images. Requires an **Asymmetric Carbon** ($C^*$).</p>
+                <ul style="padding-left:20px; font-size:0.95rem; color:var(--text-soft);">
+                    <li>Enantiómeros: Imágenes especulares.</li>
+                    <li>Diastereómeros: Estereoisómeros no especulares.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="rule-box">
+            <div class="rule-big" data-lang="es">$$ \text{Isomería} \rightarrow \text{Misma } C_xH_yO_z $$</div>
+            <div class="rule-big" data-lang="ca">$$ \text{Isomeria} \rightarrow \text{Mateixa } C_xH_yO_z $$</div>
+            <div class="rule-big" data-lang="en">$$ \text{Isomerism} \rightarrow \text{Same } C_xH_yO_z $$</div>
+            
+            <p class="sub-rule" data-lang="es">La fórmula molecular DEBE ser idéntica. Si cambia un átomo, NO es isómero.</p>
+            <p class="sub-rule" data-lang="ca">La fórmula molecular HA DE ser idèntica. Si canvia un àtom, NO és isòmer.</p>
+            <p class="sub-rule" data-lang="en">The molecular formula MUST be identical. If one atom changes, it is NOT an isomer.</p>
+        </div>
+
+        <h2 data-lang="es">📝 10 Problemas Nivel Selectividad (Justificación)</h2>
+        <h2 data-lang="ca">📝 10 Problemes Nivell Selectivitat (Justificació)</h2>
+        <h2 data-lang="en">📝 10 Advanced Problems (Justification)</h2>
+
+        <div class="gym-section">
+            
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">1. Clasificación completa de $C_4H_{10}O$.</span>
+                        <span data-lang="ca">1. Classificació completa de $C_4H_{10}O$.</span>
+                        <span data-lang="en">1. Full classification of $C_4H_{10}O$.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <strong data-lang="es">JUSTIFICACIÓN:</strong> <span data-lang="es">Esta fórmula permite la isomería de posición, cadena y función.</span>
+                        <strong data-lang="ca">JUSTIFICACIÓ:</strong> <span data-lang="ca">Aquesta fórmula permet la isomeria de posició, cadena i funció.</span>
+                        <strong data-lang="en">JUSTIFICATION:</strong> <span data-lang="en">This formula allows for position, chain, and functional isomerism.</span>
+                        <ul style="padding-left:20px; margin-top:10px; list-style-type: '👉';">
+                            <li data-lang="es">Alcoholes de Posición (Propan-1-ol, Propan-2-ol).</li>
+                            <li data-lang="ca">Alcohols de Posició (Propan-1-ol, Propan-2-ol).</li>
+                            <li data-lang="en">Position Alcohols (Propan-1-ol, Propan-2-ol).</li>
+                            
+                            <li data-lang="es">Alcohol de Cadena (2-metilpropan-1-ol).</li>
+                            <li data-lang="ca">Alcohol de Cadena (2-metilpropan-1-ol).</li>
+                            <li data-lang="en">Chain Alcohol (2-methylpropan-1-ol).</li>
+                            
+                            <li data-lang="es">Éteres de Función (Metoxipropano, Etoxietano).</li>
+                            <li data-lang="ca">Èters de Funció (Metoxipropà, Etoxietà).</li>
+                            <li data-lang="en">Functional Ethers (Methoxypropane, Ethoxyethane).</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">2. Justifique y dibuje los isómeros E/Z del Ácido 2-butenoico.</span>
+                        <span data-lang="ca">2. Justifiqueu i dibuixeu els isòmers E/Z de l'Àcid 2-butenoic.</span>
+                        <span data-lang="en">2. Justify and draw the E/Z isomers of 2-butenoic acid.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>RAZONAMIENTO:</strong> La isomería geométrica (E/Z) existe porque la rotación alrededor del doble enlace está impedida, y los dos carbonos del doble enlace ($C_2$ y $C_3$) tienen sustituyentes diferentes entre sí ($\text{H}$ y $\text{CH}_3$ en $C_2$; $\text{H}$ y $\text{COOH}$ en $C_3$).</p>
+                        <p data-lang="ca"><strong>RAONAMENT:</strong> La isomeria geomètrica existeix perquè la rotació al voltant del doble enllaç està impedida, i els dos carbonis del doble enllaç tenen substituents diferents.</p>
+                        <p data-lang="en"><strong>REASONING:</strong> Geometric isomerism (E/Z) exists because rotation around the double bond is prevented, and both carbons of the double bond have different substituents.</p>
+                        <div style="margin-top:10px; font-style: italic;">
+                            Isómero Z (Cis) vs Isómero E (Trans). (Se requiere el dibujo de la estructura en el examen).
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">3. Clasifique la isomeria del 2-bromobutano e identifique el centro quiral.</span>
+                        <span data-lang="ca">3. Classifiqueu la isomeria del 2-bromobutà i identifiqueu el centre quiral.</span>
+                        <span data-lang="en">3. Classify the isomerism of 2-bromobutane and identify the chiral center.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>CLASIFICACIÓN:</strong> Posee isomeria óptica (Estereoisomería). El compuesto es quiral y posee dos enantiómeros ($R$ y $S$).</p>
+                        <p data-lang="ca"><strong>CLASSIFICACIÓ:</strong> Posseeix isomeria òptica. El compost és quiral i posseeix dos enantiòmers ($R$ i $S$).</p>
+                        <p data-lang="en"><strong>CLASSIFICATION:</strong> Possesses optical isomerism. The compound is chiral and has two enantiomers ($R$ and $S$).</p>
+                        <p data-lang="es"><strong>CENTRO QUIRAL:</strong> El Carbono $C_2$ es asimétrico, ya que está unido a 4 sustituyentes diferentes: $\text{H}$, $\text{Br}$, $\text{CH}_3$ y $\text{CH}_2\text{CH}_3$.</p>
+                        <p data-lang="ca"><strong>CENTRE QUIRAL:</strong> El Carboni $C_2$ és asimètric, ja que està unit a 4 substituents diferents.</p>
+                        <p data-lang="en"><strong>CHIRAL CENTER:</strong> Carbon $C_2$ is asymmetric, as it is bonded to 4 different substituents.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">4. Proponga un isómero de función para el propanal y justifique.</span>
+                        <span data-lang="ca">4. Proposeu un isòmer de funció per al propanal i justifiqueu.</span>
+                        <span data-lang="en">4. Propose a functional isomer for propanal and justify.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>FÓRMULA:</strong> Propanal es $C_3H_6O$.</p>
+                        <p data-lang="ca"><strong>FÓRMULA:</strong> Propanal és $C_3H_6O$.</p>
+                        <p data-lang="en"><strong>FORMULA:</strong> Propanal is $C_3H_6O$.</p>
+                        <p data-lang="es"><strong>ISÓMERO DE FUNCIÓN:</strong> Un aldehído es isómero de función de una Cetona. Proponemos la Propanona (acetona), $CH_3\text{COCH}_3$. Ambos cumplen $C_3H_6O$ pero tienen grupos funcionales diferentes ($\text{-CHO}$ vs $\text{C=O}$ interno).</p>
+                        <p data-lang="ca"><strong>ISÒMER DE FUNCIÓ:</strong> Un aldehid és isòmer de funció d'una Cetona. Proposem la Propanona. Tots dos compleixen $C_3H_6O$ però tenen grups funcionals diferents.</p>
+                        <p data-lang="en"><strong>FUNCTIONAL ISOMER:</strong> An aldehyde is a functional isomer of a Ketone. We propose Propanone. Both comply with $C_3H_6O$ but have different functional groups.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">5. Defina y diferencie Diastereómeros de Enantiómeros.</span>
+                        <span data-lang="ca">5. Definiu i diferencieu Diastereòmers d'Enantiòmers.</span>
+                        <span data-lang="en">5. Define and differentiate Diastereomers from Enantiomers.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>ENANTIÓMEROS:</strong> <span style="color:var(--secondary);">Estereoisómeros que son imágenes especulares NO superponibles.</span> Tienen propiedades físicas idénticas (p.e. ebullición) pero desvían la luz polarizada en sentidos opuestos.</p>
+                        <p data-lang="ca"><strong>ENANTIÒMERS:</strong> <span style="color:var(--secondary);">Estereoisòmers que són imatges especulars NO superposables.</span> Tenen propietats físiques idèntiques.</p>
+                        <p data-lang="en"><strong>ENANTIOMERS:</strong> <span style="color:var(--secondary);">Stereoisomers that are non-superimposable mirror images.</span> They have identical physical properties.</p>
+                        <p data-lang="es"><strong>DIASTEREÓMEROS:</strong> <span style="color:var(--secondary);">Estereoisómeros que NO son imágenes especulares.</span> Ocurren en moléculas con 2 o más centros quirales. Tienen propiedades físicas y químicas diferentes.</p>
+                        <p data-lang="ca"><strong>DIASTEREÒMERS:</strong> <span style="color:var(--secondary);">Estereoisòmers que NO són imatges especulars.</span> Ocorren en molècules amb 2 o més centres quirals.</p>
+                        <p data-lang="en"><strong>DIASTEREOMERS:</strong> <span style="color:var(--secondary);">Stereoisomers that are NOT mirror images.</span> They occur in molecules with 2 or more chiral centers.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">6. Justifique si el 1,1-dicloroeteno tiene isomeria geométrica.</span>
+                        <span data-lang="ca">6. Justifiqueu si l'1,1-dicloroetè té isomeria geomètrica.</span>
+                        <span data-lang="en">6. Justify if 1,1-dichloroethene has geometric isomerism.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>JUSTIFICACIÓN:</strong> NO tiene isomeria geométrica (E/Z). La condición es que **ningún carbono del doble enlace tenga sustituyentes iguales**.</p>
+                        <p data-lang="ca"><strong>JUSTIFICACIÓ:</strong> NO té isomeria geomètrica. La condició és que cap carboni del doble enllaç tingui substituents iguals.</p>
+                        <p data-lang="en"><strong>JUSTIFICATION:</strong> It does NOT have geometric isomerism (E/Z). The condition is that no carbon of the double bond has identical substituents.</p>
+                        <p data-lang="es">El Carbono $C_1$ está unido a 2 átomos de $\text{Cl}$, por lo que incumple la norma ($C_1$ tiene $\text{Cl}$ y $\text{Cl}$).</p>
+                        <p data-lang="ca">El Carboni $C_1$ està unit a 2 àtoms de $\text{Cl}$, per la qual cosa incompleix la norma.</p>
+                        <p data-lang="en">Carbon $C_1$ is bonded to 2 $\text{Cl}$ atoms, thus violating the rule.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">7. Nombre dos isómeros de posición del alcohol $C_5H_{11}OH$.</span>
+                        <span data-lang="ca">7. Nomeneu dos isòmers de posició de l'alcohol $C_5H_{11}OH$.</span>
+                        <span data-lang="en">7. Name two position isomers of the alcohol $C_5H_{11}OH$.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>DEFINICIÓN:</strong> Mismo grupo funcional y misma cadena carbonada, pero la posición del grupo funcional es diferente.</p>
+                        <p data-lang="ca"><strong>DEFINICIÓ:</strong> Mateix grup funcional i mateixa cadena, però la posició del grup funcional és diferent.</p>
+                        <p data-lang="en"><strong>DEFINITION:</strong> Same functional group and carbon chain, but different functional group position.</p>
+                        <p data-lang="es"><strong>ISÓMERO 1:</strong> Pentan-1-ol ($OH$ en $C_1$).</p>
+                        <p data-lang="ca"><strong>ISÒMER 1:</strong> Pentan-1-ol ($OH$ a $C_1$).</p>
+                        <p data-lang="en"><strong>ISOMER 1:</strong> Pentan-1-ol ($OH$ on $C_1$).</p>
+                        <p data-lang="es"><strong>ISÓMERO 2:</strong> Pentan-2-ol ($OH$ en $C_2$).</p>
+                        <p data-lang="ca"><strong>ISÒMER 2:</strong> Pentan-2-ol ($OH$ a $C_2$).</p>
+                        <p data-lang="en"><strong>ISOMER 2:</strong> Pentan-2-ol ($OH$ on $C_2$).</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">8. El ácido propanoico ($C_3H_6O_2$) tiene un isómero de función. ¿Cuál?</span>
+                        <span data-lang="ca">8. L'àcid propanoic ($C_3H_6O_2$) té un isòmer de funció. Quin?</span>
+                        <span data-lang="en">8. Propanoic acid ($C_3H_6O_2$) has a functional isomer. Which one?</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>RELACIÓN:</strong> Los Ácidos Carboxílicos son isómeros de función de los Ésteres.</p>
+                        <p data-lang="ca"><strong>RELACIÓ:</strong> Els Àcids Carboxílics són isòmers de funció dels Èsters.</p>
+                        <p data-lang="en"><strong>RELATIONSHIP:</strong> Carboxylic Acids are functional isomers of Esters.</p>
+                        <p data-lang="es"><strong>ISÓMERO DE FUNCIÓN:</strong> Propanoato de metilo ($CH_3\text{COO}\text{CH}_3$) o Etanoato de etilo ($CH_3\text{COOCH}_2\text{CH}_3$). Ambos cumplen $C_3H_6O_2$.</p>
+                        <p data-lang="ca"><strong>ISÒMER DE FUNCIÓ:</strong> Propanoat de metil o Etanoat d'etil.</p>
+                        <p data-lang="en"><strong>FUNCTIONAL ISOMER:</strong> Methyl propanoate or Ethyl ethanoate.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">9. Justifique si el 1-buteno y el ciclobutano son isómeros estructurales.</span>
+                        <span data-lang="ca">9. Justifiqueu si l'1-butè i el ciclobutà són isòmers estructurals.</span>
+                        <span data-lang="en">9. Justify if 1-butene and cyclobutane are structural isomers.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>1-Buteno:</strong> $C_4H_8$ (Fórmula general Alquenos $C_nH_{2n}$)</p>
+                        <p data-lang="ca"><strong>1-Butè:</strong> $C_4H_8$</p>
+                        <p data-lang="en"><strong>1-Butene:</strong> $C_4H_8$</p>
+                        <p data-lang="es"><strong>Ciclobutano:</strong> $C_4H_8$ (Fórmula general Cicloalcanos $C_nH_{2n}$)</p>
+                        <p data-lang="ca"><strong>Ciclobutà:</strong> $C_4H_8$</p>
+                        <p data-lang="en"><strong>Cyclobutane:</strong> $C_4H_8$</p>
+                        <p data-lang="es"><strong>CONCLUSIÓN:</strong> SÍ. Ambos tienen la misma fórmula molecular ($C_4H_8$) pero diferente conectividad/estructura (Cadena abierta vs Ciclo). Es una forma de Isomería Estructural.</p>
+                        <p data-lang="ca"><strong>CONCLUSIÓ:</strong> SÍ. Ambdós tenen la mateixa fórmula molecular, però diferent estructura (Cadena oberta vs Cicle).</p>
+                        <p data-lang="en"><strong>CONCLUSION:</strong> YES. Both have the same molecular formula but different connectivity (Open chain vs Cyclic). This is a form of Structural Isomerism.</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="ex-card">
+                <details>
+                    <summary style="font-size:1.1rem;">
+                        <span data-lang="es">10. ¿Cuántos estereoisómeros tiene el 2,3-dibromobutano? Justifique la forma Meso.</span>
+                        <span data-lang="ca">10. Quants estereoisòmers té el 2,3-dibromobutà? Justifiqueu la forma Meso.</span>
+                        <span data-lang="en">10. How many stereoisomers does 2,3-dibromobutane have? Justify the Meso form.</span>
+                    </summary>
+                    <div class="justificacion">
+                        <p data-lang="es"><strong>Nº QUIRALES:</strong> 2 centros quirales ($C_2$ y $C_3$). Máximo teórico $2^2 = 4$ estereoisómeros.</p>
+                        <p data-lang="ca"><strong>Nº QUIRALS:</strong> 2 centres quirals. Màxim teòric $2^2 = 4$ estereoisòmers.</p>
+                        <p data-lang="en"><strong>CHIRAL CENTERS:</strong> 2 chiral centers. Maximum theoretical $2^2 = 4$ stereoisomers.</p>
+                        <p data-lang="es"><strong>REALIDAD:</strong> Solo hay 3 estereoisómeros: 1 par de enantiómeros ($R,R$ y $S,S$) y una forma **Meso** ($R,S$).</p>
+                        <p data-lang="ca"><strong>REALITAT:</strong> Només hi ha 3 estereoisòmers: 1 parell d'enantiòmers i una forma **Meso** ($R,S$).</p>
+                        <p data-lang="en"><strong>REALITY:</strong> There are only 3 stereoisomers: 1 pair of enantiomers and one **Meso** form ($R,S$).</p>
+                        <p data-lang="es"><strong>FORMA MESO:</strong> La forma $R,S$ tiene un plano de simetría interno que la hace **aquiral** (ópticamente inactiva) a pesar de tener centros quirales. Es su propio diastereómero.</p>
+                        <p data-lang="ca"><strong>FORMA MESO:</strong> La forma $R,S$ té un pla de simetria intern que la fa aquiral (òpticament inactiva).</p>
+                        <p data-lang="en"><strong>MESO FORM:</strong> The $R,S$ form has an internal plane of symmetry making it achiral (optically inactive).</p>
+                    </div>
+                </details>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
