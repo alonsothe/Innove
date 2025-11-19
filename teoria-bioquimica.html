@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bioquímica | Nivel Selectividad</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* --- DISEÑO "ÁCIDO-BASE / REDOX" ADAPTADO A BIO --- */
+    --bg-color: #ffffff; 
+    --text-primary: #18181b; 
+    --text-secondary: #52525b; 
+    
+    --accent: #10b981; /* Verde Esmeralda (Bio) */
+    --accent-glow: #ecfdf5; /* Fondo verde muy claro */
+    --highlight: #3b82f6; /* Azul ADN */
+    
+    --nav-active: #18181b; 
+    --nav-text-active: #ffffff; 
+    
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --accent-glow: rgba(16, 185, 129, 0.1);
+    --glass-bg: rgba(24, 24, 27, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --nav-active: #ffffff;
+    --nav-text-active: #09090b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* ORBES DECORATIVOS */
+  .orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.3; }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -100px; right: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--highlight); bottom: -50px; left: -50px; }
+
+  /* HEADER ESTILO APP */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  
+  .header {
+    position: sticky; top: 20px; z-index: 100; padding: 16px 24px; margin-bottom: 40px;
+    background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: var(--radius); box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo-icon { font-size: 2rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: none; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--nav-active); color: var(--nav-text-active);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.4s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 40px; margin-bottom: 24px; 
+  }
+
+  /* TIPOGRAFÍA */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.5rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--accent); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text-primary); }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+
+  /* CAJAS DE CONCEPTO */
+  .info-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 16px 24px; margin: 24px 0; 
+    font-size: 1rem; color: var(--text-primary); 
+    border-radius: 4px;
+  }
+
+  /* TABLAS */
+  .bio-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
+  .bio-table th { text-align: left; color: var(--text-primary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-weight: 700; }
+  .bio-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-secondary); }
+  .bio-table tr:last-child td { border-bottom: none; }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-2px); }
+  
+  summary {
+    padding: 20px; font-weight: 500; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 2px;
+  }
+  .ex-badge.hard { background: var(--highlight); } 
+  
+  .ex-text { font-size: 1rem; color: var(--text-primary); line-height: 1.5; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 24px; background: var(--bg-color);
+    font-family: var(--font-ui); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;
+  }
+  .res-final {
+    display: block; margin-top: 15px; padding: 10px; 
+    border: 1px dashed var(--accent); border-radius: 8px;
+    font-family: var(--font-chem); color: var(--text-primary); text-align: center; font-weight: 700;
+  }
+  
+  .step { margin-bottom: 8px; padding-left: 12px; border-left: 2px solid #e5e7eb; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🧬</div>
+    <div class="logo-text">
+      <div>Biología Selectividad</div>
+      <div>Bioquímica & Metabolismo</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="teoria1" aria-selected="true">1. Biomoléculas</button>
+    <button class="nav-btn" data-target="teoria2" aria-selected="false">2. Enzimas</button>
+    <button class="nav-btn" data-target="teoria3" aria-selected="false">3. Metabolismo</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Ejercicios (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="teoria1" class="content-section" data-active>
+    <div class="card">
+      <h1>Principios Inmediatos (Biomoléculas)</h1>
+      <p>Las moléculas que forman la materia viva se basan en el carbono. Se clasifican en inorgánicas (agua, sales) y orgánicas.</p>
+      
+
+      <h3>1. Glúcidos (Carbohidratos)</h3>
+      <p>Polihidroxialdehídos o polihidroxicetonas. Función energética y estructural.</p>
+      <div class="info-box">
+        <strong>Enlace O-Glucosídico:</strong> Une monosacáridos liberando una molécula de agua.<br>
+        Ej: Glucosa + Glucosa → Maltosa + H₂O.
+      </div>
+
+      <h3>2. Lípidos</h3>
+      <p>Insolubles en agua, solubles en disolventes orgánicos. Saponificables (con ácidos grasos) e Insaponificables.</p>
+      <ul style="color: var(--text-secondary); margin-bottom: 1rem;">
+        <li><strong>Acilglicéridos:</strong> Ésteres de glicerina + ác. grasos (Reserva energética).</li>
+        <li><strong>Fosfolípidos:</strong> Anfipáticos (Estructural, membranas).</li>
+      </ul>
+
+      <h3>3. Proteínas</h3>
+      <p>Polímeros de aminoácidos unidos por <strong>Enlace Peptídico</strong>. Estructura compleja (Primaria a Cuaternaria). Funciones: enzimática, transporte, defensa...</p>
+
+      <h3>4. Ácidos Nucleicos</h3>
+      <p>Polímeros de nucleótidos (Base + Pentosa + Fosfato). ADN (info genética) y ARN (expresión).</p>
+    </div>
+  </section>
+
+  <section id="teoria2" class="content-section">
+    <div class="card">
+      <h1>Biocatálisis (Enzimología)</h1>
+      <p>Las enzimas son proteínas que actúan como catalizadores biológicos, disminuyendo la Energía de Activación sin consumirse.</p>
+      
+      <h3>Cinética Enzimática (Michaelis-Menten)</h3>
+      <div class="info-box" style="font-family: var(--font-chem);">
+        E + S ⇄ ES → E + P
+      </div>
+      <p>La velocidad aumenta con la concentración de sustrato [S] hasta alcanzar la <strong>Vmáx</strong> (saturación del centro activo).</p>
+
+      <h3>Factores que afectan la actividad</h3>
+      <table class="bio-table">
+        <thead><tr><th>Factor</th><th>Efecto</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Temperatura</strong></td><td>Aumenta V hasta la Tª óptima. Luego desnaturaliza.</td></tr>
+          <tr><td><strong>pH</strong></td><td>Cada enzima tiene un pH óptimo. Cambios alteran cargas y estructura.</td></tr>
+          <tr><td><strong>Inhibidores</strong></td><td>Reducen la actividad. Pueden ser competitivos (se unen al centro activo) o no competitivos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="teoria3" class="content-section">
+    <div class="card">
+      <h1>Metabolismo Celular</h1>
+      <p>Conjunto de reacciones químicas en la célula. Se divide en Catabolismo (degradación, libera energía) y Anabolismo (síntesis, consume energía).</p>
+
+      <h3>Rutas Catabólicas Clave (Respiración)</h3>
+      <ol style="color: var(--text-secondary);">
+        <li><strong>Glucólisis (Citosol):</strong> Glucosa → 2 Piruvato + 2 ATP + 2 NADH.</li>
+        <li><strong>Descarboxilación oxidativa:</strong> Piruvato → Acetil-CoA.</li>
+        <li><strong>Ciclo de Krebs (Matriz mitocondrial):</strong> Oxida Acetil-CoA a CO₂, produciendo GTP, NADH y FADH₂.</li>
+        <li><strong>Cadena Respiratoria (Crestas):</strong> Transporte de e⁻ y Fosforilación Oxidativa (Síntesis de ATP).</li>
+      </ol>
+
+      <div class="info-box">
+        <strong>Balance Energético (aprox):</strong> 1 Glucosa → 36-38 ATP.
+      </div>
+
+      <h3>Anabolismo Autótrofo (Fotosíntesis)</h3>
+      <p>Conversión de energía luminosa en química.</p>
+      <ul>
+        <li><strong>Fase Luminosa (Tilacoides):</strong> Fotolisis del agua, producción de O₂, ATP y NADPH.</li>
+        <li><strong>Fase Oscura (Estroma):</strong> Ciclo de Calvin. Fijación de CO₂ para formar glucosa.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Problemas EBAU/Selectividad (30)</h2>
+      <p>Ejercicios de reconocimiento, balances energéticos y propiedades.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Defina el enlace peptídico. Represente la formación de un dipéptido a partir de dos aminoácidos generales.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Definición: Enlace tipo amida entre el grupo carboxilo (-COOH) de un aminoácido y el amino (-NH₂) del siguiente, liberando H₂O.</div>
+            <div class="step">2. Reacción: NH₂-CHR-COOH + NH₂-CHR'-COOH → NH₂-CHR-CO-NH-CHR'-COOH + H₂O.</div>
+            <div class="step">3. Características: Es plano, rígido y no permite giro (carácter parcial de doble enlace).</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Diferencias estructurales y funcionales entre almidón, glucógeno y celulosa.</span>
+          </summary>
+          <div class="solution">
+            <div class="step"><strong>Almidón:</strong> Polímero de α-D-glucosa. Enlace α(1→4) y ramificaciones α(1→6). Reserva vegetal.</div>
+            <div class="step"><strong>Glucógeno:</strong> Similar al almidón pero MUY ramificado (cada 8-12 unidades). Reserva animal (hígado/músculo).</div>
+            <div class="step"><strong>Celulosa:</strong> Polímero de β-D-glucosa. Enlace β(1→4). No ramificado. Estructural (pared celular). Indigerible por humanos.</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Explique el carácter anfipático de los fosfolípidos y su relación con la formación de membranas.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Anfipático: Poseen una zona hidrófila (cabeza polar: fosfato + alcohol) y una hidrófoba (colas apolares: ácidos grasos).</div>
+            <div class="step">2. En agua, se autoorganizan formando bicapas lipídicas: las cabezas miran al agua y las colas se esconden en el interior. Esta es la base de la membrana plasmática.</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Balance energético de la oxidación completa de un ácido graso de 16 carbonos (Ácido Palmítico).</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Activación: Consume -2 ATP.</div>
+            <div class="step">2. β-oxidación: 16C → 8 Acetil-CoA. Requiere 7 vueltas.</div>
+            <div class="step">3. Producción en vueltas: 7 FADH₂ y 7 NADH.</div>
+            <div class="step">4. Ciclo de Krebs (8 Acetil-CoA): 8 GTP, 24 NADH, 8 FADH₂.</div>
+            <div class="step">5. Total reducidos: 31 NADH (x3 ATP) + 15 FADH₂ (x2 ATP) + 8 GTP.</div>
+            <div class="step">6. Cálculo teórico clásico: (31·3) + (15·2) + 8 - 2 = 129 ATP.</div>
+            <div class="res-final">129 ATP (Neto)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Diferencias entre Fermentación Láctica y Respiración Celular en cuanto a aceptor final y rendimiento.</span>
+          </summary>
+          <div class="solution">
+            <div class="step"><strong>Respiración:</strong> Aceptor final es O₂ (inorgánico). Oxidación total de glucosa a CO₂ y H₂O. Rendimiento: 36-38 ATP.</div>
+            <div class="step"><strong>Fermentación:</strong> Aceptor final es orgánico (Piruvato → Lactato). Oxidación parcial. Rendimiento: solo 2 ATP (de la glucólisis).</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Dada la secuencia de ADN molde: 3' TAC-GGC-TAT 5'. Indique: ARNm, secuencia de aminoácidos y qué pasaría si cambia la C por una A.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. ARNm (complementario y antiparalelo): 5' AUG-CCG-AUA 3'.</div>
+            <div class="step">2. Proteína (Código genético): Met (Inicio) - Pro - Ile.</div>
+            <div class="step">3. Mutación: TAC-G<strong>A</strong>C-TAT → ARNm: AUG-C<strong>U</strong>G-AUA. El codón cambia de Prolina a Leucina. Es una mutación de sentido erróneo.</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué es el punto isoeléctrico?</span></summary><div class="solution">pH al cual un aminoácido tiene carga neta 0 (forma de zwitterion). No migra en un campo eléctrico.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Función del agua como disolvente biológico.</span></summary><div class="solution">Gracias a su polaridad y puentes de hidrógeno, disuelve sales y moléculas polares, permitiendo reacciones y transporte.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Inhibición competitiva vs no competitiva.</span></summary><div class="solution">Competitiva: Inhibidor se parece al sustrato, compite por el centro activo (se revierte aumentando [S]). No competitiva: Se une a otro sitio, deforma la enzima (no se revierte con [S]).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Estructura cuaternaria de la Hemoglobina.</span></summary><div class="solution">Formada por 4 subunidades (2 alfa, 2 beta), cada una con un grupo Hemo. Transporta O₂ cooperativamente.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Diferencia ADN y ARN.</span></summary><div class="solution">ADN: Desoxirribosa, Timina, Doble hélice. ARN: Ribosa, Uracilo, Monocatenario.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué es un nucleosoma?</span></summary><div class="solution">Unidad básica de la cromatina: ADN enrollado alrededor de un octámero de histonas.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Destino del Piruvato en aerobiosis y anaerobiosis.</span></summary><div class="solution">Aerobiosis: Acetil-CoA (Krebs). Anaerobiosis: Lactato (Láctica) o Etanol (Alcohólica).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Dónde ocurre la Fase Luminosa y qué produce?</span></summary><div class="solution">En la membrana de los tilacoides. Produce ATP y NADPH (Poder reductor) para la fase oscura.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Concepto de Desnaturalización proteica.</span></summary><div class="solution">Pérdida de la estructura nativa (terciaria/secundaria) por pH o Tª. Pierde función. Generalmente irreversible.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué son las vitaminas?</span></summary><div class="solution">Micronutrientes orgánicos esenciales. Muchas actúan como COENZIMAS o precursores de ellas.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Por qué los lípidos tienen más energía que los glúcidos?</span></summary><div class="solution">Están más reducidos (más H, menos O). Su oxidación libera más electrones y energía (9 kcal/g vs 4 kcal/g).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Ciclo de Calvin: Enzima clave.</span></summary><div class="solution">La RuBisCO. Fija el CO₂ a la Ribulosa-1,5-bisfosfato.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Enlace en ácidos nucleicos.</span></summary><div class="solution">Enlace Fosfodiéster (entre fosfato 5' y OH 3').</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Modelo llave-cerradura vs ajuste inducido.</span></summary><div class="solution">Llave-cerradura: Centro activo rígido y complementario perfecto. Ajuste inducido: El centro activo se adapta a la forma del sustrato al unirse.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Saponificación.</span></summary><div class="solution">Hidrólisis alcalina de un lípido con ácidos grasos (ester). Produce Jabón (sal de ácido graso) + Alcohol.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué es el ATP y por qué es moneda energética?</span></summary><div class="solution">Adenosín Trifosfato. Sus enlaces fosfato son de alta energía; al hidrolizarse liberan energía útil para la célula.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué es un codón?</span></summary><div class="solution">Triplete de nucleótidos en el ARNm que codifica un aminoácido específico o señal de stop.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Gluconeogénesis.</span></summary><div class="solution">Síntesis de glucosa a partir de precursores no glucídicos (piruvato, lactato, glicerol, aa) en hígado. Inverso a glucólisis pero con pasos propios.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Estructura de un anticuerpo (IgG).</span></summary><div class="solution">Forma de Y. 2 cadenas pesadas y 2 ligeras unidas por puentes disulfuro. Regiones variables (unión antígeno) y constantes.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué orgánulo hace la β-oxidación?</span></summary><div class="solution">La mitocondria (matriz) y los peroxisomas.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Isomería D y L en monosacáridos.</span></summary><div class="solution">Posición del -OH del carbono asimétrico más alejado del grupo carbonilo. D (derecha), L (izquierda). En naturaleza predominan D.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Ceras: Composición.</span></summary><div class="solution">Ésteres de ácido graso de cadena larga + alcohol de cadena larga. Muy hidrófobas (impermeabilizantes).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Dogma Central Biología Molecular.</span></summary><div class="solution">ADN → (Transcripción) → ARN → (Traducción) → Proteína. (Excepción: Retrotranscripción viral).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué es el colesterol?</span></summary><div class="solution">Lípido esteroide derivado del esterano. Componente de membranas animales (fluidez) y precursor de hormonas sexuales/vitamina D.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
