@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Física | Dinámica Newtoniana</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍎</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA DINÁMICA (ROJO FUERZA & ACERO) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --accent: #dc2626; /* Rojo Fuerza */
+    --accent-glow: rgba(220, 38, 38, 0.06);
+    --highlight: #f59e0b; /* Naranja Energía */
+    --vector: #4f46e5; /* Azul Vectorial */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #0f0505; /* Casi negro rojizo */
+    --text-primary: #fef2f2;
+    --text-secondary: #9ca3af;
+    --accent: #ef4444;
+    --accent-glow: rgba(239, 68, 68, 0.15);
+    --glass-bg: rgba(25, 10, 10, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de puntos técnico */
+    background-image: 
+        radial-gradient(var(--text-secondary) 0.8px, transparent 0.8px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES DE FONDO */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.3; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -150px; animation: pulse 8s infinite alternate; }
+  .orb-2 { width: 500px; height: 500px; background: var(--vector); bottom: -100px; right: -100px; }
+  @keyframes pulse { 0% { transform: scale(1); opacity: 0.3; } 100% { transform: scale(1.1); opacity: 0.4; } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--accent); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  /* CAJA DE FÓRMULAS */
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--highlight); color: #fff; } 
+  .ex-badge.uni { background: var(--vector); color: #fff; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--accent); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(220, 38, 38, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🍎</div>
+    <div class="logo-text">
+      <div>Física Master</div>
+      <div>Dinámica Total</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="leyes" aria-selected="true">1. Leyes de Newton</button>
+    <button class="nav-btn" data-target="fuerzas" aria-selected="false">2. Fuerzas Clave</button>
+    <button class="nav-btn" data-target="sistemas" aria-selected="false">3. Sistemas y DCL</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="leyes" class="content-section" data-active>
+    <div class="card">
+      <h1>Las 3 Leyes del Movimiento</h1>
+      <p>La base de la mecánica clásica. Relacionan las fuerzas (causas) con el movimiento (efectos).</p>
+
+      <h2>1. Ley de la Inercia</h2>
+      <p>Todo cuerpo persevera en su estado de reposo o movimiento uniforme y rectilíneo a no ser que sea obligado a cambiar su estado por fuerzas impresas sobre él.</p>
+      <div class="math-box">
+        $$ \sum \vec{F} = 0 \iff \vec{v} = \text{cte} $$
+      </div>
+
+      <h2>2. Ley Fundamental de la Dinámica</h2>
+      <p>El cambio de movimiento es directamente proporcional a la fuerza motriz impresa y ocurre según la línea recta a lo largo de la cual aquella fuerza se imprime.</p>
+      <div class="math-box">
+        $$ \sum \vec{F} = \frac{d\vec{p}}{dt} \quad \xrightarrow{m=\text{cte}} \quad \sum \vec{F} = m \cdot \vec{a} $$
+      </div>
+      <p><strong>Nota:</strong> $\vec{p} = m\vec{v}$ es el momento lineal.</p>
+
+      <h2>3. Ley de Acción y Reacción</h2>
+      <p>Con toda acción ocurre siempre una reacción igual y contraria: las acciones mutuas de dos cuerpos siempre son iguales y dirigidas en sentido opuesto.</p>
+      <div class="math-box">
+        $$ \vec{F}_{12} = - \vec{F}_{21} $$
+      </div>
+      <p><strong>Importante:</strong> Estas fuerzas actúan sobre <em>cuerpos diferentes</em>, por lo que nunca se anulan entre sí en el DCL de un solo cuerpo.</p>
+    </div>
+  </section>
+
+  <section id="fuerzas" class="content-section">
+    <div class="card">
+      <h1>Tipos de Fuerzas Comunes</h1>
+      
+      <h2>2.1 Peso ($\vec{P}$)</h2>
+      <p>La fuerza gravitatoria que la Tierra ejerce sobre un cuerpo. Siempre vertical y hacia abajo.</p>
+      <div class="math-box">$$ \vec{P} = m \cdot \vec{g} $$</div>
+
+      <h2>2.2 Normal ($\vec{N}$)</h2>
+      <p>Fuerza de contacto ejercida por una superficie. Siempre <strong>perpendicular</strong> a la superficie. No tiene fórmula fija; se despeja de la 2ª Ley.</p>
+
+      <h2>2.3 Rozamiento ($\vec{F}_r$)</h2>
+      <p>Fuerza que se opone al movimiento relativo entre superficies. Depende de la rugosidad ($\mu$) y la compresión normal ($N$).</p>
+      <div class="math-box">
+        $$ F_{r, \text{estático}} \le \mu_e N \quad ; \quad F_{r, \text{cinético}} = \mu_k N $$
+      </div>
+
+      <h2>2.4 Tensión ($\vec{T}$) y Elástica ($\vec{F}_e$)</h2>
+      <p><strong>Tensión:</strong> Transmitida por cuerdas (tira, nunca empuja).<br>
+      <strong>Elástica (Ley de Hooke):</strong> Recuperadora en muelles.</p>
+      <div class="math-box">$$ \vec{F}_e = -k \cdot \Delta \vec{x} $$</div>
+    </div>
+  </section>
+
+  <section id="sistemas" class="content-section">
+    <div class="card">
+      <h1>Dinámica de Sistemas y DCL</h1>
+      <p>Para resolver problemas, la herramienta crítica es el <strong>Diagrama de Cuerpo Libre (DCL)</strong>. Aislamos cada cuerpo y dibujamos TODAS las fuerzas que actúan SOBRE él.</p>
+
+      <h2>3.1 Estrategia de Resolución</h2>
+      <ol style="margin-left: 20px; color: var(--text-secondary); line-height: 1.8;">
+        <li>Dibujar el sistema y definir ejes (preferiblemente uno paralelo al movimiento).</li>
+        <li>Dibujar el <strong>DCL</strong> para cada masa.</li>
+        <li>Descomponer fuerzas fuera de los ejes (ej: Peso en plano inclinado).</li>
+        <li>Aplicar $\sum F_x = m a_x$ y $\sum F_y = m a_y$ para cada cuerpo.</li>
+        <li>Resolver el sistema de ecuaciones (la Tensión suele ser incógnita interna).</li>
+      </ol>
+
+      <h2>3.2 Plano Inclinado</h2>
+      <p>Descomponemos el peso en componentes normal y tangencial:</p>
+      <div class="math-box">
+        $$ P_x = mg \sin \theta \quad (\text{Baja por el plano}) $$
+        $$ P_y = mg \cos \theta \quad (\text{Perpendicular}) $$
+      </div>
+      <p>Normalmente, $N = P_y = mg \cos \theta$ (si no hay otras fuerzas verticales).</p>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (Dinámica Master)</h2>
+      <p>Problemas seleccionados para dominar desde la base hasta la ingeniería.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Ascensor: Una persona de 70 kg está sobre una báscula en un ascensor que sube acelerando a $2 \, m/s^2$. ¿Qué marca la báscula (Peso Aparente)?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. DCL sobre la persona: Normal $N$ (arriba), Peso $mg$ (abajo).</span>
+            <span class="step">2. 2ª Ley Newton (Eje Y positivo arriba): $\sum F = ma \Rightarrow N - mg = ma$.</span>
+            <span class="step">3. $N = m(g + a) = 70(9.8 + 2) = 70(11.8)$.</span>
+            <span class="step">4. $N = 826 \, N$. La báscula marca masa aparente $826/9.8 \approx 84.3 \, kg$.</span>
+            <div class="res-final">N = 826 N (84.3 kg)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Frenado de Emergencia: Un coche de 1000 kg a 108 km/h frena a fondo ($\mu=0.6$). ¿Distancia de frenado? (Use Dinámica).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. $v_0 = 30 \, m/s$. Fuerza frenado: $F_r = \mu N$. En horizontal $N=mg$. $F_r = \mu mg$.</span>
+            <span class="step">2. 2ª Ley: $-F_r = ma \Rightarrow -\mu mg = ma \Rightarrow a = -\mu g = -0.6(9.8) = -5.88 \, m/s^2$.</span>
+            <span class="step">3. Cinemática: $v_f^2 - v_0^2 = 2a\Delta x$.</span>
+            <span class="step">4. $0 - 30^2 = 2(-5.88)\Delta x \Rightarrow -900 = -11.76 \Delta x$.</span>
+            <div class="res-final">x = 76.5 m</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Plano Inclinado: Bloque baja por plano de 30º a velocidad constante. Calcule el coeficiente de rozamiento.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Velocidad constante $\Rightarrow a = 0$. Equilibrio de fuerzas.</span>
+            <span class="step">2. Eje X (plano): $P_x - F_r = 0 \Rightarrow mg \sin 30 = \mu N$.</span>
+            <span class="step">3. Eje Y (normal): $N - P_y = 0 \Rightarrow N = mg \cos 30$.</span>
+            <span class="step">4. Sustituyendo: $mg \sin 30 = \mu (mg \cos 30)$. Masas se cancelan.</span>
+            <span class="step">5. $\mu = \tan 30 = 0.577$.</span>
+            <div class="res-final">μ = 0.577</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Máquina de Atwood: Masa $m_1=2kg$, $m_2=3kg$. Cuerda y polea ideales. Calcule aceleración y tensión.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Sentido: $m_2$ baja, $m_1$ sube.</span>
+            <span class="step">2. Ecs: $T - m_1g = m_1a$ (1) y $m_2g - T = m_2a$ (2).</span>
+            <span class="step">3. Sumar (1)+(2): $m_2g - m_1g = (m_1+m_2)a$.</span>
+            <span class="step">4. $a = g \frac{m_2-m_1}{m_1+m_2} = 9.8 \frac{1}{5} = 1.96 \, m/s^2$.</span>
+            <span class="step">5. Sustituir en (1): $T = 2(9.8 + 1.96) = 23.52 \, N$.</span>
+            <div class="res-final">a = 1.96 m/s² ; T = 23.5 N</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Sistema Mesa-Polea con Rozamiento: Bloque A (10kg) en mesa horizontal ($\mu=0.2$) conectado a B (5kg) que cuelga. Calcule tensión.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Fuerzas A: $T - F_r = m_A a$. $F_r = \mu m_A g = 0.2(10)(9.8) = 19.6 \, N$.</span>
+            <span class="step">2. Fuerzas B: $m_B g - T = m_B a$. $5(9.8) - T = 5a \Rightarrow 49 - T = 5a$.</span>
+            <span class="step">3. Sistema: $T - 19.6 = 10a$ y $49 - T = 5a$. Sumar: $29.4 = 15a \Rightarrow a = 1.96$.</span>
+            <span class="step">4. $T = 19.6 + 10(1.96) = 39.2 \, N$.</span>
+            <div class="res-final">T = 39.2 N</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Fuerza de Arrastre: Un paracaidista cae. La fuerza del aire es $F_d = -bv$. Demuestre que la velocidad terminal es $mg/b$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Newton: $mg - bv = ma$.</span>
+            <span class="step">2. Velocidad terminal ocurre cuando la aceleración es cero (equilibrio dinámico).</span>
+            <span class="step">3. $mg - bv_t = 0$.</span>
+            <span class="step">4. Despejando: $v_t = \frac{mg}{b}$.</span>
+            <div class="res-final">Demostrado</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Fuerza Centrípeta y Peralte: Coche de 1000 kg en curva peraltada 20º sin rozamiento, radio 100m. Velocidad óptima.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. DCL: Peso abajo, Normal perpendicular al plano.</span>
+            <span class="step">2. Eje vertical: $N \cos\theta = mg$. Eje radial (horizontal): $N \sin\theta = m v^2/R$.</span>
+            <span class="step">3. Dividir ecs: $\tan\theta = v^2 / (Rg)$.</span>
+            <span class="step">4. $v = \sqrt{Rg \tan\theta} = \sqrt{100 \cdot 9.8 \cdot \tan 20} = \sqrt{980 \cdot 0.364}$.</span>
+            <span class="step">5. $v = \sqrt{356.7} \approx 18.9 \, m/s$.</span>
+            <div class="res-final">v = 18.9 m/s (68 km/h)</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Si $v=0$, la fuerza neta es 0?</span></summary><div class="solution">No necesariamente. En el punto más alto de un tiro vertical $v=0$ pero $F=mg$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Bloque A empuja a B sobre hielo. Fuerza contacto.</span></summary><div class="solution">Acel del sistema conjunto. Luego aislar B: $F_{AB} = m_B a$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Cadena deslizándose de una mesa (Masa variable).</span></summary><div class="solution">Problema de cálculo integral. La fuerza aceleradora aumenta con la longitud que cuelga.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Par Acción-Reacción: Caballo y Carro.</span></summary><div class="solution">El caballo tira del carro, el carro tira del caballo. El sistema se mueve por la fuerza del caballo contra el suelo.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Mono subiendo cuerda: Si sube acelerando, ¿Tensión?</span></summary><div class="solution">$T - mg = ma \Rightarrow T = m(g+a)$. La cuerda sufre más.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Fuerza Normal en plano inclinado vs horizontal.</span></summary><div class="solution">Horizontal: $N=mg$. Inclinado: $N=mg \cos\theta$ (Menor).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Rizo de la muerte: Altura mínima para no caer.</span></summary><div class="solution">Conservación energía + Dinámica en cima ($N=0$). $h = 2.5 R$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Dos bloques unidos por muelle en plano horizontal.</span></summary><div class="solution">Dinámica armónica acoplada.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Peso y Masa son lo mismo?</span></summary><div class="solution">No. Masa (kg) es inercia. Peso (N) es fuerza gravitatoria ($P=mg$).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Coche remolcando caravana. Tensión enganche.</span></summary><div class="solution">Calcular $a$ del sistema total. Luego aislar la caravana: $T - F_r = m_c a$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Fuerza dependiente del tiempo $F(t)=kt$. Velocidad.</span></summary><div class="solution">$a(t) = k/m \cdot t$. Integrar: $v(t) = k/2m \cdot t^2 + v_0$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Fuerza de rozamiento estático vs cinético.</span></summary><div class="solution">$\mu_e > \mu_k$. Cuesta más arrancar que mantener el movimiento.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Cuña móvil: Bloque sobre plano inclinado que se mueve.</span></summary><div class="solution">Fuerza ficticia de inercia si el referencial está en la cuña acelerada.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Impulso mecánico $I = F \Delta t$.</span></summary><div class="solution">Es igual a la variación de momento lineal $\Delta p$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Péndulo simple: Tensión en el punto más bajo.</span></summary><div class="solution">$T = mg + m v^2/L$. Es máxima ahí.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Bloques apilados. Fuerza máxima sin deslizar.</span></summary><div class="solution">El rozamiento estático entre bloques es la fuerza que acelera al bloque superior.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Unidad de fuerza en SI. Definición.</span></summary><div class="solution">Newton (N). Fuerza que a 1 kg le da aceleración de 1 m/s².</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Cohete: Empuje y masa variable.</span></summary><div class="solution">$F_{empuje} = v_{rel} \frac{dm}{dt}$. Ec. Tsiolkovsky.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Fuerza centrípeta en el Ecuador terrestre.</span></summary><div class="solution">El peso aparente es menor porque parte de la atracción gravitatoria suministra la $F_c$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Trabajo de la fuerza Normal.</span></summary><div class="solution">Generalmente 0, porque es perpendicular al desplazamiento (salvo superficies móviles).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Oscilador armónico: Fuerza recuperadora.</span></summary><div class="solution">$F = -kx$. Da lugar a $x(t) = A \cos(\omega t)$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Polea con masa (Momento de Inercia).</span></summary><div class="solution">Las tensiones a ambos lados ya no son iguales. $T_1 - T_2 = I \alpha / R$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Cuerpo lanzado sobre hielo rugoso. Distancia.</span></summary><div class="solution">$a = -\mu g$. $v^2 = 2 a d$. $d = v^2 / 2\mu g$.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
