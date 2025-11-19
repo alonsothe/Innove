@@ -1,0 +1,458 @@
+¡Claro que sí\! Vamos a subir el nivel considerablemente 🏗️.
+
+Pasamos de la física de partículas puntuales a la **Estática del Sólido Rígido**. Aquí las dimensiones del objeto importan, las fuerzas no se aplican en el mismo punto y aparece el concepto de **Rotación** (Torque/Momento).
+
+Aquí tienes la edición **"Estática | Sólido Rígido (Engineering Edition)"**.
+
+**Novedades de Nivel Superior:**
+
+1.  **Definición Vectorial:** El torque como producto vectorial $\vec{\tau} = \vec{r} \times \vec{F}$.
+2.  **Sistemas Hiperestáticos y 3D:** Introducción a problemas que requieren más ingenio que fórmulas.
+3.  **Cargas Distribuidas:** Uso de cálculo integral para hallar la fuerza equivalente.
+4.  **Ejercicios "Hardcore":** Escaleras con rozamiento, vuelco vs deslizamiento, estructuras (armaduras) y reacciones en 3D.
+
+Copia el código, guárdalo como `estatica.html` y prepárate para calcular.
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estática | Sólido Rígido Master</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA INGENIERÍA CIVIL (ÁMBAR & ACERO) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #1c1917; /* Warm Grey */
+    --text-secondary: #57534e; 
+    
+    --accent: #d97706; /* Ámbar (Construcción/Seguridad) */
+    --accent-glow: rgba(217, 119, 6, 0.08);
+    --structure: #475569; /* Acero (Estructuras) */
+    --vector: #0284c7; /* Azul Vectorial */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #0c0a09;
+    --text-primary: #f5f5f4;
+    --text-secondary: #a8a29e;
+    --accent-glow: rgba(217, 119, 6, 0.15);
+    --glass-bg: rgba(28, 25, 23, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de ingeniería */
+    background-image: 
+        linear-gradient(var(--glass-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+    background-size: 50px 50px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES ESTRUCTURALES */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.3; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -150px; animation: pulse 10s infinite alternate; }
+  .orb-2 { width: 500px; height: 500px; background: var(--structure); bottom: -100px; right: -100px; }
+  @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
+
+  /* HEADER */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--accent); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--accent); color: #fff; } 
+  .ex-badge.uni { background: var(--structure); color: #fff; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--accent); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(217, 119, 6, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🏗️</div>
+    <div class="logo-text">
+      <div>Ingeniería Civil</div>
+      <div>Estática del Sólido</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="rigido" aria-selected="true">1. Sólido Rígido</button>
+    <button class="nav-btn" data-target="torque" aria-selected="false">2. Momento de Fuerza</button>
+    <button class="nav-btn" data-target="equilibrio" aria-selected="false">3. Ec. Equilibrio</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="rigido" class="content-section" data-active>
+    <div class="card">
+      <h1>El Sólido Rígido</h1>
+      <p>A diferencia de la "partícula", un sólido rígido tiene dimensiones. Las fuerzas aplicadas en diferentes puntos producen efectos diferentes (rotación). Es un modelo ideal indeformable.</p>
+
+      <h2>1.1 Grados de Libertad</h2>
+      <p>Para que un cuerpo esté completamente quieto (estático), debemos restringir todos sus movimientos posibles:</p>
+      <ul>
+        <li><strong>En 2D (Plano):</strong> 3 Grados (2 Traslaciones X,Y + 1 Rotación).</li>
+        <li><strong>En 3D (Espacio):</strong> 6 Grados (3 Traslaciones + 3 Rotaciones).</li>
+      </ul>
+
+      <h2>1.2 Transmisibilidad de la Fuerza</h2>
+      <p>Una fuerza aplicada sobre un sólido rígido puede trasladarse a lo largo de su <strong>línea de acción</strong> sin alterar los efectos externos (equilibrio), pero sí altera los efectos internos (tensión/compresión).</p>
+    </div>
+  </section>
+
+  <section id="torque" class="content-section">
+    <div class="card">
+      <h1>Momento de una Fuerza (Torque)</h1>
+      <p>Es la capacidad de una fuerza para producir rotación alrededor de un punto o eje.</p>
+
+      <h2>2.1 Definición Vectorial (3D)</h2>
+      <p>El momento $\vec{M}_O$ de una fuerza $\vec{F}$ aplicada en un punto $P$ respecto al punto $O$ es:</p>
+      <div class="math-box">
+        $$ \vec{M}_O = \vec{r} \times \vec{F} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ r_x & r_y & r_z \\ F_x & F_y & F_z \end{vmatrix} $$
+      </div>
+      <p>Donde $\vec{r} = \vec{OP}$ es el vector posición desde el pivote hasta el punto de aplicación.</p>
+
+      <h2>2.2 Definición Escalar (2D)</h2>
+      <p>Usada en problemas planos. Es fuerza por distancia perpendicular ($d$).</p>
+      <div class="math-box">
+        $$ M_O = F \cdot d \cdot \sin\theta = F \cdot d_{\perp} $$
+      </div>
+      <p><strong>Signo:</strong> Antihorario (+) / Horario (-).</p>
+
+      <h2>2.3 Par de Fuerzas</h2>
+      <p>Dos fuerzas de igual magnitud, dirección opuesta y líneas de acción paralelas. Generan rotación pura. El momento del par es constante independientemente del punto de referencia.</p>
+      <div class="math-box">
+        $$ M = F \cdot d \quad (\text{d = distancia entre fuerzas}) $$
+      </div>
+    </div>
+  </section>
+
+  <section id="equilibrio" class="content-section">
+    <div class="card">
+      <h1>Condiciones de Equilibrio Estático</h1>
+      <p>Para que un sólido rígido esté en equilibrio, no debe trasladarse ni rotar.</p>
+
+      <h2>3.1 Ecuaciones Universales</h2>
+      <div class="math-box">
+        $$ \sum \vec{F} = 0 \quad (\text{Equilibrio Traslacional}) $$
+        $$ \sum \vec{M}_O = 0 \quad (\text{Equilibrio Rotacional}) $$
+      </div>
+      <p><strong>Nota Clave:</strong> El punto $O$ para calcular momentos puede ser CUALQUIERA. Truco: Elige el punto donde haya más incógnitas para anularlas.</p>
+
+      <h2>3.2 Cargas Distribuidas (Nivel Ingeniería)</h2>
+      <p>En vigas, las fuerzas no siempre son puntuales (ej: nieve en un techo, presión de agua). Se modelan como $w(x)$ [N/m].</p>
+      <div class="math-box">
+        $$ F_{R} = \int w(x) \, dx \quad (\text{Área bajo la curva}) $$
+        $$ \bar{x} = \frac{\int x \cdot w(x) \, dx}{\int w(x) \, dx} \quad (\text{Ubicación de la resultante}) $$
+      </div>
+      <p>Para carga rectangular constante $w$: $F = w \cdot L$ en el centro ($L/2$).<br>
+      Para carga triangular (0 a $w_{max}$): $F = w_{max} \cdot L / 2$ a $2/3$ del vértice.</p>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (Engineering Level)</h2>
+      <p>Ejercicios que requieren DCL rigurosos, geometría y sistemas de ecuaciones.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Escalera Deslizante: Una escalera uniforme de 5 m y 20 kg se apoya en una pared lisa (sin roce) y un suelo rugoso ($\mu_s = 0.4$). ¿Cuál es el ángulo mínimo $\theta$ con el suelo para que no resbale?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. DCL: Peso $mg$ en el centro (2.5m). Normal pared $N_w$ (horizontal). Normal suelo $N_g$ (vertical). Rozamiento suelo $f_r$ (hacia la pared).</span>
+            <span class="step">2. $\sum F_y = 0 \Rightarrow N_g - mg = 0 \Rightarrow N_g = 20(9.8) = 196$ N.</span>
+            <span class="step">3. $\sum F_x = 0 \Rightarrow f_r - N_w = 0 \Rightarrow f_r = N_w$.</span>
+            <span class="step">4. Al límite: $f_r = \mu_s N_g = 0.4(196) = 78.4$ N. Luego $N_w = 78.4$ N.</span>
+            <span class="step">5. $\sum M_{suelo} = 0$: El peso gira horario, $N_w$ antihorario.</span>
+            <span class="step">6. $N_w(5 \sin\theta) - mg(2.5 \cos\theta) = 0$.</span>
+            <span class="step">7. $\tan\theta = \frac{2.5 mg}{5 N_w} = \frac{0.5 (196)}{78.4} = 1.25$.</span>
+            <span class="step">8. $\theta = \arctan(1.25)$.</span>
+            <div class="res-final">θ_min = 51.34º</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Viga con Carga Distribuida: Viga de 6m apoyada en A y B (extremos). Carga triangular que varía de 0 N/m en A a 1200 N/m en B. Halle las reacciones.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Resultante de la carga triangular: Área = $\frac{1}{2} \cdot base \cdot altura$.</span>
+            <span class="step">2. $F_R = 0.5 \cdot 6 \cdot 1200 = 3600$ N.</span>
+            <span class="step">3. Posición de $F_R$: Centroide de un triángulo está a $2/3$ de la base desde el vértice agudo (A). $x = \frac{2}{3}(6) = 4$ m desde A.</span>
+            <span class="step">4. Momentos en A ($\sum M_A = 0$): $R_B(6) - F_R(4) = 0$.</span>
+            <span class="step">5. $6 R_B = 3600(4) \Rightarrow R_B = 2400$ N.</span>
+            <span class="step">6. Fuerzas Y ($\sum F_y = 0$): $R_A + R_B - F_R = 0 \Rightarrow R_A = 3600 - 2400$.</span>
+            <div class="res-final">RA = 1200 N ; RB = 2400 N</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Vuelco vs Deslizamiento: Un bloque de base $b$ y altura $h$ sobre un plano inclinado $\theta$. Coeficiente $\mu$. ¿Qué ocurre primero al aumentar $\theta$: vuelca o desliza?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Condición Deslizamiento: $mg \sin\theta > \mu mg \cos\theta \Rightarrow \tan\theta > \mu$.</span>
+            <span class="step">2. Condición Vuelco: La línea de acción del peso sale de la base. Ocurre cuando el CM pasa la vertical de la esquina. $\tan\theta > b/h$.</span>
+            <span class="step">3. Comparación: Si $\mu < b/h$, desliza primero. Si $\mu > b/h$, vuelca primero.</span>
+            <div class="res-final">Depende de μ vs b/h</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Torque Vectorial 3D: Fuerza $\vec{F} = (3, -2, 4)$ N aplicada en el punto $P(1, 1, 2)$. Calcule el momento respecto al origen $O(0,0,0)$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Vector posición $\vec{r} = \vec{OP} = (1, 1, 2)$.</span>
+            <span class="step">2. Producto vectorial $\vec{M} = \vec{r} \times \vec{F} = \begin{vmatrix} i & j & k \\ 1 & 1 & 2 \\ 3 & -2 & 4 \end{vmatrix}$.</span>
+            <span class="step">3. Comp i: $(1)(4) - (2)(-2) = 8$.</span>
+            <span class="step">4. Comp j: $-[(1)(4) - (2)(3)] = -[-2] = 2$.</span>
+            <span class="step">5. Comp k: $(1)(-2) - (1)(3) = -5$.</span>
+            <div class="res-final">M = (8, 2, -5) N·m</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Tensión en Cables 3D: Un semáforo de 100kg cuelga de tres cables anclados en el techo en coordenadas $A(0,0,5)$, $B(4,0,5)$, $C(2,4,5)$. El nudo está en $D(2,2,0)$. Halle las tensiones.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Expresar cada tensión como vector unitario director multiplicado por su módulo $T$.</span>
+            <span class="step">2. $\vec{u}_{DA} = (A-D)/|A-D|$. Igual para DB y DC.</span>
+            <span class="step">3. Peso $\vec{P} = (0, 0, -980)$.</span>
+            <span class="step">4. Sistema 3x3: $\sum F_x = 0, \sum F_y = 0, \sum F_z = 0$.</span>
+            <span class="step">5. Resolver la matriz.</span>
+            <div class="res-final">Requiere Álgebra Matricial</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Armadura (Método Nudos): Triángulo equilátero ABC apoyado en A y B, carga P en C (vértice sup). Calcule fuerza en la barra horizontal AB.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Simetría: Reacciones $R_A = R_B = P/2$.</span>
+            <span class="step">2. Nudo A: Fuerzas concurren $R_A$ (sube), $F_{AC}$ (60º), $F_{AB}$ (horizontal).</span>
+            <span class="step">3. $\sum F_y = 0 \Rightarrow R_A + F_{AC}\sin 60 = 0 \Rightarrow F_{AC} = -(P/2)/\sin 60 = -P/\sqrt{3}$ (Compresión).</span>
+            <span class="step">4. $\sum F_x = 0 \Rightarrow F_{AB} + F_{AC}\cos 60 = 0$.</span>
+            <span class="step">5. $F_{AB} = -(-P/\sqrt{3})(0.5) = P / (2\sqrt{3})$.</span>
+            <div class="res-final">F_AB = 0.289 P (Tracción)</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Puente Levadizo: Cadena sostiene extremo de puente homogéneo.</span></summary><div class="solution">Equilibrio de rotación en la bisagra. La tensión depende del ángulo.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Cilindro subiendo escalón con fuerza horizontal F.</span></summary><div class="solution">Momentos respecto a la esquina del escalón. $F(R-h) \ge mg\sqrt{2Rh-h^2}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Centro de Gravedad de una L (Placa compuesta).</span></summary><div class="solution">Dividir en dos rectángulos. $X_{CM} = (A_1x_1 + A_2x_2)/(A_1+A_2)$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Diferencia entre Centro de Masas y Centro de Gravedad.</span></summary><div class="solution">Coinciden si el campo gravitatorio $g$ es uniforme en todo el cuerpo.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Carretilla: ¿Por qué es más fácil tirar que empujar?</span></summary><div class="solution">Al tirar, la componente vertical de la fuerza alivia la Normal (menos rozamiento).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Reacciones en un empotramiento (Viga en voladizo).</span></summary><div class="solution">Aparece una Fuerza vertical ($R_y$), Horizontal ($R_x$) y un MOMENTO de reacción ($M_A$).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Barra apoyada en cuenco semiesférico liso.</span></summary><div class="solution">Las fuerzas en los puntos de contacto son normales a la superficie (apuntan al centro de la esfera).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Torque máximo de una llave inglesa.</span></summary><div class="solution">Cuando la fuerza es perpendicular al mango ($90^\circ$). $M = rF$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Estabilidad: Cono sobre su base vs sobre su vértice.</span></summary><div class="solution">Base: Eq. Estable (si perturbas, vuelve). Vértice: Eq. Inestable (si perturbas, cae).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Teorema de Varignon.</span></summary><div class="solution">El momento de la resultante es igual a la suma de momentos de las componentes.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Polea con masa y fricción en el eje.</span></summary><div class="solution">Las tensiones no son iguales. $T_2 - T_1 = I\alpha + \tau_{friccion}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Vuelco de coche en curva (sin deslizar).</span></summary><div class="solution">Momentos respecto a la rueda exterior. Vuelca si la centrífuga supera al peso estabilizador.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Barra suspendida por dos cables no verticales.</span></summary><div class="solution">Las tres líneas de acción (T1, T2, Peso) deben concurrir en un punto.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Unidad de Torque vs Trabajo.</span></summary><div class="solution">Ambos N·m. Torque es vectorial (m x N). Trabajo es escalar (Joule). No llamamos Joule al torque.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Fricción en tornillo (Rosca).</span></summary><div class="solution">Se modela como un bloque subiendo un plano inclinado con rozamiento.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Escalera: Hombre sube. ¿Cuándo resbala?</span></summary><div class="solution">A medida que sube, aumenta el momento y la fuerza de rozamiento necesaria. Falla arriba.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Carga distribuida $w(x) = kx^2$ (Parabólica).</span></summary><div class="solution">Integrar para hallar $F_R$ y $\bar{x}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Apertura de compuerta sumergida (Presión hidrostática).</span></summary><div class="solution">La fuerza varía con la profundidad. Calcular centro de presión.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Puede un cuerpo rotar si $\sum F = 0$?</span></summary><div class="solution">Sí, si $\sum M \neq 0$ (Par de fuerzas).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Estática Virtual (Trabajo Virtual).</span></summary><div class="solution">Método alternativo: $\delta W = \sum \vec{F} \cdot \delta \vec{r} = 0$. Útil en mecanismos.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Tensión en cable de puente colgante (Parábola vs Catenaria).</span></summary><div class="solution">Si el peso es uniforme horizontal (tablero): Parábola. Si es su propio peso: Catenaria.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Caja arrastrada: Altura máxima de la cuerda para no volcar.</span></summary><div class="solution">Momentos respecto a la esquina delantera inferior.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Rodadura sin deslizamiento (Estática).</span></summary><div class="solution">La fuerza de rozamiento es estática y no realiza trabajo, pero permite el giro.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Bisagras de una puerta (2 soportes).</span></summary><div class="solution">Sistema hiperestático axialmente si no se especifica cuál carga el peso. Se suele asumir una sola.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
+```
