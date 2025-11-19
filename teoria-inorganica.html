@@ -3,507 +3,427 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Teoría-Inorgánica 🧪 | La Biblia de la Formulación</title>
-<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚗️</text></svg>">
-<meta name="description" content="Plataforma premium de formulación inorgánica. Teoría extensa, efecto blur y ejercicios masivos.">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+<title>Química | Hub Central</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-  :root {
-    /* Paleta de colores vibrante y profesional */
-    --primary: #6366f1; /* Indigo */
-    --primary-dark: #4338ca;
-    --accent: #ec4899; /* Pink glow */
-    --success: #10b981; /* Emerald */
-    --warning: #f59e0b; /* Amber */
+    /* --- VARIABLES DE DISEÑO (SISTEMA DÍA/NOCHE) --- */
+    :root {
+        /* MODO CLARO (Por defecto) */
+        --bg: #f3f6fd;
+        --surface: #ffffff;
+        --text-main: #2d3748;
+        --text-soft: #718096;
+        --border: #e2e8f0;
+        
+        /* Colores de Acento (Friendly Palette) */
+        --primary: #6366f1;      /* Indigo */
+        --primary-soft: #e0e7ff;
+        --secondary: #ec4899;    /* Rosa */
+        --secondary-soft: #fce7f3;
+        --tertiary: #10b981;     /* Menta */
+        --tertiary-soft: #d1fae5;
+        --orange: #f59e0b;
+        --orange-soft: #fef3c7;
+
+        /* Efectos */
+        --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(99, 102, 241, 0.15);
+        --radius: 28px; /* ¡Muy redondo! */
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f1f5f9;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+        --shadow-hover: 0 20px 40px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif; /* Fuente muy legible */
+        min-height: 100vh;
+        background-image: radial-gradient(var(--text-soft) 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+        background-opacity: 0.1;
+    }
+
+    /* --- HEADER ANIMADO --- */
+    .header {
+        text-align: center; padding: 60px 20px 40px;
+        max-width: 900px; margin: 0 auto;
+    }
+
+    .main-icon {
+        font-size: 4rem; display: inline-block;
+        animation: float 4s ease-in-out infinite;
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+    }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+    h1 {
+        font-family: 'Outfit', sans-serif; font-size: 3.5rem; font-weight: 800;
+        margin: 10px 0; letter-spacing: -1px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle { font-size: 1.2rem; color: var(--text-soft); font-weight: 600; }
+
+    /* --- BARRA DE CONTROLES (GLASSMORPHISM) --- */
+    .controls-container {
+        position: sticky; top: 20px; z-index: 100;
+        display: flex; justify-content: center; margin-bottom: 50px; padding: 0 20px;
+    }
+
+    .glass-pill {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        padding: 8px 12px; border-radius: 50px;
+        box-shadow: var(--shadow);
+        display: flex; align-items: center; gap: 8px;
+    }
+    body.dark-mode .glass-pill { background: rgba(30, 41, 59, 0.8); }
+
+    .btn {
+        border: none; background: transparent; padding: 10px 20px;
+        border-radius: 20px; cursor: pointer;
+        font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--text-soft);
+        font-size: 0.9rem;
+    }
     
-    /* Variables de Modo Claro */
-    --bg-gradient: radial-gradient(circle at 0% 0%, #eef2ff 0%, #e0e7ff 50%, #fae8ff 100%);
-    --glass: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    .btn:hover { background: var(--bg); color: var(--primary); transform: scale(1.05); }
     
-    --radius: 16px;
-    --font-base: 16px;
-  }
+    .btn.active {
+        background: var(--primary); color: white;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
 
-  :root[data-theme="dark"] {
-    /* Variables de Modo Oscuro */
-    --bg-gradient: radial-gradient(circle at 0% 0%, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-    --glass: rgba(15, 23, 42, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --text-main: #f1f5f9;
-    --text-muted: #94a3b8;
-    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-  }
+    .divider { width: 1px; height: 25px; background: var(--border); margin: 0 5px; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    .theme-toggle {
+        font-size: 1.2rem; padding: 8px 12px; background: var(--bg); border-radius: 50%;
+        cursor: pointer; border: 1px solid var(--border);
+    }
 
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: var(--bg-gradient);
-    background-attachment: fixed; /* Fondo fijo */
-    color: var(--text-main);
-    font-size: var(--font-base);
-    line-height: 1.7;
-    min-height: 100vh;
-    transition: color 0.3s ease;
-  }
+    /* --- GRID DE TARJETAS --- */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px 100px; }
+    
+    .grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
 
-  /* --- EFECTOS BLUR (GLASSMORPHISM) --- */
-  .glass-panel {
-    background: var(--glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
+    .card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 35px;
+        text-decoration: none;
+        color: var(--text-main);
+        border: 1px solid var(--border);
+        position: relative; overflow: hidden;
+        display: flex; flex-direction: column; justify-content: space-between;
+        height: 280px;
+        box-shadow: var(--shadow);
+    }
 
-  /* --- ORB DECORATIVOS --- */
-  .orb {
-    position: fixed; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.6;
-    animation: float 10s infinite ease-in-out;
-  }
-  .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -50px; left: -50px; }
-  .orb-2 { width: 400px; height: 400px; background: var(--accent); bottom: -100px; right: -100px; animation-delay: -5s; }
+    /* Efecto Hover (Rebote y Elevación) */
+    .card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: var(--shadow-hover);
+        border-color: transparent;
+    }
 
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(20px, 40px); }
-  }
+    /* Decoración interna de la tarjeta */
+    .card-bg-icon {
+        position: absolute; bottom: -20px; right: -20px;
+        font-size: 8rem; opacity: 0.05; transform: rotate(15deg);
+        transition: all 0.5s ease;
+    }
+    .card:hover .card-bg-icon { opacity: 0.15; transform: rotate(0deg) scale(1.1); }
 
-  /* --- TIPOGRAFÍA --- */
-  h1, h2, h3 { font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; }
-  h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
-  h2 { font-size: 2rem; margin: 3rem 0 1.5rem; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
-  h3 { font-size: 1.4rem; color: var(--primary); margin: 2rem 0 1rem; }
-  p { margin-bottom: 1.2rem; text-align: justify; }
-  
-  .chem-formula {
-    font-family: 'Fira Code', monospace;
-    color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 600;
-  }
+    .icon-box {
+        width: 60px; height: 60px; border-radius: 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; margin-bottom: 20px;
+        transition: transform 0.4s;
+    }
+    .card:hover .icon-box { transform: rotate(10deg) scale(1.1); }
 
-  /* --- LAYOUT --- */
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+    /* Colores dinámicos para tarjetas */
+    .card[data-color="blue"] .icon-box { background: var(--primary-soft); }
+    .card[data-color="pink"] .icon-box { background: var(--secondary-soft); }
+    .card[data-color="green"] .icon-box { background: var(--tertiary-soft); }
+    .card[data-color="orange"] .icon-box { background: var(--orange-soft); }
 
-  /* --- HEADER --- */
-  .topbar {
-    position: sticky; top: 20px; z-index: 100; margin-bottom: 40px;
-    padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
-  }
+    h2 { font-family: 'Outfit', sans-serif; font-size: 1.6rem; margin-bottom: 8px; font-weight: 700; }
+    p { font-size: 0.95rem; color: var(--text-soft); line-height: 1.6; font-weight: 600; }
 
-  .brand { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem; }
-  
-  .nav-pills { display: flex; gap: 0.8rem; overflow-x: auto; padding-bottom: 4px; }
-  .pill {
-    background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
-    padding: 0.5rem 1.2rem; border-radius: 99px; font-weight: 600; cursor: pointer;
-    transition: all 0.3s; white-space: nowrap;
-  }
-  .pill:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
-  .pill[aria-selected="true"] {
-    background: var(--primary); border-color: var(--primary); color: white;
-    box-shadow: 0 4px 15px color-mix(in srgb, var(--primary) 40%, transparent);
-  }
+    /* Etiquetas de Nivel */
+    .badges { position: absolute; top: 25px; right: 25px; display: flex; gap: 5px; }
+    .badge {
+        font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+        padding: 6px 12px; border-radius: 12px;
+        background: var(--bg); color: var(--text-main); border: 1px solid var(--border);
+    }
+    .badge.uni { background: var(--primary); color: white; border-color: var(--primary); }
 
-  .controls button { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 5px; transition: transform 0.2s; }
-  .controls button:hover { transform: scale(1.2); }
-
-  /* --- TEORÍA (ESTILO CARTA) --- */
-  .theory-card { padding: 2.5rem; margin-bottom: 3rem; position: relative; overflow: hidden; }
-  .theory-card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
-    background: linear-gradient(to bottom, var(--primary), var(--accent));
-  }
-
-  /* Tablas bonitas */
-  .fancy-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; overflow: hidden; border-radius: 10px; }
-  .fancy-table th { background: var(--primary); color: white; padding: 1rem; text-align: left; }
-  .fancy-table td { background: color-mix(in srgb, var(--glass) 50%, transparent); padding: 1rem; border-bottom: 1px solid var(--glass-border); }
-  .fancy-table tr:last-child td { border-bottom: none; }
-
-  /* Cajas de Tips */
-  .pro-tip {
-    background: color-mix(in srgb, var(--warning) 10%, transparent);
-    border-left: 4px solid var(--warning);
-    padding: 1.5rem; border-radius: 0 12px 12px 0; margin: 2rem 0;
-  }
-  .pro-tip strong { color: var(--warning); display: block; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-
-  /* --- EJERCICIOS --- */
-  .exercises-wrapper { margin-top: 4rem; }
-  .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
-
-  details.ex-card {
-    background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px;
-    overflow: hidden; transition: all 0.3s ease; cursor: pointer;
-  }
-  details.ex-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-
-  summary {
-    padding: 1.2rem; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center;
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: '👉'; transition: transform 0.3s; }
-  details[open] summary::after { transform: rotate(90deg); }
-  details[open] summary { border-bottom: 1px solid var(--glass-border); background: color-mix(in srgb, var(--primary) 5%, transparent); }
-
-  .ans {
-    padding: 1.2rem; font-family: 'Fira Code', monospace; font-weight: 700; color: var(--success);
-    text-align: center; font-size: 1.1rem; animation: slideDown 0.3s ease;
-  }
-
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* Etiquetas */
-  .badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; margin-right: 10px; vertical-align: middle; letter-spacing: 0.5px; }
-  .badge.form { background: #d1fae5; color: #065f46; } /* Formula */
-  .badge.nom { background: #dbeafe; color: #1e40af; } /* Nombra */
-
-  /* Secciones */
-  section.level { display: none; opacity: 0; animation: fadeIn 0.6s forwards; }
-  section.level[data-active] { display: block; }
-  @keyframes fadeIn { to { opacity: 1; } }
-
-  /* Barra de progreso */
-  #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 0%; z-index: 200; transition: width 0.1s; }
+    /* --- IDIOMAS --- */
+    [data-lang] { display: none; }
+    body.lang-ca [data-lang="ca"] { display: block; }
+    body.lang-es [data-lang="es"] { display: block; }
+    body.lang-en [data-lang="en"] { display: block; }
+    
+    body.lang-ca span[data-lang="ca"] { display: inline; }
+    body.lang-es span[data-lang="es"] { display: inline; }
+    body.lang-en span[data-lang="en"] { display: inline; }
 
 </style>
 </head>
-<body>
+<body class="lang-es">
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div id="progress-bar"></div>
-
-<header class="topbar glass-panel">
-  <a href="#" class="brand">
-    <span style="font-size: 1.8rem;">🧪</span>
-    <div>Teoría-Inorgánica<br><span style="font-size:0.8rem; font-weight:400; opacity:0.7;">Edición Profesional</span></div>
-  </a>
-  
-  <div class="controls">
-    <button id="theme-btn" title="Cambiar Tema">🌓</button>
-  </div>
-
-  <nav class="nav-pills" role="tablist">
-    <button class="pill" data-target="intro" aria-selected="true">1. Conceptos</button>
-    <button class="pill" data-target="eso" aria-selected="false">2. ESO (Binarios)</button>
-    <button class="pill" data-target="bach" aria-selected="false">3. Bachillerato (Ternarios)</button>
-    <button class="pill" data-target="uni" aria-selected="false">4. Universidad (Coord.)</button>
-  </nav>
-</header>
-
-<main class="container">
-
-  <section id="intro" class="level" data-active>
-    <div class="theory-card glass-panel">
-      <h1>Bienvenido a la Formulación</h1>
-      <p class="lead">La química inorgánica no es magia, es sintaxis. Antes de escribir fórmulas complejas, necesitas dominar los ladrillos fundamentales de la materia.</p>
-      
-      <h2>🧠 Conceptos Clave</h2>
-      <h3>1. Número de Oxidación (Valencias)</h3>
-      <p>Es la carga "imaginaria" que tendría un átomo si los electrones se transfirieran completamente. <strong>Es vital memorizarlos.</strong></p>
-      
-      <table class="fancy-table">
-        <thead><tr><th>Grupo</th><th>Elementos</th><th>E.O. Positivos</th><th>E.O. Negativos</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Alcalinos</strong></td><td>Li, Na, K, Rb, Cs</td><td>+1</td><td>-</td></tr>
-          <tr><td><strong>Alcalinotérreos</strong></td><td>Be, Mg, Ca, Sr, Ba</td><td>+2</td><td>-</td></tr>
-          <tr><td><strong>Térreos</strong></td><td>B, Al</td><td>+3</td><td>-</td></tr>
-          <tr><td><strong>Carbonoideos</strong></td><td>C, Si</td><td>+2, +4</td><td>-4</td></tr>
-          <tr><td><strong>Nitrogenoideos</strong></td><td>N, P, As, Sb</td><td>+1, +3, +5</td><td>-3</td></tr>
-          <tr><td><strong>Anfígenos</strong></td><td>O, S, Se, Te</td><td>+2, +4, +6 (O solo -2)</td><td>-2</td></tr>
-          <tr><td><strong>Halógenos</strong></td><td>F, Cl, Br, I</td><td>+1, +3, +5, +7 (F solo -1)</td><td>-1</td></tr>
-        </tbody>
-      </table>
-
-      <div class="pro-tip">
-        <strong>⚠️ Regla de Oro de la Electroneutralidad</strong>
-        <p>En cualquier fórmula química neutra, la suma algebraica de los números de oxidación debe ser <strong>CERO</strong>.</p>
-        <p>Ejemplo en <span class="chem-formula">Fe₂O₃</span>: (2 átomos Fe · +3) + (3 átomos O · -2) = (+6) + (-6) = 0.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="eso" class="level">
-    <div class="theory-card glass-panel">
-      <h1>Nivel ESO: Compuestos Binarios</h1>
-      <p>La base de todo. Dos elementos se combinan. Aprendemos a cruzarlos y nombrarlos.</p>
-
-      <h2>📘 Teoría Detallada</h2>
-      
-      <h3>1. Formulación General</h3>
-      <p>Para formular <strong>A</strong> con valencia <em>+n</em> y <strong>B</strong> con valencia <em>-m</em>:</p>
-      <ol style="margin-left: 20px; margin-bottom: 20px;">
-        <li>Se colocan los símbolos: el más electropositivo (catión) a la izquierda, el electronegativo (anión) a la derecha.</li>
-        <li>Se intercambian las valencias como subíndices: <span class="chem-formula">AₘBₙ</span>.</li>
-        <li>Si <em>m</em> y <em>n</em> son divisibles por el mismo número, <strong>se simplifican</strong>.</li>
-      </ol>
-
-      <h3>2. Óxidos (Metal/No Metal + Oxígeno)</h3>
-      <p>El oxígeno actúa siempre con <strong>-2</strong>. Usamos prefijos griegos en la nomenclatura sistemática.</p>
-      <table class="fancy-table">
-        <tr><th>Prefijo</th><th>Significado</th><th>Ejemplo</th></tr>
-        <tr><td>Mono-</td><td>1 átomo</td><td>Monóxido de carbono (CO)</td></tr>
-        <tr><td>Di-</td><td>2 átomos</td><td>Dióxido de carbono (CO₂)</td></tr>
-        <tr><td>Tri-</td><td>3 átomos</td><td>Trióxido de azufre (SO₃)</td></tr>
-        <tr><td>Tetra-</td><td>4 átomos</td><td>Tetróxido de dinitrógeno</td></tr>
-        <tr><td>Penta-</td><td>5 átomos</td><td>Pentóxido de difósforo</td></tr>
-      </table>
-
-      <h3>3. Hidruros y Sales Binarias</h3>
-      <ul>
-        <li><strong>Hidruros Metálicos:</strong> Metal + H (-1). Ej: <span class="chem-formula">LiH</span>.</li>
-        <li><strong>Hidrácidos:</strong> H (+1) + No Metal (G16/17). Ej: <span class="chem-formula">HCl</span>.</li>
-        <li><strong>Sales Binarias:</strong> Metal + No Metal. El no metal usa su valencia negativa y termina en <strong>-uro</strong>. Ej: NaCl (Cloruro).</li>
-      </ul>
+    <div class="header">
+        <div class="main-icon">🧪</div>
+        <h1>Teoría Inorgánica</h1>
+        <p class="subtitle">
+            <span data-lang="ca">El teu hub d'estudi visual i modern</span>
+            <span data-lang="es">Tu hub de estudio visual y moderno</span>
+            <span data-lang="en">Your visual and modern study hub</span>
+        </p>
     </div>
 
-    <div class="exercises-wrapper">
-      <h2>🔥 Batería de 20 Ejercicios (ESO)</h2>
-      <div class="ex-grid">
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Óxido de sodio</summary><div class="ans">Na₂O</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Óxido de calcio</summary><div class="ans">CaO</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Óxido de aluminio</summary><div class="ans">Al₂O₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Óxido de hierro(III)</summary><div class="ans">Fe₂O₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Dióxido de plomo</summary><div class="ans">PbO₂</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> SO₃ (Sistemática)</summary><div class="ans">Trióxido de azufre</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> CO (Sistemática)</summary><div class="ans">Monóxido de carbono</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidruro de litio</summary><div class="ans">LiH</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidruro de calcio</summary><div class="ans">CaH₂</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Amoniaco</summary><div class="ans">NH₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Metano</summary><div class="ans">CH₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido clorhídrico</summary><div class="ans">HCl (aq)</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Sulfuro de hidrógeno</summary><div class="ans">H₂S</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Cloruro de sodio</summary><div class="ans">NaCl</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Sulfuro de potasio</summary><div class="ans">K₂S</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Tricloruro de hierro</summary><div class="ans">FeCl₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Fluoruro de calcio</summary><div class="ans">CaF₂</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> AgCl</summary><div class="ans">Cloruro de plata</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> KI</summary><div class="ans">Yoduro de potasio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> CuBr₂</summary><div class="ans">Bromuro de cobre(II)</div></details>
-      </div>
-    </div>
-  </section>
+    <div class="controls-container">
+        <div class="glass-pill">
+            <button class="btn" onclick="setLang('ca', this)">CAT</button>
+            <button class="btn active" onclick="setLang('es', this)">ESP</button>
+            <button class="btn" onclick="setLang('en', this)">ENG</button>
+            
+            <div class="divider"></div>
+            
+            <button class="btn active" onclick="filter('all', this)">Todo</button>
+            <button class="btn" onclick="filter('bachi', this)">Bachi</button>
+            <button class="btn" onclick="filter('uni', this)">Uni</button>
 
-  <section id="bach" class="level">
-    <div class="theory-card glass-panel">
-      <h1>Nivel Bachillerato: Ternarios y Cuaternarios</h1>
-      <p>Aquí es donde la mayoría falla. Ácidos, sales neutras y sales ácidas. Explicado en profundidad.</p>
+            <div class="divider"></div>
 
-      <h2>📘 Teoría Masiva</h2>
-      
-      <h3>1. Oxoácidos (H + No Metal + O)</h3>
-      <p>Son compuestos formados por hidrógeno, un no metal y oxígeno. Su fórmula general es <span class="chem-formula">HₐXᵇO꜀</span>.</p>
-      
-      <h4>Tabla de Nomenclatura Tradicional</h4>
-      <table class="fancy-table">
-        <thead><tr><th>Estado de Oxidación</th><th>Prefijo</th><th>Sufijo</th><th>Ejemplo (Cloro)</th></tr></thead>
-        <tbody>
-          <tr><td>Mínimo (+1)</td><td>Hipo-</td><td>-oso</td><td>Ác. Hipocloroso (HClO)</td></tr>
-          <tr><td>Menor (+3)</td><td>-</td><td>-oso</td><td>Ác. Cloroso (HClO₂)</td></tr>
-          <tr><td>Mayor (+5)</td><td>-</td><td>-ico</td><td>Ác. Clórico (HClO₃)</td></tr>
-          <tr><td>Máximo (+7)</td><td>Per-</td><td>-ico</td><td>Ác. Perclórico (HClO₄)</td></tr>
-        </tbody>
-      </table>
-
-      <div class="pro-tip">
-        <strong>🧪 Truco para Formular Ácidos</strong>
-        <p>Si el estado de oxidación del elemento central es <strong>IMPAR</strong>, pon H₁. <br>Si es <strong>PAR</strong> (grupo C, S, Se, Te), pon H₂.<br>
-        Luego calcula oxígenos: <em>(Hidrógenos + Estado Oxidación) / 2</em>.</p>
-        <p>Ej: Azufre (+6, par) → H₂SO₍₂₊₆₎/₂ → <strong>H₂SO₄</strong></p>
-      </div>
-
-      <h3>2. Los Ácidos "Especiales" (P, As, Sb, B, Si)</h3>
-      <p>Estos elementos tienen la capacidad de hidratarse con más moléculas de agua. El ácido "normal" para el Fósforo, Arsénico y Antimonio es el <strong>Orto</strong> (3 aguas), no el meta.</p>
-      <ul>
-        <li><strong>Meta-</strong> (1 H₂O): HPO₃ (Ác. Metafosfórico)</li>
-        <li><strong>Piro- / Di-</strong> (2 H₂O): H₄P₂O₇ (Ác. Pirofosfórico)</li>
-        <li><strong>Orto-</strong> (3 H₂O): H₃PO₄ (Ác. Fosfórico o Ortofosfórico)</li>
-      </ul>
-
-      <h3>3. Oxisales Neutras</h3>
-      <p>Se forman al sustituir TODOS los hidrógenos de un ácido por un catión metálico. La nomenclatura cambia de la siguiente forma:</p>
-      <p style="text-align:center; font-size:1.2rem; font-weight:bold; color:var(--accent);">
-        OSO ➔ ITO &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; ICO ➔ ATO
-      </p>
-      <p>Ejemplo: Del Ácido Sulfúr<strong>ico</strong> (H₂SO₄) viene el Sulf<strong>ato</strong>. Si unimos sulfato (carga 2-) con Hierro(III), cruzamos cargas: <span class="chem-formula">Fe₂(SO₄)₃</span>.</p>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
     </div>
 
-    <div class="exercises-wrapper">
-      <h2>🔥 La Gran Batería: 40 Ejercicios</h2>
-      <div class="ex-grid">
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido nítrico</summary><div class="ans">HNO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido nitroso</summary><div class="ans">HNO₂</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido sulfúrico</summary><div class="ans">H₂SO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido sulfuroso</summary><div class="ans">H₂SO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido perclórico</summary><div class="ans">HClO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido clórico</summary><div class="ans">HClO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido carbónico</summary><div class="ans">H₂CO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido fosfórico</summary><div class="ans">H₃PO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido permangánico</summary><div class="ans">HMnO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Ácido dicrómico</summary><div class="ans">H₂Cr₂O₇</div></details>
+    <div class="container">
+        <div class="grid">
 
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidróxido de sodio</summary><div class="ans">NaOH</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidróxido de calcio</summary><div class="ans">Ca(OH)₂</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidróxido de hierro(III)</summary><div class="ans">Fe(OH)₃</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> Al(OH)₃</summary><div class="ans">Hidróxido de aluminio</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Peróxido de hidrógeno</summary><div class="ans">H₂O₂</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Peróxido de bario</summary><div class="ans">BaO₂</div></details>
+            <a href="fundamentos.html" class="card" data-lvl="bachi" data-color="blue">
+                <div class="badges"><span class="badge">Básico</span></div>
+                <div class="card-bg-icon">⚡</div>
+                <div>
+                    <div class="icon-box">⚡</div>
+                    <h2 data-lang="es">Fundamentos</h2><h2 data-lang="ca">Fonaments</h2><h2 data-lang="en">Basics</h2>
+                    <p data-lang="es">Números de oxidación, valencias y mecánica.</p>
+                    <p data-lang="ca">Nombres d'oxidació i mecànica.</p>
+                    <p data-lang="en">Oxidation numbers and mechanics.</p>
+                </div>
+            </a>
 
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Sulfato de sodio</summary><div class="ans">Na₂SO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Nitrato de potasio</summary><div class="ans">KNO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Carbonato de calcio</summary><div class="ans">CaCO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Sulfato de cobre(II)</summary><div class="ans">CuSO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Clorato de potasio</summary><div class="ans">KClO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hipoclorito de sodio</summary><div class="ans">NaClO</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Permanganato de potasio</summary><div class="ans">KMnO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Dicromato de potasio</summary><div class="ans">K₂Cr₂O₇</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Cromato de plomo(II)</summary><div class="ans">PbCrO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Fosfato de calcio</summary><div class="ans">Ca₃(PO₄)₂</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> Fe₂(SO₄)₃</summary><div class="ans">Sulfato de hierro(III)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> AgNO₃</summary><div class="ans">Nitrato de plata</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> NaClO₂</summary><div class="ans">Clorito de sodio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> K₂MnO₄</summary><div class="ans">Manganato de potasio</div></details>
+            <a href="simples.html" class="card" data-lvl="bachi" data-color="blue">
+                <div class="badges"><span class="badge">Básico</span></div>
+                <div class="card-bg-icon">💎</div>
+                <div>
+                    <div class="icon-box">💎</div>
+                    <h2 data-lang="es">Simples</h2><h2 data-lang="ca">Simples</h2><h2 data-lang="en">Simple</h2>
+                    <p data-lang="es">Elementos, gases nobles y diatómicos.</p>
+                    <p data-lang="ca">Elements, gasos nobles i diatòmics.</p>
+                    <p data-lang="en">Elements, noble gases and diatomics.</p>
+                </div>
+            </a>
 
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidrogenocarbonato de sodio</summary><div class="ans">NaHCO₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Dihidrogenofosfato de potasio</summary><div class="ans">KH₂PO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidrogenosulfato de sodio</summary><div class="ans">NaHSO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hidrogenosulfuro de sodio</summary><div class="ans">NaHS</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Cianuro de potasio</summary><div class="ans">KCN</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> Ca(HSO₃)₂</summary><div class="ans">Hidrogenosulfito de calcio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> NH₄Cl</summary><div class="ans">Cloruro de amonio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> LiHCO₃</summary><div class="ans">Hidrogenocarbonato de litio</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Silicato de sodio</summary><div class="ans">Na₂SiO₃</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> Al(HSO₄)₃</summary><div class="ans">Hidrogenosulfato de aluminio</div></details>
-      </div>
+            <a href="oxidos.html" class="card" data-lvl="bachi" data-color="pink">
+                <div class="badges"><span class="badge">ESO/Bachi</span></div>
+                <div class="card-bg-icon">🔥</div>
+                <div>
+                    <div class="icon-box">🔥</div>
+                    <h2 data-lang="es">Óxidos</h2><h2 data-lang="ca">Òxids</h2><h2 data-lang="en">Oxides</h2>
+                    <p data-lang="es">Metales (Básicos) y No Metales (Ácidos).</p>
+                    <p data-lang="ca">Metalls (Bàsics) i No Metalls (Àcids).</p>
+                    <p data-lang="en">Metals (Basic) and Non-Metals (Acidic).</p>
+                </div>
+            </a>
+
+            <a href="hidruros.html" class="card" data-lvl="bachi" data-color="green">
+                <div class="badges"><span class="badge">Bachi</span></div>
+                <div class="card-bg-icon">💧</div>
+                <div>
+                    <div class="icon-box">💧</div>
+                    <h2 data-lang="es">Hidruros</h2><h2 data-lang="ca">Hidrurs</h2><h2 data-lang="en">Hydrides</h2>
+                    <p data-lang="es">Metálicos, Volátiles e Hidrácidos.</p>
+                    <p data-lang="ca">Metàl·lics, Volàtils i Hidràcids.</p>
+                    <p data-lang="en">Metallic, Volatile and Hydracids.</p>
+                </div>
+            </a>
+
+            <a href="binarias.html" class="card" data-lvl="bachi" data-color="orange">
+                <div class="badges"><span class="badge">Bachi</span></div>
+                <div class="card-bg-icon">🧂</div>
+                <div>
+                    <div class="icon-box">🧂</div>
+                    <h2 data-lang="es">Sales Binarias</h2><h2 data-lang="ca">Sals Binàries</h2><h2 data-lang="en">Binary Salts</h2>
+                    <p data-lang="es">Sales neutras y volátiles (Metal + No Metal).</p>
+                    <p data-lang="ca">Sals neutres i volàtils.</p>
+                    <p data-lang="en">Neutral and volatile salts.</p>
+                </div>
+            </a>
+
+            <a href="hidroxidos.html" class="card" data-lvl="bachi" data-color="green">
+                <div class="badges"><span class="badge">Bachi</span></div>
+                <div class="card-bg-icon">🧼</div>
+                <div>
+                    <div class="icon-box">🧼</div>
+                    <h2 data-lang="es">Hidróxidos</h2><h2 data-lang="ca">Hidròxids</h2><h2 data-lang="en">Hydroxides</h2>
+                    <p data-lang="es">Compuestos ternarios con grupo OH.</p>
+                    <p data-lang="ca">Compostos ternaris amb grup OH.</p>
+                    <p data-lang="en">Ternary compounds with OH group.</p>
+                </div>
+            </a>
+
+            <a href="oxacidos.html" class="card" data-lvl="bachi" data-color="pink">
+                <div class="badges"><span class="badge">Bachi</span></div>
+                <div class="card-bg-icon">🧪</div>
+                <div>
+                    <div class="icon-box">🧪</div>
+                    <h2 data-lang="es">Oxoácidos</h2><h2 data-lang="ca">Oxoàcids</h2><h2 data-lang="en">Oxoacids</h2>
+                    <p data-lang="es">Ácidos ternarios con oxígeno.</p>
+                    <p data-lang="ca">Àcids ternaris amb oxigen.</p>
+                    <p data-lang="en">Ternary acids with oxygen.</p>
+                </div>
+            </a>
+
+            <a href="oxisales.html" class="card" data-lvl="bachi" data-color="orange">
+                <div class="badges"><span class="badge">Bachi</span></div>
+                <div class="card-bg-icon">🥣</div>
+                <div>
+                    <div class="icon-box">🥣</div>
+                    <h2 data-lang="es">Oxisales Neutras</h2><h2 data-lang="ca">Oxisals</h2><h2 data-lang="en">Neutral Oxosalts</h2>
+                    <p data-lang="es">Sustitución total de hidrógenos (Ito/Ato).</p>
+                    <p data-lang="ca">Substitució total d'hidrògens.</p>
+                    <p data-lang="en">Total hydrogen substitution.</p>
+                </div>
+            </a>
+
+            <a href="sales_acidas.html" class="card" data-lvl="uni" data-color="orange">
+                <div class="badges"><span class="badge uni">Universidad</span></div>
+                <div class="card-bg-icon">🍋</div>
+                <div>
+                    <div class="icon-box">🍋</div>
+                    <h2 data-lang="es">Oxisales Ácidas</h2><h2 data-lang="ca">Oxisals Àcides</h2><h2 data-lang="en">Acid Salts</h2>
+                    <p data-lang="es">Hidrógenos parciales. Bicarbonatos, etc.</p>
+                    <p data-lang="ca">Hidrògens parcials.</p>
+                    <p data-lang="en">Partial hydrogens.</p>
+                </div>
+            </a>
+
+            <a href="peroxidos.html" class="card" data-lvl="uni" data-color="pink">
+                <div class="badges"><span class="badge uni">Uni / Adv</span></div>
+                <div class="card-bg-icon">⭕</div>
+                <div>
+                    <div class="icon-box">⭕</div>
+                    <h2 data-lang="es">Peróxidos</h2><h2 data-lang="ca">Peròxids</h2><h2 data-lang="en">Peroxides</h2>
+                    <p data-lang="es">Grupo Peroxo (-O-O-) valencia -1.</p>
+                    <p data-lang="ca">Grup Peroxo (-O-O-).</p>
+                    <p data-lang="en">Peroxo Group (-O-O-).</p>
+                </div>
+            </a>
+
+            <a href="complejos.html" class="card" data-lvl="uni" data-color="blue">
+                <div class="badges"><span class="badge uni">Universidad</span></div>
+                <div class="card-bg-icon">⚛️</div>
+                <div>
+                    <div class="icon-box">⚛️</div>
+                    <h2 data-lang="es">Complejos</h2><h2 data-lang="ca">Complexos</h2><h2 data-lang="en">Complexes</h2>
+                    <p data-lang="es">Química de coordinación y ligandos.</p>
+                    <p data-lang="ca">Química de coordinació.</p>
+                    <p data-lang="en">Coordination chemistry.</p>
+                </div>
+            </a>
+
+            <a href="tabla.html" class="card" data-lvl="bachi" data-color="green">
+                <div class="badges"><span class="badge">Extra</span></div>
+                <div class="card-bg-icon">📊</div>
+                <div>
+                    <div class="icon-box">📊</div>
+                    <h2 data-lang="es">Tabla Periódica</h2><h2 data-lang="ca">Taula Periòdica</h2><h2 data-lang="en">Periodic Table</h2>
+                    <p data-lang="es">Valencias, masas y ejercicios.</p>
+                    <p data-lang="ca">Valències, masses i exercicis.</p>
+                    <p data-lang="en">Valences, masses and exercises.</p>
+                </div>
+            </a>
+
+        </div>
     </div>
-  </section>
 
-  <section id="uni" class="level">
-    <div class="theory-card glass-panel">
-      <h1>Nivel Universidad: Coordinación (IUPAC 2005)</h1>
-      <p>Entramos en la química de los metales de transición. Esfera de coordinación, ligandos y contraiones.</p>
+    <script>
+        // 1. CAMBIO DE IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            
+            // Actualizar botones
+            const group = btn.parentElement;
+            const btns = group.querySelectorAll('.btn:nth-child(-n+3)'); // Primeros 3 botones
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-      <h2>📘 Teoría Avanzada</h2>
-      <p>Un complejo se escribe entre corchetes <span class="chem-formula">[M(L)ₙ]</span>. Todo lo que está dentro es una entidad única. Lo que está fuera son los contraiones para neutralizar carga.</p>
-      
-      
-      <h3>1. Reglas de Nomenclatura Rigurosa</h3>
-      <ol style="line-height: 2;">
-        <li><strong>Orden Alfabético:</strong> Los ligandos se nombran primero en orden alfabético, <em>ignorando</em> los prefijos de cantidad (di, tri, bis...). El metal va al final.</li>
-        <li><strong>Ligandos Aniónicos:</strong> Cambian su terminación a <strong>'o'</strong>.
-          <ul>
-            <li>Cloruro ➔ <strong>Clorido</strong></li>
-            <li>Cianuro ➔ <strong>Cianido</strong></li>
-            <li>Hidróxido ➔ <strong>Hidroxido</strong></li>
-          </ul>
-        </li>
-        <li><strong>Ligandos Neutros:</strong> Mantienen su nombre, salvo excepciones históricas:
-          <ul>
-            <li>Agua ➔ <strong>Aqua</strong></li>
-            <li>Amoniaco ➔ <strong>Ammine</strong> (ojo a la doble 'm')</li>
-            <li>CO ➔ <strong>Carbonilo</strong></li>
-          </ul>
-        </li>
-        <li><strong>El Metal:</strong>
-          <ul>
-            <li>Si el complejo es catiónico o neutro ➔ Nombre normal (ej. Hierro).</li>
-            <li>Si el complejo es ANIÓNICO ➔ Terminación <strong>-ATO</strong> (ej. Ferrato, Cuprato, Argentato, Aurato).</li>
-          </ul>
-        </li>
-      </ol>
-    </div>
+            localStorage.setItem('prefLang', lang);
+        }
 
-    <div class="exercises-wrapper">
-      <h2>🔥 Batería de 20 Complejos</h2>
-      <div class="ex-grid">
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Cloruro de hexaamminecobalto(III)</summary><div class="ans">[Co(NH₃)₆]Cl₃</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hexacianidoferrato(II) de potasio</summary><div class="ans">K₄[Fe(CN)₆]</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Sulfato de tetraamminecobre(II)</summary><div class="ans">[Cu(NH₃)₄]SO₄</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Tetracloridoplatinato(II) de potasio</summary><div class="ans">K₂[PtCl₄]</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Pentacarbonilohierro(0)</summary><div class="ans">[Fe(CO)₅]</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Diamminedicloridoplatino(II)</summary><div class="ans">[PtCl₂(NH₃)₂]</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Tetrahidroxidoaluminato(III) de sodio</summary><div class="ans">Na[Al(OH)₄]</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hexaaquaníquel(II)</summary><div class="ans">[Ni(H₂O)₆]²⁺</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Hexafluoridoaluminato(III) de sodio</summary><div class="ans">Na₃[AlF₆]</div></details>
-        <details class="ex-card"><summary><span class="badge form">FOR</span> Dicianoargentato(I) de sodio</summary><div class="ans">Na[Ag(CN)₂]</div></details>
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
 
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [Cr(H₂O)₆]Cl₃</summary><div class="ans">Cloruro de hexaaquacromo(III)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> K₃[Fe(CN)₆]</summary><div class="ans">Hexacianidoferrato(III) de potasio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [CoCl(NH₃)₅]Cl₂</summary><div class="ans">Cloruro de pentaamminecloridocobalto(III)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> Na₂[Zn(OH)₄]</summary><div class="ans">Tetrahidroxidozincato(II) de sodio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [Ni(CO)₄]</summary><div class="ans">Tetracarboniloníquel(0)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [Pt(en)₂]Cl₂</summary><div class="ans">Cloruro de bis(etilendiamina)platino(II)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [Ag(NH₃)₂]NO₃</summary><div class="ans">Nitrato de diammineplata(I)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> Li[AlH₄]</summary><div class="ans">Tetrahidruroaluminato de litio</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [Ru(bpy)₃]²⁺</summary><div class="ans">Tris(bipiridina)rutenio(II)</div></details>
-        <details class="ex-card"><summary><span class="badge nom">NOM</span> [Zn(NH₃)₄]²⁺</summary><div class="ans">Ion tetraamminezinc(II)</div></details>
-      </div>
-    </div>
-  </section>
+        // 3. FILTRADO
+        function filter(lvl, btn) {
+            const cards = document.querySelectorAll('.card');
+            const group = btn.parentElement;
+            // Seleccionamos los botones de filtro (son los que están después del divisor)
+            const filterBtns = group.querySelectorAll('.btn:not(:nth-child(-n+3))'); 
+            
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-</main>
+            cards.forEach(card => {
+                if (lvl === 'all') {
+                    card.style.display = 'flex';
+                } else {
+                    if (card.getAttribute('data-lvl') === lvl) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
 
-<script>
-  // Lógica de la aplicación
-  const d = document;
-  const root = d.documentElement;
-  const pills = d.querySelectorAll('.pill');
-  const sections = d.querySelectorAll('section.level');
-  const progressBar = d.getElementById('progress-bar');
+        // --- INICIALIZACIÓN ---
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            // Ajustar botón visualmente... (simplificado para el ejemplo)
+        } else {
+            document.body.classList.add('lang-es');
+        }
 
-  // 1. Sistema de Pestañas (Navegación)
-  pills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      // Desactivar todas
-      pills.forEach(p => p.setAttribute('aria-selected', 'false'));
-      sections.forEach(s => {
-        s.removeAttribute('data-active');
-        s.style.opacity = '0'; // Reiniciar animación
-      });
-
-      // Activar seleccionada
-      pill.setAttribute('aria-selected', 'true');
-      const target = d.getElementById(pill.dataset.target);
-      target.setAttribute('data-active', '');
-      
-      // Pequeño timeout para permitir el reflow y que la animación CSS funcione
-      setTimeout(() => target.style.opacity = '1', 50);
-
-      window.scrollTo({top: 0, behavior: 'smooth'});
-    });
-  });
-
-  // 2. Modo Oscuro/Claro
-  const themeBtn = d.getElementById('theme-btn');
-  themeBtn.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-  });
-
-  // 3. Barra de Progreso al hacer Scroll
-  window.addEventListener('scroll', () => {
-    const winScroll = d.body.scrollTop || d.documentElement.scrollTop;
-    const height = d.documentElement.scrollHeight - d.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    progressBar.style.width = scrolled + "%";
-  });
-
-</script>
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
 
 </body>
 </html>
