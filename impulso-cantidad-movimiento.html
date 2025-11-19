@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MANEL NIGER | Impulso y Momento</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💥</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA MANEL NIGER (IMPACTO) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --accent: #8b5cf6; /* Violeta (Momento) */
+    --accent-glow: rgba(139, 92, 246, 0.08);
+    --highlight: #db2777; /* Magenta (Impulso/Choque) */
+    --vector: #0ea5e9; /* Azul Vectorial */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #020617;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-glow: rgba(139, 92, 246, 0.15);
+    --glass-bg: rgba(15, 10, 25, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de puntos */
+    background-image: 
+        radial-gradient(var(--glass-border) 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES DE FONDO */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.35; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; right: -150px; animation: pulse 8s infinite alternate; }
+  .orb-2 { width: 500px; height: 500px; background: var(--highlight); bottom: -100px; left: -100px; }
+  @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--accent); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--highlight); } 
+  .ex-badge.uni { background: var(--vector); color: white; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--accent); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(139, 92, 246, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  th, td { padding: 12px; border-bottom: 1px solid var(--glass-border); text-align: left; }
+  th { color: var(--accent); font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">💥</div>
+    <div class="logo-text">
+      <div>MANEL NIGER</div>
+      <div>Impulso & Momento</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="momento" aria-selected="true">1. Momento Lineal</button>
+    <button class="nav-btn" data-target="impulso" aria-selected="false">2. Impulso Mecánico</button>
+    <button class="nav-btn" data-target="conservacion" aria-selected="false">3. Choques</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="momento" class="content-section" data-active>
+    <div class="card">
+      <h1>Cantidad de Movimiento ($\vec{p}$)</h1>
+      <p>También llamado <strong>Momento Lineal</strong>. Es una magnitud vectorial que mide la "cantidad de movimiento" de un cuerpo y su inercia al cambio de velocidad.</p>
+
+      <h2>1.1 Definición Fundamental</h2>
+      <div class="math-box">
+        $$ \vec{p} = m \cdot \vec{v} $$
+      </div>
+      <p>Unidades (SI): $kg \cdot m/s$. Tiene la misma dirección y sentido que la velocidad.</p>
+
+      <h2>1.2 Segunda Ley de Newton (Forma Real)</h2>
+      <p>Newton no escribió $F=ma$. Escribió que la fuerza es la variación del momento lineal con el tiempo:</p>
+      <div class="math-box">
+        $$ \sum \vec{F} = \frac{d\vec{p}}{dt} $$
+      </div>
+      <p>Si la masa es constante, derivamos y obtenemos $\vec{F} = m \frac{d\vec{v}}{dt} = m\vec{a}$.</p>
+    </div>
+  </section>
+
+  <section id="impulso" class="content-section">
+    <div class="card">
+      <h1>Impulso Mecánico ($\vec{I}$)</h1>
+      <p>El impulso mide el efecto de una fuerza aplicada durante un intervalo de tiempo. Es lo que cambia el momento.</p>
+      
+      <h2>2.1 Definición e Integral</h2>
+      <div class="math-box">
+        $$ \vec{I} = \int_{t_1}^{t_2} \vec{F}(t) \, dt $$
+      </div>
+      <p>Si la fuerza es constante (o usamos la fuerza media):</p>
+      <div class="math-box">
+        $$ \vec{I} = \vec{F}_{avg} \cdot \Delta t $$
+      </div>
+      <p>Gráficamente, es el <strong>área bajo la curva</strong> en un gráfico Fuerza-Tiempo ($F-t$).</p>
+
+      <h2>2.2 Teorema del Impulso</h2>
+      <p>El impulso neto aplicado a un objeto es igual al cambio en su cantidad de movimiento.</p>
+      <div class="math-box">
+        $$ \vec{I}_{neto} = \Delta \vec{p} = \vec{p}_f - \vec{p}_0 = m(\vec{v}_f - \vec{v}_0) $$
+      </div>
+    </div>
+  </section>
+
+  <section id="conservacion" class="content-section">
+    <div class="card">
+      <h1>Conservación y Colisiones</h1>
+      
+      <h2>3.1 Principio de Conservación</h2>
+      <p>Si la suma de fuerzas externas sobre un sistema es cero ($\sum \vec{F}_{ext} = 0$), el momento lineal total se conserva.</p>
+      <div class="math-box">
+        $$ \vec{p}_{antes} = \vec{p}_{despues} $$
+        $$ m_1\vec{u}_1 + m_2\vec{u}_2 = m_1\vec{v}_1 + m_2\vec{v}_2 $$
+      </div>
+      <p>Esto aplica a choques, explosiones y retroceso de armas.</p>
+
+      <h2>3.2 Tipos de Choques</h2>
+      <p>El coeficiente de restitución ($e$) mide la elasticidad del choque ($0 \le e \le 1$).</p>
+      <div class="math-box">
+        $$ e = - \frac{v_{2} - v_{1}}{u_{2} - u_{1}} \quad (\text{Velocidades relativas}) $$
+      </div>
+
+      <table>
+        <tr><th>Tipo</th><th>Coeficiente ($e$)</th><th>Energía Cinética ($E_k$)</th><th>Momento ($\vec{p}$)</th></tr>
+        <tr><td><strong>Elástico</strong></td><td>$e = 1$</td><td>Se conserva</td><td>Se conserva</td></tr>
+        <tr><td><strong>Inelástico</strong></td><td>$0 < e < 1$</td><td>Se pierde (calor/deformación)</td><td>Se conserva</td></tr>
+        <tr><td><strong>Plástico</strong></td><td>$e = 0$ (Se pegan)</td><td>Máxima pérdida</td><td>Se conserva</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (By MANEL NIGER)</h2>
+      <p>Ejercicios seleccionados desde nivel Bachillerato hasta Física Universitaria.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Golpe de Tenis: Una pelota de 60 g llega a 30 m/s y es devuelta a 40 m/s en sentido contrario. El contacto dura 0.01 s. Calcule la Fuerza media.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Vectorizar: $v_0 = -30 \hat{i}$, $v_f = +40 \hat{i}$. Masa $m=0.06$ kg.</span>
+            <span class="step">2. Variación de momento: $\Delta p = m(v_f - v_0) = 0.06(40 - (-30)) = 0.06(70) = 4.2$ kg·m/s.</span>
+            <span class="step">3. Teorema Impulso: $I = F \Delta t = \Delta p$.</span>
+            <span class="step">4. $F \cdot 0.01 = 4.2 \Rightarrow F = 420$ N.</span>
+            <div class="res-final">F = 420 N</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Chorro de Agua: Una manguera lanza agua (densidad $\rho$, área $A$, velocidad $v$) contra una pared vertical. El agua no rebota. Fuerza sobre la pared.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. En tiempo $\Delta t$, golpea una masa $\Delta m = \rho (A v \Delta t)$.</span>
+            <span class="step">2. Cambio de velocidad: de $v$ a $0$. $\Delta v = -v$.</span>
+            <span class="step">3. $\Delta p = \Delta m \Delta v = - \rho A v^2 \Delta t$.</span>
+            <span class="step">4. Fuerza sobre el agua: $F = \Delta p / \Delta t = -\rho A v^2$.</span>
+            <span class="step">5. Por acción-reacción, fuerza sobre la pared es positiva.</span>
+            <div class="res-final">F = ρ A v²</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Choque Plástico: Un vagón de 10000 kg a 2 m/s choca con otro de 15000 kg en reposo y se enganchan. Velocidad final.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Conservación de $p$: $p_{antes} = p_{despues}$.</span>
+            <span class="step">2. $m_1 v_1 + m_2 v_2 = (m_1 + m_2) v_f$.</span>
+            <span class="step">3. $10000(2) + 0 = (25000) v_f$.</span>
+            <span class="step">4. $20000 = 25000 v_f \Rightarrow v_f = 0.8$ m/s.</span>
+            <div class="res-final">v = 0.8 m/s</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Choque Elástico ($e=1$): Esfera $m$ a velocidad $v$ choca con esfera $3m$ en reposo. Velocidades finales.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Cons. Momento: $mv = mv_1 + 3mv_2 \Rightarrow v = v_1 + 3v_2$ (Ec 1).</span>
+            <span class="step">2. Coef. Restitución ($e=1$): $v_1 - v_2 = -1(v - 0) \Rightarrow v_2 - v_1 = v$ (Ec 2).</span>
+            <span class="step">3. Sumar (Ec 1) + (Ec 2): $2v = 4v_2 \Rightarrow v_2 = v/2$.</span>
+            <span class="step">4. Sustituir en (Ec 2): $v/2 - v_1 = v \Rightarrow v_1 = -v/2$.</span>
+            <div class="res-final">v1 = -v/2 ; v2 = v/2</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Explosión en el Aire: Proyectil de 20 kg a 100 m/s explota en dos fragmentos. Uno de 5 kg sale verticalmente a 200 m/s. ¿Velocidad del otro?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Momento inicial (Eje X): $\vec{P}_0 = 20(100)\hat{i} = 2000\hat{i}$.</span>
+            <span class="step">2. Fragmento A (5 kg): $\vec{p}_A = 5(200)\hat{j} = 1000\hat{j}$.</span>
+            <span class="step">3. Fragmento B (15 kg): $\vec{P}_0 = \vec{p}_A + \vec{p}_B \Rightarrow \vec{p}_B = 2000\hat{i} - 1000\hat{j}$.</span>
+            <span class="step">4. $\vec{v}_B = \vec{p}_B / 15 = (133.3\hat{i} - 66.7\hat{j})$ m/s.</span>
+            <div class="res-final">v = 149 m/s (-26.6º)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Choque Billar 2D: Bola A golpea a Bola B (reposo). A sale a 30º y B a -60º. Demuestre que si $m_A=m_B$, el choque fue elástico.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Si el ángulo entre ellas es 90º (30 - (-60) = 90), y las masas son iguales...</span>
+            <span class="step">2. El triángulo de vectores momento forma un triángulo rectángulo ($p_0^2 = p_A^2 + p_B^2$).</span>
+            <span class="step">3. Si dividimos por $2m$, obtenemos conservación de $E_k$.</span>
+            <span class="step">4. Conclusión: Choque oblicuo masas iguales a 90º $\iff$ Elástico.</span>
+            <div class="res-final">Demostrado</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Retroceso Escopeta: Dispara bala 20g a 400 m/s. Arma 4 kg. $v_{retroceso}$.</span></summary><div class="solution">$0 = 0.02(400) + 4(v) \Rightarrow v = -2$ m/s.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Péndulo Balístico: Altura $h$ tras impacto plástico.</span></summary><div class="solution">Choque (Cons $p$) + Subida (Cons $E$). $v_{bala} = (1 + M/m)\sqrt{2gh}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Fuerza variable $F(t) = 2t$. Impulso 0-3s.</span></summary><div class="solution">$I = \int_0^3 2t dt = [t^2]_0^3 = 9$ N·s.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Si $E_k$ se conserva, ¿$p$ se conserva?</span></summary><div class="solution">Sí, $p$ SIEMPRE se conserva en sistemas aislados. $E_k$ solo en elásticos.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Área bajo gráfica F-t.</span></summary><div class="solution">Impulso mecánico.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Cohete (Masa Variable). Ec. Tsiolkovsky.</span></summary><div class="solution">$\Delta v = u_{ex} \ln(m_0/m_f)$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Choque contra muelle. Compresión máxima.</span></summary><div class="solution">La $E_k$ del bloque se convierte en $E_{pe}$ del muelle.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Coche choca contra muro y para vs rebota. ¿Qué duele más?</span></summary><div class="solution">Rebotar. El cambio de momento ($\Delta p$) es el doble ($mv - (-mv) = 2mv$). Mayor fuerza.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Centro de Masas (CM) en choque aislado.</span></summary><div class="solution">La velocidad del CM permanece constante antes y después del choque.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Caída de cadena sobre balanza. Lectura.</span></summary><div class="solution">Peso de la cadena depositada + Fuerza de impacto del eslabón que cae ($\lambda v^2$).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Impulso para parar objeto 2kg a 10 m/s.</span></summary><div class="solution">$\Delta p = 0 - 20 = -20$ N·s.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Puede un cohete acelerar en el vacío?</span></summary><div class="solution">Sí. Expulsa gases con momento $p$. El cohete gana $-p$ (3ª Ley Newton).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Coeficiente restitución si rebota a $h/2$.</span></summary><div class="solution">$e = \sqrt{h_f/h_0} = \sqrt{0.5} \approx 0.707$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Fuerza promedio de lluvia (granizo vs agua).</span></summary><div class="solution">Granizo rebota (mayor impulso). Agua salpica/se pega (menor impulso).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Unidad SI de Momento.</span></summary><div class="solution">kg·m/s (o N·s).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Patineador lanza pesa 5kg a 10m/s. Él pesa 50kg.</span></summary><div class="solution">$0 = 5(10) + 50(v_p) \Rightarrow v_p = -1$ m/s.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Momento es escalar o vector?</span></summary><div class="solution">Vectorial. Importa la dirección.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Explosión en 3 fragmentos coplanarios.</span></summary><div class="solution">La suma vectorial de los 3 momentos debe ser cero (triángulo cerrado).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Fuerza de una ametralladora (N balas/s).</span></summary><div class="solution">$F_{media} = N \cdot m_{bala} \cdot v_{bala}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Choque frontal inelástico masas iguales.</span></summary><div class="solution">Si $v$ y $-v$, se detienen ($v_f=0$). Toda $E_k$ perdida.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Péndulo golpeado por martillo ($I$). Altura.</span></summary><div class="solution">$I = \Delta p = mv_0 \Rightarrow v_0 = I/m$. Luego $0.5mv_0^2 = mgh$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Hombre camina sobre barca sin amarrar.</span></summary><div class="solution">El CM no se mueve. $m_h \Delta x_h + m_b \Delta x_b = 0$. La barca retrocede.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Relación $E_k$ y $p$.</span></summary><div class="solution">$E_k = p^2 / 2m$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Choque con pared móvil (Tenis saque).</span></summary><div class="solution">Considerar velocidad relativa raqueta-bola para el coeficiente $e$.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
