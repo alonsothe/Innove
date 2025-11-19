@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orgánica | Ácidos y Ésteres</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA FRUTAL) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f0fdf4; /* Menta muy pálido */
+        --surface: #ffffff;
+        --text-main: #064e3b;
+        --text-soft: #16a34a;
+        --border: #d1fae5;
+        
+        /* Paleta Frutal */
+        --primary: #10b981;      /* Esmeralda (Ácidos) */
+        --primary-soft: #d1fae5;
+        --secondary: #ec4899;    /* Rosa (Ésteres) */
+        --secondary-soft: #fce7f3;
+        --tertiary: #f59e0b;     /* Naranja (Énfasis) */
+        --tertiary-soft: #fef3c7;
+
+        --shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.08);
+        --shadow-hover: 0 20px 40px -5px rgba(16, 185, 129, 0.2);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #032d20;
+        --surface: #1e293b;
+        --text-main: #d1fae5;
+        --text-soft: #6ee7b7;
+        --border: #064e3b;
+        --primary-soft: rgba(16, 185, 129, 0.2);
+        --secondary-soft: rgba(236, 72, 153, 0.2);
+        --tertiary-soft: rgba(245, 158, 11, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    body { background-color: var(--bg); color: var(--text-main); font-family: 'Nunito', sans-serif; line-height: 1.6; min-height: 100vh; padding: 20px; }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .back-btn:hover { color: var(--primary); }
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { border: none; background: transparent; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: pulse 3s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+    
+    .icon-box { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; }
+    .c-green .icon-box { background: var(--primary-soft); }
+    .c-pink .icon-box { background: var(--secondary-soft); }
+    .c-orange .icon-box { background: var(--tertiary-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 10px; }
+    
+    /* CAJA FORMULA */
+    .formula-box { background: var(--primary-soft); border-radius: 15px; padding: 25px; margin-top: 15px; text-align: center; }
+    .formula-big { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { background: var(--bg); padding: 10px 20px; border-radius: 15px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; border: 1px solid var(--border); }
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    details { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
+    summary { padding: 15px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); font-size: 0.9rem; }
+    .answer { padding: 15px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 1rem; text-align: center; border-top: 1px solid var(--border); }
+
+    /* --- IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🍓</span>
+            <h1 data-lang="es">Ácidos y <span>Ésteres</span></h1>
+            <h1 data-lang="ca">Àcids i <span>Èsters</span></h1>
+            <h1 data-lang="en">Acids and <span>Esters</span></h1>
+            
+            <p class="intro" data-lang="es">Dos caras de la misma moneda. El ácido es la base, y el éster es su derivado frutal. Ambos poseen el grupo carbonilo ($\text{C=O}$).</p>
+            <p class="intro" data-lang="ca">Dues cares de la mateixa moneda. L'àcid n'és la base, i l'èster és el seu derivat fruital. Tots dos posseeixen el grup carbonil ($\text{C=O}$).</p>
+            <p class="intro" data-lang="en">Two sides of the same coin. The acid is the base, and the ester is its fruity derivative. Both feature the carbonyl group ($\text{C=O}$).</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card c-green">
+                <div class="icon-box">🧪</div>
+                <h3 data-lang="es">1. Ácidos Carboxílicos</h3>
+                <h3 data-lang="ca">1. Àcids Carboxílics</h3>
+                <h3 data-lang="en">1. Carboxylic Acids</h3>
+                <p data-lang="es">Grupo funcional: **Carboxilo** ($\text{-COOH}$). Son débiles, pero los más fuertes de la química orgánica. Se nombran con **-oico**.</p>
+                <p data-lang="ca">Grup funcional: **Carboxil** ($\text{-COOH}$). Són febles, però els més forts de l'orgànica. Es nomenen amb **-oic**.</p>
+                <p data-lang="en">Functional group: **Carboxyl** ($\text{-COOH}$). Weak, but the strongest in organic chemistry. Named with **-oic**.</p>
+                <div class="formula-box c-green">
+                    $$ \text{R} - \text{COOH} $$
+                </div>
+            </div>
+
+            <div class="card c-green">
+                <div class="icon-box">🔗</div>
+                <h3 data-lang="es">Dímeros y Propiedades</h3>
+                <h3 data-lang="ca">Dímers i Propietats</h3>
+                <h3 data-lang="en">Dimers & Properties</h3>
+                <p data-lang="es">Forman **dímeros** (dos moléculas unidas por puentes de hidrógeno) en fase líquida. Esto explica sus altísimos puntos de ebullición.</p>
+                <p data-lang="ca">Formen **dímer** (dues molècules unides per ponts d'hidrogen) en fase líquida. Això explica els seus alts punts d'ebullició.</p>
+                <p data-lang="en">They form **dimers** (two molecules linked by hydrogen bonds). This explains their high boiling points.</p>
+                <div class="formula-box c-green">
+                    <span data-lang="es">Ej: Ácido etanoico (Vinagre)</span><span data-lang="ca">Ex: Àcid etanoic (Vinagre)</span><span data-lang="en">Ex: Ethanoic acid (Vinegar)</span>
+                </div>
+            </div>
+
+            <div class="card c-pink">
+                <div class="icon-box">🍎</div>
+                <h3 data-lang="es">3. Ésteres (El aroma)</h3>
+                <h3 data-lang="ca">3. Èsters (L'aroma)</h3>
+                <h3 data-lang="en">3. Esters (The Aroma)</h3>
+                <p data-lang="es">Derivados de ácidos y alcoholes. Grupo funcional **$\text{-COO-}$**. La mayoría son responsables del olor a fruta (piña, plátano, etc.).</p>
+                <p data-lang="ca">Derivats d'àcids i alcohols. Grup funcional **$\text{-COO-}$**. La majoria són responsables de l'olor de fruita.</p>
+                <p data-lang="en">Derivatives of acids and alcohols. Functional group **$\text{-COO-}$**. Most are responsible for fruity scents.</p>
+                <div class="formula-box c-pink">
+                    $$\text{R} - \text{COO} - \text{R'}$$
+                </div>
+            </div>
+
+            <div class="card c-pink">
+                <div class="icon-box">🏷️</div>
+                <h3 data-lang="es">Nomenclatura Ésteres</h3>
+                <h3 data-lang="ca">Nomenclatura Èsters</h3>
+                <h3 data-lang="en">Ester Naming</h3>
+                <p data-lang="es">Se nombra la parte del ácido con **-oato** (metanoato, etanoato) y la parte del alcohol con **-ilo** (metilo, etilo).</p>
+                <p data-lang="ca">Es nomena la part de l'àcid amb **-oat** (metanoat, etanoat) i la part de l'alcohol amb **-il** (metil, etil).</p>
+                <p data-lang="en">Name the acid part with **-oate** (methanoate, ethanoate) and the alcohol part with **-yl** (methyl, ethyl).</p>
+                <div class="formula-box c-pink">
+                    <span data-lang="es">Ej: Etanoato de Metilo</span><span data-lang="ca">Ex: Etanoat de Metil</span><span data-lang="en">Ex: Methyl Ethanoate</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Ácidos y Ésteres (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs d'Àcids i Èsters (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Acids & Esters Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Ácidos (Nomenclatura IUPAC)</span>
+            <div class="gym-grid">
+                <details><summary>Ácido metanoico</summary><div class="answer">HCOOH</div></details>
+                <details><summary>Ácido etanoico</summary><div class="answer">CH₃COOH</div></details>
+                <details><summary>Ácido propanoico</summary><div class="answer">CH₃CH₂COOH</div></details>
+                <details><summary>Ácido butanoico</summary><div class="answer">CH₃(CH₂)₂COOH</div></details>
+                <details><summary>Ácido pentanoico</summary><div class="answer">CH₃(CH₂)₃COOH</div></details>
+                <details><summary>Ácido hexanoico</summary><div class="answer">CH₃(CH₂)₄COOH</div></details>
+                <details><summary>Ácido heptanoico</summary><div class="answer">CH₃(CH₂)₅COOH</div></details>
+                <details><summary>Ácido octanoico</summary><div class="answer">CH₃(CH₂)₆COOH</div></details>
+                <details><summary>Ácido propenoico</summary><div class="answer">CH₂=CHCOOH</div></details>
+                <details><summary>Ácido but-3-enoico</summary><div class="answer">CH₂=CHCH₂COOH</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 2: Ácidos Complejos</span>
+            <div class="gym-grid">
+                <details><summary>Ácido bencenocarboxílico</summary><div class="answer">Ácido benzoico</div></details>
+                <details><summary>Ácido 2-aminopropanoico</summary><div class="answer">Alanina (Aminoácido)</div></details>
+                <details><summary>Ácido butanodioico</summary><div class="answer">Ácido succínico</div></details>
+                <details><summary>Ácido etanodioico</summary><div class="answer">Ácido oxálico (HOOC-COOH)</div></details>
+                <details><summary>Ácido 3-metilbutanoico</summary><div class="answer">Ácido isovalérico</div></details>
+                <details><summary>Ácido 2-hidroxipropanoico</summary><div class="answer">Ácido láctico</div></details>
+                <details><summary>Ácido 4-oxopentanoico</summary><div class="answer">CH₃COCH₂CH₂COOH</div></details>
+                <details><summary>Ácido propano-1,3-dioico</summary><div class="answer">Ácido malónico</div></details>
+                <details><summary>Ácido 2-cloropropanoico</summary><div class="answer">CH₃CH(Cl)COOH</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 3: Ésteres (De Nombre a Fórmula)</span>
+            <div class="gym-grid">
+                <details><summary>Etanoato de metilo</summary><div class="answer">CH₃COOCH₃</div></details>
+                <details><summary>Butanoato de etilo</summary><div class="answer">CH₃(CH₂)₂COOCH₂CH₃ (Piña)</div></details>
+                <details><summary>Propanoato de propilo</summary><div class="answer">CH₃CH₂COOCH₂CH₂CH₃</div></details>
+                <details><summary>Metanoato de etilo</summary><div class="answer">HCOOCH₂CH₃ (Ron)</div></details>
+                <details><summary>Etanoato de etilo</summary><div class="answer">CH₃COOCH₂CH₃</div></details>
+                <details><summary>Pentanoato de metilo</summary><div class="answer">CH₃(CH₂)₃COOCH₃</div></details>
+                <details><summary>Octanoato de etilo</summary><div class="answer">CH₃(CH₂)₆COOCH₂CH₃</div></details>
+                <details><summary>Metanoato de propilo</summary><div class="answer">HCOOCH₂CH₂CH₃</div></details>
+                <details><summary>Butanoato de metilo</summary><div class="answer">CH₃(CH₂)₂COOCH₃</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--bg); color:var(--text-soft); border-color:var(--border)">Nivel 4: ¿Cómo se llama? (Ésteres)</span>
+            <div class="gym-grid">
+                <details><summary>HCOOCH₃</summary><div class="answer">Metanoato de metilo</div></details>
+                <details><summary>CH₃COOCH₂CH₃</summary><div class="answer">Etanoato de etilo</div></details>
+                <details><summary>CH₃(CH₂)₂COOCH₃</summary><div class="answer">Butanoato de metilo</div></details>
+                <details><summary>CH₃CH₂COOCH₃</summary><div class="answer">Propanoato de metilo</div></details>
+                <details><summary>C₆H₅COOCH₃</summary><div class="answer">Benzoato de metilo</div></details>
+                <details><summary>CH₃(CH₂)₄COOCH₂CH₃</summary><div class="answer">Hexanoato de etilo</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
