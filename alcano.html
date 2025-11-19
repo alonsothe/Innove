@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orgánica | Alcanos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA ORGÁNICA) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f0f9ff; /* Azul muy pálido */
+        --surface: #ffffff;
+        --text-main: #0c4a6e;
+        --text-soft: #0369a1;
+        --border: #bae6fd;
+        
+        /* Paleta Hidrocarburos */
+        --primary: #0284c7;      /* Azul Enlace Simple */
+        --primary-soft: #e0f2fe;
+        --secondary: #10b981;    /* Verde (Radicales) */
+        --secondary-soft: #d1fae5;
+        --tertiary: #f43f5e;     /* Rojo (Para comparar con Alquenos) */
+        --tertiary-soft: #ffe4e6;
+        --accent: #f59e0b;       /* Naranja */
+
+        --shadow: 0 10px 30px -5px rgba(14, 165, 233, 0.1);
+        --shadow-hover: 0 20px 40px -5px rgba(14, 165, 233, 0.2);
+        --radius: 24px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #e0f2fe;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --primary-soft: rgba(14, 165, 233, 0.15);
+        --secondary-soft: rgba(16, 185, 129, 0.15);
+        --tertiary-soft: rgba(244, 63, 94, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+        background-image: radial-gradient(var(--border) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); background: linear-gradient(120deg, transparent 0%, transparent 100%); background-repeat: no-repeat; background-size: 100% 30%; background-position: 0 85%; }
+    
+    p.intro { font-size: 1.15rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; font-weight: 600; }
+
+    /* CAJA FÓRMULA PRINCIPAL */
+    .molecule-box {
+        background: var(--surface); border: 2px solid var(--primary);
+        border-radius: var(--radius); padding: 30px; margin-bottom: 40px;
+        text-align: center; position: relative; overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+    .formula-display {
+        font-size: 2.5rem; font-weight: 800; color: var(--text-main);
+        margin: 15px 0; font-family: 'Outfit', sans-serif;
+    }
+    .tag {
+        display: inline-block; background: var(--primary); color: white; 
+        padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; margin-bottom: 10px;
+    }
+
+    /* GRID TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+        display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+    
+    .icon-box { 
+        width: 50px; height: 50px; border-radius: 15px; 
+        display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 15px; 
+    }
+    
+    .c-blue { background: var(--primary-soft); color: var(--primary); }
+    .c-green { background: var(--secondary-soft); color: var(--secondary); }
+    .c-red { background: var(--tertiary-soft); color: var(--tertiary); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 10px; }
+    .card p { font-size: 0.95rem; color: var(--text-soft); margin-bottom: 15px; }
+
+    /* TABLA DE PREFIJOS */
+    .prefix-table {
+        width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;
+    }
+    .prefix-table td { padding: 8px; border-bottom: 1px solid var(--border); }
+    .prefix-table td:first-child { font-weight: 800; color: var(--primary); }
+
+    /* COMPARACIÓN ALCANO VS ALQUENO */
+    .vs-container {
+        display: flex; align-items: center; justify-content: space-between;
+        background: var(--bg); padding: 15px; border-radius: 15px; margin-top: auto;
+    }
+    .vs-box { text-align: center; width: 45%; }
+    .vs-divider { width: 1px; height: 40px; background: var(--border); }
+    .bond-visual { font-weight: 800; font-size: 1.2rem; display: block; margin-bottom: 5px; }
+
+    /* GIMNASIO */
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+    }
+
+    .gym-section { margin-bottom: 40px; }
+    .gym-header { 
+        padding: 8px 16px; border-radius: 12px; display: inline-block;
+        font-weight: 800; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 15px;
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+    }
+    details:hover { border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center;
+        font-size: 0.95rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-weight: 800; color: var(--primary); }
+    details[open] summary::after { content: '-'; }
+
+    .answer { 
+        padding: 15px; background: var(--bg); color: var(--primary); 
+        font-weight: 700; text-align: center; border-top: 1px solid var(--border);
+    }
+
+    /* HTML HIDDEN LOGIC */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="#" class="back-btn">
+            <span>🧪</span> 
+            <span data-lang="es">Hub Orgánica</span>
+            <span data-lang="ca">Hub Orgànica</span>
+            <span data-lang="en">Organic Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">⛽</span>
+            <h1 data-lang="es">Los <span>Alcanos</span></h1>
+            <h1 data-lang="ca">Els <span>Alcans</span></h1>
+            <h1 data-lang="en">The <span>Alkanes</span></h1>
+            
+            <p class="intro" data-lang="es">Hidrocarburos sencillos. Solo enlaces simples. La base de todo.</p>
+            <p class="intro" data-lang="ca">Hidrocarburs senzills. Només enllaços simples. La base de tot.</p>
+            <p class="intro" data-lang="en">Simple hydrocarbons. Only single bonds. The foundation.</p>
+        </header>
+
+        <div class="molecule-box">
+            <span class="tag" data-lang="es">Fórmula General</span>
+            <span class="tag" data-lang="ca">Fórmula General</span>
+            <span class="tag" data-lang="en">General Formula</span>
+            
+            <div class="formula-display">
+                $$ C_nH_{2n+2} $$
+            </div>
+            
+            <p data-lang="es">Donde <strong>n</strong> es el número de carbonos. Están "saturados" de hidrógeno.</p>
+            <p data-lang="ca">On <strong>n</strong> és el nombre de carbonis. Estan "saturats" d'hidrogen.</p>
+            <p data-lang="en">Where <strong>n</strong> is the number of carbons. They are "saturated" with hydrogen.</p>
+        </div>
+
+        <div class="theory-grid">
+            
+            <div class="card">
+                <div class="icon-box c-blue">🔢</div>
+                <h3 data-lang="es">La Regla de Oro</h3>
+                <h3 data-lang="ca">La Regla d'Or</h3>
+                <h3 data-lang="en">The Golden Rule</h3>
+                <p data-lang="es">El nombre depende de cuántos carbonos haya en la cadena más larga.</p>
+                <p data-lang="ca">El nom depèn de quants carbonis hi hagi a la cadena més llarga.</p>
+                <p data-lang="en">The name depends on how many carbons are in the longest chain.</p>
+                
+                <table class="prefix-table">
+                    <tr><td>1</td><td>Met-</td><td>(Methane)</td></tr>
+                    <tr><td>2</td><td>Et-</td><td>(Ethane)</td></tr>
+                    <tr><td>3</td><td>Prop-</td><td>(Propane)</td></tr>
+                    <tr><td>4</td><td>But-</td><td>(Butane)</td></tr>
+                    <tr><td>5+</td><td>Pent-, Hex-, ...</td></tr>
+                </table>
+            </div>
+
+            <div class="card" style="border-color: var(--tertiary);">
+                <div class="icon-box c-red">🆚</div>
+                <h3 data-lang="es">Alcano vs Alqueno</h3>
+                <h3 data-lang="ca">Alcan vs Alquen</h3>
+                <h3 data-lang="en">Alkane vs Alkene</h3>
+                <p data-lang="es">¡Cuidado con el sufijo! Una sola letra cambia la química.</p>
+                <p data-lang="ca">Compte amb el sufix! Una sola lletra canvia la química.</p>
+                <p data-lang="en">Watch out for the suffix! One letter changes the chemistry.</p>
+
+                <div class="vs-container">
+                    <div class="vs-box">
+                        <span class="bond-visual" style="color:var(--primary)">C — C</span>
+                        <small data-lang="es"><strong>Alcano</strong><br>Saturado<br>(Simple)</small>
+                        <small data-lang="ca"><strong>Alcan</strong><br>Saturat<br>(Simple)</small>
+                        <small data-lang="en"><strong>Alkane</strong><br>Saturated<br>(Single)</small>
+                    </div>
+                    <div class="vs-divider"></div>
+                    <div class="vs-box">
+                        <span class="bond-visual" style="color:var(--tertiary)">C = C</span>
+                        <small data-lang="es"><strong>Alqueno</strong><br>Insaturado<br>(Doble)</small>
+                        <small data-lang="ca"><strong>Alquen</strong><br>Insaturat<br>(Doble)</small>
+                        <small data-lang="en"><strong>Alkene</strong><br>Unsaturated<br>(Double)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon-box c-green">🌿</div>
+                <h3 data-lang="es">Radicales (R-)</h3>
+                <h3 data-lang="ca">Radicals (R-)</h3>
+                <h3 data-lang="en">Radicals (R-)</h3>
+                <p data-lang="es">Son ramas que salen de la cadena principal. Terminan en <strong>-il</strong>.</p>
+                <p data-lang="ca">Són branques que surten de la cadena principal. Acaben en <strong>-il</strong>.</p>
+                <p data-lang="en">Branches coming off the main chain. They end in <strong>-yl</strong>.</p>
+                <div style="background: var(--bg); padding: 10px; border-radius: 10px; font-size: 0.9rem; text-align: center;">
+                    \( CH_3- \)  Metil / Methyl<br>
+                    \( CH_3CH_2- \) Etil / Ethyl
+                </div>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Carbono</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs de Carboni</h2>
+        <h2 data-lang="en">🏋️ Carbon Gym</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Lvl 1: The Big 4 (Memorize!)</span>
+            <div class="gym-grid">
+                <details><summary>C₁ (CH₄)</summary><div class="answer"><span data-lang="es">Metano</span><span data-lang="ca">Metà</span><span data-lang="en">Methane</span></div></details>
+                <details><summary>C₂ (CH₃-CH₃)</summary><div class="answer"><span data-lang="es">Etano</span><span data-lang="ca">Età</span><span data-lang="en">Ethane</span></div></details>
+                <details><summary>C₃ (CH₃-CH₂-CH₃)</summary><div class="answer"><span data-lang="es">Propano</span><span data-lang="ca">Propà</span><span data-lang="en">Propane</span></div></details>
+                <details><summary>C₄ (CH₃-(CH₂)₂-CH₃)</summary><div class="answer"><span data-lang="es">Butano</span><span data-lang="ca">Butà</span><span data-lang="en">Butane</span></div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Lvl 2: Geometría (CnH2n+2)</span>
+            <div class="gym-grid">
+                <details><summary>n=5 (C₅H₁₂)</summary><div class="answer"><span data-lang="es">Pentano</span><span data-lang="ca">Pentà</span><span data-lang="en">Pentane</span></div></details>
+                <details><summary>n=6 (C₆H₁₄)</summary><div class="answer"><span data-lang="es">Hexano</span><span data-lang="ca">Hexà</span><span data-lang="en">Hexane</span></div></details>
+                <details><summary>n=7 (C₇H₁₆)</summary><div class="answer"><span data-lang="es">Heptano</span><span data-lang="ca">Heptà</span><span data-lang="en">Heptane</span></div></details>
+                <details><summary>n=8 (C₈H₁₈)</summary><div class="answer"><span data-lang="es">Octano</span><span data-lang="ca">Octà</span><span data-lang="en">Octane</span></div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Lvl 3: ¿Alcano o Alqueno?</span>
+            <p style="margin-bottom: 10px; font-size: 0.9rem; opacity: 0.8;" data-lang="es">Mira el enlace.</p>
+            <p style="margin-bottom: 10px; font-size: 0.9rem; opacity: 0.8;" data-lang="ca">Mira l'enllaç.</p>
+            <p style="margin-bottom: 10px; font-size: 0.9rem; opacity: 0.8;" data-lang="en">Look at the bond.</p>
+            
+            <div class="gym-grid">
+                <details><summary>CH₃ — CH₃</summary><div class="answer">Alcano / Alkane</div></details>
+                <details><summary>CH₂ = CH₂</summary><div class="answer" style="color:var(--tertiary)">Alqueno / Alkene</div></details>
+                <details><summary>CH₃ — CH₂ — CH₃</summary><div class="answer">Alcano / Alkane</div></details>
+                <details><summary>CH₂ = CH — CH₃</summary><div class="answer" style="color:var(--tertiary)">Alqueno / Alkene</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // SISTEMA DE IDIOMAS
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.toLowerCase() === savedLang) b.classList.add('active');
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
