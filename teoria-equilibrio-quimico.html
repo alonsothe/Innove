@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equilibrio Químico | Dinámica Avanzada</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* --- PALETA DE COLORES (Igual a Teoría Orgánica) --- */
+    --bg-color: #ffffff;
+    --text-primary: #18181b; /* Zinc 900 */
+    --text-secondary: #52525b; /* Zinc 600 */
+    
+    --accent: #3b82f6; /* Royal Blue */
+    --accent-glow: rgba(59, 130, 246, 0.15);
+    --highlight: #f59e0b; /* Amber (Naranja reactivo) */
+    
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    /* --- MODO OSCURO (Graphite/Black) --- */
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    
+    --accent: #60a5fa;
+    --accent-glow: rgba(96, 165, 250, 0.1);
+    
+    --glass-bg: rgba(24, 24, 27, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    
+    --card-hover: rgba(39, 39, 42, 0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* --- ORBES DE FONDO --- */
+  .orb {
+    position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.4;
+  }
+  .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; }
+  .orb-2 { width: 300px; height: 300px; background: var(--highlight); bottom: -50px; left: -50px; opacity: 0.2; }
+
+  /* --- EFECTO GLASS --- */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+  }
+
+  /* --- TIPOGRAFÍA --- */
+  h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+  h2 { font-size: 1.8rem; margin: 3rem 0 1.5rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
+  h3 { font-size: 1.3rem; margin: 1.5rem 0 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+  strong { color: var(--text-primary); font-weight: 600; }
+
+  .chem {
+    font-family: var(--font-chem);
+    font-size: 0.9em;
+    color: var(--accent);
+    background: var(--accent-glow);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .equation-box {
+    background: var(--accent-glow);
+    border-left: 4px solid var(--accent);
+    padding: 15px 20px;
+    margin: 20px 0;
+    font-family: var(--font-chem);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* --- HEADER & NAV --- */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+  .header {
+    position: sticky; top: 20px; z-index: 100;
+    padding: 16px 24px; margin-bottom: 40px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 2rem; line-height: 1; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; }
+  .logo-text div:last-child { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 16px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--accent-glow); color: var(--accent); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary); color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+  .theme-toggle:hover { transform: rotate(15deg); }
+
+  /* --- SECCIONES --- */
+  section.content-section { display: none; animation: fadeIn 0.5s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden; }
+
+  /* Tablas */
+  .chem-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+  .chem-table th { text-align: left; color: var(--text-secondary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .chem-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-primary); }
+  .chem-table tr:hover td { background: var(--accent-glow); }
+
+  /* Notas */
+  .note {
+    background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b;
+    padding: 16px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.9rem; color: var(--text-primary);
+  }
+
+  /* --- EJERCICIOS --- */
+  .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+
+  details.ex {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { background: var(--card-hover); border-color: var(--accent); }
+  
+  summary {
+    padding: 16px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: 'Mostrar'; font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); background: var(--glass-border); padding: 4px 8px; border-radius: 4px; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); }
+  details[open] summary::after { content: 'Ocultar'; background: var(--accent); color: white; }
+
+  .solution {
+    padding: 20px; text-align: center; background: rgba(0,0,0,0.02);
+    font-family: var(--font-chem); font-weight: 700; color: var(--accent); font-size: 1rem;
+  }
+
+  .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; margin-right: 8px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid; }
+  .b-teoria { border-color: var(--accent); color: var(--accent); }
+  .b-calculo { border-color: var(--highlight); color: var(--highlight); }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="#" class="logo">
+    <div class="logo-icon">⚖️</div>
+    <div class="logo-text">
+      <div>Equilibrio Químico</div>
+      <div>Dinámica & Reversibilidad</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="fundamentos" aria-selected="true">1. Fundamentos</button>
+    <button class="nav-btn" data-target="constantes" aria-selected="false">2. Constantes K</button>
+    <button class="nav-btn" data-target="chatelier" aria-selected="false">3. Le Châtelier</button>
+    <button class="nav-btn" data-target="ejercicios" aria-selected="false">4. Ejercicios (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="fundamentos" class="content-section" data-active>
+    <div class="card glass">
+      <h1>Dinámica del Equilibrio</h1>
+      <p>El equilibrio químico es un estado dinámico donde las velocidades de la reacción directa e inversa se igualan. A nivel macroscópico las concentraciones son constantes, pero a nivel molecular la reacción continúa incesantemente.</p>
+      
+      
+      <h2>1. Ley de Acción de Masas</h2>
+      <p>Para una reacción reversible general:</p>
+      <div class="equation-box">aA + bB &harr; cC + dD</div>
+      <p>En el equilibrio, la relación de concentraciones elevada a sus coeficientes estequiométricos es constante a una temperatura dada (T):</p>
+      <div class="equation-box">K<sub>c</sub> = ([C]<sup>c</sup> · [D]<sup>d</sup>) / ([A]<sup>a</sup> · [B]<sup>b</sup>)</div>
+      
+      <div class="note">
+        <strong>Importante:</strong> Los sólidos puros (s) y líquidos puros (l) NO se incluyen en la expresión de la constante de equilibrio.
+      </div>
+    </div>
+  </section>
+
+  <section id="constantes" class="content-section">
+    <div class="card glass">
+      <h1>Constantes Kp, Kc y α</h1>
+
+      <h3>2.1 Relación Kp y Kc</h3>
+      <p>Para reacciones gaseosas, usamos presiones parciales (Kp). La relación con Kc depende de la variación de moles gaseosos (<span class="chem">&#916;n</span>):</p>
+      <div class="equation-box">K<sub>p</sub> = K<sub>c</sub> · (R · T)<sup>&#916;n</sup></div>
+      <p>Donde <span class="chem">&#916;n = n(prod. gas) - n(react. gas)</span>.</p>
+
+      <h3>2.2 Predicción con Q (Cociente de Reacción)</h3>
+      <p>Calculamos Q con las concentraciones actuales para saber hacia dónde evolucionará el sistema:</p>
+      <table class="chem-table">
+        <thead><tr><th>Condición</th><th>Dirección</th><th>Significado</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Q < Kc</strong></td><td>Derecha &rarr;</td><td>Faltan productos.</td></tr>
+          <tr><td><strong>Q = Kc</strong></td><td>Equilibrio</td><td>Sistema estable.</td></tr>
+          <tr><td><strong>Q > Kc</strong></td><td>Izquierda &larr;</td><td>Sobran productos.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2.3 Grado de Disociación (α)</h3>
+      <p>Fracción de moles iniciales que han reaccionado:</p>
+      <div class="equation-box">&#945; = x / C₀</div>
+    </div>
+  </section>
+
+  <section id="chatelier" class="content-section">
+    <div class="card glass">
+      <h1>Principio de Le Châtelier</h1>
+      <p>Si un sistema en equilibrio es perturbado, evolucionará para contrarrestar la perturbación.</p>
+      
+
+      <table class="chem-table">
+        <thead><tr><th>Perturbación</th><th>Respuesta</th><th>Cambia K?</th></tr></thead>
+        <tbody>
+          <tr><td>↑ [Reactivos]</td><td>Desplaza a la <strong>Derecha</strong></td><td>NO</td></tr>
+          <tr><td>↑ Presión (↓ V)</td><td>Hacia donde hay <strong>menos moles gas</strong></td><td>NO</td></tr>
+          <tr><td>↑ Temperatura</td><td>Endotérmica: Derecha / Exotérmica: Izquierda</td><td><strong>SÍ</strong></td></tr>
+          <tr><td>Catalizador</td><td>Aumenta velocidad, no desplaza equilibrio</td><td>NO</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="ejercicios" class="content-section">
+    <div class="card glass">
+      <h2>Batería de Ejercicios (30 Problemas)</h2>
+      <p>Selección completa de cuestiones teóricas y cálculos numéricos.</p>
+
+      <div class="ex-grid">
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Efecto T en exotérmica</summary><div class="solution">Si sube T en exotérmica, K baja y se desplaza a la izquierda.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> ¿Kp depende de P?</summary><div class="solution">No, Kp solo depende de la Temperatura.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Kc de CaCO₃(s) &harr; CaO(s) + CO₂(g)</summary><div class="solution">Kc = [CO₂] (sólidos no cuentan).</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Relación si &#916;n=0</summary><div class="solution">Kp = Kc.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Significado K >> 1</summary><div class="solution">Reacción muy desplazada a productos.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Efecto gas inerte (V cte)</summary><div class="solution">No afecta al equilibrio.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Unidades Kc</summary><div class="solution">(mol/L)^&#916;n.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Catalizador y rendimiento</summary><div class="solution">No cambia el rendimiento, solo la velocidad.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Retirar producto</summary><div class="solution">Desplaza a la derecha (aumenta rendimiento).</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Q > K</summary><div class="solution">Precipita o va a reactivos (izquierda).</div></details>
+
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Kc si [A]=0.1, [B]=0.2, [C]=0.5 (A+B&harr;C)</summary><div class="solution">Kc = 0.5 / (0.1 * 0.2) = 25.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Kp si Kc=5, T=300K, &#916;n=1</summary><div class="solution">Kp = 5 * (0.082 * 300) = 123.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> % disociación si &#945;=0.4</summary><div class="solution">40%.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> &#916;n en N₂ + 3H₂ &harr; 2NH₃</summary><div class="solution">&#916;n = 2 - 4 = -2.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> K inversa si K directa = 10</summary><div class="solution">K' = 1/10 = 0.1.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> K si duplico coeficientes</summary><div class="solution">K'' = K².</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> [B] si 2A&harr;B, A₀=1M, Aeq=0.6M</summary><div class="solution">Rx A=0.4M -> forma B=0.2M.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Valor R (atm)</summary><div class="solution">0.082 atm·L/mol·K.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> P total si Pa=2, Pb=3</summary><div class="solution">5 atm.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Kc con &#945; (A&harr;2B)</summary><div class="solution">Kc = 4C₀&#945;² / (1-&#945;).</div></details>
+
+        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> Solubilidad si Kps=1.8e-10</summary><div class="solution">s = 1.34e-5 M.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Efecto ión común</summary><div class="solution">Disminuye la solubilidad.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> Relación &#916;Gº y K</summary><div class="solution">&#916;Gº = -RT ln K.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Ec. Van't Hoff</summary><div class="solution">ln(K2/K1) depende de &#916;H.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Presión y &#945; (&#916;n>0)</summary><div class="solution">Si sube P, baja &#945;.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> Aproximación x pequeña</summary><div class="solution">Si K < 1e-4, 1-x ≈ 1.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Equilibrio heterogéneo y P</summary><div class="solution">Solo gases afectan Le Châtelier.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Hidrólisis</summary><div class="solution">Kh = Kw / Ka.</div></details>
+        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> pH tampón</summary><div class="solution">Henderson-Hasselbalch.</div></details>
+        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Kp y T</summary><div class="solution">Única variable real.</div></details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // --- LÓGICA DE NAVEGACIÓN ---
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // --- MODO OSCURO ---
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
