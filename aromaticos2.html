@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orgánica | Aromáticos Avanzado</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA AROMÁTICA UNI) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f5f3ff;
+        --surface: #ffffff;
+        --text-main: #4c1d95;
+        --text-soft: #6d28d9;
+        --border: #ddd6fe;
+        
+        /* Paleta Avanzada */
+        --primary: #7c3aed;      /* Violeta Intenso (Reacciones) */
+        --primary-soft: #ede9fe;
+        --secondary: #eab308;    /* Dorado (Anillo) */
+        --secondary-soft: #fef3c7;
+        --tertiary: #ec4899;     /* Rosa (Orientación) */
+        --tertiary-soft: #fce7f3;
+        --accent: #06b6d4;       /* Cian (Reglas) */
+
+        --shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(124, 58, 237, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #e9d5ff;
+        --text-soft: #c084fc;
+        --border: #334155;
+        --primary-soft: rgba(124, 58, 237, 0.2);
+        --secondary-soft: rgba(245, 158, 11, 0.2);
+        --tertiary-soft: rgba(236, 72, 153, 0.2);
+        --accent-soft: rgba(6, 182, 212, 0.2);
+    }
+
+    /* --- ESTILOS GENERALES (Copiado de la versión anterior) --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    body { background-color: var(--bg); color: var(--text-main); font-family: 'Nunito', sans-serif; line-height: 1.6; min-height: 100vh; padding: 20px; }
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .back-btn:hover { color: var(--primary); }
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { border: none; background: transparent; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: spin 20s infinite linear; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+    h2 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; color: var(--text-main); display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+    /* CARD STYLES */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+    .icon-box { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; }
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 10px; }
+    /* MATH STYLES */
+    .math-box { background: var(--primary-soft); padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; font-weight: bold; }
+    .important-rule { color: var(--secondary); font-size: 1.1rem; }
+    /* GYM STYLES */
+    .gym-header { background: var(--bg); padding: 10px 20px; border-radius: 15px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; border: 1px solid var(--border); }
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+    details { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
+    summary { padding: 15px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); font-size: 0.9rem; }
+    .answer { padding: 15px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 1rem; text-align: center; border-top: 1px solid var(--border); }
+    /* LANGUAGE FIX */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🔬</span>
+            <h1 data-lang="es">Aromáticos <span>Avanzado</span></h1>
+            <h1 data-lang="ca">Aromàtics <span>Avançat</span></h1>
+            <h1 data-lang="en">Aromatics <span>Advanced</span></h1>
+            
+            <p class="intro" data-lang="es">Nivel Universitario: La química del benceno va más allá del nombre. Estudiamos su estabilidad, sus reacciones sintéticas (SEAr) y sus efectos en la orientación.</p>
+            <p class="intro" data-lang="ca">Nivell Universitari: La química del benzè va més enllà del nom. Estudiem la seva estabilitat, les seves reaccions sintètiques (SEAr) i els seus efectes en l'orientació.</p>
+            <p class="intro" data-lang="en">University Level: Benzene chemistry goes beyond naming. We study its stability, synthetic reactions (SEAr), and orientation effects.</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card" style="border-color: var(--accent);">
+                <div class="icon-box" style="background:var(--accent-soft);">🧪</div>
+                <h3 data-lang="es">1. Aromaticidad y Hückel</h3>
+                <h3 data-lang="ca">1. Aromaticitat i Hückel</h3>
+                <h3 data-lang="en">1. Aromaticity & Hückel</h3>
+                <p data-lang="es">Para ser aromático, debe ser **cíclico**, **plano**, tener todos los átomos $sp^2$ o $sp$, y poseer <span>$$ (4n+2) $$</span> electrones $\pi$ (donde \(n = 0, 1, 2...\)).</p>
+                <p data-lang="ca">Per ser aromàtic, ha de ser cíclic, pla, $sp^2$/$sp$ i tenir <span>$$ (4n+2) $$</span> electrons $\pi$.</p>
+                <p data-lang="en">To be aromatic, it must be cyclic, planar, $sp^2$/$sp$, and have <span>$$ (4n+2) $$</span> $\pi$ electrons.</p>
+                <div class="math-box important-rule" style="color:var(--accent);">Ej: Benceno tiene 6 $\pi$ e⁻ (n=1).</div>
+            </div>
+
+            <div class="card" style="border-color: var(--primary);">
+                <div class="icon-box" style="background:var(--primary-soft);">💥</div>
+                <h3 data-lang="es">2. Sustitución Electrófila (SEAr)</h3>
+                <h3 data-lang="ca">2. Substitució Electròfila (SEAr)</h3>
+                <h3 data-lang="en">2. Electrophilic Sub. (SEAr)</h3>
+                <p data-lang="es">Reacción típica del benceno. El anillo NO hace adiciones (como un alqueno), sino que reemplaza un H para conservar su estabilidad.</p>
+                <p data-lang="ca">Reacció típica del benzè. L'anell NO fa addicions, sinó que reemplaça un H per conservar la seva estabilitat.</p>
+                <p data-lang="en">Typical reaction of benzene. The ring DOES NOT do additions, it replaces an H to preserve stability.</p>
+                <div class="math-box">
+                    $$\text{Benceno} + E^+ \rightarrow \text{Sigma Complex} \rightarrow \text{Sustituido} $$
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--tertiary);">
+                <div class="icon-box" style="background:var(--tertiary-soft);">🧭</div>
+                <h3 data-lang="es">3. Efectos de Orientación</h3>
+                <h3 data-lang="ca">3. Efectes d'Orientació</h3>
+                <h3 data-lang="en">3. Orientation Effects</h3>
+                <p data-lang="es">Un sustituyente ($Y$) ya presente guía la siguiente reacción a posiciones $o/p$ (Activantes) o $m$ (Desactivantes).</p>
+                <p data-lang="ca">Un substituent ($Y$) ja present guia la següent reacció a posicions $o/p$ (Activants) o $m$ (Desactivants).</p>
+                <p data-lang="en">An existing substituent ($Y$) directs the next reaction to $o/p$ (Activating) or $m$ (Deactivating) positions.</p>
+                <div style="font-size:0.9rem; margin-top:10px;">
+                    <strong style="color:var(--primary);">o, p-Directores (Activantes):</strong> $-\text{OH}$, $-\text{NH}_2$, $-\text{R}$ (alquilo).<br>
+                    <strong style="color:var(--tertiary);">m-Directores (Desactivantes):</strong> $-\text{NO}_2$, $-\text{COOH}$, $-\text{SO}_3\text{H}$.
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--secondary);">
+                <div class="icon-box" style="background:var(--secondary-soft);">🔗</div>
+                <h3 data-lang="es">4. Aromáticos Policíclicos (PAHs)</h3>
+                <h3 data-lang="ca">4. Aromàtics Policíclics (PAHs)</h3>
+                <h3 data-lang="en">4. Polycyclic Aromatics (PAHs)</h3>
+                <p data-lang="es">Dos o más anillos fusionados (Naftaleno, Antraceno). Son importantes en toxicología (muchos son carcinógenos).</p>
+                <p data-lang="ca">Dos o més anells fusionats (Naftalè, Antracè). Són importants en toxicologia (carcinògens).</p>
+                <p data-lang="en">Two or more fused rings (Naphthalene, Anthracene). Important in toxicology (many are carcinogens).</p>
+                <div class="math-box" style="color:var(--secondary);">
+                    $$\text{Naftaleno: } C_{10}H_8$$
+                </div>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Reactividad (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs de Reactivitat (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Reactivity Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--accent-soft); color:var(--accent)">Nivel 1: Aromaticidad ($4n+2$)</span>
+            <div class="gym-grid">
+                <details><summary>Ciclobutadieno ($\text{C}_4\text{H}_4$)</summary><div class="answer">Anti-aromático (4 $\pi$ e⁻)</div></details>
+                <details><summary>Ciclopropenil Catión</summary><div class="answer">Aromático (2 $\pi$ e⁻, n=0)</div></details>
+                <details><summary>Ciclooctatetraeno</summary><div class="answer">No aromático (No es plano)</div></details>
+                <details><summary>Anión Ciclopentadienilo</summary><div class="answer">Aromático (6 $\pi$ e⁻)</div></details>
+                <details><summary>Piridina ($\text{C}_5\text{H}_5\text{N}$)</summary><div class="answer">Aromático (6 $\pi$ e⁻)</div></details>
+                <details><summary>Catión Cicloheptatrienilo</summary><div class="answer">Aromático (6 $\pi$ e⁻)</div></details>
+                <details><summary>Electrones $\pi$ del Naftaleno?</summary><div class="answer">10 $\pi$ e⁻ (n=2)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 2: Predicción de SEAr</span>
+            <div class="gym-grid">
+                <details><summary>Tolueno ($\text{CH}_3$) + Nitración</summary><div class="answer">o-nitrotolueno y p-nitrotolueno</div></details>
+                <details><summary>Ácido benzoico ($\text{COOH}$) + Bromación</summary><div class="answer">m-bromoácido benzoico</div></details>
+                <details><summary>Fenol ($\text{OH}$) + Sulfonación</summary><div class="answer">o-hidroxibencenosulfónico y p-hidroxibencenosulfónico</div></details>
+                <details><summary>Nitrobenzeno ($\text{NO}_2$) + Cloración</summary><div class="answer">m-cloronitrobenceno</div></details>
+                <details><summary>Clorobenceno ($\text{Cl}$) + Nitración</summary><div class="answer">o-cloronitrobenceno y p-cloronitrobenceno</div></details>
+                <details><summary>Anilina ($\text{NH}_2$) + Bromación</summary><div class="answer">2,4,6-tribromoanilina</div></details>
+                <details><summary>Benceno + Halogenación</summary><div class="answer">Halobenceno (monosustitución)</div></details>
+                <details><summary>Benceno + Acilación de Friedel-Crafts</summary><div class="answer">Fenilcetona</div></details>
+                <details><summary>Tolueno + Nitración</summary><div class="answer">o/p-nitrotolueno</div></details>
+                <details><summary>Sustituyente más activante?</summary><div class="answer">$-\text{OH}$ (Fenol)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 3: Estabilidad y Estructura</span>
+            <div class="gym-grid">
+                <details><summary>¿Es el benceno un alqueno (Adición)?</summary><div class="answer">No, hace Sustitución (SEAr)</div></details>
+                <details><summary>Hibridación de los C del benceno?</summary><div class="answer">$sp^2$</div></details>
+                <details><summary>Longitud del enlace C-C en benceno?</summary><div class="answer">Intermedia ($1.39 \text{ Å}$)</div></details>
+                <details><summary>Intermedio de la SEAr?</summary><div class="answer">Carbocatión o $\sigma$-complejo</div></details>
+                <details><summary>¿Por qué $-\text{NO}_2$ es meta-director?</summary><div class="answer">Desactiva más las posiciones $o/p$</div></details>
+                <details><summary>Carbocatión aromático más estable?</summary><div class="answer">El del anillo bencénico (sigma complex)</div></details>
+                <details><summary>o-dimetilbenceno</summary><div class="answer">o-Xileno</div></details>
+                <details><summary>m-metilfenol</summary><div class="answer">m-Cresol</div></details>
+                <details><summary>Ácido anilinasulfónico</summary><div class="answer">Ácido sulfanílico (zwitterión)</div></details>
+                <details><summary>Fenilmetano</summary><div class="answer">Tolueno</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 4: Fórmulas Avanzadas (Reverse)</span>
+            <div class="gym-grid">
+                <details><summary>1-nitro-2-clorobenceno</summary><div class="answer">o-cloronitrobenceno</div></details>
+                <details><summary>Anillo con $\text{CH}_3$ y $\text{NH}_2$ en 1,4</summary><div class="answer">p-Toluidina</div></details>
+                <details><summary>Sustituyente $-\text{COOH}$</summary><div class="answer">Ácido Benzoico</div></details>
+                <details><summary>PAH con tres anillos en línea</summary><div class="answer">Antraceno</div></details>
+                <details><summary>PAH con dos anillos fusionados</summary><div class="answer">Naftaleno</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
