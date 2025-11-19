@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark" data-theme="cpp">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>C++ Systems Master — Innove</title>
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= TOKENS C++ ================= */
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      /* Paleta C++ (Azul Institucional y Acero) */
+      --bg:#0f111a; --bg2:#1a202c; 
+      --text:#e2e8f0; --muted:#94a3b8;
+      
+      --cpp-blue: #00599C; 
+      --cpp-light: #659AD2;
+      --cpp-steel: #64748b; 
+      --cpp-orange: #f97316; /* Para destacar memoria/punteros */
+      
+      --glass:rgba(30, 41, 59, 0.75); 
+      --glass-strong:rgba(15, 23, 42, 0.95); 
+      --border:rgba(71, 85, 105, 0.6);
+      
+      --shadow:0 20px 50px rgba(0,0,0,.65);
+      --radius: 12px;
+      --maxw:1280px;
+      
+      --font-ui: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    html[data-scheme="light"]{
+      --bg:#f8fafc; --bg2:#e2e8f0; 
+      --text:#0f172a; --muted:#475569;
+      --glass:rgba(255,255,255,.85); 
+      --glass-strong:#fff; 
+      --border:rgba(203, 213, 225, 0.8);
+    }
+
+    body{
+      margin:0; font-family:var(--font-ui); color:var(--text);
+      background: radial-gradient(circle at 50% 0%, var(--bg2), var(--bg));
+      line-height:1.65; min-height:100vh; padding-bottom:100px;
+    }
+
+    /* Canvas Partículas */
+    #bgParticles{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.25}
+
+    /* Grid Técnico */
+    .bg-grid{
+      position: fixed; inset: 0; z-index: -2; opacity: 0.04;
+      background-image: linear-gradient(var(--text) 1px, transparent 1px),
+      linear-gradient(90deg, var(--text) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* NAVBAR */
+    .appbar-wrap{position:sticky; top:20px; z-index:100; padding:0 20px; margin-bottom: 40px;}
+    .appbar{
+      height:70px; max-width: var(--maxw); margin: 0 auto;
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:20px;
+      padding:0 24px; border-radius:16px; 
+      background:var(--glass-strong); backdrop-filter: blur(20px);
+      border:1px solid var(--border); box-shadow:var(--shadow);
+    }
+
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:800; font-size:1.3rem; letter-spacing:-0.02em;}
+    .logo{font-size: 1.5rem; color: var(--cpp-blue);}
+    
+    .tabs{display:flex; gap:8px; overflow:auto; scrollbar-width:none;}
+    .pill{
+      padding:8px 20px; border-radius:6px; border:1px solid transparent; background:transparent; color:var(--muted);
+      font-weight:600; cursor:pointer; transition:0.2s; font-family: var(--font-ui); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .pill:hover{color:var(--text); background:rgba(255,255,255,0.05);}
+    .pill[aria-selected="true"]{background:var(--glass); color:var(--cpp-blue); border-color:var(--border); box-shadow: 0 2px 10px rgba(0, 89, 156, 0.15);}
+
+    .theme-toggle{
+      background:transparent; border:1px solid var(--border); color:var(--text);
+      width:40px; height:40px; border-radius:8px; cursor:pointer; display:grid; place-items:center; font-size:1.1rem;
+      transition: transform 0.2s;
+    }
+    .theme-toggle:hover{transform: scale(1.05); background: var(--glass);}
+
+    /* HERO */
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px;}
+    .hero{text-align:center; padding:80px 20px 50px;}
+    .hero h1{
+      font-size:clamp(2.5rem, 6vw, 5rem); margin:0 0 16px; letter-spacing:-0.05em; font-weight: 800;
+      background: linear-gradient(180deg, var(--text) 0%, var(--cpp-blue) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p{font-size:1.2rem; color:var(--muted); max-width:700px; margin:0 auto; font-family: var(--font-code);}
+
+    /* CODE TICKER */
+    .code-ticker{
+      background: #0a0c12; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      padding:14px 0; overflow:hidden; white-space:nowrap; position:relative; margin-bottom: 60px;
+    }
+    .ticker-track{display:flex; gap:60px; animation:scroll 45s linear infinite;}
+    .ticker-item{font-family:var(--font-code); font-size:0.9rem; color:var(--muted);}
+    .k{color:#569CD6} .t{color:#4EC9B0} .s{color:#CE9178} .c{color:#6A9955} .n{color:#DCDCAA} /* VS Code colors */
+    @keyframes scroll{0%{transform:translateX(0)} 100%{transform:translateX(-50%)}}
+
+    /* SECCIONES */
+    section[hidden]{display:none;}
+    section{animation: fadeIn 0.4s ease-out;}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(15px)} to{opacity:1; transform:translateY(0)}}
+
+    .grid-theory{
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px;
+    }
+
+    .theory-card {
+      background:var(--glass); border:1px solid var(--border); border-radius:var(--radius);
+      padding:32px; position:relative; overflow:hidden; box-shadow: var(--shadow);
+    }
+    .theory-card h2 {
+      font-size: 1.6rem; margin: 0 0 20px; color: var(--cpp-light); border-bottom: 2px solid var(--border); padding-bottom: 12px;
+      font-family: var(--font-code); letter-spacing: -0.5px;
+    }
+    .theory-card h3 {
+      font-size: 1.2rem; margin: 30px 0 10px; color: var(--text); font-weight: 700; display: flex; align-items: center; gap: 8px;
+    }
+    .theory-card p {
+      font-size: 1rem; color: var(--muted); margin-bottom: 15px; text-align: justify;
+    }
+    .theory-card ul { padding-left: 20px; color: var(--muted); margin-bottom: 15px; }
+    .theory-card li { margin-bottom: 6px; }
+    
+    /* Concept Badge */
+    .concept-tag {
+        display: inline-block; background: rgba(0, 89, 156, 0.15); color: var(--cpp-light); 
+        padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-family: var(--font-code); margin-bottom: 10px;
+        border: 1px solid rgba(0, 89, 156, 0.3);
+    }
+
+    /* BLOQUES DE CÓDIGO */
+    .code-block{
+      background: #0a0c12; padding:20px; border-radius:8px; margin:15px 0;
+      font-family:var(--font-code); font-size:0.85rem; color:#e0e0e0; border:1px solid var(--border);
+      overflow-x: auto; position: relative;
+    }
+    .code-block::before {
+      content: "C++20"; position: absolute; top: 0; right: 0; background: var(--border); 
+      color: var(--text); font-size: 0.7rem; padding: 2px 8px; border-bottom-left-radius: 8px;
+      font-weight: bold;
+    }
+
+    /* EJERCICIOS */
+    .ex-list{display:flex; flex-direction:column; gap:16px; max-width:1000px; margin:0 auto;}
+    
+    details.ex{
+      background:var(--glass); border:1px solid var(--border); border-radius:8px; overflow:hidden;
+      transition: all 0.2s ease;
+    }
+    details.ex:hover{border-color:var(--cpp-light); background: var(--bg2);}
+    details[open]{border-color:var(--cpp-blue); background: var(--glass-strong);}
+    
+    summary{
+      padding:20px 24px; cursor:pointer; font-weight:600; list-style:none; display:flex; justify-content:space-between; align-items:center; font-size: 1.05rem;
+      font-family: var(--font-ui);
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::after { content: '+'; font-size: 1.2rem; font-family: var(--font-code); color: var(--muted); }
+    details[open] summary::after { content: '-'; color: var(--cpp-light); }
+    
+    .badge{
+      font-size:0.7rem; padding:4px 8px; border-radius:4px; font-family:var(--font-code); text-transform:uppercase; letter-spacing:0.5px; font-weight: 700;
+    }
+    .b-novice{background:rgba(46, 160, 67, 0.15); color:#3fb950; border: 1px solid #3fb950;}
+    .b-inter{background:rgba(210, 153, 34, 0.15); color:#d29922; border: 1px solid #d29922;}
+    .b-expert{background:rgba(248, 81, 73, 0.15); color:#f85149; border: 1px solid #f85149;}
+
+    .solution{
+      padding:0 24px 24px; border-top:1px solid var(--border); background:rgba(0,0,0,0.2);
+    }
+    .sol-desc { margin: 15px 0 10px; color: var(--muted); font-size: 0.9rem;}
+
+    @media(max-width:768px){
+      .hero h1{font-size:3rem;}
+      .grid-theory{grid-template-columns: 1fr;}
+      .appbar{padding:0 15px; gap: 10px;}
+      .logo{font-size: 1.8rem;}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <canvas id="bgParticles"></canvas>
+
+  <div class="appbar-wrap">
+    <header class="appbar">
+      <a href="#" class="brand">
+        <span class="logo">⚙️</span>
+        <span>Innove++</span>
+      </a>
+      <nav class="tabs">
+        <button class="pill" aria-selected="true" onclick="switchTab('teoria')">System Theory</button>
+        <button class="pill" aria-selected="false" onclick="switchTab('ejercicios')">Problems (30)</button>
+      </nav>
+      <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </header>
+  </div>
+
+  <section class="hero">
+    <h1>C++ Systems Master</h1>
+    <p>Gestión de memoria manual, abstracciones de costo cero, STL y programación moderna de alto rendimiento.</p>
+  </section>
+
+  <div class="code-ticker">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="k">template</span>&lt;<span class="k">typename</span> T&gt;</div>
+      <div class="ticker-item"><span class="t">std::vector</span>&lt;<span class="t">int</span>&gt; v;</div>
+      <div class="ticker-item"><span class="k">auto</span> ptr = <span class="t">std::make_unique</span>&lt;Job&gt;();</div>
+      <div class="ticker-item"><span class="k">constexpr</span> <span class="t">int</span> MAX = 100;</div>
+      <div class="ticker-item"><span class="k">virtual</span> <span class="t">void</span> <span class="f">execute</span>() = 0;</div>
+      <div class="ticker-item">[](<span class="k">auto</span> x){ <span class="k">return</span> x*x; };</div>
+      <div class="ticker-item"><span class="k">using</span> json = <span class="t">nlohmann::json</span>;</div>
+      <div class="ticker-item"><span class="t">std::lock_guard</span>&lt;<span class="t">std::mutex</span>&gt; lock(m);</div>
+      <div class="ticker-item"><span class="k">template</span>&lt;<span class="k">typename</span> T&gt;</div>
+      <div class="ticker-item"><span class="t">std::vector</span>&lt;<span class="t">int</span>&gt; v;</div>
+    </div>
+  </div>
+
+  <main class="container">
+    
+    <section id="teoria">
+      <div class="grid-theory">
+        
+        <div class="theory-card">
+          <span class="concept-tag">CORE</span>
+          <h2>1. Gestión de Memoria y Punteros</h2>
+          <p>C++ da control total sobre la memoria. Entender el <strong>Stack</strong> (pila) y el <strong>Heap</strong> (montón) es crítico.</p>
+          
+          <h3>Stack vs Heap</h3>
+          <p>Variables locales van al Stack (rápido, automático). Memoria dinámica (<code>new</code>) va al Heap (manual, persistente).</p>
+          
+          <h3>Punteros y Referencias</h3>
+          <div class="code-block">
+<span class="t">int</span> x = 10;
+<span class="t">int</span>* ptr = &x;  <span class="c">// Puntero: almacena dirección</span>
+<span class="t">int</span>& ref = x;   <span class="c">// Referencia: alias (no puede ser null)</span>
+
+*ptr = 20;      <span class="c">// Desreferencia: modifica x</span>
+          </div>
+
+          <h3>Smart Pointers (RAII)</h3>
+          <p>En C++ Moderno, evitamos <code>new/delete</code> crudos. Usamos RAII (Resource Acquisition Is Initialization).</p>
+          <ul>
+            <li><code>std::unique_ptr</code>: Propiedad exclusiva. Se borra al salir del ámbito.</li>
+            <li><code>std::shared_ptr</code>: Propiedad compartida (conteo de referencias).</li>
+          </ul>
+          <div class="code-block">
+<span class="c">// Moderno y seguro</span>
+<span class="k">auto</span> uPtr = <span class="t">std::make_unique</span>&lt;Data&gt;();
+          </div>
+        </div>
+
+        <div class="theory-card">
+          <span class="concept-tag">OOP</span>
+          <h2>2. Clases y Polimorfismo</h2>
+          
+          <h3>Clases y Encapsulamiento</h3>
+          <p>Separación de interfaz (<code>.h</code>) e implementación (<code>.cpp</code>). Control de acceso: <code>public</code>, <code>private</code>, <code>protected</code>.</p>
+          
+          <h3>Herencia y Virtualidad</h3>
+          <p>Para lograr polimorfismo en tiempo de ejecución, usamos funciones virtuales. Esto crea una <strong>V-Table</strong> (tabla de punteros a funciones).</p>
+          <div class="code-block">
+<span class="k">class</span> <span class="t">Base</span> {
+<span class="k">public</span>:
+    <span class="k">virtual</span> <span class="t">void</span> <span class="f">draw</span>() <span class="k">const</span> = 0; <span class="c">// Pura virtual</span>
+    <span class="k">virtual</span> <span class="f">~Base</span>() = <span class="k">default</span>;     <span class="c">// Destructor virtual vital</span>
+};
+          </div>
+          
+          <h3>Sobrecarga de Operadores</h3>
+          <p>Permite definir comportamiento para operadores como <code>+</code>, <code>==</code>, <code>&lt;&lt;</code> en tipos personalizados.</p>
+        </div>
+
+        <div class="theory-card">
+          <span class="concept-tag">STL</span>
+          <h2>3. Templates y la STL</h2>
+          <p>La Standard Template Library provee contenedores y algoritmos genéricos de alto rendimiento.</p>
+
+          <h3>Contenedores Secuenciales</h3>
+          <ul>
+            <li><code>std::vector</code>: Array dinámico contiguo. O(1) acceso, O(1) push back amortizado. <strong>Default choice.</strong></li>
+            <li><code>std::list</code>: Lista doblemente enlazada.</li>
+            <li><code>std::deque</code>: Cola de doble extremo.</li>
+          </ul>
+
+          <h3>Contenedores Asociativos</h3>
+          <ul>
+            <li><code>std::map</code>: Árbol Rojo-Negro (Ordenado, O(log n)).</li>
+            <li><code>std::unordered_map</code>: Tabla Hash (Desordenado, O(1)).</li>
+          </ul>
+
+          <h3>Algoritmos</h3>
+          <div class="code-block">
+<span class="t">std::vector</span>&lt;<span class="t">int</span>&gt; v = {4, 1, 3, 2};
+<span class="t">std::sort</span>(v.begin(), v.end()); 
+<span class="c">// Usa IntroSort (Quick + Heap + Insertion)</span>
+          </div>
+        </div>
+
+        <div class="theory-card">
+          <span class="concept-tag">MODERN</span>
+          <h2>4. C++11 / 14 / 17 / 20</h2>
+          <p>Características que transformaron el lenguaje.</p>
+          
+          <h3>Semántica de Movimiento (Move Semantics)</h3>
+          <p>Evita copias costosas transfiriendo recursos de objetos temporales (r-values). Uso de <code>std::move</code> y constructores de movimiento.</p>
+          
+          <h3>Lambdas</h3>
+          <p>Funciones anónimas in-situ. Capturan variables del entorno.</p>
+          <div class="code-block">
+<span class="k">auto</span> add = [](int a, int b) { <span class="k">return</span> a + b; };
+<span class="t">std::for_each</span>(v.begin(), v.end(), [](<span class="t">int</span>& n){ n *= 2; });
+          </div>
+
+          <h3>Multithreading</h3>
+          <p>Librería <code>&lt;thread&gt;</code>, <code>std::async</code>, <code>std::mutex</code> y <code>std::atomic</code> para concurrencia segura.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="ejercicios" hidden>
+      <div class="ex-list">
+        
+        <h3 style="color:#3fb950">Level 1: Novice (Syntax & Logic)</h3>
+        
+        <details class="ex"><summary>1. Hola Mundo & I/O <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="sol-desc">Lee nombre y edad, imprime saludo.</div>
+          <div class="code-block">#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main() {
+    std::string name;
+    int age;
+    std::cin >> name >> age;
+    std::cout << "Hello " << name << ", age " << age << "\n";
+    return 0;
+}</div></div></details>
+
+        <details class="ex"><summary>2. Suma de Array (Punteros) <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="sol-desc">Itera un array usando aritmética de punteros.</div>
+          <div class="code-block">int sum(int* arr, int size) {
+    int s = 0;
+    for(int* p = arr; p < arr + size; ++p) {
+        s += *p;
+    }
+    return s;
+}</div></div></details>
+
+        <details class="ex"><summary>3. Referencias Swap <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">void swap(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}</div></div></details>
+        
+        <details class="ex"><summary>4. Factorial Recursivo <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">unsigned long long factorial(int n) {
+    return (n <= 1) ? 1 : n * factorial(n - 1);
+}</div></div></details>
+
+        <details class="ex"><summary>5. String Palíndromo <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">bool isPalindrome(const std::string& s) {
+    int l = 0, r = s.length() - 1;
+    while (l < r) {
+        if (s[l++] != s[r--]) return false;
+    }
+    return true;
+}</div></div></details>
+        
+        <details class="ex"><summary>6. Max en Vector <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int getMax(const std::vector&lt;int&gt;& v) {
+    return *std::max_element(v.begin(), v.end());
+}</div></div></details>
+
+        <details class="ex"><summary>7. Estructura Simple <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">struct Point { int x, y; };
+Point add(Point a, Point b) {
+    return {a.x + b.x, a.y + b.y};
+}</div></div></details>
+        
+        <details class="ex"><summary>8. Bucle Foreach (C++11) <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">void printAll(const std::vector&lt;int&gt;& v) {
+    for (const auto& elem : v) {
+        std::cout << elem << " ";
+    }
+}</div></div></details>
+
+        <details class="ex"><summary>9. Lectura de Archivo <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">#include &lt;fstream&gt;
+void readFile() {
+    std::ifstream f("data.txt");
+    std::string line;
+    while (std::getline(f, line)) { /*...*/ }
+}</div></div></details>
+
+        <details class="ex"><summary>10. Enum Class <span class="badge b-novice">Novice</span></summary>
+          <div class="solution"><div class="code-block">enum class Color { Red, Green, Blue };
+void pick(Color c) {
+    if (c == Color::Red) { /*...*/ }
+}</div></div></details>
+
+        <h3 style="color:#d29922">Level 2: Intermediate (OOP & STL)</h3>
+
+        <details class="ex"><summary>11. Clase Vector Personalizada <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="sol-desc">Implementa Regla de los 3 (Destructor, Copy Ctor, Copy Assign).</div>
+          <div class="code-block">class MyVector {
+    int* data; size_t size;
+public:
+    MyVector(size_t s) : size(s), data(new int[s]) {}
+    ~MyVector() { delete[] data; } // RAII
+    // Copy Ctor...
+};</div></div></details>
+
+        <details class="ex"><summary>12. Herencia y Virtualidad <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">class Shape {
+public:
+    virtual double area() const = 0;
+    virtual ~Shape() {}
+};
+class Circle : public Shape {
+    double r;
+public:
+    Circle(double r) : r(r) {}
+    double area() const override { return 3.14 * r * r; }
+};</div></div></details>
+
+        <details class="ex"><summary>13. Map Frecuencias <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">#include &lt;map&gt;
+std::map&lt;std::string, int&gt; countWords(const std::vector&lt;std::string&gt;& words) {
+    std::map&lt;std::string, int&gt; counts;
+    for (const auto& w : words) counts[w]++;
+    return counts;
+}</div></div></details>
+
+        <details class="ex"><summary>14. Sobrecarga Operador + <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">struct Vec2 { float x, y; };
+Vec2 operator+(const Vec2& a, const Vec2& b) {
+    return {a.x + b.x, a.y + b.y};
+}</div></div></details>
+
+        <details class="ex"><summary>15. Template Función (Min) <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">template &lt;typename T&gt;
+T myMin(T a, T b) {
+    return (a < b) ? a : b;
+}</div></div></details>
+
+        <details class="ex"><summary>16. Lambda Sort <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">std::sort(v.begin(), v.end(), [](int a, int b) {
+    return a > b; // Descendente
+});</div></div></details>
+
+        <details class="ex"><summary>17. Exception Handling <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">double divide(double a, double b) {
+    if (b == 0) throw std::runtime_error("Div by zero");
+    return a / b;
+}</div></div></details>
+
+        <details class="ex"><summary>18. Unique Ptr Factory <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">std::unique_ptr&lt;Widget&gt; createWidget() {
+    return std::make_unique&lt;Widget&gt;();
+}</div></div></details>
+
+        <details class="ex"><summary>19. Static Singleton <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">class Singleton {
+public:
+    static Singleton& get() {
+        static Singleton instance;
+        return instance;
+    }
+    Singleton(const Singleton&) = delete;
+private:
+    Singleton() {}
+};</div></div></details>
+
+        <details class="ex"><summary>20. File Stream RAII <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="sol-desc">Lectura segura con fstream.</div></div></details>
+
+        <h3 style="color:#f85149">Level 3: Expert (Modern & Systems)</h3>
+
+        <details class="ex"><summary>21. Move Semantics (Regla de los 5) <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="sol-desc">Implementar Move Constructor y Move Assignment para evitar copias profundas.</div>
+          <div class="code-block">class Buffer {
+    // ...
+    Buffer(Buffer&& other) noexcept : data(other.data) {
+        other.data = nullptr;
+    }
+};</div></div></details>
+
+        <details class="ex"><summary>22. Hilos (std::thread) <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="code-block">void worker(int id) { /*...*/ }
+int main() {
+    std::vector&lt;std::thread&gt; threads;
+    for(int i=0; i<4; ++i) threads.emplace_back(worker, i);
+    for(auto& t : threads) t.join();
+}</div></div></details>
+
+        <details class="ex"><summary>23. Mutex & Lock Guard <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="code-block">std::mutex mtx;
+void safeIncrement(int& counter) {
+    std::lock_guard&lt;std::mutex&gt; lock(mtx);
+    counter++;
+}</div></div></details>
+
+        <details class="ex"><summary>24. Variadic Templates <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="code-block">template&lt;typename... Args&gt;
+void printAll(Args... args) {
+    (std::cout << ... << args) << '\n'; // Fold expression C++17
+}</div></div></details>
+
+        <details class="ex"><summary>25. SFINAE / Concepts (C++20) <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="code-block">template&lt;typename T&gt;
+requires std::integral&lt;T&gt;
+T add(T a, T b) { return a + b; }</div></div></details>
+
+        <details class="ex"><summary>26. Custom Allocator (Arena) <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="sol-desc">Implementar un asignador de memoria simple para contenedores STL.</div></div></details>
+        
+        <details class="ex"><summary>27. Type Erasure (std::any) <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="sol-desc">Uso de void* moderno o herencia interna para guardar cualquier tipo.</div></div></details>
+
+        <details class="ex"><summary>28. Corrutinas (C++20) <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="sol-desc">Uso de co_await y co_yield para generadores asíncronos.</div></div></details>
+
+        <details class="ex"><summary>29. Perfect Forwarding <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="code-block">template&lt;typename T&gt;
+void wrapper(T&& arg) {
+    func(std::forward&lt;T&gt;(arg));
+}</div></div></details>
+
+        <details class="ex"><summary>30. SIMD Intrinsics <span class="badge b-expert">Expert</span></summary>
+          <div class="solution"><div class="sol-desc">Uso básico de AVX/SSE para sumar arrays en paralelo.</div></div></details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* LOGICA DE TABS */
+    function switchTab(tabId) {
+      document.querySelectorAll('section').forEach(s => s.hidden = true);
+      document.getElementById(tabId).hidden = false;
+      document.querySelectorAll('.pill').forEach(b => b.setAttribute('aria-selected', 'false'));
+      event.target.setAttribute('aria-selected', 'true');
+    }
+
+    /* LOGICA TEMA */
+    const html = document.documentElement;
+    function toggleTheme() {
+      const next = html.getAttribute('data-scheme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-scheme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '🌙' : '☀️';
+      initParticles();
+    }
+
+    /* PARTICULAS AZULES */
+    const canvas = document.getElementById('bgParticles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function initParticles() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      const isDark = html.getAttribute('data-scheme') === 'dark';
+      // Azul C++ para partículas
+      const color = isDark ? 'rgba(100, 154, 210, 0.25)' : 'rgba(0, 89, 156, 0.15)';
+      
+      const count = Math.floor(window.innerWidth / 15);
+      for(let i=0; i<count; i++){
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 3,
+          c: color
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.fillStyle = p.c;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initParticles);
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
