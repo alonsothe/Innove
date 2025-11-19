@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MANEL NIGER | Electromagnetismo</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA MANEL NIGER (ELECTRO-MAGNÉTICA) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --electric: #06b6d4; /* Cian (Campo Eléctrico) */
+    --magnetic: #db2777; /* Magenta (Campo Magnético) */
+    --induction: #f59e0b; /* Ámbar (Inducción/Corriente) */
+    --electric-glow: rgba(6, 182, 212, 0.08);
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #020617;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --electric-glow: rgba(6, 182, 212, 0.15);
+    --glass-bg: rgba(10, 15, 30, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    /* Patrón de líneas de campo */
+    background-image: 
+        repeating-linear-gradient(90deg, var(--glass-border) 0px, var(--glass-border) 1px, transparent 1px, transparent 40px),
+        repeating-linear-gradient(0deg, var(--glass-border) 0px, var(--glass-border) 1px, transparent 1px, transparent 40px);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.35; }
+  .orb-1 { width: 600px; height: 600px; background: var(--electric); top: -200px; left: -150px; animation: pulse 10s infinite alternate; }
+  .orb-2 { width: 500px; height: 500px; background: var(--magnetic); bottom: -100px; right: -100px; }
+  @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--electric); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary); color: var(--bg-color); border-color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--electric); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--magnetic); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--electric-glow); 
+    border-left: 4px solid var(--electric);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--electric); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--magnetic); } 
+  .ex-badge.uni { background: var(--induction); color: white; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--electric-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--electric); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(6, 182, 212, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-text">
+      <div>MANEL NIGER</div>
+      <div>Electromagnetismo</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="electrostatica" aria-selected="true">1. Electrostática</button>
+    <button class="nav-btn" data-target="magnetismo" aria-selected="false">2. Magnetismo</button>
+    <button class="nav-btn" data-target="maxwell" aria-selected="false">3. Maxwell (Uni)</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="electrostatica" class="content-section" data-active>
+    <div class="card">
+      <h1>Campo Eléctrico y Potencial</h1>
+      <p>Cargas en reposo. Desde la fuerza entre puntos hasta distribuciones continuas.</p>
+
+      <h2>1.1 Ley de Coulomb y Campo $\vec{E}$</h2>
+      <p>La fuerza es la interacción; el campo es la perturbación del espacio.</p>
+      <div class="math-box">
+        $$ \vec{F} = k \frac{q_1 q_2}{r^2} \hat{u}_r \quad ; \quad \vec{E} = \frac{\vec{F}}{q} = k \frac{Q}{r^2} \hat{u}_r $$
+      </div>
+
+      <h2>1.2 Potencial Eléctrico ($V$)</h2>
+      <p>Trabajo por unidad de carga para traerla desde el infinito. Magnitud escalar.</p>
+      <div class="math-box">
+        $$ V = k \frac{Q}{r} \quad ; \quad W_{A \to B} = -q \Delta V = q(V_A - V_B) $$
+      </div>
+      <p>Relación Campo-Potencial (Uni): $\vec{E} = - \vec{\nabla} V$ (Gradiente).</p>
+
+      <h2>1.3 Ley de Gauss (Flujo)</h2>
+      <p>Herramienta poderosa para calcular campos con alta simetría.</p>
+      <div class="math-box">
+        $$ \Phi_E = \oint_S \vec{E} \cdot d\vec{S} = \frac{Q_{int}}{\varepsilon_0} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="magnetismo" class="content-section">
+    <div class="card">
+      <h1>Campo Magnético y Fuerzas</h1>
+      <p>Las cargas en movimiento crean campos magnéticos ($\vec{B}$) y sienten fuerzas en presencia de ellos.</p>
+
+      <h2>2.1 Fuerza de Lorentz</h2>
+      <p>Fuerza sobre una carga $q$ con velocidad $\vec{v}$ en un campo $\vec{B}$. Es siempre perpendicular a $\vec{v}$ y $\vec{B}$ (no realiza trabajo).</p>
+      <div class="math-box">
+        $$ \vec{F} = q (\vec{v} \times \vec{B}) $$
+      </div>
+      <p>Fuerza total (Electromagnética): $\vec{F} = q(\vec{E} + \vec{v} \times \vec{B})$.</p>
+
+      <h2>2.2 Fuentes de Campo (Biot-Savart)</h2>
+      <p>Hilos infinitos y espiras crean campos magnéticos.</p>
+      <div class="math-box">
+        $$ B_{hilo} = \frac{\mu_0 I}{2\pi r} \quad ; \quad B_{espira} = \frac{\mu_0 I}{2R} $$
+      </div>
+
+      <h2>2.3 Ley de Ampère</h2>
+      <div class="math-box">
+        $$ \oint_C \vec{B} \cdot d\vec{l} = \mu_0 I_{conc} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="maxwell" class="content-section">
+    <div class="card">
+      <h1>Inducción y Ecuaciones de Maxwell</h1>
+      <p>La unificación de la electricidad y el magnetismo. Campos variables crean campos del otro tipo.</p>
+
+      <h2>3.1 Ley de Faraday-Lenz</h2>
+      <p>La variación del flujo magnético induce una fuerza electromotriz (FEM) que se opone a la causa que la produce.</p>
+      <div class="math-box">
+        $$ \mathcal{E} = - \frac{d\Phi_B}{dt} \quad ; \quad \Phi_B = \int \vec{B} \cdot d\vec{S} $$
+      </div>
+
+      <h2>3.2 Las 4 Ecuaciones de Maxwell (Forma Integral)</h2>
+      <p>El resumen de todo el electromagnetismo clásico.</p>
+      <div class="math-box" style="text-align: left; padding-left: 40px;">
+        1. Gauss E: $\displaystyle \oint \vec{E} \cdot d\vec{S} = \frac{Q}{\varepsilon_0}$ <br>
+        2. Gauss B: $\displaystyle \oint \vec{B} \cdot d\vec{S} = 0$ (No monopolos) <br>
+        3. Faraday: $\displaystyle \oint \vec{E} \cdot d\vec{l} = - \frac{d\Phi_B}{dt}$ <br>
+        4. Ampère-Maxwell: $\displaystyle \oint \vec{B} \cdot d\vec{l} = \mu_0 I + \mu_0 \varepsilon_0 \frac{d\Phi_E}{dt}$
+      </div>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (MANEL NIGER)</h2>
+      <p>Desde ejercicios clásicos de EBAU hasta retos de cálculo vectorial universitario.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Equilibrio de Cargas: Dos cargas $q$ en $(a,0)$ y $(-a,0)$. ¿Qué carga $Q$ hay que poner en el origen para que el sistema esté en equilibrio?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Fuerza sobre la carga $q$ de la derecha debida a la otra $q$: Repulsiva hacia la derecha. $F_{qq} = k q^2 / (2a)^2$.</span>
+            <span class="step">2. Fuerza sobre esa $q$ debida a $Q$ (en el origen): Debe ser atractiva (hacia la izquierda). $F_{qQ} = k qQ / a^2$.</span>
+            <span class="step">3. Igualar módulos: $k q^2 / 4a^2 = k qQ / a^2$.</span>
+            <span class="step">4. Simplificar: $q/4 = Q$.</span>
+            <span class="step">5. Como debe ser atractiva, $Q$ debe tener signo opuesto.</span>
+            <div class="res-final">Q = -q/4</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Campo de una Varilla: Varilla de longitud $L$ con carga $Q$ distribuida uniformemente ($\lambda$). Calcule $\vec{E}$ en un punto sobre su mediatriz a distancia $d$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Elemento de carga $dq = \lambda dy$. Campo $dE = k dq / r^2$.</span>
+            <span class="step">2. Por simetría, solo sobrevive la componente horizontal $dE_x = dE \cos\theta$.</span>
+            <span class="step">3. Integrar desde $-L/2$ a $L/2$. $r = \sqrt{y^2 + d^2}$. $\cos\theta = d/r$.</span>
+            <span class="step">4. $E = \int k \lambda d / (y^2+d^2)^{3/2} dy$.</span>
+            <span class="step">5. Resultado tras integrar: $E = \frac{kQ}{d\sqrt{d^2 + (L/2)^2}}$.</span>
+            <div class="res-final">E = \frac{2k\lambda}{d\sqrt{4d^2+L^2}} L</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Trabajo Externo: Tres cargas $+q$ en los vértices de un triángulo equilátero de lado $L$. Trabajo para traer una cuarta carga $+q$ al centro.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Potencial en el centro creado por las 3 cargas: $V_{tot} = 3 \cdot (kq/d)$.</span>
+            <span class="step">2. Distancia vértice-centro: $d = L / \sqrt{3}$.</span>
+            <span class="step">3. $V_{tot} = 3kq / (L/\sqrt{3}) = 3\sqrt{3} kq / L$.</span>
+            <span class="step">4. Trabajo externo $W = q \Delta V = q (V_{fin} - V_{\infty}) = q \cdot V_{tot}$.</span>
+            <div class="res-final">W = \frac{3\sqrt{3}kq^2}{L}</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Espectrómetro de Masas: Un ión entra en una zona con $\vec{E}$ y $\vec{B}$ cruzados (selector de velocidades) y luego solo $\vec{B}$. Calcule la relación $q/m$ si el radio de giro es $R$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Selector: $F_e = F_m \Rightarrow qE = qvB \Rightarrow v = E/B$.</span>
+            <span class="step">2. Zona de giro (solo B): $F_m = F_c \Rightarrow qvB = m v^2 / R$.</span>
+            <span class="step">3. Despejar $q/m = v / (BR)$.</span>
+            <span class="step">4. Sustituir $v$: $q/m = (E/B) / (BR)$.</span>
+            <div class="res-final">q/m = E / (B² R)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Dos Hilos Paralelos: Dos conductores rectilíneos infinitos portan corrientes $I_1$ y $I_2$ en el mismo sentido separados una distancia $d$. ¿Dónde se anula el campo magnético?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Los campos en la zona intermedia tienen sentidos opuestos (Regla mano derecha).</span>
+            <span class="step">2. $B_1 = B_2 \Rightarrow \frac{\mu_0 I_1}{2\pi x} = \frac{\mu_0 I_2}{2\pi (d-x)}$.</span>
+            <span class="step">3. Simplificando: $I_1 / x = I_2 / (d-x)$.</span>
+            <span class="step">4. $I_1(d-x) = I_2 x \Rightarrow I_1 d = x(I_1 + I_2)$.</span>
+            <div class="res-final">x = d \cdot \frac{I_1}{I_1 + I_2}</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Varilla Deslizante: Una varilla de longitud $L$ se mueve a velocidad $v$ sobre raíles en "U" dentro de un campo $B$ perpendicular. Resistencia total $R$. Fuerza necesaria para mantener $v$ constante.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Área barrida $dS = L \cdot dx = L \cdot v \cdot dt$.</span>
+            <span class="step">2. FEM inducida $|\mathcal{E}| = d\Phi/dt = B \cdot dS/dt = B L v$.</span>
+            <span class="step">3. Corriente inducida $I = \mathcal{E}/R = BLv/R$.</span>
+            <span class="step">4. Fuerza magnética sobre la varilla (frenado): $F_m = I L B = (BLv/R) L B$.</span>
+            <span class="step">5. Para $v$ cte, $F_{ext} = F_m$.</span>
+            <div class="res-final">F = \frac{B^2 L^2 v}{R}</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Inducción Mutua (Solenoide): Calcule la inductancia mutua $M$ de dos solenoides coaxiales de longitud $l$, con $N_1$ y $N_2$ espiras, sección $A$.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Campo creado por solenoide 1: $B_1 = \mu_0 (N_1/l) I_1$.</span>
+            <span class="step">2. Flujo a través del solenoide 2: $\Phi_{21} = N_2 \cdot B_1 \cdot A$.</span>
+            <span class="step">3. $\Phi_{21} = N_2 (\mu_0 N_1 I_1 / l) A$.</span>
+            <span class="step">4. Definición $M = \Phi_{21} / I_1$.</span>
+            <div class="res-final">M = \frac{\mu_0 N_1 N_2 A}{l}</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Puede un campo magnético estático realizar trabajo sobre una carga?</span></summary><div class="solution">No. La fuerza $F = q(\vec{v} \times \vec{B})$ es siempre perpendicular al desplazamiento.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Electrón lanzado contra campo E (Frenado). Distancia.</span></summary><div class="solution">Trabajo-Energía: $q \Delta V = \Delta E_k$. $e E d = 0.5 m v^2$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Corriente de Desplazamiento (Maxwell).</span></summary><div class="solution">$I_d = \varepsilon_0 \frac{d\Phi_E}{dt}$. Explica campo B entre placas de condensador.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Unidad de Flujo Magnético.</span></summary><div class="solution">Weber (Wb) = Tesla · m².</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Espira girando en campo B (Generador AC).</span></summary><div class="solution">$\Phi = B S \cos(\omega t)$. $\mathcal{E} = -d\Phi/dt = B S \omega \sin(\omega t)$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Vector de Poynting $\vec{S}$.</span></summary><div class="solution">$\vec{S} = \frac{1}{\mu_0} (\vec{E} \times \vec{B})$. Representa el flujo de energía de la onda EM.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Dirección fuerza entre dos cables corrientes paralelas mismo sentido.</span></summary><div class="solution">Atractiva.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Periodo de partícula en ciclotrón.</span></summary><div class="solution">$T = 2\pi m / (qB)$. Independiente de la velocidad (no relativista).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿El potencial eléctrico es vector o escalar?</span></summary><div class="solution">Escalar (Número + Unidad). El campo eléctrico es vectorial.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Campo E de esfera conductora cargada (Radio R).</span></summary><div class="solution">Dentro ($r<R$): $E=0$. Fuera ($r>R$): Como carga puntual $kQ/r^2$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Momento dipolar magnético de bobina $N$ vueltas.</span></summary><div class="solution">$\vec{m} = N I \vec{S}$. Torque $\vec{\tau} = \vec{m} \times \vec{B}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Líneas de campo E vs B.</span></summary><div class="solution">E: Nacen en + y mueren en -. B: Son cerradas (no hay monopolos).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Fuerza neta sobre dipolo eléctrico en campo uniforme.</span></summary><div class="solution">Cero. Pero experimenta un par de fuerzas (torque).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Energía almacenada en un inductor.</span></summary><div class="solution">$U = \frac{1}{2} L I^2$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Ley de Ohm generalizada.</span></summary><div class="solution">$\vec{J} = \sigma \vec{E}$. ($\vec{J}$ densidad corriente, $\sigma$ conductividad).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Campo B en el centro de un cuadrado de corrientes.</span></summary><div class="solution">Superposición de 4 hilos finitos.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Qué es un electronvoltio (eV)?</span></summary><div class="solution">Energía ganada por un electrón al pasar 1V. $1.6 \cdot 10^{-19}$ J.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Ecuación de onda EM en vacío.</span></summary><div class="solution">$\nabla^2 \vec{E} - \mu_0 \varepsilon_0 \frac{\partial^2 \vec{E}}{\partial t^2} = 0$. Velocidad $c = 1/\sqrt{\mu_0 \varepsilon_0}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Capacidad condensador plano con dieléctrico.</span></summary><div class="solution">$C = \varepsilon_r \varepsilon_0 A / d$. Aumenta con dieléctrico.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Regla de la mano derecha (Fuerza Lorentz).</span></summary><div class="solution">Índice (v), Medio (B), Pulgar (F). Para carga positiva.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Autoinducción toroide.</span></summary><div class="solution">$L = \mu_0 N^2 h \ln(b/a) / 2\pi$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Velocidad deriva electrones en cable.</span></summary><div class="solution">Es muy lenta (mm/s), aunque la señal es casi $c$. $I = n q v_d S$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Permeabilidad magnética del vacío ($\mu_0$).</span></summary><div class="solution">$4\pi \cdot 10^{-7}$ T·m/A.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
