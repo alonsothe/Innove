@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistemas y Choques | Física Master</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎱</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA SISTEMAS (ÍNDIGO & ROSA) --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --accent: #4f46e5; /* Índigo (Centro de Masas) */
+    --accent-glow: rgba(79, 70, 229, 0.08);
+    --highlight: #db2777; /* Rosa (Choques/Energía) */
+    --vector: #0891b2; /* Cian (Momentos) */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-glow: rgba(79, 70, 229, 0.15);
+    --glass-bg: rgba(15, 23, 42, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(var(--glass-border) 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.35; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -150px; animation: drift 20s infinite alternate; }
+  .orb-2 { width: 500px; height: 500px; background: var(--highlight); bottom: -100px; right: -100px; }
+  @keyframes drift { 0% { transform: translate(0,0); } 100% { transform: translate(30px, 40px); } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+  /* NAV */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--accent); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* TABLAS */
+  .phys-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 1rem; }
+  .phys-table th { text-align: left; color: var(--text-primary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-weight: 700; }
+  .phys-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-secondary); }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--highlight); } 
+  .ex-badge.uni { background: var(--vector); color: white; } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--accent); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(79, 70, 229, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🎱</div>
+    <div class="logo-text">
+      <div>Física Master</div>
+      <div>Choques y Sistemas</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="cm" aria-selected="true">1. Centro de Masas</button>
+    <button class="nav-btn" data-target="momento" aria-selected="false">2. Conservación</button>
+    <button class="nav-btn" data-target="choques" aria-selected="false">3. Choques 1D/2D</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="cm" class="content-section" data-active>
+    <div class="card">
+      <h1>Centro de Masas (CM)</h1>
+      <p>Es el punto geométrico que se comporta como si toda la masa del sistema estuviera concentrada en él. Simplifica la dinámica de sistemas complejos.</p>
+
+      <h2>1.1 Definición Vectorial</h2>
+      <p>Para un sistema discreto de partículas:</p>
+      <div class="math-box">
+        $$ \vec{R}_{CM} = \frac{\sum_{i} m_i \vec{r}_i}{\sum_{i} m_i} = \frac{1}{M} (m_1\vec{r}_1 + m_2\vec{r}_2 + \dots) $$
+      </div>
+      <p>Si derivamos respecto al tiempo, obtenemos la <strong>Velocidad del CM</strong>:</p>
+      <div class="math-box">
+        $$ \vec{V}_{CM} = \frac{\sum m_i \vec{v}_i}{M} = \frac{\vec{P}_{total}}{M} $$
+      </div>
+
+      <h2>1.2 Dinámica del CM</h2>
+      <p>El CM se mueve como una partícula de masa $M$ sometida a la suma de todas las fuerzas <strong>EXTERNAS</strong>. Las fuerzas internas se anulan entre sí (Acción-Reacción).</p>
+      <div class="math-box">
+        $$ \sum \vec{F}_{ext} = M \cdot \vec{A}_{CM} $$
+      </div>
+      <p><strong>Consecuencia:</strong> Si no hay fuerzas externas ($\sum \vec{F}_{ext} = 0$), el CM no acelera ($\vec{V}_{CM} = \text{cte}$).</p>
+    </div>
+  </section>
+
+  <section id="momento" class="content-section">
+    <div class="card">
+      <h1>Conservación del Momento Lineal ($\vec{P}$)</h1>
+      
+      <h2>2.1 Teorema de Conservación</h2>
+      <p>Si la resultante de las fuerzas externas es nula, el momento lineal total del sistema permanece constante.</p>
+      <div class="math-box">
+        $$ \text{Si } \sum \vec{F}_{ext} = 0 \Rightarrow \frac{d\vec{P}}{dt} = 0 \Rightarrow \vec{P} = \text{cte} $$
+        $$ \vec{P}_{antes} = \vec{P}_{después} $$
+      </div>
+
+      <h3>Aplicaciones Comunes</h3>
+      <ul>
+        <li><strong>Choques y Colisiones:</strong> Las fuerzas de impacto son internas.</li>
+        <li><strong>Explosiones:</strong> Las fuerzas químicas son internas.</li>
+        <li><strong>Propulsión a chorro:</strong> Expulsión de masa.</li>
+      </ul>
+
+      <h2>2.2 Impulso Mecánico ($\vec{I}$)</h2>
+      <p>Si actúan fuerzas externas durante un tiempo $\Delta t$, el momento cambia:</p>
+      <div class="math-box">
+        $$ \vec{I} = \int \vec{F} dt = \Delta \vec{P} = \vec{P}_f - \vec{P}_0 $$
+      </div>
+    </div>
+  </section>
+
+  <section id="choques" class="content-section">
+    <div class="card">
+      <h1>Colisiones 1D y 2D</h1>
+      <p>En todos los choques se conserva el Momento Lineal ($\vec{P}$). Lo que diferencia los tipos es la Energía Cinética ($E_k$).</p>
+
+      <h2>3.1 Coeficiente de Restitución ($e$)</h2>
+      <p>Mide la elasticidad del choque (0 a 1). Se define por las velocidades relativas:</p>
+      <div class="math-box">
+        $$ e = - \frac{v_{2f} - v_{1f}}{v_{2i} - v_{1i}} $$
+      </div>
+
+      <table class="phys-table">
+        <tr><th>Tipo</th><th>Coeficiente ($e$)</th><th>Energía Cinética</th><th>Momento ($\vec{P}$)</th></tr>
+        <tr><td><strong>Elástico</strong></td><td>$e = 1$</td><td>Se conserva</td><td>Se conserva</td></tr>
+        <tr><td><strong>Inelástico</strong></td><td>$0 < e < 1$</td><td>Se pierde</td><td>Se conserva</td></tr>
+        <tr><td><strong>Plástico</strong></td><td>$e = 0$</td><td>Máxima pérdida (Se unen)</td><td>Se conserva</td></tr>
+      </table>
+
+      <h2>3.2 Choque Elástico 1D (Fórmulas)</h2>
+      <p>Resolviendo el sistema de conservación de $P$ y $E_k$:</p>
+      <div class="math-box">
+        $$ v_{1f} = \frac{m_1-m_2}{m_1+m_2}v_{1i} + \frac{2m_2}{m_1+m_2}v_{2i} $$
+        $$ v_{2f} = \frac{2m_1}{m_1+m_2}v_{1i} + \frac{m_2-m_1}{m_1+m_2}v_{2i} $$
+      </div>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (Cálculo y Razonamiento)</h2>
+      <p>Ejercicios desde nivel Bachillerato hasta Física Universitaria.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Cálculo CM: Tres masas puntuales en el plano XY. $m_1=1kg$ en (0,0), $m_2=2kg$ en (2,0) y $m_3=3kg$ en (0,4). Halle el CM.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Masa Total $M = 1+2+3 = 6$ kg.</span>
+            <span class="step">2. Coordenada X: $X_{CM} = \frac{1(0) + 2(2) + 3(0)}{6} = \frac{4}{6} = 0.67$ m.</span>
+            <span class="step">3. Coordenada Y: $Y_{CM} = \frac{1(0) + 2(0) + 3(4)}{6} = \frac{12}{6} = 2$ m.</span>
+            <div class="res-final">CM = (0.67, 2) m</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Hombre en la Barca: Un hombre de 80 kg está en un extremo de una barca de 40 kg y 4 m de largo (en reposo). El hombre camina al otro extremo. ¿Cuánto se mueve la barca respecto al agua?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. No hay fuerzas externas horizontales $\Rightarrow$ El CM no se mueve ($\Delta X_{CM} = 0$).</span>
+            <span class="step">2. $m_h \Delta x_h + m_b \Delta x_b = 0$.</span>
+            <span class="step">3. Si la barca se mueve $d$, el hombre se mueve $4-d$ (hacia el otro lado). Ojo signos.</span>
+            <span class="step">4. Desplazamiento hombre respecto tierra: $\Delta x_h = 4 - d$. Desplazamiento barca: $\Delta x_b = -d$.</span>
+            <span class="step">5. $80(4-d) + 40(-d) = 0 \Rightarrow 320 - 80d - 40d = 0 \Rightarrow 320 = 120d$.</span>
+            <span class="step">6. $d = 320/120 = 2.67$ m.</span>
+            <div class="res-final">Barca retrocede 2.67 m</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Proyectil en Vuelo: Un proyectil es lanzado y en la cima de su parábola explota en dos fragmentos iguales. Uno cae verticalmente a velocidad cero. ¿Dónde cae el otro? (Alcance original $R$).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. La explosión es fuerza interna. El CM sigue la trayectoria parabólica original.</span>
+            <span class="step">2. Cuando el CM llega al suelo (distancia $R$), los fragmentos también llegan (mismo tiempo caída).</span>
+            <span class="step">3. Posición CM en el suelo: $X_{CM} = R$.</span>
+            <span class="step">4. $X_{CM} = \frac{m_1 x_1 + m_2 x_2}{m_1+m_2}$. Masas iguales $m/2$.</span>
+            <span class="step">5. Fragmento 1 cae en la mitad (cima): $x_1 = R/2$.</span>
+            <span class="step">6. $R = \frac{(m/2)(R/2) + (m/2)x_2}{m} = \frac{R/4 + x_2/2}{1} \Rightarrow R = R/4 + x_2/2$.</span>
+            <span class="step">7. $x_2/2 = 3R/4 \Rightarrow x_2 = 3R/2 = 1.5 R$.</span>
+            <div class="res-final">A 1.5 veces el alcance original</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Choque Plástico: Bala de 10 g a 400 m/s impacta en bloque de madera de 2 kg en reposo y se incrusta. Velocidad final del conjunto.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Conservación $P$: $m_1 v_1 + m_2 v_2 = (m_1 + m_2) v_f$.</span>
+            <span class="step">2. $0.01(400) + 0 = (2.01) v_f$.</span>
+            <span class="step">3. $4 = 2.01 v_f \Rightarrow v_f = 1.99$ m/s.</span>
+            <div class="res-final">v ≈ 2 m/s</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Choque Elástico: Bola de billar a 2 m/s choca de frente con otra idéntica en reposo. Demuestre las velocidades finales.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Masas iguales $m$. $v_{1i}=v$, $v_{2i}=0$.</span>
+            <span class="step">2. Fórmulas choque elástico: $v_{1f} = \frac{m-m}{2m}v + 0 = 0$.</span>
+            <span class="step">3. $v_{2f} = \frac{2m}{2m}v + 0 = v$.</span>
+            <span class="step">4. Resultado: Intercambian velocidades. La primera se para, la segunda sale con $v$.</span>
+            <div class="res-final">v1' = 0 ; v2' = 2 m/s</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">Choque Oblicuo (2D): Bola A (2 kg, 3 m/s eje X) choca con B (2 kg, reposo). Tras el choque, A se mueve a 30º. ¿Dirección de B? (Choque Elástico).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Si masas iguales y choque elástico (y B en reposo), las trayectorias finales forman 90º.</span>
+            <span class="step">2. Ángulo A + Ángulo B = 90º.</span>
+            <span class="step">3. $\theta_A = 30^\circ \Rightarrow \theta_B = -60^\circ$ (hacia abajo).</span>
+            <span class="step">4. Para calcular velocidades, usar conservación vectorial de $P$.</span>
+            <div class="res-final">Ángulo B = -60º</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Explosión 3 Fragmentos: Objeto en reposo explota en 3 trozos iguales. Uno va al Norte a 10 m/s, otro al Este a 10 m/s. ¿Velocidad del tercero?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. $\vec{P}_{inicial} = 0$. $\vec{P}_{final} = m\vec{v}_1 + m\vec{v}_2 + m\vec{v}_3 = 0$.</span>
+            <span class="step">2. Cancelamos $m$. $\vec{v}_3 = -(\vec{v}_1 + \vec{v}_2)$.</span>
+            <span class="step">3. $\vec{v}_1 = 10\hat{j}$, $\vec{v}_2 = 10\hat{i}$.</span>
+            <span class="step">4. $\vec{v}_3 = -10\hat{i} - 10\hat{j}$.</span>
+            <span class="step">5. Módulo: $\sqrt{100+100} = 14.14$ m/s. Dirección: Suroeste (225º).</span>
+            <div class="res-final">14.1 m/s al SO</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Puede el CM estar fuera del objeto?</span></summary><div class="solution">Sí. Ejemplo: Un anillo o una herradura. El CM está en el hueco.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Péndulo Balístico: Bala $m$ choca bloque $M$. Sube altura $h$. Velocidad bala.</span></summary><div class="solution">$v = (1 + \frac{M}{m})\sqrt{2gh}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Choque perfectamente inelástico. Energía perdida.</span></summary><div class="solution">Máxima posible conservando el momento. $\Delta E = \frac{1}{2}\mu v_{rel}^2$ (masa reducida).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Propulsión cohete en vacío.</span></summary><div class="solution">Funciona por conservación de $P$. Expulsa gases atrás, gana $P$ adelante.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Bola rebota en suelo. $h_0=2m, h_f=1.5m$. Impulso suelo.</span></summary><div class="solution">Calcular vel impacto y rebote con energías. $I = m(v_{reb} - (-v_{imp}))$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">CM de un triángulo homogéneo.</span></summary><div class="solution">En el baricentro (intersección medianas), a 1/3 de la altura desde la base.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Unidades de Cantidad de Movimiento.</span></summary><div class="solution">kg·m/s (o N·s).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Metralleta: Dispara $N$ balas/s de masa $m$ a velocidad $v$. Fuerza media.</span></summary><div class="solution">$F = \frac{dP}{dt} = N \cdot m \cdot v$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Si $F_{ext}=0$, ¿se conserva la Energía Cinética?</span></summary><div class="solution">No necesariamente (ej. choque inelástico). Se conserva el Momento $P$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Sistema de masa variable (Gota lluvia cayendo).</span></summary><div class="solution">La fuerza es $\frac{d(mv)}{dt}$. Si $m$ cambia, afecta a la aceleración.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Retroceso cañón.</span></summary><div class="solution">$M V + m v = 0 \Rightarrow V = -(m/M)v$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Choque elástico: Masa $m$ contra pared infinita ($M \to \infty$).</span></summary><div class="solution">La pared no se mueve. La masa rebota con misma velocidad ($-v$). $e=1$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Impulso gráfico F-t.</span></summary><div class="solution">Área bajo la curva.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">CM de un semicírculo (alambre).</span></summary><div class="solution">$y_{CM} = 2R/\pi$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Dos patinadores se empujan. Relación distancias.</span></summary><div class="solution">$x_1/x_2 = m_2/m_1$ (partiendo del mismo punto, CM quieto).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Coeficiente restitución $e=0.5$. Altura rebote.</span></summary><div class="solution">$h_f = e^2 h_0 = 0.25 h_0$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Choque frontal $m$ con $2m$ (reposo). Transferencia energía.</span></summary><div class="solution">$v_2 = \frac{2m}{3m}v = \frac{2}{3}v$. $E_{k2} = \frac{8}{9} E_{k0}$. (Transfiere 89%).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Coche choca insecto. ¿Quién siente más fuerza?</span></summary><div class="solution">Igual fuerza (3ª Ley Newton). El insecto tiene mucha más aceleración (menor masa).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Es $\vec{P}$ relativo al observador?</span></summary><div class="solution">Sí, depende de la velocidad $\vec{v}$, que depende del sistema de referencia.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Explosión CM: Un cuerpo explota en el aire. Trayectoria CM.</span></summary><div class="solution">Continúa la parábola original como si nada hubiera pasado (si despreciamos aire).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Choque de trenes (mismo $m, v$). Inelástico.</span></summary><div class="solution">$P_{tot} = mv - mv = 0$. Se detienen completamente. Toda $E_k$ se disipa.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Airbag: Física.</span></summary><div class="solution">Aumenta el tiempo de impacto ($\Delta t$). Para un mismo Impulso ($\Delta P$), reduce la Fuerza media ($F = I/\Delta t$).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Velocidad CM sistema Tierra-Luna.</span></summary><div class="solution">Orbita alrededor del Sol. El CM está dentro de la Tierra (pero no en el centro).</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // TEMA
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
