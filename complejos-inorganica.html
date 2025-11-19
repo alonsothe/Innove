@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Complejos y Avanzado</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA UNIVERSIDAD) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f5f3ff; /* Violeta muy pálido */
+        --surface: #ffffff;
+        --text-main: #4c1d95;
+        --text-soft: #6d28d9;
+        --border: #ddd6fe;
+        
+        /* Paleta Avanzada */
+        --primary: #7c3aed;      /* Violeta Eléctrico */
+        --primary-soft: #ede9fe;
+        --secondary: #db2777;    /* Magenta */
+        --secondary-soft: #fce7f3;
+        --tertiary: #059669;     /* Esmeralda (Gases Nobles) */
+        --tertiary-soft: #d1fae5;
+        --accent: #2563eb;       /* Azul (Grafito) */
+        --accent-soft: #dbeafe;
+
+        --shadow: 0 10px 30px -5px rgba(124, 58, 237, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(124, 58, 237, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #ddd6fe;
+        --text-soft: #a78bfa;
+        --border: #334155;
+        --primary-soft: rgba(124, 58, 237, 0.2);
+        --secondary-soft: rgba(219, 39, 119, 0.2);
+        --tertiary-soft: rgba(5, 150, 105, 0.2);
+        --accent-soft: rgba(37, 99, 235, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: spin-slow 20s infinite linear; }
+    @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-purp .icon-box { background: var(--primary-soft); }
+    .c-pink .icon-box { background: var(--secondary-soft); }
+    .c-green .icon-box { background: var(--tertiary-soft); }
+    .c-blue .icon-box { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+
+    /* CAJA ESTRUCTURA COMPLEJO */
+    .complex-structure {
+        background: var(--surface); border: 2px solid var(--primary);
+        border-radius: var(--radius); padding: 30px; margin-bottom: 40px;
+        text-align: center; position: relative;
+    }
+    .formula-big { font-size: 2rem; font-weight: 800; color: var(--text-main); margin: 20px 0; font-family: 'Outfit', monospace; }
+    .label-arrow { font-size: 0.8rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* TABLAS */
+    .adv-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+    .adv-table th { text-align: left; color: var(--primary); border-bottom: 2px solid var(--primary-soft); padding-bottom: 5px;}
+    .adv-table td { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { 
+        background: var(--bg); padding: 10px 20px; border-radius: 15px; 
+        font-weight: 800; color: var(--text-soft); text-transform: uppercase; 
+        letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;
+        border: 1px solid var(--border);
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.02); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '?'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '👁️'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); }
+
+    .answer { 
+        padding: 15px; background: var(--surface); color: var(--primary); 
+        font-weight: 700; font-size: 1rem; text-align: center;
+        border-top: 1px solid var(--border);
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            
+            <span class="page-icon">⚛️</span>
+            <h1 data-lang="es">Química <span>Avanzada</span></h1>
+            <h1 data-lang="ca">Química <span>Avançada</span></h1>
+            <h1 data-lang="en">Advanced <span>Chemistry</span></h1>
+            
+            <p class="intro" data-lang="es">Bienvenidos al nivel universitario. Aquí los enlaces covalentes coordinados, los gases nobles que reaccionan y los nuevos materiales mandan.</p>
+            <p class="intro" data-lang="ca">Benvinguts al nivell universitari. Aquí els enllaços covalents coordinats, els gasos nobles que reaccionen i els nous materials manen.</p>
+            <p class="intro" data-lang="en">Welcome to university level. Coordinate covalent bonds, reactive noble gases, and new materials rule here.</p>
+        </header>
+
+        <div class="complex-structure">
+            <h3 data-lang="es">Anatomía de un Complejo</h3>
+            <h3 data-lang="ca">Anatomia d'un Complex</h3>
+            <h3 data-lang="en">Complex Anatomy</h3>
+            
+            <div class="formula-big">
+                <span style="color:var(--text-soft)">[</span>
+                <span style="color:var(--secondary)">Cu</span>
+                <span style="color:var(--primary)">(NH₃)₄</span>
+                <span style="color:var(--text-soft)">]</span>
+                <span style="color:var(--tertiary)">SO₄</span>
+            </div>
+            
+            <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:10px;">
+                <div><span style="color:var(--secondary)">●</span> <span data-lang="es">Átomo Central</span><span data-lang="ca">Àtom Central</span><span data-lang="en">Central Atom</span></div>
+                <div><span style="color:var(--primary)">●</span> <span data-lang="es">Ligandos</span><span data-lang="ca">Lligands</span><span data-lang="en">Ligands</span></div>
+                <div><span style="color:var(--tertiary)">●</span> <span data-lang="es">Contraión</span><span data-lang="ca">Contraió</span><span data-lang="en">Counter-ion</span></div>
+            </div>
+        </div>
+
+        <div class="theory-grid">
+            
+            <div class="card c-purp">
+                <div class="icon-box">📜</div>
+                <h3 data-lang="es">Nomenclatura Ligandos</h3>
+                <h3 data-lang="ca">Nomenclatura Lligands</h3>
+                <h3 data-lang="en">Ligand Naming</h3>
+                <p data-lang="es">¡Atención! La IUPAC 2005 cambió los nombres de los aniones.</p>
+                <p data-lang="ca">Atenció! La IUPAC 2005 va canviar els noms dels anions.</p>
+                <p data-lang="en">Heads up! IUPAC 2005 changed anion names.</p>
+                
+                <table class="adv-table">
+                    <tr>
+                        <td>\( H_2O \)</td>
+                        <td><strong>aqua</strong></td>
+                    </tr>
+                    <tr>
+                        <td>\( NH_3 \)</td>
+                        <td><strong>ammina</strong> <small>(2 m's!)</small></td>
+                    </tr>
+                    <tr>
+                        <td>\( CN^- \)</td>
+                        <td><strong>cianido / cianuro-</strong></td>
+                    </tr>
+                    <tr>
+                        <td>\( Cl^- \)</td>
+                        <td><strong>clorido / cloruro-</strong></td>
+                    </tr>
+                     <tr>
+                        <td>\( OH^- \)</td>
+                        <td><strong>hidroxido / hidrurooxigenato</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card c-pink">
+                <div class="icon-box">💧</div>
+                <h3 data-lang="es">Isomería de Hidratación</h3>
+                <h3 data-lang="ca">Isomeria d'Hidratació</h3>
+                <h3 data-lang="en">Hydrate Isomerism</h3>
+                <p data-lang="es">El agua puede estar DENTRO de la esfera (ligando) o FUERA (agua de cristalización).</p>
+                <p data-lang="ca">L'aigua pot estar DINS l'esfera (lligand) o FORA (aigua de cristal·lització).</p>
+                <p data-lang="en">Water can be INSIDE the sphere (ligand) or OUTSIDE (crystallization water).</p>
+                
+                <div style="background:var(--bg); padding:10px; border-radius:10px; font-size:0.85rem; margin-top:10px;">
+                    <span style="color:purple">\( [Cr(H_2O)_6]Cl_3 \)</span> (Violeta)<br>
+                    <span style="color:green">\( [Cr(H_2O)_5Cl]Cl_2 \cdot H_2O \)</span> (Verde)
+                </div>
+            </div>
+
+            <div class="card c-green">
+                <div class="icon-box">🎈</div>
+                <h3 data-lang="es">Gases Nobles Reactivos</h3>
+                <h3 data-lang="ca">Gasos Nobles Reactius</h3>
+                <h3 data-lang="en">Reactive Noble Gases</h3>
+                <p data-lang="es">El Xenón (Xe) y el Kriptón (Kr) pueden reaccionar con Flúor y Oxígeno bajo condiciones extremas.</p>
+                <p data-lang="ca">El Xenó (Xe) i el Kriptó (Kr) poden reaccionar amb Fluor i Oxigen.</p>
+                <p data-lang="en">Xenon (Xe) and Krypton (Kr) can react with Fluorine and Oxygen.</p>
+                
+                <div style="margin-top:10px;">
+                    \( XeF_4 \) <small>(Tetrafluoruro de xenón)</small><br>
+                    \( XeO_3 \) <small>(Trióxido de xenón)</small>
+                </div>
+            </div>
+            
+             <div class="card c-blue">
+                <div class="icon-box">✏️</div>
+                <h3 data-lang="es">Alótropos y Materiales</h3>
+                <h3 data-lang="ca">Al·lòtrops i Materials</h3>
+                <h3 data-lang="en">Allotropes & Materials</h3>
+                
+                <ul style="font-size:0.9rem; padding-left:15px;">
+                    <li><strong style="color:var(--accent)">Grafito vs Diamante:</strong> <span data-lang="es">Mismo C, distinta red.</span><span data-lang="ca">Mateix C, xarxa diferent.</span></li>
+                    <li><strong style="color:var(--accent)">Fullerenos:</strong> \( C_{60} \) <span data-lang="es">(Balón de fútbol)</span><span data-lang="ca">(Pilota de futbol)</span>.</li>
+                    <li><strong style="color:var(--accent)">BN (Nitruro de Boro):</strong> <span data-lang="es">Isoelectrónico al grafito. Llamado "Grafito Blanco".</span><span data-lang="ca">Anomenat "Grafit Blanc".</span></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio Avanzado (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs Avançat (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Advanced Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Complejos Catiónicos</span>
+            <div class="gym-grid">
+                <details><summary>\( [Ag(NH_3)_2]^+ \)</summary><div class="answer">Ión diamminaplata(I)</div></details>
+                <details><summary>\( [Cu(H_2O)_6]^{2+} \)</summary><div class="answer">Ión hexaaquacobre(II)</div></details>
+                <details><summary>\( [Co(NH_3)_6]Cl_3 \)</summary><div class="answer">Cloruro de hexaamminacobalto(III)</div></details>
+                <details><summary>\( [Fe(H_2O)_6]SO_4 \)</summary><div class="answer">Sulfato de hexaaquahierro(II)</div></details>
+                <details><summary>\( [Ni(NH_3)_6]Br_2 \)</summary><div class="answer">Bromuro de hexaamminaníquel(II)</div></details>
+                <details><summary>\( [Cr(H_2O)_4Cl_2]^+ \)</summary><div class="answer">Ión tetraacuadicloridocromo(III)</div></details>
+                <details><summary>\( [Pt(NH_3)_4]Cl_2 \)</summary><div class="answer">Cloruro de tetraamminaplatino(II)</div></details>
+                <details><summary>\( [Zn(NH_3)_4]^{2+} \)</summary><div class="answer">Ión tetraamminazinc(II)</div></details>
+                <details><summary>Sulfato de tetraamminacobre(II)</summary><div class="answer">\( [Cu(NH_3)_4]SO_4 \)</div></details>
+                <details><summary>Cloruro de pentaamminacloridocobalto(III)</summary><div class="answer">\( [Co(NH_3)_5Cl]Cl_2 \)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 2: Complejos Aniónicos (-ATO)</span>
+            <div class="gym-grid">
+                <details><summary>\( K_4[Fe(CN)_6] \)</summary><div class="answer">Hexacianidoferrato(II) de potasio</div></details>
+                <details><summary>\( K_3[Fe(CN)_6] \)</summary><div class="answer">Hexacianidoferrato(III) de potasio</div></details>
+                <details><summary>\( Na[AuCl_4] \)</summary><div class="answer">Tetracloridoaurato(III) de sodio</div></details>
+                <details><summary>\( K_2[PtCl_6] \)</summary><div class="answer">Hexacloridoplatinato(IV) de potasio</div></details>
+                <details><summary>\( [Al(OH)_4]^- \)</summary><div class="answer">Ión tetrahidroxidoaluminato</div></details>
+                <details><summary>\( Na_2[Zn(OH)_4] \)</summary><div class="answer">Tetrahidroxidozincato de sodio</div></details>
+                <details><summary>\( K_2[HgI_4] \)</summary><div class="answer">Tetrayodidomercurato(II) de potasio</div></details>
+                <details><summary>\( [Co(SCN)_4]^{2-} \)</summary><div class="answer">Ión tetratiocianatocobaltato(II)</div></details>
+                <details><summary>Hexafluoruroaluminato de sodio</summary><div class="answer">\( Na_3[AlF_6] \) (Criolita)</div></details>
+                <details><summary>Tetracloridocuprato(II) de amonio</summary><div class="answer">\( (NH_4)_2[CuCl_4] \)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 3: Gases Nobles & Materiales</span>
+            <div class="gym-grid">
+                <details><summary>XeF₂</summary><div class="answer">Difluoruro de xenón</div></details>
+                <details><summary>XeF₄</summary><div class="answer">Tetrafluoruro de xenón</div></details>
+                <details><summary>XeF₆</summary><div class="answer">Hexafluoruro de xenón</div></details>
+                <details><summary>XeO₃</summary><div class="answer">Trióxido de xenón</div></details>
+                <details><summary>XeO₄</summary><div class="answer">Tetraóxido de xenón</div></details>
+                <details><summary>KrF₂</summary><div class="answer">Difluoruro de kriptón</div></details>
+                <details><summary>BN</summary><div class="answer">Nitruro de boro</div></details>
+                <details><summary>C (Grafito)</summary><div class="answer">Carbono grafito</div></details>
+                <details><summary>C₆₀</summary><div class="answer">Fullereno (Buckminsterfullereno)</div></details>
+                <details><summary>SiC</summary><div class="answer">Carburo de silicio (Carborundo)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--accent-soft); color:var(--accent)">Nivel 4: El Boss Final</span>
+            <div class="gym-grid">
+                <details><summary>\( [Ni(CO)_4] \)</summary><div class="answer">Tetracarbonilníquel(0)</div></details>
+                <details><summary>\( [Fe(CO)_5] \)</summary><div class="answer">Pentacarbonilhierro(0)</div></details>
+                <details><summary>\( [Cr(NH_3)_3Cl_3] \)</summary><div class="answer">Triamminatricloridocromo(III)</div></details>
+                <details><summary>\( H_2[PtCl_6] \)</summary><div class="answer">Ácido hexacloridoplatínico(IV)</div></details>
+                <details><summary>\( Na_2[Fe(CN)_5NO] \)</summary><div class="answer">Pentacianidonitrosilferrato(III) de sodio</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            // Quitar clases anteriores
+            document.body.classList.remove('lang-es', 'lang-ca', 'lang-en');
+            // Añadir nueva clase
+            document.body.classList.add('lang-' + lang);
+            
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
