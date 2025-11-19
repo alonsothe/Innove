@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingeniería Ambiental | Química Avanzada</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* --- PALETA INGENIERÍA AMBIENTAL --- */
+    --bg-color: #ffffff; 
+    --text-primary: #18181b; 
+    --text-secondary: #52525b; 
+    
+    --accent: #0891b2; /* Cian Ingeniería (Agua/Aire) */
+    --accent-glow: #ecfeff; /* Fondo cian muy claro */
+    --highlight: #65a30d; /* Verde Lima (Suelos/Bio) */
+    
+    --nav-active: #18181b; 
+    --nav-text-active: #ffffff; 
+    
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --accent-glow: rgba(8, 145, 178, 0.1);
+    --glass-bg: rgba(24, 24, 27, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --nav-active: #ffffff;
+    --nav-text-active: #09090b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* ORBES DE FONDO */
+  .orb { position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.3; }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -100px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: var(--highlight); bottom: -50px; right: -50px; }
+
+  /* HEADER */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  
+  .header {
+    position: sticky; top: 20px; z-index: 100; padding: 16px 24px; margin-bottom: 40px;
+    background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border); border-radius: var(--radius); box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo-icon { font-size: 2rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: none; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--nav-active); color: var(--nav-text-active);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.4s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 40px; margin-bottom: 24px; 
+  }
+
+  /* TIPOGRAFÍA */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.5rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--accent); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text-primary); }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+
+  /* CAJAS DE FÓRMULAS */
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 16px 24px; margin: 24px 0; 
+    font-family: var(--font-chem); font-size: 1rem;
+    color: var(--text-primary); 
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+
+  /* TABLAS */
+  .env-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
+  .env-table th { text-align: left; color: var(--text-primary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-weight: 700; }
+  .env-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-secondary); }
+  .env-table tr:last-child td { border-bottom: none; }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-2px); }
+  
+  summary {
+    padding: 20px; font-weight: 500; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 2px;
+  }
+  .ex-badge.hard { background: var(--highlight); } 
+  .ex-badge.ing { background: var(--accent); } 
+
+  .ex-text { font-size: 1rem; color: var(--text-primary); line-height: 1.5; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 24px; background: var(--bg-color);
+    font-family: var(--font-ui); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;
+  }
+  .res-final {
+    display: block; margin-top: 15px; padding: 10px; 
+    border: 1px dashed var(--accent); border-radius: 8px;
+    font-family: var(--font-chem); color: var(--text-primary); text-align: center; font-weight: 700;
+  }
+  
+  .step { margin-bottom: 8px; padding-left: 12px; border-left: 2px solid #e5e7eb; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🌍</div>
+    <div class="logo-text">
+      <div>Ingeniería Ambiental</div>
+      <div>Química del Medio Ambiente</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="atm" aria-selected="true">1. Atmósfera</button>
+    <button class="nav-btn" data-target="hidro" aria-selected="false">2. Hidrosfera</button>
+    <button class="nav-btn" data-target="agua" aria-selected="false">3. Tratamiento</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas ING (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="atm" class="content-section" data-active>
+    <div class="card">
+      <h1>Química de la Atmósfera</h1>
+      
+      
+      <h3>1. Cinética del Ozono (Ciclo de Chapman)</h3>
+      <p>En la estratosfera, la formación y destrucción del ozono está en estado estacionario dinámico.</p>
+      <div class="math-box">
+        O₂ + hν (λ < 242 nm) → 2 O• (Iniciación)<br>
+        O• + O₂ + M → O₃ + M (Formación)<br>
+        O₃ + hν (λ < 320 nm) → O₂ + O• (Fotólisis)<br>
+        O• + O₃ → 2 O₂ (Terminación)
+      </div>
+
+      <h3>2. Smog Fotoquímico (Troposfera)</h3>
+      <p>Ciclo de los NOx y COVs. La relación de estado fotoestacionario de Leighton:</p>
+      <div class="math-box">
+        [O₃] ≈ (k₁ · [NO₂]) / (k₂ · [NO])
+      </div>
+      <p>Donde k₁ es la constante de fotólisis del NO₂ y k₂ la reacción de NO con O₃.</p>
+    </div>
+  </section>
+
+  <section id="hidro" class="content-section">
+    <div class="card">
+      <h1>Química Acuática y Alcalinidad</h1>
+      
+      <h3>1. El Sistema de Carbonatos (Abierto vs Cerrado)</h3>
+      <p>El pH de las aguas naturales está controlado por el sistema CO₂/Carbonato. La <strong>Alcalinidad Total (Alc T)</strong> es la capacidad de neutralizar ácidos:</p>
+      <div class="math-box">
+        Alc T = [HCO₃⁻] + 2[CO₃²⁻] + [OH⁻] - [H⁺]
+      </div>
+      
+      <h3>2. Equilibrios Redox (Diagramas pE-pH)</h3>
+      <p>En ingeniería ambiental usamos <strong>pE</strong> (potencial de electrones) en lugar de E (Voltios).</p>
+      <div class="math-box">
+        pE = -log{e⁻} = E_H / 0.059 (a 25°C)<br>
+        pE grande (>0) → Condiciones Aerobias (Oxidantes)<br>
+        pE pequeño (<0) → Condiciones Anaerobias (Reductoras)
+      </div>
+    </div>
+  </section>
+
+  <section id="agua" class="content-section">
+    <div class="card">
+      <h1>Ingeniería de Aguas Residuales</h1>
+      
+      <h3>1. Cinética de la DBO (Demanda Bioquímica de Oxígeno)</h3>
+      <p>La degradación de materia orgánica suele modelarse como una reacción de primer orden.</p>
+      <div class="math-box">
+        L_t = L_0 · e^(-k·t) <br>
+        DBO_t = L_0 · (1 - e^(-k·t))
+      </div>
+      <p>Donde <strong>L₀</strong> es la DBO última (materia orgánica total) y <strong>DBOₜ</strong> es el oxígeno consumido al tiempo t.</p>
+
+      <h3>2. Dureza y Ablandamiento</h3>
+      <p>Eliminación de Ca²⁺ y Mg²⁺ mediante el proceso de Cal-Sosa (Lime-Soda). Estequiometría clave:</p>
+      <div class="math-box">
+        Ca(HCO₃)₂ + Ca(OH)₂ → 2 CaCO₃(s) + 2 H₂O
+      </div>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Problemas de Ingeniería (30)</h2>
+      <p>Ejercicios de nivel universitario. Balances de materia, cinética ambiental y estequiometría industrial.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge ing">ING</span>
+            <span class="ex-text">Un agua residual tiene una DBO₅ de 200 mg/L y una constante k = 0.23 d⁻¹ (base e). Calcule la DBO última (L₀) y la DBO restante a los 10 días.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Fórmula: DBOₜ = L₀(1 - e⁻ᵏᵗ).</div>
+            <div class="step">2. Despejar L₀: 200 = L₀(1 - e^(-0.23 · 5)). <br>(1 - 0.316) = 0.684. <br>L₀ = 200 / 0.684 = 292.4 mg/L.</div>
+            <div class="step">3. DBO remanente a 10 días (L₁₀): L₁₀ = L₀ · e^(-k·10).</div>
+            <div class="step">4. L₁₀ = 292.4 · e^(-2.3) = 292.4 · 0.10.</div>
+            <div class="res-final">L₀ = 292.4 mg/L ; L₁₀ = 29.3 mg/L</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Balance en Río (Mezcla): Un río (Q=10 m³/s, DBO=2 mg/L, DO=9 mg/L) recibe un vertido (Q=2 m³/s, DBO=300 mg/L, DO=1 mg/L). Calcule la DBO y Oxígeno Disuelto (DO) justo después de la mezcla.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Balance de masa conservativo (Q·C). Q_total = 12 m³/s.</div>
+            <div class="step">2. DBO_mezcla = (10·2 + 2·300) / 12 = (20 + 600)/12 = 51.67 mg/L.</div>
+            <div class="step">3. DO_mezcla = (10·9 + 2·1) / 12 = (90 + 2)/12 = 7.67 mg/L.</div>
+            <div class="step">Déficit inicial (D₀) = DO_sat - DO_mezcla.</div>
+            <div class="res-final">DBO = 51.7 mg/L ; DO = 7.7 mg/L</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge ing">ING</span>
+            <span class="ex-text">Análisis de agua: pH = 7.0, Alcalinidad Total = 200 mg/L como CaCO₃. Calcule las concentraciones molares de HCO₃⁻ y CO₂ disuelto. (pKa1=6.3, pKa2=10.3).</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. A pH 7, [CO₃²⁻] y [OH⁻] son despreciables. Alc ≈ [HCO₃⁻].</div>
+            <div class="step">2. Convertir Alc a Molar: (200 mg/L CaCO₃) / (100 g/mol) · (1000 mg/g) = No. <br>Eq-g CaCO₃ = 50. Alc(eq/L) = 200e-3 / 50 = 4·10⁻³ eq/L = 4·10⁻³ M de HCO₃⁻.</div>
+            <div class="step">3. Equilibrio: Ka1 = [H⁺][HCO₃⁻]/[H₂CO₃*]. <br>10^-6.3 = (10^-7)(4·10⁻³) / [CO₂].</div>
+            <div class="step">4. [CO₂] = (10^-7 · 4·10⁻³) / 10^-6.3 = 4·10⁻¹⁰ / 5·10⁻⁷ = 8·10⁻⁴ M.</div>
+            <div class="res-final">[HCO₃⁻]=4 mM ; [CO₂]=0.8 mM</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Ablandamiento: Calcule la cantidad de Cal (Ca(OH)₂, 74 g/mol) y Sosa (Na₂CO₃, 106 g/mol) para tratar 1 m³ de agua con: 40 mg/L Ca²⁺, 24 mg/L Mg²⁺, 122 mg/L HCO₃⁻.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Pasar a meq/L (mili-equivalentes). <br>Ca: 40/20=2 meq/L. Mg: 24/12.15=1.97 meq/L. HCO₃: 122/61=2 meq/L.</div>
+            <div class="step">2. Dureza Total = 3.97 meq/L. Alcalinidad = 2 meq/L. <br>Dureza Carb = 2. Dureza No Carb = 1.97.</div>
+            <div class="step">3. Demanda Cal: Eliminar Alc (2) + Eliminar Mg (1.97) = 3.97 meq/L. <br>Masa Cal = 3.97 meq/L · (74/2) mg/meq = 146.89 mg/L = 147 g/m³.</div>
+            <div class="step">4. Demanda Sosa: Eliminar Dureza No Carb = 1.97 meq/L. <br>Masa Sosa = 1.97 · (106/2) = 104.4 g/m³.</div>
+            <div class="res-final">147 g Cal ; 104 g Sosa</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge ing">PARCIAL</span>
+            <span class="ex-text">Conversión ppm a mg/m³: La norma de calidad del aire para SO₂ es 0.14 ppm (v/v) a 25°C y 1 atm. Exprese este valor en µg/m³.</span>
+          </summary>
+          <div class="solution">
+            <div class="step">1. Ley Gases Ideales: PV = nRT → n/V = P/RT.</div>
+            <div class="step">2. Concentración total aire (mol/m³): P=101325 Pa. <br>C_aire = 101325 / (8.314 · 298) = 40.9 mol/m³.</div>
+            <div class="step">3. Moles SO₂: 0.14 ppm = 0.14·10⁻⁶ mol SO₂ / mol aire. <br>Conc SO₂ = 0.14·10⁻⁶ · 40.9 = 5.72·10⁻⁶ mol/m³.</div>
+            <div class="step">4. Masa: 5.72·10⁻⁶ · 64 g/mol = 3.66·10⁻⁴ g/m³ = 366 µg/m³.</div>
+            <div class="res-final">366 µg/m³</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge ing">FINAL</span><span class="ex-text">pE de agua en equilibrio con O₂ atm (0.21 atm) a pH 7. (Eº = 1.23V).</span></summary><div class="solution">O₂ + 4H⁺ + 4e⁻ ⇌ 2H₂O. pE = 20.75 - pH + 0.25log(P_O2) = 20.75 - 7 + (-0.17) = <span class="res-final">pE = 13.58</span></div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Velocidad sedimentación partícula (Stokes). d=0.05mm, ρ=2.65.</span></summary><div class="solution">v = [g(ρ-ρw)d²]/18μ. v ≈ <span class="res-final">0.2 cm/s</span></div></details>
+        <details class="ex"><summary><span class="ex-badge ing">PARCIAL</span><span class="ex-text">DQO vs DBO. Si DQO=500 y DBO=300, ¿es biodegradable?</span></summary><div class="solution">Ratio DBO/DQO = 0.6. Si > 0.4, es <span class="res-final">Biodegradable</span>.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Estequiometría oxidación glucosa. C₆H₁₂O₆ + 6O₂ → ...</span></summary><div class="solution">6CO₂ + 6H₂O. Relación másica O₂/Glucosa = 192/180 = 1.07 g O₂/g Glucosa.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">PARCIAL</span><span class="ex-text">Significado de pH de Lluvia Ácida.</span></summary><div class="solution">pH < 5.6 (el pH natural por CO₂).</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">FINAL</span><span class="ex-text">Adsorción Carbón Activo (Freundlich). q = K·C^(1/n).</span></summary><div class="solution">Linealizar: log(q) = log(K) + (1/n)log(C). Pendiente = 1/n.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Coagulación: ¿Por qué Al³⁺ es mejor que Na⁺?</span></summary><div class="solution">Regla Schulze-Hardy: La efectividad crece exponencialmente con la carga (³⁺ >> ⁺).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Tiempo de Retención Hidráulica (TRH). V=1000 m³, Q=50 m³/h.</span></summary><div class="solution">TRH = V/Q = 1000/50 = <span class="res-final">20 horas</span></div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Metano en vertederos.</span></summary><div class="solution">Condiciones anaerobias estrictas (pE muy bajo). Metanogénesis.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">PARCIAL</span><span class="ex-text">Eutrofización: Nutriente limitante.</span></summary><div class="solution">En agua dulce suele ser P (Fósforo). En mar, N (Nitrógeno).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Dureza: 100 mg/L Ca²⁺. Expresar como CaCO₃.</span></summary><div class="solution">100 * (100/40) = <span class="res-final">250 mg/L CaCO₃</span></div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Diferencia Adsorción vs Absorción.</span></summary><div class="solution">Adsorción: Superficie (física/química). Absorción: Volumen (disolución en el seno).</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">FINAL</span><span class="ex-text">Carga másica (F/M) fangos activos.</span></summary><div class="solution">F/M = (Q·DBO) / (V·MLSS). Unidades: kg DBO/kg SSLM·d.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">PARCIAL</span><span class="ex-text">Destrucción Ozono por Cl• (Catálisis).</span></summary><div class="solution">Cl + O₃ → ClO + O₂; ClO + O → Cl + O₂. Cl se regenera.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Ley de Henry para O₂ en agua. Kh=1.3e-3 M/atm.</span></summary><div class="solution">P_O2 = 0.21 atm. C = 1.3e-3 * 0.21 = <span class="res-final">2.73e-4 M</span> (~8.7 mg/L).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Alcalinidad Fenolftaleína vs Total.</span></summary><div class="solution">Fenolftaleína (P): Hasta pH 8.3 (CO₃²⁻ → HCO₃⁻). Total (M): Hasta pH 4.5 (Todo a H₂CO₃).</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Cloración: HOCl vs OCl⁻. ¿Cual desinfecta mejor?</span></summary><div class="solution">HOCl (Ácido hipocloroso). Es neutro y atraviesa membranas celulares mejor. Eficaz a pH < 7.5.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">PARCIAL</span><span class="ex-text">¿Qué es MPN/NMP en microbiología agua?</span></summary><div class="solution">Número Más Probable. Estimación estadística de coliformes.</div></details>
+        <details class="ex"><summary><span class="ex-badge ing">ING</span><span class="ex-text">Volumen molar gas ideal a 25°C, 1 atm.</span></summary><div class="solution">V = nRT/P = (1·0.082·298)/1 = <span class="res-final">24.4 L</span> (Usado en conversiones aire).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">pH de lluvia en equilibrio con CO₂ (350 ppm).</span></summary><div class="solution">Usando Henry y Ka1. [H⁺] = √(Kh·P·Ka1). <span class="res-final">pH ≈ 5.6</span></div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
