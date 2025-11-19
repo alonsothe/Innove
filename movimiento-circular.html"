@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Física | Dinámica Circular Master</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎡</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      packages: {'[+]': ['noerrors', 'noundefined']}
+    },
+    loader: {load: ['[tex]/noerrors', '[tex]/noundefined']},
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initialised');
+        });
+      }
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    /* --- PALETA DINÁMICA CIRCULAR --- */
+    --bg-color: #ffffff; 
+    --text-primary: #0f172a; 
+    --text-secondary: #475569; 
+    
+    --accent: #7c3aed; /* Violeta Rotación */
+    --accent-glow: rgba(124, 58, 237, 0.08);
+    --highlight: #db2777; /* Magenta Fuerza */
+    --energy: #f59e0b; /* Ámbar Energía */
+    
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    
+    --radius: 16px;
+    --font-ui: 'Inter', sans-serif;
+    --font-math: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #020617;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-glow: rgba(124, 58, 237, 0.15);
+    --glass-bg: rgba(15, 23, 42, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(var(--glass-border) 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding-bottom: 100px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ORBES DE FONDO */
+  .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.35; }
+  .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -150px; animation: spin 20s infinite linear; }
+  .orb-2 { width: 500px; height: 500px; background: var(--highlight); bottom: -100px; right: -100px; }
+  @keyframes spin { 0% { transform: rotate(0deg) translate(20px) rotate(0deg); } 100% { transform: rotate(360deg) translate(20px) rotate(-360deg); } }
+
+  /* HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  
+  .header {
+    position: sticky; top: 24px; z-index: 100; padding: 16px 32px; margin-bottom: 48px;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border); border-radius: 50px; box-shadow: var(--glass-shadow);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 1.8rem; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text div:last-child { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
+  /* NAVEGACIÓN */
+  .nav-menu { display: flex; gap: 6px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 20px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--glass-border); color: var(--text-primary); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  }
+
+  .theme-toggle {
+    background: var(--glass-border); border: none; color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  section[data-active] { display: block; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { 
+    background: var(--bg-color); 
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    padding: 48px; margin-bottom: 40px; 
+  }
+
+  /* TIPOGRAFÍA & MATH */
+  h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; color: var(--text-primary); }
+  h2 { font-size: 1.7rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--accent); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.8rem; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; font-size: 1.05rem; }
+  
+  .math-box {
+    background: var(--accent-glow); 
+    border-left: 4px solid var(--accent);
+    padding: 24px; margin: 32px 0; 
+    border-radius: 8px;
+    overflow-x: auto;
+    text-align: center;
+    color: var(--text-primary);
+    font-size: 1.15rem; 
+  }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 40px; }
+  
+  details.ex {
+    background: var(--bg-color); border: 1px solid var(--glass-border); border-radius: 12px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+  
+  summary {
+    padding: 24px; font-weight: 600; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 20px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.7rem; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+    background: var(--text-primary); color: var(--bg-color); font-weight: 700; align-self: start; margin-top: 3px;
+  }
+  .ex-badge.hard { background: var(--highlight); } 
+  .ex-badge.uni { background: var(--energy); } 
+  
+  .ex-text { font-size: 1.1rem; color: var(--text-primary); line-height: 1.6; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: var(--accent-glow); }
+
+  .solution {
+    padding: 32px; background: var(--bg-color);
+    font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 1rem; line-height: 1.8;
+  }
+  
+  .res-final {
+    display: block; margin-top: 20px; padding: 16px; 
+    border: 2px solid var(--accent); border-radius: 8px;
+    text-align: center; font-weight: 700; color: var(--text-primary);
+    background: rgba(124, 58, 237, 0.05); font-size: 1.2rem;
+  }
+
+  .step { margin-bottom: 12px; display: block; border-left: 2px solid var(--glass-border); padding-left: 15px; }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🎡</div>
+    <div class="logo-text">
+      <div>Física Master</div>
+      <div>Dinámica Circular</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="fuerzas" aria-selected="true">1. Fuerza Centrípeta</button>
+    <button class="nav-btn" data-target="curvas" aria-selected="false">2. Curvas y Peraltes</button>
+    <button class="nav-btn" data-target="vertical" aria-selected="false">3. Plano Vertical (Loops)</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="fuerzas" class="content-section" data-active>
+    <div class="card">
+      <h1>La "Fuerza" Centrípeta no existe</h1>
+      <p>Es un error común. La fuerza centrípeta no es una fuerza nueva, es la <strong>resultante</strong> de las fuerzas reales que apuntan al centro. Aplicamos la 2ª Ley de Newton en el eje normal.</p>
+
+      <h2>1.1 Ecuación Fundamental</h2>
+      <div class="math-box">
+        $$ \sum F_n = m \cdot a_n = m \frac{v^2}{R} = m \omega^2 R $$
+      </div>
+      <ul>
+        <li><strong>Tensión:</strong> En una cuerda giratoria.</li>
+        <li><strong>Normal:</strong> En un "Looping" o rizo.</li>
+        <li><strong>Rozamiento:</strong> En una curva plana de carretera.</li>
+        <li><strong>Gravitación:</strong> En satélites.</li>
+      </ul>
+
+      <h2>1.2 Ejes de Coordenadas Intrínsecos</h2>
+      <p>Para resolver estos problemas, siempre dibujamos dos ejes:</p>
+      <ul>
+        <li><strong>Eje Tangencial:</strong> $\sum F_t = m \cdot a_t$. (Responsable de que la velocidad aumente o disminuya).</li>
+        <li><strong>Eje Normal (Radial):</strong> $\sum F_n = m \cdot v^2/R$. (Apunta siempre al centro).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="curvas" class="content-section">
+    <div class="card">
+      <h1>Dinámica de Curvas y Peraltes</h1>
+      
+      <h2>2.1 Curva Plana (Sin peralte)</h2>
+      <p>La única fuerza que empuja al coche hacia el centro es el <strong>rozamiento estático</strong>.</p>
+      <div class="math-box">
+        $$ F_{roz} = m \frac{v^2}{R} \quad \Rightarrow \quad \mu mg = m \frac{v^2}{R} $$
+        $$ v_{max} = \sqrt{\mu g R} $$
+      </div>
+
+      <h2>2.2 Curva Peraltada (Sin rozamiento)</h2>
+      <p>Inclinamos la carretera un ángulo $\theta$. La Normal se inclina y su componente horizontal hace de fuerza centrípeta.</p>
+      <div class="math-box">
+        $$ N \sin\theta = m \frac{v^2}{R} $$
+        $$ N \cos\theta = mg $$
+        $$ \tan\theta = \frac{v^2}{Rg} \quad (\text{Velocidad óptima}) $$
+      </div>
+      <p>Si hay rozamiento Y peralte, el problema se complica (ver Ejercicios Hard). La fuerza de rozamiento ayuda a no deslizar ni hacia arriba ni hacia abajo.</p>
+    </div>
+  </section>
+
+  <section id="vertical" class="content-section">
+    <div class="card">
+      <h1>Movimiento en el Plano Vertical</h1>
+      <p>Aquí la velocidad NO es constante (la gravedad frena al subir y acelera al bajar). Usamos <strong>Conservación de Energía</strong> + <strong>Dinámica</strong>.</p>
+
+      <h2>3.1 Punto Más Alto (A)</h2>
+      <p>La Normal (o Tensión) y el Peso apuntan hacia abajo (hacia el centro).</p>
+      <div class="math-box">
+        $$ N_A + mg = m \frac{v_A^2}{R} $$
+      </div>
+      <h3>Condición de "No caerse" (Velocidad Mínima)</h3>
+      <p>El límite es cuando la cuerda se destensa o el coche deja de tocar el rail: <strong>$N = 0$</strong>.</p>
+      <div class="math-box">
+        $$ mg = m \frac{v_{min}^2}{R} \quad \Rightarrow \quad v_{min} = \sqrt{Rg} $$
+      </div>
+
+      <h2>3.2 Punto Más Bajo (B)</h2>
+      <p>La Normal apunta al centro (arriba), el Peso hacia fuera (abajo).</p>
+      <div class="math-box">
+        $$ N_B - mg = m \frac{v_B^2}{R} \quad \Rightarrow \quad N_B = mg + m \frac{v_B^2}{R} $$
+      </div>
+      <p>Es el punto de máxima tensión/fuerza g.</p>
+
+      <h2>3.3 Relación Energética</h2>
+      <p>Para relacionar velocidades arriba y abajo:</p>
+      <div class="math-box">
+        $$ \frac{1}{2}mv_B^2 = \frac{1}{2}mv_A^2 + mg(2R) $$
+      </div>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card">
+      <h2>Batería de 30 Problemas (Reto Matemático)</h2>
+      <p>Requiere calculadora científica. Problemas de optimización, bucles y sistemas de fuerzas.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge">EBAU</span>
+            <span class="ex-text">Péndulo Cónico: Una masa de 2 kg gira atada a una cuerda de 1 m formando un ángulo de 30º con la vertical. Calcule la Tensión y la velocidad lineal.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Eje Y: $T \cos 30 = mg \Rightarrow T = \frac{2 \cdot 9.8}{\cos 30} = 22.63 \text{ N}$.</span>
+            <span class="step">2. Eje X (Radial): $T \sin 30 = m \frac{v^2}{R}$.</span>
+            <span class="step">3. Radio de giro: $R = L \sin 30 = 1 \cdot 0.5 = 0.5 \text{ m}$.</span>
+            <span class="step">4. Sustituyendo: $22.63 \cdot 0.5 = 2 \cdot \frac{v^2}{0.5} \Rightarrow 11.315 = 4v^2$.</span>
+            <span class="step">5. $v = \sqrt{2.82} \approx 1.68 \text{ m/s}$.</span>
+            <div class="res-final">T = 22.6 N ; v = 1.68 m/s</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Velocidad Máxima en Peralte con Rozamiento: Curva de $R=50$ m, peralte $\theta=15^\circ$, coef. rozamiento $\mu=0.4$. Calcule la velocidad máxima para no derrapar hacia fuera.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Fuerzas en eje radial (hacia el centro): $N\sin\theta + F_r\cos\theta = m v^2/R$.</span>
+            <span class="step">2. Fuerzas en eje vertical (equilibrio): $N\cos\theta - F_r\sin\theta = mg$.</span>
+            <span class="step">3. Al límite: $F_r = \mu N$. Sustituimos en (2): $N(\cos 15 - 0.4\sin 15) = mg \Rightarrow N = \frac{mg}{0.862}$.</span>
+            <span class="step">4. Sustituimos en (1): $N(\sin 15 + 0.4\cos 15) = m v^2/R \Rightarrow N(0.645) = m v^2/R$.</span>
+            <span class="step">5. Dividiendo (1)/(2): $\frac{v^2}{Rg} = \frac{\sin\theta + \mu\cos\theta}{\cos\theta - \mu\sin\theta} = \frac{0.645}{0.862} = 0.748$.</span>
+            <span class="step">6. $v = \sqrt{0.748 \cdot 50 \cdot 9.8} = \sqrt{366.5}$.</span>
+            <div class="res-final">v = 19.1 m/s (68.9 km/h)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">El Rizo de la Muerte: Se deja caer un coche de montaña rusa desde una altura $H$. El rizo tiene radio $R=10$ m. Calcule la altura mínima $H$ para que no se caiga en el punto más alto (sin rozamiento).</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Condición crítica arriba (C): $N=0$. $\sum F = mg = m v_C^2/R \Rightarrow v_C^2 = Rg$.</span>
+            <span class="step">2. Conservación Energía (Salida A $\to$ Cima C): $E_A = E_C$.</span>
+            <span class="step">3. $mgH = mg(2R) + \frac{1}{2}mv_C^2$.</span>
+            <span class="step">4. $gH = 2gR + \frac{1}{2}(Rg) = 2.5 gR$.</span>
+            <span class="step">5. $H = 2.5 R = 2.5 \cdot 10 = 25 \text{ m}$.</span>
+            <div class="res-final">H_min = 25 m</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Tensión Variable: Una piedra de 1 kg gira en un plano vertical con cuerda de 1 m. Si en el punto más bajo la velocidad es 10 m/s, calcule la tensión de la cuerda en ese punto y en el punto más alto.</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Punto Bajo (B): $T_B - mg = m v_B^2 / R$.<br>$T_B = 1(9.8) + 1(100)/1 = 9.8 + 100 = 109.8 \text{ N}$.</span>
+            <span class="step">2. Velocidad Punto Alto (A): Energía. $\frac{1}{2}v_B^2 = \frac{1}{2}v_A^2 + g(2R)$.<br>$50 = 0.5 v_A^2 + 9.8(2) \Rightarrow 50 = 0.5 v_A^2 + 19.6 \Rightarrow v_A^2 = 60.8$.</span>
+            <span class="step">3. Tensión Punto Alto (A): $T_A + mg = m v_A^2 / R$.<br>$T_A = \frac{1 \cdot 60.8}{1} - 9.8 = 60.8 - 9.8 = 51 \text{ N}$.</span>
+            <div class="res-final">Tb = 109.8 N ; Ta = 51 N</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge uni">UNI</span>
+            <span class="ex-text">El Rotor (Gravitron): Cilindro de $R=3$ m gira. Una persona se queda pegada a la pared sin suelo. Si $\mu_s = 0.4$, ¿cuál es la velocidad angular mínima $\omega$?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Fuerzas: Normal $N$ hacia el centro. Peso $mg$ hacia abajo. Rozamiento $F_r$ hacia arriba (evita caer).</span>
+            <span class="step">2. Radial: $N = m \omega^2 R$. Vertical: $F_r = mg$.</span>
+            <span class="step">3. Condición límite: $F_r = \mu N$. $\mu (m \omega^2 R) = mg$.</span>
+            <span class="step">4. $\omega^2 = g / (\mu R) = 9.8 / (0.4 \cdot 3) = 8.16$.</span>
+            <span class="step">5. $\omega = \sqrt{8.16} \approx 2.86 \text{ rad/s}$.</span>
+            <div class="res-final">ω = 2.86 rad/s (27 rpm)</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge hard">HARD</span>
+            <span class="ex-text">Coche en un Baden (Puente convexo): Radio 20 m. ¿A qué velocidad máxima puede pasar el coche por la cima sin despegarse del suelo?</span>
+          </summary>
+          <div class="solution">
+            <span class="step">1. Fuerzas en la cima: Peso ($mg$) abajo, Normal ($N$) arriba. Centro de curvatura está ABAJO.</span>
+            <span class="step">2. $\sum F_n = mg - N = m v^2/R$.</span>
+            <span class="step">3. Condición de despegue: $N=0$ (pierde contacto).</span>
+            <span class="step">4. $mg = m v^2/R \Rightarrow v = \sqrt{Rg}$.</span>
+            <span class="step">5. $v = \sqrt{20 \cdot 9.8} = \sqrt{196} = 14 \text{ m/s}$.</span>
+            <div class="res-final">v_max = 14 m/s (50.4 km/h)</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Satélite geoestacionario: Calcular radio de órbita (T=24h).</span></summary><div class="solution">$G M m / r^2 = m \omega^2 r \Rightarrow r^3 = GM / \omega^2$. $\omega = 7.27e-5$. $r \approx 42200 \text{ km}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Ángulo de cuerda: Esfera gira colgada del techo. Si $v$ aumenta, ¿qué pasa con el ángulo?</span></summary><div class="solution">$\tan\theta = v^2/Rg$. Si $v$ sube, $\theta$ sube (la cuerda se pone más horizontal).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Tensión de ruptura: Cuerda aguanta 50 N. Masa 0.5 kg, R=1m. Giro horizontal. $v_{max}$?</span></summary><div class="solution">$T = m v^2/R \Rightarrow 50 = 0.5 v^2/1 \Rightarrow v^2=100 \Rightarrow v=10 \text{ m/s}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Normal en función del ángulo $\theta$ en un Loop (desde abajo).</span></summary><div class="solution">$N(\theta) = mg(3\cos\theta + 2) + mv_0^2/R$. (Usando energías).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Fuerza centrífuga: ¿Es real?</span></summary><div class="solution">No en sistemas inerciales. Es una fuerza ficticia que aparece solo en sistemas de referencia rotatorios (no inerciales).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Esquiador en un rizo de hielo (sin rozamiento). Altura mínima para completar el rizo.</span></summary><div class="solution">Mismo caso que la montaña rusa: $H = 2.5 R$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Curva plana helada ($\mu=0$). ¿Se puede tomar?</span></summary><div class="solution">No. Si $\mu=0$ y no hay peralte, $F_c=0$. El coche sigue recto por inercia (se sale).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Gravedad artificial en estación espacial (R=100m). $\omega$?</span></summary><div class="solution">$a_n = g \Rightarrow \omega^2 R = 9.8 \Rightarrow \omega = \sqrt{0.098} \approx 0.31 \text{ rad/s}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Cubo de agua girando verticalmente. ¿Se cae el agua arriba?</span></summary><div class="solution">No, si $a_n \ge g$. El agua "cae" más despacio de lo que el cubo gira.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Coche en una hondonada (cóncavo) a velocidad $v$. ¿Cuánto vale la Normal?</span></summary><div class="solution">$N - mg = m v^2/R \Rightarrow N = m(g + v^2/R)$. (Te sientes más pesado).</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Fuerza lateral en conductor (m=70kg) en curva (v=20m/s, R=100m).</span></summary><div class="solution">$F_c = 70 \cdot 400 / 100 = 280 \text{ N}$. La puerta empuja al conductor.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Péndulo cónico: Periodo $T$ en función del ángulo $\theta$ y longitud $L$.</span></summary><div class="solution">$T = 2\pi \sqrt{L \cos\theta / g}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Si el radio se duplica a igual velocidad, ¿la fuerza necesaria?</span></summary><div class="solution">$F = m v^2 / R$. Si $R$ dobla, la fuerza se reduce a la mitad.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Tensión en la parte baja vs alta en giro vertical (v constante, motor).</span></summary><div class="solution">$T_{bajo} = mv^2/R + mg$. $T_{alto} = mv^2/R - mg$. Diferencia $2mg$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Trabajo de la fuerza centrípeta en una vuelta.</span></summary><div class="solution">CERO. La fuerza es siempre perpendicular al desplazamiento ($W = \vec{F} \cdot d\vec{r} = 0$).</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Velocidad de escape desde órbita circular.</span></summary><div class="solution">$v_{esc} = \sqrt{2} \cdot v_{orbital}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Moto en globo de la muerte. $R=4$m. Velocidad mínima arriba.</span></summary><div class="solution">$v = \sqrt{Rg} = \sqrt{39.2} \approx 6.26 \text{ m/s}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">¿Por qué las curvas de alta velocidad tienen peralte?</span></summary><div class="solution">Para que la Normal ayude a la fuerza centrípeta, reduciendo la dependencia del rozamiento.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Moneda en tocadiscos. $r=10$cm, $\mu=0.3$. $\omega_{max}$?</span></summary><div class="solution">$\mu mg = m \omega^2 r \Rightarrow \omega = \sqrt{0.3 \cdot 9.8 / 0.1} = \sqrt{29.4} \approx 5.4 \text{ rad/s}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Cuerda se rompe a 100 N. Masa 2kg gira vertical. ¿Dónde rompe?</span></summary><div class="solution">En el punto más bajo, donde la tensión es máxima ($T = F_c + mg$).</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Aceleración tangencial en MCU.</span></summary><div class="solution">Cero. El módulo de la velocidad es constante.</div></details>
+        <details class="ex"><summary><span class="ex-badge hard">HARD</span><span class="ex-text">Avión haciendo un rizo. Piloto $m=80$kg. Arriba $v=200$m/s, $R=1000$m. Fuerza asiento.</span></summary><div class="solution">$N + mg = m v^2/R \Rightarrow N = 80(40000/1000) - 80(9.8) = 3200 - 784 = 2416 \text{ N}$.</div></details>
+        <details class="ex"><summary><span class="ex-badge uni">UNI</span><span class="ex-text">Ángulo de peralte óptimo para $v=100$ km/h, $R=200$m.</span></summary><div class="solution">$v=27.7$. $\tan\theta = 27.7^2 / (200 \cdot 9.8) = 0.39 \Rightarrow \theta \approx 21.3^\circ$.</div></details>
+        <details class="ex"><summary><span class="ex-badge">EBAU</span><span class="ex-text">Relación entre fuerza gravitatoria y centrípeta en órbita.</span></summary><div class="solution">La fuerza gravitatoria ES la fuerza centrípeta. $F_g = F_c$.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // LÓGICA DE PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // MODO OSCURO
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
