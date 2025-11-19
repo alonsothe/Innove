@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Óxidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (SISTEMA FRIENDLY) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #fff7ed; /* Fondo crema muy suave */
+        --surface: #ffffff;
+        --text-main: #2d3748;
+        --text-soft: #718096;
+        --border: #ffedd5;
+        
+        /* Paleta Fuego/Óxido */
+        --primary: #ea580c;      /* Naranja Quemado */
+        --primary-soft: #ffedd5;
+        --secondary: #f43f5e;    /* Rosa/Rojo */
+        --secondary-soft: #ffe4e6;
+        --tertiary: #0ea5e9;     /* Azul (para contraste metales) */
+        --tertiary-soft: #e0f2fe;
+        --accent: #8b5cf6;       /* Violeta */
+
+        --shadow: 0 10px 30px -5px rgba(234, 88, 12, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(234, 88, 12, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f1f5f9;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --primary-soft: rgba(234, 88, 12, 0.2);
+        --secondary-soft: rgba(244, 63, 94, 0.2);
+        --tertiary-soft: rgba(14, 165, 233, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: pulse 3s infinite ease-in-out; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-orange .icon-box { background: var(--primary-soft); }
+    .c-red .icon-box { background: var(--secondary-soft); }
+    .c-blue .icon-box { background: var(--tertiary-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+    
+    /* CAJA DE FÓRMULA GIGANTE */
+    .formula-box {
+        background: var(--primary-soft); border-radius: var(--radius); padding: 40px;
+        text-align: center; margin-bottom: 40px; border: 2px dashed var(--primary);
+    }
+    .big-math { font-size: 2rem; color: var(--primary); font-weight: bold; margin: 20px 0; }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { 
+        background: var(--bg); padding: 10px 20px; border-radius: 15px; 
+        font-weight: 800; color: var(--text-soft); text-transform: uppercase; 
+        letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.03); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '?'; font-size: 1rem; color: var(--text-soft); font-weight: 800; background: var(--bg); width: 25px; height: 25px; border-radius: 50%; display: grid; place-items: center; }
+    details[open] summary::after { content: '✓'; color: white; background: var(--tertiary); }
+    details[open] summary { background: var(--bg); }
+
+    .answer { 
+        padding: 15px; background: var(--surface); color: var(--primary); 
+        font-weight: 700; font-size: 1rem; text-align: center;
+        border-top: 1px solid var(--border);
+        animation: fadeIn 0.3s ease;
+    }
+    .sub { font-size: 0.7em; vertical-align: sub; }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- IDIOMAS --- */
+    [data-lang] { display: none; }
+    body.lang-ca [data-lang="ca"] { display: block; }
+    body.lang-es [data-lang="es"] { display: block; }
+    body.lang-en [data-lang="en"] { display: block; }
+    body.lang-ca span[data-lang="ca"] { display: inline; }
+    body.lang-es span[data-lang="es"] { display: inline; }
+    body.lang-en span[data-lang="en"] { display: inline; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🔥</span>
+            <h1 data-lang="es">Los <span>Óxidos</span></h1>
+            <h1 data-lang="ca">Els <span>Òxids</span></h1>
+            <h1 data-lang="en">The <span>Oxides</span></h1>
+            
+            <p class="intro" data-lang="es">Cuando el oxígeno se enamora de cualquier otro elemento (excepto los gases nobles), nace un óxido. ¡Son la base de todo!</p>
+            <p class="intro" data-lang="ca">Quan l'oxigen s'enamora de qualsevol altre element, neix un òxid. Són la base de tot!</p>
+            <p class="intro" data-lang="en">When oxygen falls in love with any other element, an oxide is born. They are the foundation of everything!</p>
+        </header>
+
+        <div class="formula-box">
+            <h3 data-lang="es">Mecánica de Formación</h3>
+            <h3 data-lang="ca">Mecànica de Formació</h3>
+            <h3 data-lang="en">Formation Mechanics</h3>
+            <div class="big-math">
+                $$ E^{+n} + O^{-2} \rightarrow E_2 O_n $$
+            </div>
+            <p data-lang="es">Se intercambian las valencias. El <strong>2</strong> del oxígeno pasa al Elemento (E). La valencia <strong>n</strong> del elemento pasa al Oxígeno.</p>
+            <p data-lang="ca">S'intercanvien les valències. El <strong>2</strong> de l'oxigen passa a l'Element (E).</p>
+            <p data-lang="en">Valences are swapped. Oxygen's <strong>2</strong> goes to the Element (E).</p>
+        </div>
+
+        <div class="theory-grid">
+            <div class="card c-blue">
+                <div class="icon-box">🔩</div>
+                <h3 data-lang="es">Óxidos Básicos (Metales)</h3><h3 data-lang="ca">Òxids Bàsics</h3><h3 data-lang="en">Basic Oxides</h3>
+                <p data-lang="es">Metal + Oxígeno. Muchos reaccionan con agua para formar Hidróxidos (Bases). Ejemplo: El óxido del hierro.</p>
+                <p data-lang="ca">Metall + Oxigen. Molts reaccionen amb aigua per formar Hidròxids.</p>
+                <p data-lang="en">Metal + Oxygen. Many react with water to form Hydroxides (Bases).</p>
+            </div>
+
+            <div class="card c-red">
+                <div class="icon-box">🌫️</div>
+                <h3 data-lang="es">Óxidos Ácidos (No Metales)</h3><h3 data-lang="ca">Òxids Àcids</h3><h3 data-lang="en">Acidic Oxides</h3>
+                <p data-lang="es">No Metal + Oxígeno. Al unirse con agua forman Ácidos. Ejemplo: CO₂ (Dióxido de carbono).</p>
+                <p data-lang="ca">No Metall + Oxigen. En unir-se amb aigua formen Àcids.</p>
+                <p data-lang="en">Non-Metal + Oxygen. When joining with water they form Acids.</p>
+            </div>
+
+            <div class="card c-orange">
+                <div class="icon-box">💡</div>
+                <h3>Pro Tip: Simplificación</h3>
+                <p data-lang="es">Si ambos subíndices son pares, <strong>¡SE SIMPLIFICAN!</strong><br>Ej: \( C^{+4} O^{-2} \rightarrow C_2O_4 \rightarrow CO_2 \)</p>
+                <p data-lang="ca">Si ambdós subíndexs són parells, <strong>ES SIMPLIFIQUEN!</strong></p>
+                <p data-lang="en">If both subscripts are even, <strong>SIMPLIFY THEM!</strong></p>
+            </div>
+        </div>
+
+        <h2 data-lang="es">🏋️ Mega-Gimnasio (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Mega-Gimnàs (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Mega-Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 1: Metales Fijos</span>
+            <div class="gym-grid">
+                <details><summary>Óxido de Sodio</summary><div class="answer">Na₂O</div></details>
+                <details><summary>Óxido de Potasio</summary><div class="answer">K₂O</div></details>
+                <details><summary>Óxido de Calcio</summary><div class="answer">CaO <small>(Simplificado)</small></div></details>
+                <details><summary>Óxido de Magnesio</summary><div class="answer">MgO <small>(Simplificado)</small></div></details>
+                <details><summary>Óxido de Litio</summary><div class="answer">Li₂O</div></details>
+                <details><summary>Óxido de Bario</summary><div class="answer">BaO</div></details>
+                <details><summary>Óxido de Aluminio</summary><div class="answer">Al₂O₃</div></details>
+                <details><summary>Óxido de Plata</summary><div class="answer">Ag₂O</div></details>
+                <details><summary>Óxido de Zinc</summary><div class="answer">ZnO</div></details>
+                <details><summary>Óxido de Cadmio</summary><div class="answer">CdO</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 2: Nomenclatura Stock</span>
+            <div class="gym-grid">
+                <details><summary>Óxido de Hierro(II)</summary><div class="answer">FeO</div></details>
+                <details><summary>Óxido de Hierro(III)</summary><div class="answer">Fe₂O₃</div></details>
+                <details><summary>Óxido de Cobre(I)</summary><div class="answer">Cu₂O</div></details>
+                <details><summary>Óxido de Cobre(II)</summary><div class="answer">CuO</div></details>
+                <details><summary>Óxido de Plomo(IV)</summary><div class="answer">PbO₂ <small>(Pb₂O₄)</small></div></details>
+                <details><summary>Óxido de Oro(III)</summary><div class="answer">Au₂O₃</div></details>
+                <details><summary>Óxido de Níquel(II)</summary><div class="answer">NiO</div></details>
+                <details><summary>Óxido de Estaño(IV)</summary><div class="answer">SnO₂</div></details>
+                <details><summary>Óxido de Mercurio(I)</summary><div class="answer">Hg₂O</div></details>
+                <details><summary>Óxido de Platino(IV)</summary><div class="answer">PtO₂</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 3: Sistemática (Prefijos)</span>
+            <div class="gym-grid">
+                <details><summary>Monóxido de Carbono</summary><div class="answer">CO</div></details>
+                <details><summary>Dióxido de Carbono</summary><div class="answer">CO₂</div></details>
+                <details><summary>Dióxido de Azufre</summary><div class="answer">SO₂</div></details>
+                <details><summary>Trióxido de Azufre</summary><div class="answer">SO₃</div></details>
+                <details><summary>Monóxido de Dinitrógeno</summary><div class="answer">N₂O</div></details>
+                <details><summary>Dióxido de Nitrógeno</summary><div class="answer">NO₂</div></details>
+                <details><summary>Heptaóxido de Dicloro</summary><div class="answer">Cl₂O₇</div></details>
+                <details><summary>Pentaóxido de Difósforo</summary><div class="answer">P₂O₅</div></details>
+                <details><summary>Pentaóxido de Diyodo</summary><div class="answer">I₂O₅</div></details>
+                <details><summary>Dióxido de Silicio</summary><div class="answer">SiO₂</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--accent-soft); color:var(--accent)">Nivel 4: ¿Cómo se llama?</span>
+            <div class="gym-grid">
+                <details><summary>Fórmula: SO₃</summary><div class="answer">Trióxido de azufre</div></details>
+                <details><summary>Fórmula: CaO</summary><div class="answer">Óxido de calcio</div></details>
+                <details><summary>Fórmula: Cu₂O</summary><div class="answer">Óxido de cobre(I)</div></details>
+                <details><summary>Fórmula: CO₂</summary><div class="answer">Dióxido de carbono</div></details>
+                <details><summary>Fórmula: Li₂O</summary><div class="answer">Óxido de litio</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
