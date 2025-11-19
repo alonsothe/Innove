@@ -1,0 +1,360 @@
+!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Fundamentos ESO</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+    /* --- VARIABLES DE DISEÑO (SISTEMA FRIENDLY) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f3f6fd;
+        --surface: #ffffff;
+        --text-main: #2d3748;
+        --text-soft: #718096;
+        --border: #e2e8f0;
+        
+        /* Paleta Friendly */
+        --primary: #6366f1;      /* Indigo */
+        --primary-soft: #e0e7ff;
+        --secondary: #ec4899;    /* Rosa */
+        --secondary-soft: #fce7f3;
+        --tertiary: #10b981;     /* Menta */
+        --tertiary-soft: #d1fae5;
+        --orange: #f59e0b;       /* Naranja */
+        --orange-soft: #fef3c7;
+        --blue: #3b82f6;
+        --blue-soft: #dbeafe;
+
+        --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(99, 102, 241, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f1f5f9;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --primary-soft: rgba(99, 102, 241, 0.2);
+        --secondary-soft: rgba(236, 72, 153, 0.2);
+        --tertiary-soft: rgba(16, 185, 129, 0.2);
+        --orange-soft: rgba(245, 158, 11, 0.2);
+        --blue-soft: rgba(59, 130, 246, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    /* Header de Página */
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-blue .icon-box { background: var(--primary-soft); }
+    .c-pink .icon-box { background: var(--secondary-soft); }
+    .c-green .icon-box { background: var(--tertiary-soft); }
+    .c-orange .icon-box { background: var(--orange-soft); }
+    .c-sky .icon-box { background: var(--blue-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; }
+
+    /* BIOGRAFÍA DESTACADA */
+    .bio-card {
+        background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
+        border-radius: var(--radius); padding: 40px; color: white;
+        display: flex; align-items: center; gap: 40px; margin-top: 40px;
+        box-shadow: var(--shadow-hover); position: relative; overflow: hidden;
+    }
+    .bio-card::after {
+        content: '⚛️'; position: absolute; right: -30px; bottom: -50px; 
+        font-size: 15rem; opacity: 0.15; transform: rotate(-20deg);
+    }
+    .bio-img { 
+        width: 140px; height: 140px; min-width: 140px; border-radius: 50%; 
+        border: 5px solid rgba(255,255,255,0.3); 
+        background: #fff; display: grid; place-items: center; font-size: 4rem;
+    }
+    .bio-content h3 { font-family: 'Outfit', sans-serif; font-size: 2rem; margin-bottom: 10px; }
+    .bio-content p { color: rgba(255,255,255,0.95); font-size: 1.1rem; font-weight: 600; }
+
+    /* --- EJERCICIOS GRID (GIMNASIO QUÍMICO) --- */
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+
+    details {
+        background: var(--surface); border-radius: 20px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.02); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px 20px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.95rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '-'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); border-bottom: 1px solid var(--border); }
+
+    .answer { 
+        padding: 15px 20px; background: var(--tertiary-soft); color: #047857; 
+        font-weight: 700; font-size: 0.9rem; 
+        animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ETIQUETAS NUMÉRICAS */
+    .num { 
+        display: inline-block; width: 24px; height: 24px; background: var(--text-soft); 
+        color: white; border-radius: 50%; text-align: center; line-height: 24px; 
+        font-size: 0.8rem; margin-right: 10px; 
+    }
+    details:hover .num { background: var(--primary); }
+
+    /* --- IDIOMAS --- */
+    [data-lang] { display: none; }
+    body.lang-ca [data-lang="ca"] { display: block; }
+    body.lang-es [data-lang="es"] { display: block; }
+    body.lang-en [data-lang="en"] { display: block; }
+    
+    body.lang-ca span[data-lang="ca"] { display: inline; }
+    body.lang-es span[data-lang="es"] { display: inline; }
+    body.lang-en span[data-lang="en"] { display: inline; }
+
+    @media (max-width: 768px) { .bio-card { flex-direction: column; text-align: center; } }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="quimica.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Volver al Hub</span>
+            <span data-lang="ca">Tornar al Hub</span>
+            <span data-lang="en">Back to Hub</span>
+        </a>
+        
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🧬</span>
+            <h1 data-lang="es">Fundamentos <span>Básicos</span></h1>
+            <h1 data-lang="ca">Fonaments <span>Bàsics</span></h1>
+            <h1 data-lang="en">Basic <span>Fundamentals</span></h1>
+            
+            <p class="intro" data-lang="es">La química es el juego de construcción del universo. Aquí tienes las reglas y las piezas para empezar a jugar en nivel ESO.</p>
+            <p class="intro" data-lang="ca">La química és el joc de construcció de l'univers. Aquí tens les regles i les peces per començar a jugar a nivell ESO.</p>
+            <p class="intro" data-lang="en">Chemistry is the building game of the universe. Here are the rules and pieces to start playing at High School level.</p>
+        </header>
+
+        <div class="theory-grid">
+            <div class="card c-blue">
+                <div class="icon-box">🧱</div>
+                <h3 data-lang="es">El Átomo</h3><h3 data-lang="ca">L'Àtom</h3><h3 data-lang="en">The Atom</h3>
+                <p data-lang="es">La unidad básica. Tiene un núcleo con <strong>Protones (+)</strong> y <strong>Neutrones (N)</strong>, y una corteza con <strong>Electrones (-)</strong> orbitando.</p>
+                <p data-lang="ca">La unitat bàsica. Té un nucli amb <strong>Protons (+)</strong> i <strong>Neutrons (N)</strong>, i una escorça amb <strong>Electrons (-)</strong>.</p>
+                <p data-lang="en">The basic unit. Nucleus with <strong>Protons (+)</strong> and <strong>Neutrons (N)</strong>, and shells with <strong>Electrons (-)</strong>.</p>
+            </div>
+
+            <div class="card c-green">
+                <div class="icon-box">📊</div>
+                <h3 data-lang="es">La Tabla Periódica</h3><h3 data-lang="ca">La Taula Periòdica</h3><h3 data-lang="en">Periodic Table</h3>
+                <p data-lang="es">El mapa de los elementos. Filas = <strong>Periodos</strong>. Columnas = <strong>Grupos</strong> (Familias que se comportan parecido).</p>
+                <p data-lang="ca">El mapa dels elements. Files = <strong>Períodes</strong>. Columnes = <strong>Grups</strong>.</p>
+                <p data-lang="en">The map of elements. Rows = <strong>Periods</strong>. Columns = <strong>Groups</strong>.</p>
+            </div>
+
+            <div class="card c-pink">
+                <div class="icon-box">🔢</div>
+                <h3>A vs Z</h3>
+                <p data-lang="es"><strong>Z (Nº Atómico):</strong> DNI del elemento (Nº Protones).<br><strong>A (Nº Másico):</strong> Peso del átomo (Protones + Neutrones).</p>
+                <p data-lang="ca"><strong>Z (Nº Atòmic):</strong> DNI (Nº Protons).<br><strong>A (Nº Màssic):</strong> Pes (Protons + Neutrons).</p>
+                <p data-lang="en"><strong>Z (Atomic No.):</strong> ID (Protons).<br><strong>A (Mass No.):</strong> Weight (Protons + Neutrons).</p>
+            </div>
+
+            <div class="card c-orange">
+                <div class="icon-box">🤝</div>
+                <h3 data-lang="es">La Valencia</h3><h3 data-lang="ca">La València</h3><h3 data-lang="en">Valence</h3>
+                <p data-lang="es">Capacidad de combinación. Imagina que son "brazos". El Carbono tiene valencia 4, ¡puede agarrar 4 cosas!</p>
+                <p data-lang="ca">Capacitat de combinació. Imagina que són "braços". El Carboni té valència 4.</p>
+                <p data-lang="en">Combining capacity. Imagine they are "arms". Carbon has valence 4.</p>
+            </div>
+
+            <div class="card c-sky">
+                <div class="icon-box">🔗</div>
+                <h3 data-lang="es">Enlaces Químicos</h3><h3 data-lang="ca">Enllaços Químics</h3><h3 data-lang="en">Chemical Bonds</h3>
+                <p data-lang="es"><strong>Iónico:</strong> Uno regala electrones, el otro los coge (NaCl).<br><strong>Covalente:</strong> Comparten electrones (H₂O).</p>
+                <p data-lang="ca"><strong>Iònic:</strong> Regal d'electrons.<br><strong>Covalent:</strong> Compartició d'electrons.</p>
+                <p data-lang="en"><strong>Ionic:</strong> Electron transfer.<br><strong>Covalent:</strong> Electron sharing.</p>
+            </div>
+        </div>
+
+        <h2 data-lang="es">👩‍🔬 Hall of Fame</h2>
+        <h2 data-lang="ca">👩‍🔬 Sala de la Fama</h2>
+        <h2 data-lang="en">👩‍🔬 Hall of Fame</h2>
+
+        <div class="bio-card">
+            <div class="bio-img">🧪</div>
+            <div class="bio-content">
+                <h3>Marie Curie (1867 - 1934)</h3>
+                <p data-lang="es">
+                    La reina de la radiactividad. Primera persona en ganar <strong>dos premios Nobel</strong> en distintas ciencias (Física y Química). Descubrió el <strong>Radio</strong> y el <strong>Polonio</strong>. ¡Nos enseñó que la ciencia requiere perseverancia!
+                </p>
+                <p data-lang="ca">
+                    La reina de la radioactivitat. Primera persona a guanyar <strong>dos premis Nobel</strong> en diferents ciències. Va descobrir el <strong>Radi</strong> i el <strong>Poloni</strong>.
+                </p>
+                <p data-lang="en">
+                    The queen of radioactivity. First person to win <strong>two Nobel Prizes</strong> in different sciences. Discovered <strong>Radium</strong> and <strong>Polonium</strong>.
+                </p>
+            </div>
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio Químico (20 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs Químic (20 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Chemistry Gym (20 Exercises)</h2>
+
+        <div class="gym-grid">
+            
+            <details><summary><span class="num">1</span> Símbolo del Sodio / Sodium?</summary><div class="answer">Na (del latín Natrium)</div></details>
+            <details><summary><span class="num">2</span> Carga del protón?</summary><div class="answer">+1 (Positiva)</div></details>
+            <details><summary><span class="num">3</span> Z del Carbono?</summary><div class="answer">Z = 6 (Tiene 6 protones)</div></details>
+            <details><summary><span class="num">4</span> Valencia del Hidrógeno?</summary><div class="answer">+/- 1</div></details>
+            <details><summary><span class="num">5</span> ¿Dónde están los electrones?</summary><div class="answer">En la corteza / Shells</div></details>
+
+            <details><summary><span class="num">6</span> Nombre del Grupo 17?</summary><div class="answer">Halógenos / Halogens</div></details>
+            <details><summary><span class="num">7</span> Fórmula del agua?</summary><div class="answer">H₂O</div></details>
+            <details><summary><span class="num">8</span> ¿El Hierro (Fe) es metal?</summary><div class="answer">SÍ / YES</div></details>
+            <details><summary><span class="num">9</span> Valencia principal del O?</summary><div class="answer">-2</div></details>
+            <details><summary><span class="num">10</span> Partícula sin carga?</summary><div class="answer">Neutrón / Neutron</div></details>
+
+            <details><summary><span class="num">11</span> Símbolo del Oro / Gold?</summary><div class="answer">Au (Aurum)</div></details>
+            <details><summary><span class="num">12</span> Enlace Metal + No Metal?</summary><div class="answer">Enlace Iónico</div></details>
+            <details><summary><span class="num">13</span> Átomos en O₂?</summary><div class="answer">2 átomos de Oxígeno</div></details>
+            <details><summary><span class="num">14</span> Isótopos: ¿Qué varía?</summary><div class="answer">El número de Neutrones</div></details>
+            <details><summary><span class="num">15</span> Nombre del Grupo 18?</summary><div class="answer">Gases Nobles</div></details>
+
+            <details><summary><span class="num">16</span> Símbolo del Potasio?</summary><div class="answer">K (Kalium)</div></details>
+            <details><summary><span class="num">17</span> Enlace No Metal + No Metal?</summary><div class="answer">Enlace Covalente</div></details>
+            <details><summary><span class="num">18</span> Carga del electrón?</summary><div class="answer">-1 (Negativa)</div></details>
+            <details><summary><span class="num">19</span> ¿He, Ne, Ar son...? </summary><div class="answer">Gases Nobles (Inertes)</div></details>
+            <details><summary><span class="num">20</span> A = Z + ...?</summary><div class="answer">N (Neutrones)</div></details>
+
+        </div>
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
+```
