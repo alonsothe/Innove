@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Oxisales Neutras</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA CRISTAL/SALES) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #fffbeb; /* Crema/Amarillo muy suave */
+        --surface: #ffffff;
+        --text-main: #78350f; /* Marrón oscuro */
+        --text-soft: #92400e;
+        --border: #fcd34d;
+        
+        /* Paleta Sales */
+        --primary: #f59e0b;      /* Ámbar */
+        --primary-soft: #fef3c7;
+        --secondary: #059669;    /* Esmeralda */
+        --secondary-soft: #d1fae5;
+        --tertiary: #3b82f6;     /* Azul Real */
+        --tertiary-soft: #dbeafe;
+        --accent: #db2777;       /* Rosa */
+        --accent-soft: #fce7f3;
+
+        --shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(245, 158, 11, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #fef3c7;
+        --text-soft: #fbbf24;
+        --border: #451a03;
+        --primary-soft: rgba(245, 158, 11, 0.2);
+        --secondary-soft: rgba(5, 150, 105, 0.2);
+        --tertiary-soft: rgba(59, 130, 246, 0.2);
+        --accent-soft: rgba(219, 39, 119, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: bounce 3s infinite ease-in-out; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-amber .icon-box { background: var(--primary-soft); }
+    .c-green .icon-box { background: var(--secondary-soft); }
+    .c-blue .icon-box { background: var(--tertiary-soft); }
+    .c-pink .icon-box { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+
+    /* CAJA REGLA DE ORO */
+    .mnemonic-box {
+        background: var(--primary-soft); border-radius: var(--radius); padding: 30px;
+        margin-bottom: 40px; text-align: center; border: 2px dashed var(--primary);
+    }
+    .mnemonic-text { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin: 15px 0; }
+    .mnemonic-text span { color: var(--primary); text-decoration: underline; }
+
+    /* TABLA */
+    .salt-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .salt-table td { padding: 8px; border-bottom: 1px solid var(--border); }
+    .salt-table strong { color: var(--primary); }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { 
+        background: var(--bg); padding: 10px 20px; border-radius: 15px; 
+        font-weight: 800; color: var(--text-soft); text-transform: uppercase; 
+        letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;
+        border: 1px solid var(--border);
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.03); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '?'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '✓'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); }
+
+    .answer { 
+        padding: 15px; background: var(--surface); color: var(--primary); 
+        font-weight: 700; font-size: 1rem; text-align: center;
+        border-top: 1px solid var(--border);
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- SISTEMA DE IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            
+            <span class="page-icon">🧂</span>
+            <h1 data-lang="es">Oxisales <span>Neutras</span></h1>
+            <h1 data-lang="ca">Oxisals <span>Neutres</span></h1>
+            <h1 data-lang="en">Neutral <span>Oxosalts</span></h1>
+            
+            <p class="intro" data-lang="es">Se forman cuando un ácido "pierde" todos sus hidrógenos y los cambia por un metal. ¡Adiós H, hola Metal!</p>
+            <p class="intro" data-lang="ca">Es formen quan un àcid "perd" tots els seus hidrògens i els canvia per un metall. Adéu H, hola Metall!</p>
+            <p class="intro" data-lang="en">Formed when an acid "loses" all its hydrogens and swaps them for a metal. Bye H, hello Metal!</p>
+        </header>
+
+        <div class="mnemonic-box">
+            <div class="icon-box" style="margin:0 auto; background:white;">🐻</div>
+            <h3 data-lang="es">Regla de Oro: Los Sufijos</h3>
+            <h3 data-lang="ca">Regla d'Or: Els Sufixos</h3>
+            <h3 data-lang="en">Golden Rule: Suffixes</h3>
+            
+            <div data-lang="es" class="mnemonic-text">
+                "Cuando el <span>OSO</span> toca el p<span>ITO</span>,<br>
+                per<span>ICO</span> toca el silb<span>ATO</span>."
+            </div>
+            <div data-lang="ca" class="mnemonic-text">
+                "L'<span>ÓS</span> va a la festa pet<span>ITA</span>,<br>
+                el m<span>IC</span> va al merc<span>AT</span>."
+            </div>
+            <div data-lang="en" class="mnemonic-text">
+                "I ate a poisonous bite"<br>
+                (<span>OUS</span> \(\rightarrow\) <span>ITE</span>)<br>
+                (<span>IC</span> \(\rightarrow\) <span>ATE</span>)
+            </div>
+        </div>
+
+        <div class="theory-grid">
+            
+            <div class="card c-amber">
+                <div class="icon-box">🔧</div>
+                <h3 data-lang="es">Mecanismo de Ruptura</h3>
+                <h3 data-lang="ca">Mecanisme de Trencament</h3>
+                <h3 data-lang="en">Mechanism</h3>
+                <p data-lang="es">Quitamos todos los H del ácido. La carga del anión (lo que queda) es igual al número de H quitados.</p>
+                <p data-lang="ca">Traiem tots els H de l'àcid. La càrrega de l'anió és igual al nombre d'H trets.</p>
+                <p data-lang="en">Remove all H from the acid. The anion charge equals the number of H removed.</p>
+                
+                <div style="font-size:0.9rem; background:var(--bg); padding:10px; border-radius:10px;">
+                    \( H_2SO_4 \rightarrow (SO_4)^{-2} \)<br>
+                    \( HNO_3 \rightarrow (NO_3)^{-1} \)
+                </div>
+            </div>
+
+            <div class="card c-green">
+                <div class="icon-box">⚗️</div>
+                <h3 data-lang="es">Formulación Final</h3>
+                <h3 data-lang="ca">Formulació Final</h3>
+                <h3 data-lang="en">Final Formula</h3>
+                <p data-lang="es">Se cruzan las cargas. El Metal (catión) se une al Anión.</p>
+                <p data-lang="ca">Es creuen les càrregues. El Metall s'uneix a l'Anió.</p>
+                
+                <div style="font-size:1.1rem; font-weight:bold; color:var(--secondary); margin-top:10px; text-align:center;">
+                    $$ M^{+m} + (X_bO_c)^{-n} \rightarrow M_n(X_bO_c)_m $$
+                </div>
+            </div>
+
+            <div class="card c-blue">
+                <div class="icon-box">💎</div>
+                <h3 data-lang="es">Ejemplo: Sulfato de Hierro(III)</h3>
+                <h3 data-lang="ca">Exemple: Sulfat de Ferro(III)</h3>
+                <h3 data-lang="en">Ex: Iron(III) Sulfate</h3>
+                
+                <ul style="font-size:0.9rem; padding-left:20px;">
+                    <li><span data-lang="es">Ácido Sulfúrico:</span> \( H_2SO_4 \)</li>
+                    <li><span data-lang="es">Anión Sulfato:</span> \( (SO_4)^{-2} \)</li>
+                    <li><span data-lang="es">Hierro (III):</span> \( Fe^{+3} \)</li>
+                    <li><strong>\( Fe_2(SO_4)_3 \)</strong></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Sales (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs de Sals (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Salts Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Básicos (Na, K, Ca)</span>
+            <div class="gym-grid">
+                <details><summary>Nitrato de sodio</summary><div class="answer">NaNO₃</div></details>
+                <details><summary>Sulfato de potasio</summary><div class="answer">K₂SO₄</div></details>
+                <details><summary>Carbonato de calcio</summary><div class="answer">CaCO₃</div></details>
+                <details><summary>Clorato de potasio</summary><div class="answer">KClO₃</div></details>
+                <details><summary>Sulfito de sodio</summary><div class="answer">Na₂SO₃</div></details>
+                <details><summary>Nitrito de litio</summary><div class="answer">LiNO₂</div></details>
+                <details><summary>Perclorato de sodio</summary><div class="answer">NaClO₄</div></details>
+                <details><summary>Hipoclorito de sodio</summary><div class="answer">NaClO</div></details>
+                <details><summary>Carbonato de magnesio</summary><div class="answer">MgCO₃</div></details>
+                <details><summary>Yodato de potasio</summary><div class="answer">KIO₃</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 2: Metales (Stock)</span>
+            <div class="gym-grid">
+                <details><summary>Sulfato de hierro(III)</summary><div class="answer">Fe₂(SO₄)₃</div></details>
+                <details><summary>Sulfato de hierro(II)</summary><div class="answer">FeSO₄</div></details>
+                <details><summary>Nitrato de cobre(II)</summary><div class="answer">Cu(NO₃)₂</div></details>
+                <details><summary>Carbonato de cobre(II)</summary><div class="answer">CuCO₃</div></details>
+                <details><summary>Sulfato de plomo(IV)</summary><div class="answer">Pb(SO₄)₂</div></details>
+                <details><summary>Nitrato de plata</summary><div class="answer">AgNO₃</div></details>
+                <details><summary>Sulfato de zinc</summary><div class="answer">ZnSO₄</div></details>
+                <details><summary>Clorato de níquel(II)</summary><div class="answer">Ni(ClO₃)₂</div></details>
+                <details><summary>Bromato de oro(III)</summary><div class="answer">Au(BrO₃)₃</div></details>
+                <details><summary>Sulfito de estaño(II)</summary><div class="answer">SnSO₃</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 3: Fosfatos y Cía.</span>
+            <div class="gym-grid">
+                <details><summary>Fosfato de calcio</summary><div class="answer">Ca₃(PO₄)₂</div></details>
+                <details><summary>Fosfato de sodio</summary><div class="answer">Na₃PO₄</div></details>
+                <details><summary>Fosfato de hierro(III)</summary><div class="answer">FePO₄</div></details>
+                <details><summary>Arseniato de potasio</summary><div class="answer">K₃AsO₄</div></details>
+                <details><summary>Metafosfato de sodio</summary><div class="answer">NaPO₃</div></details>
+                <details><summary>Pirofosfato de calcio</summary><div class="answer">Ca₂P₂O₇</div></details>
+                <details><summary>Permanganato de potasio</summary><div class="answer">KMnO₄</div></details>
+                <details><summary>Dicromato de potasio</summary><div class="answer">K₂Cr₂O₇</div></details>
+                <details><summary>Cromato de plomo(II)</summary><div class="answer">PbCrO₄</div></details>
+                <details><summary>Silicato de magnesio</summary><div class="answer">MgSiO₃</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--accent-soft); color:var(--accent)">Nivel 4: ¿Cómo se llama?</span>
+            <div class="gym-grid">
+                <details><summary>CaSO₄</summary><div class="answer">Sulfato de calcio</div></details>
+                <details><summary>KNO₂</summary><div class="answer">Nitrito de potasio</div></details>
+                <details><summary>FeCO₃</summary><div class="answer">Carbonato de hierro(II)</div></details>
+                <details><summary>NaClO₃</summary><div class="answer">Clorato de sodio</div></details>
+                <details><summary>Al₂(SO₄)₃</summary><div class="answer">Sulfato de aluminio</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            // Quitar clases anteriores
+            document.body.classList.remove('lang-es', 'lang-ca', 'lang-en');
+            // Añadir nueva clase
+            document.body.classList.add('lang-' + lang);
+            
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
