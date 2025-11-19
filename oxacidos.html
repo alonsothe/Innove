@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Oxoácidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #fdf2f8;
+        --surface: #ffffff;
+        --text-main: #831843;
+        --text-soft: #9d174d;
+        --border: #fbcfe8;
+        
+        /* Paleta */
+        --primary: #db2777;
+        --primary-soft: #fce7f3;
+        --secondary: #7c3aed;
+        --secondary-soft: #ede9fe;
+        --tertiary: #059669;
+        --tertiary-soft: #d1fae5;
+        --accent: #d97706;
+        --accent-soft: #fef3c7;
+
+        --shadow: 0 10px 30px -5px rgba(219, 39, 119, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(219, 39, 119, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #fce7f3;
+        --text-soft: #fda4af;
+        --border: #334155;
+        --primary-soft: rgba(219, 39, 119, 0.2);
+        --secondary-soft: rgba(124, 58, 237, 0.2);
+        --tertiary-soft: rgba(5, 150, 105, 0.2);
+        --accent-soft: rgba(217, 119, 6, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Nunito', sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar {
+        display: flex; justify-content: space-between; align-items: center;
+        max-width: 1100px; margin: 0 auto 40px;
+        background: var(--surface); padding: 10px 20px; border-radius: 50px;
+        box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    .back-btn {
+        text-decoration: none; display: flex; align-items: center; gap: 10px;
+        color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif;
+    }
+    .back-btn:hover { color: var(--primary); }
+
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { 
+        border: none; background: transparent; padding: 5px 12px; border-radius: 20px; 
+        font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+    
+    .card {
+        background: var(--surface); border-radius: var(--radius); padding: 30px;
+        box-shadow: var(--shadow); border: 2px solid transparent;
+        position: relative; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--border); }
+    
+    .icon-box { 
+        width: 60px; height: 60px; border-radius: 20px; 
+        display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; 
+    }
+    
+    .c-pink .icon-box { background: var(--primary-soft); }
+    .c-purple .icon-box { background: var(--secondary-soft); }
+    .c-green .icon-box { background: var(--tertiary-soft); }
+    .c-amber .icon-box { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); flex-grow: 1; margin-bottom: 10px; }
+    
+    /* CAJA RECETA */
+    .recipe-box {
+        background: var(--surface); border: 2px dashed var(--primary);
+        border-radius: var(--radius); padding: 30px; margin-bottom: 40px;
+        text-align: center;
+    }
+    .step-badge { 
+        background: var(--primary); color: white; padding: 2px 10px; 
+        border-radius: 10px; font-size: 0.8rem; text-transform: uppercase; font-weight: 800;
+    }
+
+    /* TABLA NOMENCLATURA */
+    .nom-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; }
+    .nom-table th { text-align: left; color: var(--primary); padding-bottom: 10px; border-bottom: 2px solid var(--primary-soft); }
+    .nom-table td { padding: 10px 5px; border-bottom: 1px solid var(--border); }
+    .nom-table tr:last-child td { border: none; }
+
+    /* GIMNASIO */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { 
+        background: var(--bg); padding: 10px 20px; border-radius: 15px; 
+        font-weight: 800; color: var(--text-soft); text-transform: uppercase; 
+        letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block;
+        border: 1px solid var(--border);
+    }
+
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+
+    details {
+        background: var(--surface); border-radius: 16px;
+        border: 1px solid var(--border); overflow: hidden; cursor: pointer;
+        transition: transform 0.2s;
+    }
+    details:hover { transform: scale(1.03); border-color: var(--primary); }
+    
+    summary {
+        padding: 15px; font-weight: 700; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; color: var(--text-main);
+        font-size: 0.9rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '?'; font-size: 1.2rem; color: var(--primary); font-weight: 800; }
+    details[open] summary::after { content: '!'; color: var(--secondary); }
+    details[open] summary { background: var(--bg); }
+
+    .answer { 
+        padding: 15px; background: var(--surface); color: var(--primary); 
+        font-weight: 700; font-size: 1rem; text-align: center;
+        border-top: 1px solid var(--border);
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* --- SISTEMA DE IDIOMAS ESTRICTO (FIX) --- */
+    
+    /* 1. Ocultar TODO lo que tenga data-lang por defecto */
+    [data-lang] { display: none !important; }
+
+    /* 2. Mostrar SOLO el idioma activo según la clase del body */
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+
+    /* 3. Manejo de elementos inline (span) para que no rompan el texto */
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🧪</span>
+            <h1 data-lang="es">Los <span>Oxoácidos</span></h1>
+            <h1 data-lang="ca">Els <span>Oxoàcids</span></h1>
+            <h1 data-lang="en">The <span>Oxoacids</span></h1>
+            
+            <p class="intro" data-lang="es">Son compuestos ternarios (3 elementos) que contienen Hidrógeno, Oxígeno y un No Metal. ¡Son los reyes de la química inorgánica!</p>
+            <p class="intro" data-lang="ca">Són compostos ternaris (3 elements) que contenen Hidrogen, Oxigen i un No Metall. Són els reis de la química inorgànica!</p>
+            <p class="intro" data-lang="en">Ternary compounds (3 elements) containing Hydrogen, Oxygen, and a Non-Metal. The kings of inorganic chemistry!</p>
+        </header>
+
+        <div class="recipe-box">
+            <h3 data-lang="es">🍳 La Receta de Cocina</h3>
+            <h3 data-lang="ca">🍳 La Recepta de Cuina</h3>
+            <h3 data-lang="en">🍳 The Cooking Recipe</h3>
+            
+            <div style="font-size:1.5rem; margin:20px 0; font-weight:bold; color:var(--secondary);">
+                $$ \text{Óxido} + H_2O \rightarrow H_a X_b O_c $$
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; text-align:left;">
+                <div>
+                    <span class="step-badge">PASO 1</span>
+                    <p data-lang="es">Forma el óxido (intercambia valencias).</p>
+                    <p data-lang="ca">Forma l'òxid (intercanvia valències).</p>
+                    <p data-lang="en">Form the oxide (swap valences).</p>
+                </div>
+                <div>
+                    <span class="step-badge">PASO 2</span>
+                    <p data-lang="es">Súmale agua ($H_2O$) y simplifica si puedes.</p>
+                    <p data-lang="ca">Suma-li aigua ($H_2O$) i simplifica si pots.</p>
+                    <p data-lang="en">Add water ($H_2O$) and simplify if possible.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="theory-grid">
+            
+            <div class="card c-pink">
+                <div class="icon-box">🏷️</div>
+                <h3 data-lang="es">Nomenclatura Tradicional</h3>
+                <h3 data-lang="ca">Nomenclatura Tradicional</h3>
+                <h3 data-lang="en">Traditional Naming</h3>
+                <p data-lang="es">Depende del número de oxidación del átomo central.</p>
+                <p data-lang="ca">Depèn del nombre d'oxidació de l'àtom central.</p>
+                <p data-lang="en">Depends on the central atom's oxidation number.</p>
+                
+                <table class="nom-table">
+                    <thead>
+                        <tr>
+                            <th data-lang="es">Nº Ox. (Ej: Cl)</th>
+                            <th data-lang="ca">Nº Ox. (Ex: Cl)</th>
+                            <th data-lang="en">Ox. No. (Ex: Cl)</th>
+                            <th data-lang="es">Nombre</th>
+                            <th data-lang="ca">Nom</th>
+                            <th data-lang="en">Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>+1</td><td><strong>Hipo</strong>... -<strong>oso</strong> / -ous</td></tr>
+                        <tr><td>+3</td><td>... -<strong>oso</strong> / -ous</td></tr>
+                        <tr><td>+5</td><td>... -<strong>ico</strong> / -ic</td></tr>
+                        <tr><td>+7</td><td><strong>Per</strong>... -<strong>ico</strong> / -ic</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card c-purple">
+                <div class="icon-box">👣</div>
+                <h3 data-lang="es">Ejemplo: Ácido Sulfúrico</h3>
+                <h3 data-lang="ca">Exemple: Àcid Sulfúric</h3>
+                <h3 data-lang="en">Ex: Sulfuric Acid</h3>
+                
+                <p data-lang="es">Azufre (S) con valencia +6 (terminación -ico).</p>
+                <p data-lang="ca">Sofre (S) amb valència +6.</p>
+                <p data-lang="en">Sulfur (S) with valence +6.</p>
+                
+                <ul style="padding-left:20px; font-size:0.9rem;">
+                    <li>1. \( S^{+6}O^{-2} \rightarrow S_2O_6 \rightarrow SO_3 \)</li>
+                    <li>2. \( SO_3 + H_2O \)</li>
+                    <li>3. <strong>\( H_2SO_4 \)</strong></li>
+                </ul>
+            </div>
+
+            <div class="card c-green">
+                <div class="icon-box">💧</div>
+                <h3 data-lang="es">¡Cuidado! Meta, Piro, Orto</h3>
+                <h3 data-lang="ca">Compte! Meta, Piro, Orto</h3>
+                <h3 data-lang="en">Watch out! Meta, Pyro, Ortho</h3>
+                
+                <p data-lang="es">Elementos <strong>P, As, Sb, B</strong>. Pueden beber más de un vaso de agua.</p>
+                <p data-lang="ca">Elements <strong>P, As, Sb, B</strong>. Poden beure més d'un got d'aigua.</p>
+                <p data-lang="en">Elements <strong>P, As, Sb, B</strong>. They can drink more than one glass of water.</p>
+
+                <div style="background:var(--surface); border:1px solid var(--border); padding:10px; border-radius:10px; font-size:0.85rem;">
+                    <strong>Meta</strong> = 1 Óxido + 1 \(H_2O\)<br>
+                    <strong>Piro</strong> = 1 Óxido + 2 \(H_2O\)<br>
+                    <strong>Orto</strong> = 1 Óxido + 3 \(H_2O\)<br>
+                    <span style="color:var(--primary); font-weight:bold;" data-lang="es">*Si no dice nada, es ORTO.</span>
+                    <span style="color:var(--primary); font-weight:bold;" data-lang="ca">*Si no diu res, és ORTO.</span>
+                    <span style="color:var(--primary); font-weight:bold;" data-lang="en">*If omitted, it's ORTHO.</span>
+                </div>
+            </div>
+            
+             <div class="card c-amber">
+                <div class="icon-box">🔩</div>
+                <h3 data-lang="es">Metales Ácidos (Cr, Mn)</h3>
+                <h3 data-lang="ca">Metalls Àcids (Cr, Mn)</h3>
+                <h3 data-lang="en">Acid Metals (Cr, Mn)</h3>
+                
+                <p data-lang="es">Algunos metales con valencias muy altas se comportan como no metales.</p>
+                <p data-lang="ca">Alguns metalls amb valències altes es comporten com no metalls.</p>
+                <p data-lang="en">Some metals with high valences act as non-metals.</p>
+                
+                 <div style="font-size:0.9rem; margin-top:10px;">
+                    <strong>Cromo (+6):</strong> \(H_2CrO_4\) <br>
+                    <strong>Manganeso (+7):</strong> \(HMnO_4\)
+                </div>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Ácidos (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs d'Àcids (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Acid Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Halógenos (Cl, Br, I)</span>
+            <div class="gym-grid">
+                <details>
+                    <summary><span data-lang="es">Ácido hipocloroso</span><span data-lang="ca">Àcid hipoclorós</span><span data-lang="en">Hypochlorous acid</span></summary>
+                    <div class="answer">HClO</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido cloroso</span><span data-lang="ca">Àcid clorós</span><span data-lang="en">Chlorous acid</span></summary>
+                    <div class="answer">HClO₂</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido clórico</span><span data-lang="ca">Àcid clòric</span><span data-lang="en">Chloric acid</span></summary>
+                    <div class="answer">HClO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido perclórico</span><span data-lang="ca">Àcid perclòric</span><span data-lang="en">Perchloric acid</span></summary>
+                    <div class="answer">HClO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido hipobromoso</span><span data-lang="ca">Àcid hipobromós</span><span data-lang="en">Hypobromous acid</span></summary>
+                    <div class="answer">HBrO</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido brómico</span><span data-lang="ca">Àcid bròmic</span><span data-lang="en">Bromic acid</span></summary>
+                    <div class="answer">HBrO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido peryódico</span><span data-lang="ca">Àcid periòdic</span><span data-lang="en">Periodic acid</span></summary>
+                    <div class="answer">HIO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido yodoso</span><span data-lang="ca">Àcid iodós</span><span data-lang="en">Iodous acid</span></summary>
+                    <div class="answer">HIO₂</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido perbrómico</span><span data-lang="ca">Àcid perbròmic</span><span data-lang="en">Perbromic acid</span></summary>
+                    <div class="answer">HBrO₄</div>
+                </details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 2: S, Se, Te, C, N</span>
+            <div class="gym-grid">
+                <details>
+                    <summary><span data-lang="es">Ácido sulfúrico</span><span data-lang="ca">Àcid sulfúric</span><span data-lang="en">Sulfuric acid</span></summary>
+                    <div class="answer">H₂SO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido sulfuroso</span><span data-lang="ca">Àcid sulfurós</span><span data-lang="en">Sulfurous acid</span></summary>
+                    <div class="answer">H₂SO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido nítrico</span><span data-lang="ca">Àcid nítric</span><span data-lang="en">Nitric acid</span></summary>
+                    <div class="answer">HNO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido nitroso</span><span data-lang="ca">Àcid nitrós</span><span data-lang="en">Nitrous acid</span></summary>
+                    <div class="answer">HNO₂</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido carbónico</span><span data-lang="ca">Àcid carbònic</span><span data-lang="en">Carbonic acid</span></summary>
+                    <div class="answer">H₂CO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido selénico</span><span data-lang="ca">Àcid selènic</span><span data-lang="en">Selenic acid</span></summary>
+                    <div class="answer">H₂SeO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido teluroso</span><span data-lang="ca">Àcid tel·lurós</span><span data-lang="en">Tellurous acid</span></summary>
+                    <div class="answer">H₂TeO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido silícico (Meta)</span><span data-lang="ca">Àcid silícic</span><span data-lang="en">Silicic acid</span></summary>
+                    <div class="answer">H₂SiO₃</div>
+                </details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 3: P, As, Sb (Especiales)</span>
+            <div class="gym-grid">
+                <details>
+                    <summary><span data-lang="es">Ácido fosfórico (Orto)</span><span data-lang="ca">Àcid fosfòric</span><span data-lang="en">Phosphoric acid</span></summary>
+                    <div class="answer">H₃PO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido metafosfórico</span><span data-lang="ca">Àcid metafosfòric</span><span data-lang="en">Metaphosphoric acid</span></summary>
+                    <div class="answer">HPO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido pirofosfórico</span><span data-lang="ca">Àcid pirofosfòric</span><span data-lang="en">Pyrophosphoric acid</span></summary>
+                    <div class="answer">H₄P₂O₇</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido arsénico</span><span data-lang="ca">Àcid arsènic</span><span data-lang="en">Arsenic acid</span></summary>
+                    <div class="answer">H₃AsO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido antimonioso</span><span data-lang="ca">Àcid antimoniós</span><span data-lang="en">Antimonous acid</span></summary>
+                    <div class="answer">H₃SbO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido bórico</span><span data-lang="ca">Àcid bòric</span><span data-lang="en">Boric acid</span></summary>
+                    <div class="answer">H₃BO₃</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido difosfórico</span><span data-lang="ca">Àcid difosfòric</span><span data-lang="en">Diphosphoric acid</span></summary>
+                    <div class="answer">H₄P₂O₇</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido metaarsénico</span><span data-lang="ca">Àcid metaarsènic</span><span data-lang="en">Metaarsenic acid</span></summary>
+                    <div class="answer">HAsO₃</div>
+                </details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--accent-soft); color:var(--accent)">Nivel 4: Metales y Reto</span>
+            <div class="gym-grid">
+                <details>
+                    <summary><span data-lang="es">Ácido crómico</span><span data-lang="ca">Àcid cròmic</span><span data-lang="en">Chromic acid</span></summary>
+                    <div class="answer">H₂CrO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido dicrómico</span><span data-lang="ca">Àcid dicròmic</span><span data-lang="en">Dichromic acid</span></summary>
+                    <div class="answer">H₂Cr₂O₇</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido permangánico</span><span data-lang="ca">Àcid permangànic</span><span data-lang="en">Permanganic acid</span></summary>
+                    <div class="answer">HMnO₄</div>
+                </details>
+                <details>
+                    <summary><span data-lang="es">Ácido mangánico</span><span data-lang="ca">Àcid mangànic</span><span data-lang="en">Manganic acid</span></summary>
+                    <div class="answer">H₂MnO₄</div>
+                </details>
+                
+                <details>
+                    <summary>HNO₃</summary>
+                    <div class="answer"><span data-lang="es">Ácido nítrico</span><span data-lang="ca">Àcid nítric</span><span data-lang="en">Nitric acid</span></div>
+                </details>
+                <details>
+                    <summary>H₂SO₄</summary>
+                    <div class="answer"><span data-lang="es">Ácido sulfúrico</span><span data-lang="ca">Àcid sulfúric</span><span data-lang="en">Sulfuric acid</span></div>
+                </details>
+                <details>
+                    <summary>H₃PO₄</summary>
+                    <div class="answer"><span data-lang="es">Ácido fosfórico</span><span data-lang="ca">Àcid fosfòric</span><span data-lang="en">Phosphoric acid</span></div>
+                </details>
+                <details>
+                    <summary>HClO</summary>
+                    <div class="answer"><span data-lang="es">Ácido hipocloroso</span><span data-lang="ca">Àcid hipoclorós</span><span data-lang="en">Hypochlorous acid</span></div>
+                </details>
+                <details>
+                    <summary>H₂CO₃</summary>
+                    <div class="answer"><span data-lang="es">Ácido carbónico</span><span data-lang="ca">Àcid carbònic</span><span data-lang="en">Carbonic acid</span></div>
+                </details>
+                <details>
+                    <summary>HBrO₄</summary>
+                    <div class="answer"><span data-lang="es">Ácido perbrómico</span><span data-lang="ca">Àcid perbròmic</span><span data-lang="en">Perbromic acid</span></div>
+                </details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            // Quitar clases anteriores
+            document.body.classList.remove('lang-es', 'lang-ca', 'lang-en');
+            // Añadir nueva clase
+            document.body.classList.add('lang-' + lang);
+            
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
