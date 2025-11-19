@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ácido-Base | Nivel Selectividad</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* --- PALETA TEORÍA ORGÁNICA --- */
+    --bg-color: #ffffff;
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    
+    --accent: #3b82f6; /* Royal Blue */
+    --accent-glow: rgba(59, 130, 246, 0.15);
+    --highlight: #f59e0b; /* Amber */
+    
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    
+    --accent: #60a5fa;
+    --accent-glow: rgba(96, 165, 250, 0.1);
+    
+    --glass-bg: rgba(24, 24, 27, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    
+    --card-hover: rgba(39, 39, 42, 0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* ORBES */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.4; }
+  .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; }
+  .orb-2 { width: 300px; height: 300px; background: var(--highlight); bottom: -50px; left: -50px; opacity: 0.2; }
+
+  /* GLASS */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+  }
+
+  /* TIPOGRAFÍA */
+  h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+  h2 { font-size: 1.8rem; margin: 3rem 0 1.5rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
+  h3 { font-size: 1.3rem; margin: 1.5rem 0 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+  strong { color: var(--text-primary); font-weight: 600; }
+
+  .chem {
+    font-family: var(--font-chem); font-size: 0.9em; color: var(--accent);
+    background: var(--accent-glow); padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+  }
+
+  .math-box {
+    background: var(--accent-glow); border-left: 4px solid var(--accent);
+    padding: 15px 20px; margin: 20px 0; font-family: var(--font-chem); font-size: 1.05rem;
+    color: var(--text-primary); text-align: center; border-radius: 0 4px 4px 0;
+  }
+
+  /* NAV & HEADER */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  .header {
+    position: sticky; top: 20px; z-index: 100; padding: 16px 24px; margin-bottom: 40px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 2rem; line-height: 1; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; }
+  .logo-text div:last-child { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 16px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--accent-glow); color: var(--accent); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary); color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.5s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden; }
+
+  /* TABLAS */
+  .chem-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+  .chem-table th { text-align: left; color: var(--text-secondary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .chem-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-primary); }
+  .chem-table tr:hover td { background: var(--accent-glow); }
+
+  /* EJERCICIOS (ENUNCIADOS) */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+  
+  details.ex {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { background: var(--card-hover); border-color: var(--accent); }
+  
+  summary {
+    padding: 20px; font-weight: 500; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  /* Estilo del número/tipo */
+  .ex-badge {
+    font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid;
+    white-space: nowrap; align-self: start; margin-top: 2px; font-weight: 700;
+  }
+  .b-ebau { border-color: var(--accent); color: var(--accent); }
+  .b-hard { border-color: var(--highlight); color: var(--highlight); }
+  
+  /* Estilo del enunciado */
+  .ex-text { font-size: 1rem; color: var(--text-primary); line-height: 1.5; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.02); }
+
+  .solution {
+    padding: 24px; background: var(--bg-color);
+    font-family: var(--font-ui); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;
+    border-top: 1px solid var(--glass-border);
+  }
+  .res-box {
+    margin-top: 15px; padding: 10px; border: 1px dashed var(--accent); border-radius: 6px;
+    font-family: var(--font-chem); color: var(--text-primary); text-align: center; font-weight: bold;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🧪</div>
+    <div class="logo-text">
+      <div>Química Selectividad</div>
+      <div>Ácido-Base Avanzado</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="teoria1" aria-selected="true">1. Teoría Brønsted</button>
+    <button class="nav-btn" data-target="teoria2" aria-selected="false">2. pH y Constantes</button>
+    <button class="nav-btn" data-target="teoria3" aria-selected="false">3. Hidrólisis/Buffer</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas EBAU (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="teoria1" class="content-section" data-active>
+    <div class="card glass">
+      <h1>Teoría de Brønsted-Lowry</h1>
+      <p>En Selectividad, la teoría fundamental es la de Brønsted-Lowry (transferencia de protones). Un ácido cede H⁺ y se convierte en su <strong>base conjugada</strong>; una base acepta H⁺ y se convierte en su <strong>ácido conjugado</strong>.</p>
+      
+      <h3>Pares Conjugados</h3>
+      <div class="math-box">Ácido₁ + Base₂ ⇌ Base₁ + Ácido₂</div>
+      <p>Ejemplo del Amoniaco en agua:</p>
+      <div class="math-box">NH₃ (Base) + H₂O (Ácido) ⇌ NH₄⁺ (Ác. Conjugado) + OH⁻ (Base Conj.)</div>
+      
+      <h3>Fuerza Relativa</h3>
+      <p>Cuanto más fuerte es un ácido, más débil es su base conjugada, y viceversa. La relación matemática clave a 25°C es:</p>
+      <div class="math-box">Ka · Kb = Kw = 10⁻¹⁴</div>
+      
+      <table class="chem-table">
+        <thead><tr><th>Ácido</th><th>Base Conjugada</th><th>Naturaleza</th></tr></thead>
+        <tbody>
+          <tr><td>HCl (Fuerte)</td><td>Cl⁻</td><td>Base muy débil (neutra en hidrólisis)</td></tr>
+          <tr><td>CH₃COOH (Débil)</td><td>CH₃COO⁻</td><td>Base débil (sufre hidrólisis básica)</td></tr>
+          <tr><td>NH₄⁺ (Débil)</td><td>NH₃</td><td>Base débil</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="teoria2" class="content-section">
+    <div class="card glass">
+      <h1>Cálculo de pH en Ácidos/Bases Débiles</h1>
+      
+      <h3>La Ley de Dilución de Ostwald</h3>
+      <p>Para un ácido débil monoprótico <span class="chem">HA ⇌ H⁺ + A⁻</span> con concentración inicial <span class="chem">C₀</span> y grado de disociación <span class="chem">α</span>:</p>
+      <div class="math-box">
+        [H⁺] = C₀ · α <br>
+        Ka = (C₀α²) / (1 - α)
+      </div>
+      
+      <h3>Aproximaciones Matemáticas</h3>
+      <p>En Selectividad, si <span class="chem">Ka < 10⁻⁴</span> (o si <span class="chem">C₀/Ka > 1000</span>), se puede despreciar <span class="chem">α</span> en el denominador (1 - α ≈ 1).</p>
+      <div class="math-box">
+        Ka ≈ C₀ · α²  ⟹  α ≈ √(Ka / C₀)
+      </div>
+      <p>Si no se cumple la condición, <strong>debes resolver la ecuación de segundo grado</strong> sin falta.</p>
+    </div>
+  </section>
+
+  <section id="teoria3" class="content-section">
+    <div class="card glass">
+      <h1>Hidrólisis y Volumetría</h1>
+
+      <h3>Hidrólisis de Sales</h3>
+      <p>Es la reacción de los iones de una sal con el agua. Solo se hidrolizan los iones procedentes de ácidos o bases <strong>débiles</strong>.</p>
+      <ul>
+        <li><strong>NH₄Cl:</strong> Proviene de Base Débil (NH₃). El NH₄⁺ se hidroliza (ácido). <span class="chem">pH < 7</span>.</li>
+        <li><strong>NaCH₃COO:</strong> Proviene de Ácido Débil (Acético). El Acetato se hidroliza (base). <span class="chem">pH > 7</span>.</li>
+        <li><strong>NaCl:</strong> Proviene de Fuertes. No hay hidrólisis. <span class="chem">pH = 7</span>.</li>
+      </ul>
+
+      <h3>Constante de Hidrólisis (Kh)</h3>
+      <div class="math-box">Kh = Kw / Ka (del ácido débil) &emsp; ó &emsp; Kh = Kw / Kb (de la base débil)</div>
+
+      <h3>Valoración Ácido-Base</h3>
+      <p>En el <strong>Punto de Equivalencia</strong>, los moles de H⁺ igualan a los de OH⁻. <br><strong>OJO:</strong> El pH en el punto de equivalencia NO siempre es 7. Depende de la sal formada.</p>
+      <div class="math-box">Va · Ma · n(H) = Vb · Mb · n(OH)</div>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card glass">
+      <h2>Problemas Tipo Examen (30)</h2>
+      <p>Ejercicios completos. Usa calculadora, tabla periódica y presta atención a la estequiometría.</p>
+
+      <div class="ex-grid">
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Se disuelven 6,0 g de ácido acético (CH₃COOH) en agua hasta obtener 500 mL de disolución. Calcule el pH y el grado de disociación (α). Datos: Ka = 1,8·10⁻⁵; C=12, H=1, O=16.</span>
+          </summary>
+          <div class="solution">
+            1. Molaridad inicial: Mm = 60 g/mol. n = 6/60 = 0.1 mol. M = 0.1/0.5 = 0.2 M.<br>
+            2. Equilibrio: x² / (0.2 - x) = 1.8·10⁻⁵. Aprox: x² = 0.2 · 1.8·10⁻⁵.<br>
+            3. x = [H⁺] = 1.9·10⁻³ M.<br>
+            4. pH = -log(1.9·10⁻³) = 2.72.<br>
+            5. α = x / C₀ = 1.9·10⁻³ / 0.2 = 0.0095 (0.95%).
+            <div class="res-box">pH = 2.72 ; α = 0.95%</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Una disolución de amoniaco (NH₃) 0,15 M tiene un pH de 11,2. Calcule la constante de basicidad (Kb) del amoniaco y su grado de disociación.</span>
+          </summary>
+          <div class="solution">
+            1. pOH = 14 - 11.2 = 2.8. [OH⁻] = 10^(-2.8) = 1.58·10⁻³ M.<br>
+            2. α = [OH⁻] / C₀ = 1.58·10⁻³ / 0.15 = 0.0105.<br>
+            3. Kb = (C₀α²) / (1-α) ≈ C₀α² = 0.15 · (0.0105)².<br>
+            4. Ajustando sin aproximar: (1.58·10⁻³)² / (0.15 - 1.58·10⁻³).
+            <div class="res-box">Kb = 1.69·10⁻⁵ ; α = 1.05%</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Calcula el pH de una disolución formada al diluir 10 mL de ácido clorhídrico comercial (densidad 1,18 g/mL, riqueza 35% en peso) hasta un volumen final de 250 mL. (H=1, Cl=35.5)</span>
+          </summary>
+          <div class="solution">
+            1. Masa disolución inicial: 10 mL · 1.18 g/mL = 11.8 g.<br>
+            2. Masa soluto (HCl): 11.8 g · 0.35 = 4.13 g.<br>
+            3. Moles HCl: 4.13 / 36.5 = 0.113 mol.<br>
+            4. Molaridad final: 0.113 mol / 0.250 L = 0.452 M.<br>
+            5. Como es fuerte: [H⁺] = 0.452 M.
+            <div class="res-box">pH = 0.34</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Justifique mediante reacciones si el pH de las siguientes sales será ácido, básico o neutro: a) KNO₃, b) NH₄Cl, c) Na₂CO₃.</span>
+          </summary>
+          <div class="solution">
+            a) KNO₃: Viene de KOH (Fuerte) y HNO₃ (Fuerte). No hidrólisis. <strong>NEUTRO</strong>.<br>
+            b) NH₄Cl: Viene de NH₃ (Débil) y HCl (Fuerte). El NH₄⁺ se hidroliza: NH₄⁺ + H₂O ⇌ NH₃ + H₃O⁺. <strong>ÁCIDO</strong>.<br>
+            c) Na₂CO₃: Viene de NaOH (Fuerte) y H₂CO₃ (Débil). El CO₃²⁻ se hidroliza: CO₃²⁻ + H₂O ⇌ HCO₃⁻ + OH⁻. <strong>BÁSICO</strong>.
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Se mezclan 200 mL de HCl 0,2 M con 150 mL de Ca(OH)₂ 0,1 M. Calcule el pH de la disolución resultante. (Suponga volúmenes aditivos).</span>
+          </summary>
+          <div class="solution">
+            1. Moles H⁺ (del HCl): 0.2 L · 0.2 M = 0.04 mol.<br>
+            2. Moles OH⁻ (del Ca(OH)₂): 0.15 L · 0.1 M · 2 (estequiometría!) = 0.03 mol.<br>
+            3. Reacción: H⁺ + OH⁻ → H₂O. Sobran: 0.04 - 0.03 = 0.01 mol de H⁺.<br>
+            4. Volumen total: 0.35 L. [H⁺] = 0.01 / 0.35 = 0.0286 M.
+            <div class="res-box">pH = 1.54</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Calcule el pH de una disolución 0,5 M de acetato de sodio (NaCH₃COO). Datos: Ka(CH₃COOH) = 1,8·10⁻⁵.</span>
+          </summary>
+          <div class="solution">
+            1. Es hidrólisis básica del anión acetato. Kh = Kw / Ka = 10⁻¹⁴ / 1.8·10⁻⁵ = 5.56·10⁻¹⁰.<br>
+            2. Eq: Acetato + H₂O ⇌ Acético + OH⁻.<br>
+            3. [OH⁻] = √(Kh · C₀) = √(5.56·10⁻¹⁰ · 0.5) = 1.67·10⁻⁵ M.<br>
+            4. pOH = 4.78. pH = 14 - 4.78.
+            <div class="res-box">pH = 9.22</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Para neutralizar 25 mL de una disolución de KOH se han gastado 15 mL de H₂SO₄ 0,2 M. Calcule la molaridad de la base y los gramos de KOH por litro. (K=39, O=16, H=1).</span>
+          </summary>
+          <div class="solution">
+            1. Reacción: 2 KOH + H₂SO₄ → K₂SO₄ + 2 H₂O.<br>
+            2. Moles ácido: 0.015 L · 0.2 M = 0.003 mol H₂SO₄.<br>
+            3. Moles base: 2 · 0.003 = 0.006 mol KOH.<br>
+            4. Molaridad KOH: 0.006 mol / 0.025 L = 0.24 M.<br>
+            5. g/L = 0.24 mol/L · 56 g/mol.
+            <div class="res-box">0.24 M ; 13.44 g/L</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Calcula el volumen de ácido sulfúrico del 98% de riqueza y densidad 1,84 g/mL necesario para preparar 500 mL de disolución 0,5 M.</span>
+          </summary>
+          <div class="solution">
+            1. Moles necesarios: 0.5 L · 0.5 mol/L = 0.25 mol H₂SO₄.<br>
+            2. Masa necesaria: 0.25 mol · 98 g/mol = 24.5 g puros.<br>
+            3. Masa disolución comercial: 24.5 g / 0.98 = 25 g disolución.<br>
+            4. Volumen: m / d = 25 g / 1.84 g/mL.
+            <div class="res-box">V = 13.59 mL</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Se dispone de una disolución de ácido benzoico (C₆H₅COOH) 0.2 M. Si su Ka es 6.4·10⁻⁵, ¿cuál será el grado de disociación? ¿Cómo cambiará si añadimos benzoato de sodio?</span>
+          </summary>
+          <div class="solution">
+            1. x² / 0.2 = 6.4·10⁻⁵ → x = √(1.28·10⁻⁵) = 3.58·10⁻³ M.<br>
+            2. α = x/C₀ = 0.0179 (1.79%).<br>
+            3. Al añadir benzoato (ión común), el equilibrio se desplaza a la izquierda (formación de ácido sin disociar), por lo que α disminuye.
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Calcule el pH de una disolución amortiguadora que contiene NH₃ 0.2 M y NH₄Cl 0.3 M. (Kb NH₃ = 1.8·10⁻⁵).</span>
+          </summary>
+          <div class="solution">
+            1. Usamos Henderson para bases o calculamos pOH.<br>
+            2. [OH⁻] = Kb · [Base]/[Sal] = 1.8·10⁻⁵ · (0.2 / 0.3) = 1.2·10⁻⁵ M.<br>
+            3. pOH = -log(1.2·10⁻⁵) = 4.92.<br>
+            4. pH = 14 - 4.92.
+            <div class="res-box">pH = 9.08</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">pH de disolución 0.01 M de HNO₃.</span></summary><div class="solution">Fuerte: pH = -log(0.01) = <span class="res-box">2.0</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">pH de disolución 0.01 M de NaOH.</span></summary><div class="solution">pOH = 2.0 → pH = <span class="res-box">12.0</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Es posible un pH negativo?</span></summary><div class="solution">Sí, en ácidos muy concentrados (>1 M). Ej: HCl 2M tiene pH ≈ -0.3.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Ordene por pH creciente: HCl 0.1M, CH₃COOH 0.1M, NaCl 0.1M.</span></summary><div class="solution">HCl (ácido fuerte, menor pH) < CH₃COOH (débil) < NaCl (neutro, pH 7).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Qué indicador usar para valorar NH₃ con HCl?</span></summary><div class="solution">El punto equivalencia es ácido (hidrólisis NH₄⁺). Usar Rojo de Metilo (viraje 4-6), no fenolftaleína.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">pH mezcla: 50 mL HCl 0.1M + 50 mL NaOH 0.2M.</span></summary><div class="solution">Sobran 5 mmol OH⁻ en 100 mL. [OH⁻]=0.05. pOH=1.3. <span class="res-box">pH = 12.7</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">pKa de un ácido si Ka = 10⁻⁵.</span></summary><div class="solution">pKa = -log(10⁻⁵) = <span class="res-box">5</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿El agua pura a 80ºC tiene pH 7?</span></summary><div class="solution">No, Kw aumenta con T. A 80ºC pH neutro < 7 (ej. 6.5), pero sigue siendo neutra.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Concentración de iones H⁺ en pH 3.5.</span></summary><div class="solution">[H⁺] = 10^(-3.5) = <span class="res-box">3.16·10⁻⁴ M</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Qué especie es anfótera: HCO₃⁻ o SO₄²⁻?</span></summary><div class="solution">HCO₃⁻ (puede ceder H⁺ a CO₃²⁻ o captar H⁺ a H₂CO₃).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">g de Ba(OH)₂ para 2L a pH 13. (Mm=171).</span></summary><div class="solution">[OH⁻]=0.1. Disocia 2 OH. [Ba(OH)₂]=0.05. Moles=0.1. <span class="res-box">17.1 g</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Hidrólisis de KCN.</span></summary><div class="solution">CN⁻ + H₂O ⇌ HCN + OH⁻. Disolución <span class="res-box">Básica</span>.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Hidrólisis de Fe(NO₃)₃.</span></summary><div class="solution">Fe³⁺ + H₂O ⇌ Fe(OH)²⁺ + H⁺. Disolución <span class="res-box">Ácida</span>.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Si diluyo un ácido débil, ¿qué pasa con α?</span></summary><div class="solution">Aumenta (Ley de dilución de Ostwald). Al diluir, el equilibrio se desplaza a disociar más.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Par conjugado del H₂PO₄⁻ como ácido.</span></summary><div class="solution">Si actúa como ácido pierde H⁺ → <span class="res-box">HPO₄²⁻</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Par conjugado del H₂PO₄⁻ como base.</span></summary><div class="solution">Si actúa como base gana H⁺ → <span class="res-box">H₃PO₄</span></div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">pH de H₂SO₄ 10⁻⁸ M (Muy diluido).</span></summary><div class="solution">No es 8. Hay que sumar los protones del agua. pH ≈ 6.98 (ligeramente ácido).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Valoración HCl con NaOH. ¿pH en punto equiv?</span></summary><div class="solution">Sal NaCl (Fuerte-Fuerte). No hidrólisis. <span class="res-box">pH = 7</span>.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Si mezclo volúmenes iguales de pH 2 y pH 4.</span></summary><div class="solution">Aprox pH 2.3. No es el promedio (3). Manda la concentración mayor (10⁻² vs 10⁻⁴).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Ácido fuerte monoprótico. Si C₀=0.5M, ¿pH?</span></summary><div class="solution">pH = -log(0.5) = <span class="res-box">0.30</span></div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Lógica de Pestañas
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Modo Oscuro
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
