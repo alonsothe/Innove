@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark" data-theme="python">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Python Master Completo</title>
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= TOKENS & ESTILOS ================= */
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      /* Paleta Python Dark (Inspirada en VS Code) */
+      --bg:#0d1117; --bg2:#161b22; 
+      --text:#e6edf3; --muted:#8b949e;
+      
+      --py-blue: #3776AB; 
+      --py-yellow: #FFD43B;
+      --py-green: #3fb950; 
+      --py-purple: #d2a8ff;
+      --py-red: #ff7b72;
+      
+      --glass:rgba(22,27,34,.75); 
+      --glass-strong:rgba(13,17,23,.95); 
+      --border:rgba(48,54,61,.7);
+      
+      --shadow:0 18px 48px rgba(0,0,0,.6);
+      --radius: 12px;
+      --maxw:1200px;
+      
+      --font-ui: 'Inter', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+    }
+
+    html[data-scheme="light"]{
+      --bg:#ffffff; --bg2:#f6f8fa; 
+      --text:#1f2328; --muted:#656d76;
+      --glass:rgba(255,255,255,.85); 
+      --glass-strong:#fff; 
+      --border:rgba(208,215,222,.8);
+    }
+
+    body{
+      margin:0; font-family:var(--font-ui); color:var(--text);
+      background: radial-gradient(circle at 50% 0%, var(--bg2), var(--bg));
+      line-height:1.6; min-height:100vh; padding-bottom:100px;
+    }
+
+    /* Canvas Partículas */
+    #bgParticles{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.3}
+
+    /* Grid de fondo técnico */
+    .bg-grid{
+      position: fixed; inset: 0; z-index: -2; opacity: 0.03;
+      background-image: linear-gradient(var(--text) 1px, transparent 1px),
+      linear-gradient(90deg, var(--text) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* NAVBAR */
+    .appbar-wrap{position:sticky; top:20px; z-index:100; padding:0 20px; margin-bottom: 40px;}
+    .appbar{
+      height:70px; max-width: var(--maxw); margin: 0 auto;
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:20px;
+      padding:0 24px; border-radius:18px; 
+      background:var(--glass-strong); backdrop-filter: blur(20px);
+      border:1px solid var(--border); box-shadow:var(--shadow);
+    }
+
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:800; font-size:1.2rem; letter-spacing:-0.5px;}
+    .logo{font-size: 1.6rem;}
+    
+    .tabs{display:flex; gap:6px; overflow:auto; scrollbar-width:none;}
+    .pill{
+      padding:8px 18px; border-radius:8px; border:1px solid transparent; background:transparent; color:var(--muted);
+      font-weight:600; cursor:pointer; transition:0.2s; font-family: var(--font-ui); font-size: 0.95rem;
+    }
+    .pill:hover{color:var(--text); background:rgba(127,127,127,0.1);}
+    .pill[aria-selected="true"]{background:var(--glass); color:var(--py-blue); border-color:var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+
+    .theme-toggle{
+      background:transparent; border:1px solid var(--border); color:var(--text);
+      width:40px; height:40px; border-radius:50%; cursor:pointer; display:grid; place-items:center; font-size:1.2rem;
+      transition: transform 0.2s;
+    }
+    .theme-toggle:hover{transform: rotate(15deg); background: var(--glass);}
+
+    /* HERO */
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px;}
+    .hero{text-align:center; padding:60px 20px 40px;}
+    .hero h1{
+      font-size:clamp(2.5rem, 5vw, 4.5rem); margin:0 0 16px; letter-spacing:-0.04em; font-weight: 800;
+      background: linear-gradient(135deg, var(--py-blue) 30%, var(--py-yellow) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p{font-size:1.2rem; color:var(--muted); max-width:700px; margin:0 auto;}
+
+    /* CODE TICKER */
+    .code-ticker{
+      background: #0d1117; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      padding:14px 0; overflow:hidden; white-space:nowrap; position:relative; margin-bottom: 50px;
+    }
+    .ticker-track{display:flex; gap:50px; animation:scroll 40s linear infinite;}
+    .ticker-item{font-family:var(--font-code); font-size:0.9rem; color:var(--muted);}
+    .k{color:#ff7b72} .f{color:#d2a8ff} .s{color:#a5d6ff} .c{color:#8b949e} .n{color:#79c0ff}
+    @keyframes scroll{0%{transform:translateX(0)} 100%{transform:translateX(-50%)}}
+
+    /* SECCIONES Y CARDS */
+    section[hidden]{display:none;}
+    section{animation: fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:translateY(0)}}
+
+    .grid-theory{
+      display: grid; gap: 40px;
+    }
+
+    .theory-card {
+      background:var(--glass); border:1px solid var(--border); border-radius:var(--radius);
+      padding:32px; position:relative; overflow:hidden;
+    }
+    .theory-card h2 {
+      font-size: 1.8rem; margin: 0 0 20px; color: var(--py-blue); border-bottom: 2px solid var(--border); padding-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .theory-card h3 {
+      font-size: 1.3rem; margin: 25px 0 10px; color: var(--text); font-weight: 700;
+    }
+    .theory-card p {
+      font-size: 1.05rem; color: var(--muted); margin-bottom: 15px; text-align: justify;
+    }
+    .theory-card ul {
+      padding-left: 20px; color: var(--muted); margin-bottom: 15px;
+    }
+    .theory-card li { margin-bottom: 8px; }
+    .theory-card strong { color: var(--text); }
+
+    /* BLOQUES DE CÓDIGO */
+    .code-block{
+      background: #0d1117; padding:20px; border-radius:8px; margin:15px 0;
+      font-family:var(--font-code); font-size:0.9rem; color:#e6edf3; border:1px solid var(--border);
+      overflow-x: auto; position: relative;
+    }
+    .code-block::before {
+      content: "Python"; position: absolute; top: 0; right: 0; background: var(--border); 
+      color: var(--text); font-size: 0.7rem; padding: 2px 8px; border-bottom-left-radius: 8px;
+    }
+
+    /* EJERCICIOS */
+    .ex-list{display:flex; flex-direction:column; gap:16px; max-width:900px; margin:0 auto;}
+    
+    details.ex{
+      background:var(--glass); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+      transition: all 0.2s ease;
+    }
+    details.ex:hover{border-color:var(--py-yellow); transform: translateY(-2px);}
+    details[open]{border-color:var(--py-blue); background: var(--glass-strong);}
+    
+    summary{
+      padding:24px; cursor:pointer; font-weight:600; list-style:none; display:flex; justify-content:space-between; align-items:center; font-size: 1.1rem;
+    }
+    summary::-webkit-details-marker{display:none}
+    summary::after { content: '+'; font-size: 1.5rem; font-weight: 300; color: var(--muted); }
+    details[open] summary::after { content: '-'; color: var(--py-blue); }
+    
+    .badge{
+      font-size:0.75rem; padding:4px 10px; border-radius:6px; font-family:var(--font-code); text-transform:uppercase; letter-spacing:1px; font-weight: 700;
+    }
+    .b-basic{background:rgba(46, 160, 67, 0.15); color:#3fb950; border: 1px solid #3fb950;}
+    .b-inter{background:rgba(210, 153, 34, 0.15); color:#d29922; border: 1px solid #d29922;}
+    .b-adv{background:rgba(248, 81, 73, 0.15); color:#f85149; border: 1px solid #f85149;}
+
+    .solution{
+      padding:30px; border-top:1px solid var(--border); background:rgba(0,0,0,0.2);
+    }
+
+    @media(max-width:768px){
+      .hero h1{font-size:2.8rem;}
+      .appbar{padding:0 15px; gap: 10px;}
+      .brand span{display: none;} /* Ocultar texto logo en móvil */
+      .logo{font-size: 2rem;}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <canvas id="bgParticles"></canvas>
+
+  <div class="appbar-wrap">
+    <header class="appbar">
+      <a href="#" class="brand">
+        <span class="logo">🐍</span>
+        <span>InnovePy</span>
+      </a>
+      <nav class="tabs">
+        <button class="pill" aria-selected="true" onclick="switchTab('teoria')">Teoría Completa</button>
+        <button class="pill" aria-selected="false" onclick="switchTab('ejercicios')">Ejercicios (30)</button>
+      </nav>
+      <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </header>
+  </div>
+
+  <section class="hero">
+    <h1>Python Master Class</h1>
+    <p>La guía definitiva de la sintaxis, estructuras, paradigmas y ecosistema de Python. Desde `print()` hasta Metaclases y Concurrencia.</p>
+  </section>
+
+  <div class="code-ticker">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="k">import</span> this</div>
+      <div class="ticker-item"><span class="k">def</span> <span class="f">main</span>(): <span class="k">return</span> 0</div>
+      <div class="ticker-item">users = [u <span class="k">for</span> u <span class="k">in</span> db <span class="k">if</span> u.active]</div>
+      <div class="ticker-item"><span class="k">class</span> <span class="f">NeuralNet</span>(nn.Module):</div>
+      <div class="ticker-item"><span class="k">async def</span> <span class="f">fetch_data</span>():</div>
+      <div class="ticker-item">df = pd.<span class="f">read_csv</span>(<span class="s">"data.csv"</span>)</div>
+      <div class="ticker-item">@dataclass <span class="k">class</span> <span class="f">Point</span>:</div>
+      <div class="ticker-item"><span class="k">import</span> this</div>
+      <div class="ticker-item"><span class="k">def</span> <span class="f">main</span>(): <span class="k">return</span> 0</div>
+      <div class="ticker-item">users = [u <span class="k">for</span> u <span class="k">in</span> db <span class="k">if</span> u.active]</div>
+      <div class="ticker-item"><span class="k">class</span> <span class="f">NeuralNet</span>(nn.Module):</div>
+      <div class="ticker-item"><span class="k">async def</span> <span class="f">fetch_data</span>():</div>
+    </div>
+  </div>
+
+  <main class="container">
+    
+    <section id="teoria">
+      <div class="grid-theory">
+        
+        <div class="theory-card">
+          <h2>1. Fundamentos del Lenguaje</h2>
+          <p>Python es un lenguaje interpretado, de alto nivel, tipado dinámico y fuertemente tipado. Todo en Python es un objeto.</p>
+          
+          <h3>Variables y Tipos Primitivos</h3>
+          <p>No se declaran tipos explícitos. El tipo se infiere en tiempo de ejecución.</p>
+          <ul>
+            <li><strong>int:</strong> Enteros de precisión arbitraria (<code>x = 10**100</code> es válido).</li>
+            <li><strong>float:</strong> Punto flotante (IEEE 754, doble precisión).</li>
+            <li><strong>bool:</strong> <code>True</code> y <code>False</code> (subclases de int, 1 y 0).</li>
+            <li><strong>str:</strong> Cadenas inmutables Unicode. Soportan f-strings (<code>f"Hola {nombre}"</code>).</li>
+            <li><strong>None:</strong> El objeto nulo (Singleton).</li>
+          </ul>
+
+          <h3>Control de Flujo</h3>
+          <p>La indentación (4 espacios) es obligatoria y define bloques de código. No hay llaves <code>{}</code>.</p>
+          <div class="code-block">
+<span class="k">if</span> x > 0:
+    print(<span class="s">"Positivo"</span>)
+<span class="k">elif</span> x == 0:
+    print(<span class="s">"Cero"</span>)
+<span class="k">else</span>:
+    print(<span class="s">"Negativo"</span>)
+
+<span class="c"># Operador ternario</span>
+estado = <span class="s">"Activo"</span> <span class="k">if</span> is_active <span class="k">else</span> <span class="s">"Inactivo"</span>
+          </div>
+
+          <h3>Bucles (Loops)</h3>
+          <p><code>for</code> itera sobre cualquier iterable. <code>while</code> ejecuta mientras la condición sea cierta.</p>
+          <div class="code-block">
+<span class="k">for</span> i <span class="k">in</span> range(5):  <span class="c"># 0, 1, 2, 3, 4</span>
+    <span class="k">if</span> i == 2: <span class="k">continue</span>
+    print(i)
+<span class="k">else</span>:
+    print(<span class="s">"Terminó sin break"</span>)
+          </div>
+        </div>
+
+        <div class="theory-card">
+          <h2>2. Estructuras de Datos</h2>
+          <p>Python posee estructuras integradas muy potentes y optimizadas en C.</p>
+
+          <h3>Listas (<code>list</code>)</h3>
+          <p>Secuencias mutables, ordenadas y heterogéneas.</p>
+          <div class="code-block">
+lst = [1, <span class="s">"dos"</span>, 3.0]
+lst.append(4)        <span class="c"># Añadir al final O(1)</span>
+x = lst.pop()        <span class="c"># Sacar del final O(1)</span>
+sub = lst[1:3]       <span class="c"># Slicing: desde índice 1 hasta 2</span>
+rev = lst[::-1]      <span class="c"># Copia invertida</span>
+          </div>
+
+          <h3>Tuplas (<code>tuple</code>)</h3>
+          <p>Secuencias inmutables. Más ligeras que las listas. Usadas para datos fijos y claves de diccionarios.</p>
+          <div class="code-block">
+punto = (10, 20)
+x, y = punto  <span class="c"># Desempaquetado (Unpacking)</span>
+          </div>
+
+          <h3>Diccionarios (<code>dict</code>)</h3>
+          <p>Mapas Hash (Tabla Hash). Claves inmutables, valores mutables. Búsqueda promedio O(1).</p>
+          <div class="code-block">
+user = {<span class="s">"id"</span>: 1, <span class="s">"name"</span>: <span class="s">"Ana"</span>}
+valor = user.get(<span class="s">"age"</span>, 18)  <span class="c"># Devuelve 18 si no existe 'age'</span>
+keys = user.keys()
+items = user.items() <span class="c"># Pares (key, value)</span>
+          </div>
+
+          <h3>Conjuntos (<code>set</code>)</h3>
+          <p>Colección no ordenada de elementos únicos. Útiles para operaciones matemáticas (unión, intersección) y eliminar duplicados.</p>
+          <div class="code-block">
+A = {1, 2, 3}
+B = {3, 4, 5}
+print(A & B) <span class="c"># Intersección: {3}</span>
+print(A | B) <span class="c"># Unión: {1, 2, 3, 4, 5}</span>
+          </div>
+        </div>
+
+        <div class="theory-card">
+          <h2>3. Funciones y Modularidad</h2>
+          <p>Funciones son objetos de primera clase (se pueden pasar como argumentos).</p>
+          
+          <h3>Argumentos</h3>
+          <ul>
+            <li><strong>Posicionales:</strong> Estándar.</li>
+            <li><strong>Nombrados (Keyword):</strong> <code>func(a=1)</code>.</li>
+            <li><strong>*args:</strong> Tupla de argumentos posicionales variables.</li>
+            <li><strong>**kwargs:</strong> Diccionario de argumentos nombrados variables.</li>
+          </ul>
+          <div class="code-block">
+<span class="k">def</span> <span class="f">super_func</span>(a, b=0, *args, **kwargs):
+    print(args)   <span class="c"># Tupla</span>
+    print(kwargs) <span class="c"># Diccionario</span>
+
+super_func(1, 2, 3, 4, mode=<span class="s">"fast"</span>)
+          </div>
+
+          <h3>Funciones Lambda</h3>
+          <p>Funciones anónimas de una sola línea. <code>lambda x: x**2</code>.</p>
+          
+          <h3>Ámbito (Scope) - LEGB</h3>
+          <p>Local, Enclosing (nonlocal), Global, Built-in.</p>
+        </div>
+
+        <div class="theory-card">
+          <h2>4. Programación Orientada a Objetos</h2>
+          <p>Clases, herencia múltiple y encapsulamiento (convención <code>_private</code>).</p>
+          
+          <h3>Clases y Métodos Mágicos (Dunder)</h3>
+          <p>Los métodos que empiezan y terminan con <code>__</code> definen comportamientos especiales.</p>
+          <div class="code-block">
+<span class="k">class</span> <span class="f">Vector</span>:
+    <span class="k">def</span> <span class="f">__init__</span>(self, x, y):
+        self.x = x
+        self.y = y
+    
+    <span class="k">def</span> <span class="f">__add__</span>(self, other):
+        <span class="c"># Sobrecarga operador +</span>
+        return Vector(self.x + other.x, self.y + other.y)
+        
+    <span class="k">def</span> <span class="f">__str__</span>(self):
+        return f"({self.x}, {self.y})"
+          </div>
+
+          <h3>Propiedades y Métodos Estáticos</h3>
+          <p>Uso de decoradores <code>@property</code>, <code>@staticmethod</code>, <code>@classmethod</code>.</p>
+        </div>
+
+        <div class="theory-card">
+          <h2>5. Python Avanzado</h2>
+          
+          <h3>Iteradores y Generadores</h3>
+          <p>Un generador usa <code>yield</code> para devolver valores uno a uno, ahorrando memoria (Lazy evaluation).</p>
+          <div class="code-block">
+<span class="k">def</span> <span class="f">fibonacci</span>():
+    a, b = 0, 1
+    <span class="k">while True</span>:
+        <span class="k">yield</span> a
+        a, b = b, a + b
+          </div>
+
+          <h3>Decoradores</h3>
+          <p>Funciones que modifican el comportamiento de otras funciones. Son "azúcar sintáctico" para funciones de orden superior.</p>
+          <div class="code-block">
+<span class="k">def</span> <span class="f">log</span>(func):
+    <span class="k">def</span> <span class="f">wrapper</span>(*args, **kwargs):
+        print(f"Llamando a {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@log
+<span class="k">def</span> <span class="f">suma</span>(a,b): return a+b
+          </div>
+
+          <h3>Gestores de Contexto (Context Managers)</h3>
+          <p>El bloque <code>with</code> asegura la liberación de recursos (archivos, sockets, locks).</p>
+          <div class="code-block">
+<span class="k">with</span> open(<span class="s">"file.txt"</span>, <span class="s">"r"</span>) <span class="k">as</span> f:
+    content = f.read()
+<span class="c"># El archivo se cierra automáticamente aquí</span>
+          </div>
+          
+          <h3>Concurrencia: GIL y AsyncIO</h3>
+          <p>El <strong>Global Interpreter Lock (GIL)</strong> impide que múltiples hilos nativos ejecuten bytecode Python a la vez. Para paralelismo real en CPU se usa <code>multiprocessing</code>. Para E/S (red, disco) se usa <code>threading</code> o <code>asyncio</code> (con <code>async/await</code>).</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="ejercicios" hidden>
+      <div class="ex-list">
+        
+        <h3 style="color:var(--py-green)">Nivel 1: Fundamentos (10)</h3>
+        
+        <details class="ex"><summary>1. Hola Mundo Avanzado <span class="badge b-basic">Basic</span></summary>
+          <div class="solution">
+            <p>Función que recibe nombre y edad, y retorna un f-string formateado.</p>
+            <div class="code-block">def presentacion(nombre, edad):
+    return f"Me llamo {nombre} y tengo {edad} años."</div>
+          </div>
+        </details>
+        <details class="ex"><summary>2. FizzBuzz <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">for i in range(1, 101):
+    if i % 3 == 0 and i % 5 == 0: print("FizzBuzz")
+    elif i % 3 == 0: print("Fizz")
+    elif i % 5 == 0: print("Buzz")
+    else: print(i)</div></div>
+        </details>
+        <details class="ex"><summary>3. Invertir String <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">s = "Python"
+inv = s[::-1]  # Slicing con paso negativo</div></div>
+        </details>
+        <details class="ex"><summary>4. Contador de Vocales <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">def contar_vocales(s):
+    return sum(1 for c in s.lower() if c in 'aeiou')</div></div>
+        </details>
+        <details class="ex"><summary>5. Máximo de una lista <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">nums = [10, 5, 8, 20]
+max_val = max(nums)
+# Manual:
+m = nums[0]
+for x in nums:
+    if x > m: m = x</div></div>
+        </details>
+        <details class="ex"><summary>6. Tabla de Multiplicar <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">n = 5
+for i in range(1, 11):
+    print(f"{n} x {i} = {n*i}")</div></div>
+        </details>
+        <details class="ex"><summary>7. Eliminar duplicados <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">lista = [1, 2, 2, 3, 1]
+unicos = list(set(lista))</div></div>
+        </details>
+        <details class="ex"><summary>8. Año Bisiesto <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">def es_bisiesto(year):
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)</div></div>
+        </details>
+        <details class="ex"><summary>9. Factorial Recursivo <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">def factorial(n):
+    return 1 if n == 0 else n * factorial(n-1)</div></div>
+        </details>
+        <details class="ex"><summary>10. Suma de pares <span class="badge b-basic">Basic</span></summary>
+          <div class="solution"><div class="code-block">suma = sum(x for x in range(101) if x % 2 == 0)</div></div>
+        </details>
+
+        <h3 style="color:var(--py-yellow)">Nivel 2: Intermedio (10)</h3>
+
+        <details class="ex"><summary>11. Comprensión de Listas <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><p>Cuadrados de números pares del 0 al 9.</p><div class="code-block">[x**2 for x in range(10) if x % 2 == 0]</div></div>
+        </details>
+        <details class="ex"><summary>12. Diccionario de Frecuencias <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">texto = "hola mundo hola"
+freq = {}
+for palabra in texto.split():
+    freq[palabra] = freq.get(palabra, 0) + 1</div></div>
+        </details>
+        <details class="ex"><summary>13. Ordenar por clave en Dict <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">data = [{"name": "A", "age": 30}, {"name": "B", "age": 25}]
+ordenado = sorted(data, key=lambda x: x["age"])</div></div>
+        </details>
+        <details class="ex"><summary>14. Manejo de Archivos (CSV) <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">import csv
+with open('data.csv', newline='') as f:
+    reader = csv.reader(f)
+    for row in reader: print(row)</div></div>
+        </details>
+        <details class="ex"><summary>15. Clase Rectángulo <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">class Rect:
+    def __init__(self, w, h): self.w, self.h = w, h
+    def area(self): return self.w * self.h</div></div>
+        </details>
+        <details class="ex"><summary>16. Decorador de Tiempo <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">import time
+def timer(func):
+    def wrapper(*args, **kw):
+        t1 = time.time()
+        res = func(*args, **kw)
+        print(time.time()-t1)
+        return res
+    return wrapper</div></div>
+        </details>
+        <details class="ex"><summary>17. Generador de Primos <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">def gen_primos():
+    n = 2
+    while True:
+        if all(n % i != 0 for i in range(2, int(n**0.5)+1)):
+            yield n
+        n += 1</div></div>
+        </details>
+        <details class="ex"><summary>18. Map y Filter <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">nums = [1, 2, 3, 4]
+res = list(map(lambda x: x*2, filter(lambda x: x%2==0, nums)))
+# Resultado: [4, 8]</div></div>
+        </details>
+        <details class="ex"><summary>19. Argumentos *args **kwargs <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">def suma_total(*args):
+    return sum(args)
+print(suma_total(1, 2, 3, 4)) # 10</div></div>
+        </details>
+        <details class="ex"><summary>20. Excepciones Personalizadas <span class="badge b-inter">Inter</span></summary>
+          <div class="solution"><div class="code-block">class MiError(Exception): pass
+def check(x):
+    if x < 0: raise MiError("Negativo!")</div></div>
+        </details>
+
+        <h3 style="color:#ff7b72">Nivel 3: Experto (10)</h3>
+
+        <details class="ex"><summary>21. Metaclasses (Singleton) <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class DB(metaclass=Singleton): pass</div></div>
+        </details>
+        <details class="ex"><summary>22. AsyncIO (Corrutinas) <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">import asyncio
+async def main():
+    print("Hola")
+    await asyncio.sleep(1)
+    print("Mundo")
+asyncio.run(main())</div></div>
+        </details>
+        <details class="ex"><summary>23. Context Manager (Clase) <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">class Timer:
+    def __enter__(self): self.start = time.time()
+    def __exit__(self, *args): print(time.time() - self.start)
+
+with Timer():
+    time.sleep(1)</div></div>
+        </details>
+        <details class="ex"><summary>24. Context Manager (Generator) <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">from contextlib import contextmanager
+@contextmanager
+def open_file(name):
+    f = open(name, 'r')
+    try: yield f
+    finally: f.close()</div></div>
+        </details>
+        <details class="ex"><summary>25. Multiprocessing (CPU bound) <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">from multiprocessing import Pool
+def f(x): return x*x
+if __name__ == '__main__':
+    with Pool(5) as p:
+        print(p.map(f, [1, 2, 3]))</div></div>
+        </details>
+        <details class="ex"><summary>26. Descriptores de Datos <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">class Ten:
+    def __get__(self, obj, objtype=None): return 10
+class A:
+    x = Ten()  # A().x siempre es 10</div></div>
+        </details>
+        <details class="ex"><summary>27. Decorador con Argumentos <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">def repeat(n):
+    def decorator(func):
+        def wrapper(*args, **kw):
+            for _ in range(n): func(*args, **kw)
+        return wrapper
+    return decorator</div></div>
+        </details>
+        <details class="ex"><summary>28. Web Scraping (BeautifulSoup) <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">import requests
+from bs4 import BeautifulSoup
+html = requests.get("http://example.com").text
+soup = BeautifulSoup(html, 'html.parser')
+print(soup.title.string)</div></div>
+        </details>
+        <details class="ex"><summary>29. API REST con Flask <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">from flask import Flask, jsonify
+app = Flask(__name__)
+@app.route('/')
+def home(): return jsonify({"msg": "Hello"})
+# app.run()</div></div>
+        </details>
+        <details class="ex"><summary>30. Type Hinting Complejo <span class="badge b-adv">Adv</span></summary>
+          <div class="solution"><div class="code-block">from typing import List, Dict, Union, Optional
+
+def process(data: List[Dict[str, Union[int, str]]]) -> Optional[int]:
+    return data[0]['id'] if data else None</div></div>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* LOGICA TABS */
+    function switchTab(tabId) {
+      // Ocultar todo
+      ['teoria', 'ejercicios'].forEach(id => document.getElementById(id).hidden = true);
+      // Mostrar target
+      document.getElementById(tabId).hidden = false;
+      // Actualizar botones
+      document.querySelectorAll('.pill').forEach(b => b.setAttribute('aria-selected', 'false'));
+      event.target.setAttribute('aria-selected', 'true');
+    }
+
+    /* LOGICA TEMA OSCURO */
+    const html = document.documentElement;
+    function toggleTheme() {
+      const current = html.getAttribute('data-scheme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-scheme', next);
+      document.querySelector('.theme-toggle').textContent = next === 'dark' ? '🌙' : '☀️';
+      initParticles(); 
+    }
+
+    /* PARTICULAS CANVAS */
+    const canvas = document.getElementById('bgParticles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function initParticles() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      const isDark = html.getAttribute('data-scheme') === 'dark';
+      const color = isDark ? 'rgba(55, 118, 171, 0.3)' : 'rgba(55, 118, 171, 0.15)'; 
+      
+      const count = Math.floor(window.innerWidth / 20);
+      
+      for(let i=0; i<count; i++){
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 3,
+          color: color
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initParticles);
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
