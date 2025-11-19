@@ -1,0 +1,451 @@
+<html lang="es" data-scheme="dark" data-theme="clinico">
+<head>
+  <link rel="icon" type="image/png" href="innoveAI.png" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Medicina — Innove</title>
+  <meta name="color-scheme" content="dark light"/>
+  <meta name="theme-color" content="#0e1430" media="(prefers-color-scheme: dark)"/>
+  <meta name="theme-color" content="#f6f8ff" media="(prefers-color-scheme: light)"/>
+  <style>
+    /* ================= TOKENS BASE ================= */
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      /* Paleta Base */
+      --bg:#0e1430; --bg2:#101a3b; --text:#eaf2ff; --muted:#b6c4e6;
+      --glass:rgba(255,255,255,.14); --glass-strong:rgba(255,255,255,.22); --border:rgba(255,255,255,.18);
+      --shadow:0 18px 48px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+      --ink:#06b6d4; --inkGlow:rgba(6,182,212,.18); /* Cian médico por defecto */
+      --r-2xl:22px; --r-3xl:28px;
+      --maxw:1200px; --narrow:900px;
+      --appH:72px; --themeBarH:64px;
+      --card-text:#0f1324; --card-muted:#2c3652;
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Modo Claro */
+    html[data-scheme="light"]{
+      --bg:#f6f8ff; --bg2:#eef2ff; --text:#0f1423; --muted:#4a5875;
+      --glass:#ffffffd9; --glass-strong:#fff; --border:#0b102022;
+      --ink:#0891b2; --inkGlow:#0891b222;
+      --card-text:#0d1120; --card-muted:#334155;
+    }
+    html[data-scheme="dark"]{
+      --bg:#0e1430; --bg2:#101a3b; --text:#eaf2ff; --muted:#b6c4e6;
+      --glass:rgba(255,255,255,.14); --glass-strong:rgba(255,255,255,.22); --border:rgba(255,255,255,.18);
+      --ink:#06b6d4; --inkGlow:rgba(6,182,212,.18);
+      --card-text:#0f1324; --card-muted:#2c3652;
+    }
+    
+    html{background:var(--bg)}
+    body{
+      margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1400px 900px at 70% -10%, var(--bg2), transparent 60%),
+        radial-gradient(1200px 800px at 10% 110%, #132256, transparent 65%),
+        var(--bg);
+      line-height:1.55; overflow-x:hidden; min-height:100svh;
+      padding-bottom: calc(var(--themeBarH) + var(--safeBottom) + 20px);
+    }
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+    .panel{background:var(--glass); backdrop-filter: blur(16px) saturate(170%); border:1px solid var(--border); border-radius:var(--r-3xl); box-shadow:var(--shadow)}
+
+    /* ===== BACKGROUNDS (Capas Temáticas) ===== */
+    .bg-layer{position:fixed; inset:0; z-index:-3; pointer-events:none; display:none}
+    
+    /* Clínico (Cian/Blanco - Limpio) */
+    .bg-clinico-aurora{position:fixed; inset:-22% -10% auto -10%; height:58vh; filter:blur(80px) saturate(120%); animation:drift 18s ease-in-out infinite; opacity:.92}
+    .bg-clinico-aurora{background:conic-gradient(from 180deg at 50% 50%, rgba(6,182,212,.18), rgba(14,165,233,.26), rgba(20,184,166,.18), rgba(6,182,212,.18))}
+    
+    /* Vital (Rojo/Rosa - Sangre/Vida) */
+    .bg-vital{background:
+      radial-gradient(600px 400px at 80% 20%, rgba(244,63,94,.35), transparent 60%),
+      radial-gradient(600px 400px at 20% 80%, rgba(225,29,72,.35), transparent 60%);
+      filter:saturate(130%) blur(2px); opacity:.75}
+      
+    /* Quirúrgico (Verde/Teal) */
+    .bg-quirofano{background:conic-gradient(from 90deg at 50% 50%, rgba(16,185,129,.22), rgba(20,184,166,.22), rgba(13,148,136,.22), rgba(16,185,129,.22)); filter:blur(90px) saturate(140%); animation:drift 20s ease-in-out infinite; opacity:.9}
+    
+    /* Anatomía (Púrpura/Carne) */
+    .bg-anato{background:
+      radial-gradient(800px 500px at 20% -10%, rgba(139,92,246,.18), transparent 60%),
+      radial-gradient(700px 500px at 90% 120%, rgba(167,139,250,.12), transparent 60%);}
+      
+    /* Laboratorio (Azul/Gris) */
+    .bg-lab{background:
+      radial-gradient(800px 800px at 50% 50%, rgba(255,255,255,0.15), rgba(200,200,255,0.05) 60%, transparent 80%),
+      linear-gradient(180deg, var(--bg), var(--bg2)); opacity:.8}
+
+    /* Activación por tema */
+    html[data-theme="clinico"] .bg-clinico-aurora{display:block}
+    html[data-theme="vital"] .bg-vital{display:block}
+    html[data-theme="quirofano"] .bg-quirofano{display:block}
+    html[data-theme="anato"] .bg-anato{display:block}
+    html[data-theme="lab"] .bg-lab{display:block}
+
+    @keyframes drift{50%{transform:translateY(-14px) translateX(14px) scale(1.03)}}
+
+    /* Canvas partículas */
+    #bgParticles{position:fixed; inset:0; z-index:-4; pointer-events:none; opacity:.85}
+
+    /* ===== NAVBAR ===== */
+    .appbar-wrap{position:sticky; top:0; z-index:90}
+    .appbar{
+      height:var(--appH);
+      display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px;
+      margin:10px auto; padding:10px 12px;
+      border-radius:18px; background:linear-gradient(180deg, var(--glass-strong), rgba(255,255,255,.12));
+      border:1px solid var(--border); box-shadow:var(--shadow); position:relative; overflow:hidden;
+    }
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:800; letter-spacing:.3px}
+    
+    /* Logo animado (Estilo cruz médica o corazón) */
+    .logo{--tx:0px; --ty:0px; width:44px; height:44px; display:grid; place-items:center; border-radius:14px; position:relative; transform:translate3d(var(--tx),var(--ty),0); transition:transform .15s ease; background: var(--ink); color:white; font-size: 24px;}
+    .logo::before{content:""; position:absolute; inset:-2px; border-radius:16px; padding:2px; background: conic-gradient(from 140deg,#06b6d4,#f43f5e,#10b981,#06b6d4); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation: spin 8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .tabs{position:relative; display:flex; align-items:center; gap:8px; overflow:auto; scrollbar-width:thin; padding:4px}
+    .tabs::-webkit-scrollbar{height:6px}
+    .pill{
+      display:inline-flex; align-items:center; gap:10px; padding:10px 14px;
+      border-radius:14px; border:1px solid var(--border); background:transparent; color:var(--text);
+      font-weight:800; cursor:pointer; white-space:nowrap; font-size:1rem; transition:background .2s ease, transform .15s ease;
+    }
+    .pill:hover{background:var(--glass); transform:translateY(-1px)}
+    .pill[aria-selected="true"]{background:var(--glass)}
+    .ink{position:absolute; height:3px; background:var(--ink); bottom:2px; left:0; width:0; border-radius:2px; transition:transform .25s ease,width .25s ease; box-shadow:0 0 0 6px var(--inkGlow)}
+    .ink-dot{position:absolute; bottom:7px; width:8px; height:8px; border-radius:50%; background:var(--ink); box-shadow:0 0 12px var(--ink); transform:translateX(0); transition:transform .25s ease}
+
+    /* Controles */
+    .controls{display:flex; align-items:center; gap:8px}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; border:1px solid var(--border); background:var(--glass); color:var(--text); font-weight:700; cursor:pointer}
+    .btn:hover{background:var(--glass-strong)}
+
+    /* ===== HERO ===== */
+    .hero{margin:14px auto 6px; padding:10px 0}
+    .hero h1{margin:0; font-size: clamp(28px,4.4vw,58px); letter-spacing:-.02em}
+    .hero p{color:var(--muted); margin:8px 0 0}
+    /* Ticker médico */
+    .ticker{margin-top:8px; overflow:hidden; mask-image:linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)}
+    .ticker-row{display:flex; gap:28px; white-space:nowrap; animation:ticker 35s linear infinite; font-family: monospace;}
+    .ticker span{opacity:.85; color: var(--ink);}
+    @keyframes ticker{to{transform:translateX(-50%)}}
+
+    /* ===== GRID / CARDS ===== */
+    @property --fy { syntax:"<length>"; inherits:false; initial-value:0px }
+    @property --rx { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    @property --ry { syntax:"<angle>";  inherits:false; initial-value:0deg }
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:18px}
+    .card{position:relative; overflow:hidden; padding:18px; border-radius:20px; isolation:isolate; background:var(--glass); border:1px solid var(--border); transform:translateY(var(--fy)) rotateY(var(--ry)) rotateX(var(--rx)); animation:float 9s ease-in-out infinite; text-decoration:none; color:inherit}
+    @keyframes float{0%,100%{--fy:0px} 50%{--fy:-6px}}
+    .card .title{display:flex; align-items:center; gap:10px; font-weight:800; color:var(--card-text)}
+    .card .desc{color:var(--card-muted); margin-top:6px}
+    
+    /* Efecto borde iridiscente */
+    .card::before{content:""; position:absolute; inset:-1px; z-index:-2; border-radius:inherit; padding:1px; background: conic-gradient(from 220deg, rgba(255,255,255,.10), rgba(255,255,255,0) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 75%, rgba(255,255,255,.10)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:.45; animation:borderSweep 6s linear infinite}
+    @keyframes borderSweep{to{transform:rotate(360deg)}}
+    
+    .card .title>span:first-child{display:inline-block; animation:emoji-bounce 5s ease-in-out infinite}
+    @keyframes emoji-bounce{0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)}}
+    .emoji-bg{position:absolute; inset:auto 8px 8px auto; font-size:120px; line-height:1; opacity:.15; filter:blur(1px); pointer-events:none; user-select:none; z-index:0; animation:floatDecor 12s ease-in-out infinite}
+    @keyframes floatDecor{0%,100%{transform:translate(4px,2px) scale(1)} 50%{transform:translate(-6px,-4px) scale(1.04)}}
+
+    /* ===== COLORES TEMÁTICOS (Medicina) ===== */
+    /* Anatomía (Púrpura) */
+    .v-anato{background:linear-gradient(180deg, rgba(139,92,246,.26), rgba(139,92,246,.14)), var(--glass)}
+    /* Fisiología (Azul) */
+    .v-fisio{background:linear-gradient(180deg, rgba(59,130,246,.26), rgba(59,130,246,.14)), var(--glass)}
+    /* Cardio (Rojo) */
+    .v-cardio{background:linear-gradient(180deg, rgba(244,63,94,.26), rgba(244,63,94,.14)), var(--glass)}
+    /* Neumo (Cian) */
+    .v-neumo{background:linear-gradient(180deg, rgba(6,182,212,.26), rgba(6,182,212,.14)), var(--glass)}
+    /* Neuro (Indigo) */
+    .v-neuro{background:linear-gradient(180deg, rgba(99,102,241,.26), rgba(99,102,241,.14)), var(--glass)}
+    /* Farma (Verde azulado) */
+    .v-farma{background:linear-gradient(180deg, rgba(20,184,166,.26), rgba(20,184,166,.14)), var(--glass)}
+    /* Micro (Verde) */
+    .v-micro{background:linear-gradient(180deg, rgba(34,197,94,.26), rgba(34,197,94,.14)), var(--glass)}
+    /* Genetica (Rosa) */
+    .v-gen{background:linear-gradient(180deg, rgba(236,72,153,.26), rgba(236,72,153,.14)), var(--glass)}
+    /* Inmuno (Naranja) */
+    .v-inmu{background:linear-gradient(180deg, rgba(249,115,22,.26), rgba(249,115,22,.14)), var(--glass)}
+    /* Bioquimica (Amarillo) */
+    .v-bioq{background:linear-gradient(180deg, rgba(234,179,8,.26), rgba(234,179,8,.14)), var(--glass)}
+    /* Histo (Rosa claro) */
+    .v-histo{background:linear-gradient(180deg, rgba(244,114,182,.26), rgba(244,114,182,.14)), var(--glass)}
+    /* Patología (Gris rojizo) */
+    .v-pato{background:linear-gradient(180deg, rgba(120,113,108,.26), rgba(120,113,108,.14)), var(--glass)}
+
+
+    /* ===== THEME FOOTER ===== */
+    .theme-footer{
+      position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:88;
+      width:90%; max-width:620px; padding:12px 16px; border-radius:26px;
+      backdrop-filter: blur(20px) saturate(180%); background:var(--glass-strong);
+      border:1px solid var(--border); box-shadow:var(--shadow);
+    }
+    .theme-scroller{
+      display:flex; gap:12px; overflow:auto; scrollbar-width:thin; padding-bottom:4px; justify-content:center; flex-wrap:wrap;
+    }
+    .theme-chip{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+      border-radius:999px; border:1px solid var(--border); background:var(--glass);
+      color:var(--text); font-weight:700; white-space:nowrap; cursor:pointer; user-select:none; flex:0 0 auto;
+      transition:background .2s ease, transform .15s ease;
+    }
+    .theme-chip:hover{background:var(--glass-strong); transform:translateY(-2px)}
+    .theme-chip[aria-pressed="true"]{outline:2px solid var(--ink); box-shadow:0 0 0 6px var(--inkGlow);}
+
+    /* Responsive */
+    @media (max-width:980px){ .appbar{grid-template-columns:auto 1fr auto} .tabs{justify-self:stretch} }
+    @media (max-width:660px){ .brand span.txt{display:none} .pill{padding:10px 12px; font-size:.96rem} }
+    @media (prefers-reduced-motion:reduce){ .card, .emoji-bg{animation:none!important} }
+  </style>
+</head>
+<body>
+  <canvas id="bgParticles"></canvas>
+  <div class="bg-layer bg-clinico-aurora"></div>
+  <div class="bg-layer bg-vital"></div>
+  <div class="bg-layer bg-quirofano"></div>
+  <div class="bg-layer bg-anato"></div>
+  <div class="bg-layer bg-lab"></div>
+
+  <header class="appbar-wrap">
+    <div class="appbar container panel">
+      <a href="#" class="brand" aria-label="Inicio">
+        <span class="logo" id="brandLogo" aria-hidden="true">✚</span>
+        <span class="txt">InnoveMed</span>
+      </a>
+
+      <div class="tabs" id="tabs" role="tablist" aria-label="Secciones">
+        <button class="pill" role="tab" aria-selected="true" data-tab="basicas" id="tab-basicas">Ciencias Básicas</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="clinicas" id="tab-clinicas">Clínicas</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="ejercicios" id="tab-ejercicios">Casos</button>
+        <span class="ink" id="ink" aria-hidden="true"></span>
+        <span class="ink-dot" id="inkDot" aria-hidden="true"></span>
+      </div>
+
+      <div class="controls">
+        <button id="schemeToggle" class="btn" title="Oscuro/Claro" aria-pressed="true">🌙 Oscuro</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero container">
+    <h1>Medicina</h1>
+    <p>Plataforma de estudio para ciencias de la salud. Anatomía, Fisiología y Clínica.</p>
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-row">
+        <span>Frecuencia Cardiaca: 72 bpm</span><span> PA: 120/80 mmHg</span><span> SatO2: 98%</span>
+        <span> Temp: 36.5°C</span><span> pH: 7.35-7.45</span><span> Glucosa: 90 mg/dL</span>
+        <span> Na+: 140 mEq/L</span><span> K+: 4.0 mEq/L</span><span> Gasto Cardíaco: 5 L/min</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="container" id="content">
+    <section id="basicas" role="tabpanel" aria-labelledby="tab-basicas" data-active>
+      <h2>Fundamentos Médicos</h2>
+      <div class="grid">
+        <a class="card v-anato" href="anatomia.html"><div class="title"><span style="font-size:1.6em">💀</span><span>Anatomía Humana</span></div><p class="desc">Osteología, miología y neuroanatomía.</p><span class="emoji-bg">💀</span></a>
+        <a class="card v-fisio" href="fisiologia.html"><div class="title"><span style="font-size:1.6em">⚡</span><span>Fisiología Médica</span></div><p class="desc">Potenciales, sistemas y homeostasis.</p><span class="emoji-bg">⚡</span></a>
+        <a class="card v-bioq" href="bioquimica-med.html"><div class="title"><span style="font-size:1.6em">🧬</span><span>Bioquímica Clínica</span></div><p class="desc">Metabolismo, enzimas y genética.</p><span class="emoji-bg">🧬</span></a>
+        <a class="card v-histo" href="histologia.html"><div class="title"><span style="font-size:1.6em">🔬</span><span>Histología</span></div><p class="desc">Tejidos, células y microscopía.</p><span class="emoji-bg">🔬</span></a>
+        <a class="card v-farma" href="farmacologia.html"><div class="title"><span style="font-size:1.6em">💊</span><span>Farmacología</span></div><p class="desc">Farmacocinética y dinamia.</p><span class="emoji-bg">💊</span></a>
+        <a class="card v-micro" href="microbiologia.html"><div class="title"><span style="font-size:1.6em">🦠</span><span>Microbiología</span></div><p class="desc">Bacterias, virus y parásitos.</p><span class="emoji-bg">🦠</span></a>
+      </div>
+    </section>
+
+    <section id="clinicas" role="tabpanel" aria-labelledby="tab-clinicas" hidden>
+      <h2>Especialidades Clínicas</h2>
+      <div class="grid">
+        <a class="card v-cardio" href="cardiologia.html"><div class="title"><span style="font-size:1.6em">❤️</span><span>Cardiología</span></div><p class="desc">ECG, insuficiencia y arritmias.</p><span class="emoji-bg">❤️</span></a>
+        <a class="card v-neumo" href="neumologia.html"><div class="title"><span style="font-size:1.6em">🫁</span><span>Neumología</span></div><p class="desc">EPOC, asma y ventilación.</p><span class="emoji-bg">🫁</span></a>
+        <a class="card v-neuro" href="neurologia.html"><div class="title"><span style="font-size:1.6em">🧠</span><span>Neurología</span></div><p class="desc">Ictus, epilepsia y neurodegen.</p><span class="emoji-bg">🧠</span></a>
+        <a class="card v-inmu" href="inmunologia.html"><div class="title"><span style="font-size:1.6em">🛡️</span><span>Inmunología</span></div><p class="desc">Defensas, alergias y autoinmunes.</p><span class="emoji-bg">🛡️</span></a>
+        <a class="card v-pato" href="patologia.html"><div class="title"><span style="font-size:1.6em">🩺</span><span>Patología General</span></div><p class="desc">Inflamación, neoplasias y daño.</p><span class="emoji-bg">🩺</span></a>
+        <a class="card v-gen" href="genetica.html"><div class="title"><span style="font-size:1.6em">🧩</span><span>Genética Médica</span></div><p class="desc">Herencia y enfermedades raras.</p><span class="emoji-bg">🧩</span></a>
+      </div>
+    </section>
+
+    <section id="ejercicios" role="tabpanel" aria-labelledby="tab-ejercicios" hidden>
+      <h2>Casos Clínicos</h2>
+      <div class="grid">
+        <a class="card v-fisio" href="casos/fisiopatologia.html"><div class="title"><span style="font-size:1.6em">📉</span><span>Fisiopatología</span></div><p class="desc">Mecanismos de enfermedad.</p><span class="emoji-bg">📉</span></a>
+        <a class="card v-cardio" href="casos/ekg.html"><div class="title"><span style="font-size:1.6em">📈</span><span>Interpretación ECG</span></div><p class="desc">Trazados y diagnósticos.</p><span class="emoji-bg">📈</span></a>
+        <a class="card v-farma" href="casos/dosis.html"><div class="title"><span style="font-size:1.6em">💉</span><span>Cálculo de Dosis</span></div><p class="desc">Pediatría y perfusiones.</p><span class="emoji-bg">💉</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="theme-footer">
+    <div class="theme-scroller">
+      <button class="theme-chip" data-theme="clinico" aria-pressed="true">Clínico</button>
+      <button class="theme-chip" data-theme="vital" aria-pressed="false">Vital</button>
+      <button class="theme-chip" data-theme="quirofano" aria-pressed="false">Quirófano</button>
+      <button class="theme-chip" data-theme="anato" aria-pressed="false">Anatomía</button>
+      <button class="theme-chip" data-theme="lab" aria-pressed="false">Laboratorio</button>
+    </div>
+  </footer>
+
+  <script>
+    /* ===== Helpers ===== */
+    const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+
+    /* ===== Dark/Light ===== */
+    const schemeToggle = $('#schemeToggle');
+    function setScheme(mode){ // 'dark' | 'light'
+      document.documentElement.setAttribute('data-scheme', mode);
+      localStorage.setItem('innove-med-scheme', mode);
+      schemeToggle.textContent = (mode==='dark') ? '🌙 Oscuro' : '☀️ Claro';
+      schemeToggle.setAttribute('aria-pressed', String(mode==='dark'));
+    }
+    const pref = localStorage.getItem('innove-med-scheme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setScheme(pref);
+    schemeToggle.addEventListener('click',()=> setScheme(document.documentElement.getAttribute('data-scheme')==='dark' ? 'light' : 'dark'));
+
+    /* ===== Tabs + ink ===== */
+    const tabs=$('#tabs'), ink=$('#ink'), dot=$('#inkDot');
+    const sections={ basicas:$('#basicas'), clinicas:$('#clinicas'), ejercicios:$('#ejercicios') };
+    
+    function positionInk(btn){
+      const c=tabs.getBoundingClientRect(), b=btn.getBoundingClientRect();
+      const left=b.left - c.left + tabs.scrollLeft + 4;
+      ink.style.width=(b.width-8)+'px';
+      ink.style.transform=`translateX(${left}px)`;
+      dot.style.transform=`translateX(${left + (b.width-8) - 4}px)`;
+    }
+    
+    function showTab(name){
+      Object.keys(sections).forEach(k=>{
+        const s=sections[k]; const active=(k===name);
+        s.hidden=!active; active ? s.setAttribute('data-active','') : s.removeAttribute('data-active');
+      });
+      $$('.pill').forEach(p=>p.setAttribute('aria-selected', String(p.dataset.tab===name)));
+      const btn=tabs.querySelector(`.pill[data-tab="${name}"]`);
+      if(btn){ btn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'}); positionInk(btn); }
+    }
+    $$('.pill').forEach(p=> p.addEventListener('click',()=> showTab(p.dataset.tab)));
+    
+    // Init tab
+    const firstBtn=$('.pill[data-tab="basicas"]');
+    positionInk(firstBtn);
+
+    /* ===== Emoji-bg auto ===== */
+    (function(){ $$('.card').forEach(c=>{ if(c.querySelector('.emoji-bg')) return; const e=c.querySelector('.title > span:first-child'); if(!e) return; const bg=document.createElement('span'); bg.className='emoji-bg'; bg.textContent=e.textContent.trim(); c.appendChild(bg); }); })();
+
+    /* ===== TEMAS ===== */
+    const themeBtns=$$('.theme-chip');
+    const PALETTES = {
+      clinico:['#06b6d4','#a5f3fc','#0891b2'],
+      vital:['#f43f5e','#fda4af','#e11d48'],
+      quirofano:['#10b981','#6ee7b7','#059669'],
+      anato:['#8b5cf6','#c4b5fd','#7c3aed'],
+      lab:['#64748b','#94a3b8','#cbd5e1']
+    };
+    let currentPalette = PALETTES['clinico'];
+
+    function setTheme(name){
+      document.documentElement.setAttribute('data-theme', name);
+      localStorage.setItem('innove-med-theme', name);
+      themeBtns.forEach(b=> b.setAttribute('aria-pressed', String(b.dataset.theme===name)));
+      currentPalette = PALETTES[name] || PALETTES['clinico'];
+      spawnParticles();
+    }
+    setTheme(localStorage.getItem('innove-med-theme') || 'clinico');
+    themeBtns.forEach(b=> b.addEventListener('click',()=> setTheme(b.dataset.theme)));
+
+    /* ===== Ajuste barra temas ===== */
+    function adjustThemeBarPadding(){
+      const bar = document.querySelector('.theme-footer');
+      if(!bar) return;
+      const h = Math.round(bar.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--themeBarH', h+'px');
+    }
+    adjustThemeBarPadding(); addEventListener('resize', adjustThemeBarPadding);
+
+    /* ===== Logo Parallax ===== */
+    const logo=$('#brandLogo');
+    if(logo){
+      const move=e=>{
+        const r=logo.getBoundingClientRect();
+        logo.style.setProperty('--tx', ((e.clientX-(r.left+r.width/2))/7).toFixed(1)+'px');
+        logo.style.setProperty('--ty', ((e.clientY-(r.top+r.height/2))/7).toFixed(1)+'px');
+      };
+      logo.addEventListener('pointerenter',()=>addEventListener('pointermove',move));
+      logo.addEventListener('pointerleave',()=>{removeEventListener('pointermove',move);logo.style.setProperty('--tx','0px');logo.style.setProperty('--ty','0px');});
+    }
+
+    /* ===== Cards Tilt ===== */
+    $$('.card').forEach(card=>{
+      let rect;
+      function move(x,y){ card.style.setProperty('--ry',(x*10)+'deg'); card.style.setProperty('--rx',(-y*10)+'deg'); }
+      card.addEventListener('pointermove',e=>{
+        rect=rect||card.getBoundingClientRect();
+        const x=(e.clientX-rect.left)/rect.width - .5, y=(e.clientY-rect.top)/rect.height - .5;
+        move(x,y); card.style.setProperty('--px',(x+.5).toFixed(3)); card.style.setProperty('--py',(y+.5).toFixed(3));
+      });
+      card.addEventListener('pointerleave',()=>{card.style.removeProperty('--ry');card.style.removeProperty('--rx');rect=null;card.style.removeProperty('--px');card.style.removeProperty('--py');});
+    });
+
+    /* ===== PARTÍCULAS ===== */
+    const canvas = document.getElementById('bgParticles');
+    const ctx = canvas.getContext('2d');
+    let particles=[], W=0, H=0, DPR=Math.min(window.devicePixelRatio||1, 2);
+    let mouse={x:-9999,y:-9999};
+
+    function resize(){
+      W = canvas.width = Math.floor(innerWidth * DPR);
+      H = canvas.height = Math.floor(innerHeight * DPR);
+      canvas.style.width = innerWidth+'px';
+      canvas.style.height = innerHeight+'px';
+      spawnParticles();
+    }
+    function rand(a,b){return a+Math.random()*(b-a)}
+    function spawnParticles(){
+      const count = Math.floor(Math.min(140, 70 + (innerWidth*innerHeight)/50000));
+      particles = [];
+      for(let i=0;i<count;i++){
+        const color = currentPalette[i % currentPalette.length];
+        particles.push({
+          x: rand(0,W), y: rand(0,H),
+          vx: rand(-0.08,0.08)*DPR, vy: rand(-0.08,0.08)*DPR,
+          r: rand(0.7,2.2)*DPR, c: color, a: rand(0.35,0.8)
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation='lighter';
+      for(const p of particles){
+        const dx = (mouse.x - p.x), dy = (mouse.y - p.y);
+        const d2 = dx*dx + dy*dy;
+        if(d2 < (120*DPR)*(120*DPR)){
+          p.vx -= dx * 0.000003;
+          p.vy -= dy * 0.000003;
+        }
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -10) p.x = W+10; else if(p.x > W+10) p.x = -10;
+        if(p.y < -10) p.y = H+10; else if(p.y > H+10) p.y = -10;
+        ctx.beginPath();
+        const h = p.c.replace('#','');
+        const r=parseInt(h.substring(0,2),16), g=parseInt(h.substring(2,4),16), b=parseInt(h.substring(4,6),16);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.a})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(draw);
+    }
+
+    let raf;
+    function start(){ cancelAnimationFrame(raf); resize(); draw(); }
+    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)');
+    if(!prefersReduced.matches){ start(); }
+    
+    addEventListener('resize', ()=>{ if(!prefersReduced.matches){ resize(); }}, {passive:true});
+    addEventListener('pointermove', e=>{ mouse.x = (e.clientX) * DPR; mouse.y = (e.clientY) * DPR; });
+    addEventListener('pointerleave', () => { mouse.x = -9999; mouse.y = -9999; });
+  </script>
+</body>
+</html>
