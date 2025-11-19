@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orgánica | Aldehídos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA ALDEHÍDOS/LAB) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #fffbf5; /* Crema muy pálido */
+        --surface: #ffffff;
+        --text-main: #7c2d12;
+        --text-soft: #9a3412;
+        --border: #fef3c7;
+        
+        /* Paleta Reacción (Naranja) */
+        --primary: #f97316;      /* Naranja Profundo */
+        --primary-soft: #ffedd5;
+        --secondary: #db2777;    /* Rosa (Contraste) */
+        --secondary-soft: #fce7f3;
+        --tertiary: #06b6d4;     /* Cian */
+        --tertiary-soft: #cffafe;
+        --accent: #8b5cf6;       /* Violeta */
+
+        --shadow: 0 10px 30px -5px rgba(249, 115, 22, 0.05);
+        --shadow-hover: 0 20px 40px -5px rgba(249, 115, 22, 0.15);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #1a1a2e;
+        --surface: #2d3748;
+        --text-main: #ffedd5;
+        --text-soft: #fbbf24;
+        --border: #4a5568;
+        --primary-soft: rgba(249, 115, 22, 0.2);
+        --secondary-soft: rgba(219, 39, 119, 0.2);
+        --tertiary-soft: rgba(6, 182, 212, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    body { background-color: var(--bg); color: var(--text-main); font-family: 'Nunito', sans-serif; line-height: 1.6; min-height: 100vh; padding: 20px; }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .back-btn:hover { color: var(--primary); }
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { border: none; background: transparent; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+    
+    .icon-box { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; }
+    .c-orange .icon-box { background: var(--primary-soft); }
+    .c-pink .icon-box { background: var(--secondary-soft); }
+    .c-cyan .icon-box { background: var(--tertiary-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 10px; }
+
+    /* ESTRUCTURA FÓRMULA */
+    .structure-box { background: var(--primary-soft); border-radius: 15px; padding: 25px; margin-top: 15px; text-align: center; }
+    .formula-big { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+    .small-math { font-size: 1.1rem; color: var(--text-main); font-family: monospace; }
+    
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { background: var(--bg); padding: 10px 20px; border-radius: 15px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; border: 1px solid var(--border); }
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    details { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
+    summary { padding: 15px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); font-size: 0.9rem; }
+    .answer { padding: 15px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 1rem; text-align: center; border-top: 1px solid var(--border); }
+
+    /* --- IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🧴</span>
+            <h1 data-lang="es">Los <span>Aldehídos</span></h1>
+            <h1 data-lang="ca">Els <span>Aldehids</span></h1>
+            <h1 data-lang="en">The <span>Aldehydes</span></h1>
+            
+            <p class="intro" data-lang="es">Compuestos que contienen el grupo Carbonilo ($C=O$) en el extremo de la cadena. Son altamente reactivos y se nombran con el sufijo <strong>-al</strong>.</p>
+            <p class="intro" data-lang="ca">Compostos que contenen el grup Carbonil ($C=O$) a l'extrem de la cadena. Són altament reactius i es nomenen amb el sufix <strong>-al</strong>.</p>
+            <p class="intro" data-lang="en">Compounds containing the Carbonyl group ($C=O$) at the end of the chain. They are highly reactive and are named with the suffix <strong>-al</strong>.</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card c-orange">
+                <div class="icon-box">🏷️</div>
+                <h3 data-lang="es">1. Nomenclatura y Prioridad</h3>
+                <h3 data-lang="ca">1. Nomenclatura i Prioritat</h3>
+                <h3 data-lang="en">1. Naming & Priority</h3>
+                
+                <p data-lang="es">El grupo $\text{-CHO}$ siempre es el <strong>carbono 1</strong> de la cadena. El sufijo es <strong>-al</strong>.</p>
+                <p data-lang="ca">El grup $\text{-CHO}$ sempre és el <strong>carboni 1</strong> de la cadena. El sufix és <strong>-al</strong>.</p>
+                <p data-lang="en">The $\text{-CHO}$ group is always the <strong>carbon 1</strong> of the chain. The suffix is <strong>-al</strong>.</p>
+                
+                <div class="structure-box">
+                    <p class="small-math">R - C (=O) - H</p>
+                    <p class="formula-big">R - CHO</p>
+                </div>
+            </div>
+
+            <div class="card c-pink">
+                <div class="icon-box">📝</div>
+                <h3 data-lang="es">2. Nombres Vulgares</h3>
+                <h3 data-lang="ca">2. Noms Vulgaris</h3>
+                <h3 data-lang="en">2. Common Names</h3>
+                
+                <p data-lang="es">Muchos aldehídos comunes se nombran según el ácido carboxílico del que derivan (usando la raíz **form-**, **acet-**, **propion-**).</p>
+                <p data-lang="ca">Molts aldehids comuns es nomenen segons l'àcid carboxílic del qual deriven.</p>
+                <p data-lang="en">Many common aldehydes are named after the carboxylic acid they derive from.</p>
+
+                <ul style="padding-left:20px; font-size:0.95rem;">
+                    <li>1C: Metanal = <strong>Formaldehído</strong></li>
+                    <li>2C: Etanal = <strong>Acetaldehído</strong></li>
+                    <li>3C: Propanal = <strong>Propionaldehído</strong></li>
+                </ul>
+            </div>
+
+            <div class="card c-cyan">
+                <div class="icon-box">⬡</div>
+                <h3 data-lang="es">3. Aldehídos Aromáticos</h3>
+                <h3 data-lang="ca">3. Aldehids Aromàtics</h3>
+                <h3 data-lang="en">3. Aromatic Aldehydes</h3>
+                
+                <p data-lang="es">El más famoso es el <strong>Benzaldehído</strong>, que huele a almendras. El $\text{-CHO}$ va unido directamente al anillo.</p>
+                <p data-lang="ca">El més famós és el <strong>Benzaldehid</strong>, que fa olor d'ametlles.</p>
+                <p data-lang="en">The most famous is <strong>Benzaldehyde</strong>, which smells like almonds.</p>
+                <div style="font-size:1.1rem; font-weight:bold; color:var(--tertiary); text-align:center;">
+                    $$\text{Anillo} - CHO$$
+                </div>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Aldehídos (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs d'Aldehids (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Aldehyde Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Nombres Simples (-al)</span>
+            <div class="gym-grid">
+                <details><summary>Metanal</summary><div class="answer">HCHO</div></details>
+                <details><summary>Etanal</summary><div class="answer">CH₃CHO</div></details>
+                <details><summary>Propanal</summary><div class="answer">CH₃CH₂CHO</div></details>
+                <details><summary>Butanal</summary><div class="answer">CH₃CH₂CH₂CHO</div></details>
+                <details><summary>Pentenal (But-2-enal)</summary><div class="answer">CH₃CH=CHCHO</div></details>
+                <details><summary>Hexanal</summary><div class="answer">CH₃(CH₂)₄CHO</div></details>
+                <details><summary>Octanal</summary><div class="answer">CH₃(CH₂)₆CHO</div></details>
+                <details><summary>Decanal</summary><div class="answer">CH₃(CH₂)₈CHO</div></details>
+                <details><summary>Pentanal</summary><div class="answer">CH₃(CH₂)₃CHO</div></details>
+                <details><summary>Heptanal</summary><div class="answer">CH₃(CH₂)₅CHO</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 2: Ramificados y Dialdehídos</span>
+            <div class="gym-grid">
+                <details><summary>2-metilpropanal</summary><div class="answer">(CH₃)₂CHCHO</div></details>
+                <details><summary>3-clorobutanal</summary><div class="answer">CH₃CH(Cl)CH₂CHO</div></details>
+                <details><summary>3-hidroxibutanal</summary><div class="answer">CH₃CH(OH)CH₂CHO</div></details>
+                <details><summary>Etanodial</summary><div class="answer">OHCCHO</div></details>
+                <details><summary>Propanodial</summary><div class="answer">OHCCH₂CHO</div></details>
+                <details><summary>Butanodial</summary><div class="answer">OHCCH₂CH₂CHO</div></details>
+                <details><summary>2-bromopentanal</summary><div class="answer">CH₃CH₂CH(Br)CHO</div></details>
+                <details><summary>4-metilpentanal</summary><div class="answer">(CH₃)₂CHCH₂CH₂CHO</div></details>
+                <details><summary>3-butenal</summary><div class="answer">CH₂=CHCH₂CHO</div></details>
+                <details><summary>2-pentenal</summary><div class="answer">CH₃CH₂CH=CHCHO</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 3: Aromáticos y Nombres Propios</span>
+            <div class="gym-grid">
+                <details><summary>Benzaldehído</summary><div class="answer">C₆H₅CHO</div></details>
+                <details><summary>2-metilbenzaldehído</summary><div class="answer">o-Tolualdehído</div></details>
+                <details><summary>3-nitrobenzaldehído</summary><div class="answer">m-Nitrobencenocarbaldehído</div></details>
+                <details><summary>Cinamaidehído</summary><div class="answer">C₆H₅CH=CHCHO</div></details>
+                <details><summary>Formaldehído</summary><div class="answer">HCHO</div></details>
+                <details><summary>Acetaldehído</summary><div class="answer">CH₃CHO</div></details>
+                <details><summary>Salicilaldehído</summary><div class="answer">o-Hidroxibenzaldehído</div></details>
+                <details><summary>Vainillina</summary><div class="answer">3-metoxi-4-hidroxibenzaldehído</div></details>
+                <details><summary>Propenal (Acroleína)</summary><div class="answer">CH₂=CHCHO</div></details>
+                <details><summary>Ciclohexanocarbaldehído</summary><div class="answer">Anillo 6 con CHO</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--bg); color:var(--text-soft); border-color:var(--border)">Nivel 4: ¿Cómo se llama?</span>
+            <div class="gym-grid">
+                <details><summary>CH₃CHO</summary><div class="answer">Etanal / Acetaldehído</div></details>
+                <details><summary>OHCCH₂CHO</summary><div class="answer">Propanodial</div></details>
+                <details><summary>(CH₃)₂CHCHO</summary><div class="answer">2-metilpropanal</div></details>
+                <details><summary>OHCCH₂CH₂CHO</summary><div class="answer">Butanodial</div></details>
+                <details><summary>CH₂=CHCHO</summary><div class="answer">Propenal / Acroleína</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
