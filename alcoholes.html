@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orgánica | Alcoholes</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (PALETA ALCOHOL/LAB) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #f0f9ff; /* Azul cielo muy pálido */
+        --surface: #ffffff;
+        --text-main: #0c4a6e;
+        --text-soft: #475569;
+        --border: #e0f2fe;
+        
+        /* Paleta Cool Lab */
+        --primary: #06b6d4;      /* Cian */
+        --primary-soft: #cffafe;
+        --secondary: #3b82f6;    /* Azul */
+        --secondary-soft: #dbeafe;
+        --tertiary: #f59e0b;     /* Naranja (Reacción) */
+        --tertiary-soft: #fef3c7;
+        --accent: #8b5cf6;       /* Violeta */
+
+        --shadow: 0 10px 30px -5px rgba(6, 182, 212, 0.08);
+        --shadow-hover: 0 20px 40px -5px rgba(6, 182, 212, 0.2);
+        --radius: 28px;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0b172a;
+        --surface: #1e293b;
+        --text-main: #cffafe;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --primary-soft: rgba(6, 182, 212, 0.2);
+        --secondary-soft: rgba(59, 130, 246, 0.2);
+        --tertiary-soft: rgba(245, 158, 11, 0.2);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+    body { background-color: var(--bg); color: var(--text-main); font-family: 'Nunito', sans-serif; line-height: 1.6; min-height: 100vh; padding: 20px; }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .back-btn:hover { color: var(--primary); }
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { border: none; background: transparent; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: wave 2s infinite ease-in-out; }
+    @keyframes wave { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px) rotate(5deg); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
+        color: var(--text-main); display: flex; align-items: center; gap: 10px;
+        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    
+    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+    
+    .icon-box { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; }
+    .c-cyan .icon-box { background: var(--primary-soft); }
+    .c-blue .icon-box { background: var(--secondary-soft); }
+    .c-orange .icon-box { background: var(--tertiary-soft); }
+    .c-purple .icon-box { background: var(--accent-soft); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 10px; }
+    
+    /* CAJA DE FÓRMULA (Estructura) */
+    .formula-box { background: var(--primary-soft); border-radius: 15px; padding: 20px; text-align: center; margin-top: 15px; }
+    .formula-big { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+
+    /* GIMNASIO (EJERCICIOS) */
+    .gym-section { margin-bottom: 50px; }
+    .gym-header { background: var(--bg); padding: 10px 20px; border-radius: 15px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; border: 1px solid var(--border); }
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    details { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
+    summary { padding: 15px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); font-size: 0.9rem; }
+    .answer { padding: 15px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 1rem; text-align: center; border-top: 1px solid var(--border); }
+
+    /* --- IDIOMAS ESTRICTO --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🧪</span>
+            <h1 data-lang="es">Los <span>Alcoholes</span></h1>
+            <h1 data-lang="ca">Els <span>Alcohols</span></h1>
+            <h1 data-lang="en">The <span>Alcohols</span></h1>
+            
+            <p class="intro" data-lang="es">El primer grupo de compuestos oxigenados. Tienen el famoso grupo Hidroxilo ($\text{-OH}$) unido a un carbono saturado.</p>
+            <p class="intro" data-lang="ca">El primer grup de compostos oxigenats. Tenen el famós grup Hidroxil ($\text{-OH}$) unit a un carboni saturat.</p>
+            <p class="intro" data-lang="en">The first group of oxygenated compounds. They feature the famous Hydroxyl group ($\text{-OH}$) attached to a saturated carbon.</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card c-cyan">
+                <div class="icon-box">🏷️</div>
+                <h3 data-lang="es">1. Nomenclatura ($\text{-ol}$)</h3>
+                <h3 data-lang="ca">1. Nomenclatura ($\text{-ol}$)</h3>
+                <h3 data-lang="en">1. Nomenclature ($\text{-ol}$)</h3>
+                <p data-lang="es">Se utiliza el sufijo **-ol**. La cadena principal es la más larga que contenga el grupo $\text{-OH}$. El $-\text{OH}$ tiene la máxima prioridad de numeración.</p>
+                <p data-lang="ca">S'utilitza el sufix **-ol**. La cadena principal és la més llarga que contingui el grup $\text{-OH}$. El $-\text{OH}$ té la màxima prioritat.</p>
+                <p data-lang="en">The suffix **-ol** is used. The longest chain must contain the $\text{-OH}$ group. The $-\text{OH}$ has the highest numbering priority.</p>
+                <div class="formula-box">
+                    <span data-lang="es">Ej: Propan-1-ol</span><span data-lang="ca">Ex: Propan-1-ol</span><span data-lang="en">Ex: Propan-1-ol</span>
+                </div>
+            </div>
+
+            <div class="card c-purple">
+                <div class="icon-box">🏆</div>
+                <h3 data-lang="es">2. Clasificación (1º, 2º, 3º)</h3>
+                <h3 data-lang="ca">2. Classificació (1r, 2n, 3r)</h3>
+                <h3 data-lang="en">2. Classification (1°, 2°, 3°)</h3>
+                <p data-lang="es">Depende de cuántos carbonos estén unidos al carbono que lleva el grupo $\text{-OH}$. ¡Clave para las reacciones de oxidación!</p>
+                <p data-lang="ca">Depèn de quants carbonis estiguin units al carboni que porta el grup $\text{-OH}$. Clau per a les reaccions d'oxidació!</p>
+                <p data-lang="en">Depends on how many carbons are attached to the $\text{-OH}$ bearing carbon. Key for oxidation reactions!</p>
+                
+                <ul style="padding-left:20px; font-size:0.95rem;">
+                    <li>1º (Primario): $\text{RCH}_2\text{OH}$</li>
+                    <li>2º (Secundario): $\text{R}_2\text{CHOH}$</li>
+                    <li>3º (Terciario): $\text{R}_3\text{COH}$</li>
+                </ul>
+            </div>
+
+            <div class="card c-orange">
+                <div class="icon-box">🔗</div>
+                <h3 data-lang="es">3. Propiedades Físicas</h3>
+                <h3 data-lang="ca">3. Propietats Físiques</h3>
+                <h3 data-lang="en">3. Physical Properties</h3>
+                <p data-lang="es">Gracias al $\text{-OH}$, los alcoholes forman **puentes de hidrógeno** (solubilidad en agua) y tienen puntos de ebullición altos comparados con sus alcanos correspondientes.</p>
+                <p data-lang="ca">Gràcies al $\text{-OH}$, els alcohols formen **ponts d'hidrogen** (solubilitat) i tenen punts d'ebullició alts.</p>
+                <p data-lang="en">Due to $\text{-OH}$, alcohols form **hydrogen bonds** (solubility) and have high boiling points.</p>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ Gimnasio de Alcoholes (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs d'Alcohols (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Alcohol Gym (35 Exercises)</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--primary-soft); color:var(--primary)">Nivel 1: Nombres y Fórmulas</span>
+            <div class="gym-grid">
+                <details><summary>Metanol</summary><div class="answer">CH₃OH</div></details>
+                <details><summary>Etanol</summary><div class="answer">CH₃CH₂OH</div></details>
+                <details><summary>Propan-1-ol</summary><div class="answer">CH₃CH₂CH₂OH</div></details>
+                <details><summary>Propan-2-ol</summary><div class="answer">CH₃CH(OH)CH₃</div></details>
+                <details><summary>Butan-1-ol</summary><div class="answer">CH₃(CH₂)₂CH₂OH</div></details>
+                <details><summary>Butan-2-ol</summary><div class="answer">CH₃CH₂CH(OH)CH₃</div></details>
+                <details><summary>Pentan-3-ol</summary><div class="answer">CH₃CH₂CH(OH)CH₂CH₃</div></details>
+                <details><summary>Pent-3-en-1-ol</summary><div class="answer">CH₂OHCH₂CH=CHCH₃</div></details>
+                <details><summary>Ciclohexanol</summary><div class="answer">Anillo de 6 con OH</div></details>
+                <details><summary>2-metilpropan-1-ol</summary><div class="answer">(CH₃)₂CHCH₂OH</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--secondary-soft); color:var(--secondary)">Nivel 2: Primario, Secundario o Terciario</span>
+            <div class="gym-grid">
+                <details><summary>Metanol</summary><div class="answer">Primario (1º)</div></details>
+                <details><summary>Propan-1-ol</summary><div class="answer">Primario (1º)</div></details>
+                <details><summary>Propan-2-ol</summary><div class="answer">Secundario (2º)</div></details>
+                <details><summary>2-metilpropan-2-ol</summary><div class="answer">Terciario (3º)</div></details>
+                <details><summary>2-butanol</summary><div class="answer">Secundario (2º)</div></details>
+                <details><summary>3-pentanol</summary><div class="answer">Secundario (2º)</div></details>
+                <details><summary>2-metilbutan-1-ol</summary><div class="answer">Primario (1º)</div></details>
+                <details><summary>2,3-dimetilbutan-2-ol</summary><div class="answer">Terciario (3º)</div></details>
+                <details><summary>Etanodiol (Glicol)</summary><div class="answer">Primario (1º)</div></details>
+                <details><summary>Ciclohexanol</summary><div class="answer">Secundario (2º)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--tertiary-soft); color:var(--tertiary)">Nivel 3: Ramificados y Polioles</span>
+            <div class="gym-grid">
+                <details><summary>3-etil-2,4-heptanodiol</summary><div class="answer">CH₃CH(OH)CH(Et)CH(OH)CH₂CH₂CH₃</div></details>
+                <details><summary>But-3-en-2-ol</summary><div class="answer">CH₂=CH-CH(OH)CH₃</div></details>
+                <details><summary>Propanotriol (Glicerina)</summary><div class="answer">CH₂OH-CHOH-CH₂OH</div></details>
+                <details><summary>Bencenol</summary><div class="answer">Fenol (Anillo con OH)</div></details>
+                <details><summary>4-metilpentan-2-ol</summary><div class="answer">CH₃CH(OH)CH₂CH(CH₃)₂</div></details>
+                <details><summary>2-metil-1-feniletanol</summary><div class="answer">PhCH(OH)CH₂CH₃</div></details>
+                <details><summary>Butanodiol (posición 1,4)</summary><div class="answer">HOCH₂(CH₂)₂CH₂OH</div></details>
+                <details><summary>2,2-dimetilpropan-1-ol</summary><div class="answer">Terciario (¡Ojo, es 1º!)</div></details>
+                <details><summary>4,4-dimetilciclohexanol</summary><div class="answer">Secundario (Anillo)</div></details>
+                <details><summary>3-metilbutan-2-ol</summary><div class="answer">Secundario (2º)</div></details>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" style="background:var(--bg); color:var(--text-soft); border-color:var(--border)">Nivel 4: ¿Cómo se llama?</span>
+            <div class="gym-grid">
+                <details><summary>CH₃CH₂OH</summary><div class="answer">Etanol</div></details>
+                <details><summary>(CH₃)₃COH</summary><div class="answer">2-metilpropan-2-ol (Terciario)</div></details>
+                <details><summary>CH₂=CHCH₂OH</summary><div class="answer">Prop-2-en-1-ol (Alcohol alílico)</div></details>
+                <details><summary>HOCH₂CH₂OH</summary><div class="answer">Etanodiol (Glicol)</div></details>
+                <details><summary>CH₃CH(OH)CH₂CH₃</summary><div class="answer">Butan-2-ol</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
