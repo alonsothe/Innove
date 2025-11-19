@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solubilidad | Equilibrios Heterogéneos</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧂</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* --- PALETA SOLUBILIDAD (CRISTALINA) --- */
+    --bg-color: #ffffff;
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    
+    --accent: #06b6d4; /* Cyan 500 */
+    --accent-glow: rgba(6, 182, 212, 0.15);
+    --highlight: #f59e0b; /* Amber (Precipitado) */
+    --solid: #64748b; /* Slate (Sólido) */
+    
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    
+    --accent: #22d3ee; /* Cyan 400 */
+    --accent-glow: rgba(34, 211, 238, 0.15);
+    
+    --glass-bg: rgba(24, 24, 27, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    
+    --card-hover: rgba(39, 39, 42, 0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+  }
+
+  /* ORBES */
+  .orb { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.4; }
+  .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; animation: float 10s infinite ease-in-out; }
+  .orb-2 { width: 300px; height: 300px; background: var(--highlight); bottom: -50px; left: -50px; opacity: 0.2; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+  /* GLASS */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+  }
+
+  /* TIPOGRAFÍA */
+  h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+  h2 { font-size: 1.8rem; margin: 3rem 0 1.5rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
+  h3 { font-size: 1.3rem; margin: 1.5rem 0 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
+  strong { color: var(--text-primary); font-weight: 600; }
+
+  .chem {
+    font-family: var(--font-chem); font-size: 0.9em; color: var(--accent);
+    background: var(--accent-glow); padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+  }
+
+  .math-box {
+    background: var(--accent-glow); border-left: 4px solid var(--accent);
+    padding: 15px 20px; margin: 20px 0; font-family: var(--font-chem); font-size: 1.05rem;
+    color: var(--text-primary); text-align: center; border-radius: 0 4px 4px 0;
+  }
+
+  /* NAV & HEADER */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  .header {
+    position: sticky; top: 20px; z-index: 100; padding: 16px 24px; margin-bottom: 40px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+  .logo-icon { font-size: 2rem; line-height: 1; }
+  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; }
+  .logo-text div:last-child { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  .nav-btn {
+    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
+    padding: 8px 16px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .nav-btn:hover { background: var(--accent-glow); color: var(--accent); }
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary); color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+    width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
+    font-size: 1.2rem; transition: transform 0.2s;
+  }
+
+  /* CONTENIDO */
+  section.content-section { display: none; animation: fadeIn 0.5s ease forwards; }
+  section[data-active] { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card { padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden; }
+
+  /* TABLAS */
+  .chem-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+  .chem-table th { text-align: left; color: var(--text-secondary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+  .chem-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-primary); }
+  .chem-table tr:hover td { background: var(--accent-glow); }
+
+  /* EJERCICIOS */
+  .ex-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
+  
+  details.ex {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
+    overflow: hidden; transition: all 0.2s; cursor: pointer;
+  }
+  details.ex:hover { background: var(--card-hover); border-color: var(--accent); }
+  
+  summary {
+    padding: 20px; font-weight: 500; list-style: none; position: relative;
+    display: grid; grid-template-columns: auto 1fr; align-items: start; gap: 15px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  
+  .ex-badge {
+    font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid;
+    white-space: nowrap; align-self: start; margin-top: 2px; font-weight: 700;
+  }
+  .b-ebau { border-color: var(--accent); color: var(--accent); }
+  .b-hard { border-color: var(--highlight); color: var(--highlight); }
+  .ex-text { font-size: 1rem; color: var(--text-primary); line-height: 1.5; }
+  
+  details[open] summary { border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.02); }
+
+  .solution {
+    padding: 24px; background: var(--bg-color);
+    font-family: var(--font-ui); color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7;
+    border-top: 1px solid var(--glass-border);
+  }
+  .res-box {
+    margin-top: 15px; padding: 10px; border: 1px dashed var(--accent); border-radius: 6px;
+    font-family: var(--font-chem); color: var(--text-primary); text-align: center; font-weight: bold;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🧂</div>
+    <div class="logo-text">
+      <div>Solubilidad EBAU</div>
+      <div>Equilibrio Heterogéneo</div>
+    </div>
+  </a>
+  
+  <nav class="nav-menu">
+    <button class="nav-btn" data-target="teoria1" aria-selected="true">1. Conceptos Kps</button>
+    <button class="nav-btn" data-target="teoria2" aria-selected="false">2. Ión Común/pH</button>
+    <button class="nav-btn" data-target="teoria3" aria-selected="false">3. Precipitación</button>
+    <button class="nav-btn" data-target="problemas" aria-selected="false">4. Problemas (30)</button>
+  </nav>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+</header>
+
+<main class="container">
+
+  <section id="teoria1" class="content-section" data-active>
+    <div class="card glass">
+      <h1>El Producto de Solubilidad (Kps)</h1>
+      <p>Es un equilibrio heterogéneo entre una sal sólida y sus iones disueltos en una disolución saturada.</p>
+      
+      <h3>Equilibrio General</h3>
+      <div class="math-box">
+        AₘBₙ(s) ⇄ m Aⁿ⁺(aq) + n Bᵐ⁻(aq)
+      </div>
+      <p>Como la concentración del sólido es constante, se integra en la constante de equilibrio:</p>
+      <div class="math-box">
+        Kps = [Aⁿ⁺]ᵐ · [Bᵐ⁻]ⁿ
+      </div>
+
+      <h3>Solubilidad (s)</h3>
+      <p>Es la concentración máxima (molaridad) de la sal que se disuelve. Depende de la estequiometría:</p>
+      <table class="chem-table">
+        <thead><tr><th>Tipo</th><th>Ejemplo</th><th>Iones en Eq.</th><th>Relación Kps - s</th></tr></thead>
+        <tbody>
+          <tr><td>1:1</td><td>AgCl</td><td>s, s</td><td>Kps = s²</td></tr>
+          <tr><td>1:2</td><td>PbI₂</td><td>s, 2s</td><td>Kps = s · (2s)² = 4s³</td></tr>
+          <tr><td>1:3</td><td>Al(OH)₃</td><td>s, 3s</td><td>Kps = s · (3s)³ = 27s⁴</td></tr>
+          <tr><td>2:3</td><td>Ca₃(PO₄)₂</td><td>3s, 2s</td><td>Kps = (3s)³ · (2s)² = 108s⁵</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="teoria2" class="content-section">
+    <div class="card glass">
+      <h1>Factores que afectan la Solubilidad</h1>
+      
+      <h3>1. Efecto del Ión Común</h3>
+      <p>Según Le Châtelier, añadir una sal que contenga un ión común al precipitado desplazará el equilibrio hacia la izquierda (hacia el sólido).</p>
+      <div class="math-box">
+        La solubilidad DISMINUYE drásticamente en presencia de un ión común.
+      </div>
+      
+      <h3>2. Efecto del pH</h3>
+      <p>Afecta a sales cuyos iones reaccionan con H⁺ o OH⁻ (hidróxidos, carbonatos, fosfatos).</p>
+      <ul>
+        <li><strong>Hidróxidos M(OH)ₙ:</strong> Si bajamos el pH (añadimos ácido), los H⁺ neutralizan los OH⁻. El equilibrio se desplaza a la derecha para reponer OH⁻ → <strong>Aumenta la solubilidad</strong>.</li>
+        <li><strong>Carbonatos CaCO₃:</strong> En medio ácido, el CO₃²⁻ forma H₂CO₃ (CO₂ + H₂O), consumiéndose. <strong>El sólido se disuelve</strong>.</li>
+      </ul>
+
+      <h3>3. Temperatura</h3>
+      <p>La mayoría de las disoluciones son endotérmicas (<span class="chem">ΔH > 0</span>). Al aumentar T, aumenta Kps y la solubilidad.</p>
+    </div>
+  </section>
+
+  <section id="teoria3" class="content-section">
+    <div class="card glass">
+      <h1>Predicción de Precipitación (Q)</h1>
+      <p>Para saber si se forma precipitado al mezclar dos disoluciones, calculamos el <strong>Producto Iónico (Q)</strong> con las concentraciones iniciales <em>después de la mezcla</em> (¡Ojo a las diluciones!).</p>
+
+      <table class="chem-table">
+        <thead><tr><th>Condición</th><th>Estado del Sistema</th><th>Observación</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Q < Kps</strong></td><td>Insaturada</td><td>No precipita. Se puede disolver más.</td></tr>
+          <tr><td><strong>Q = Kps</strong></td><td>Saturada</td><td>Equilibrio. Punto límite.</td></tr>
+          <tr><td><strong>Q > Kps</strong></td><td>Sobresaturada</td><td><strong>PRECIPITA</strong> hasta que Q = Kps.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Precipitación Fraccionada</h3>
+      <p>Permite separar iones. Precipita primero la sal que requiere menor concentración del agente precipitante para alcanzar su Kps.</p>
+    </div>
+  </section>
+
+  <section id="problemas" class="content-section">
+    <div class="card glass">
+      <h2>Problemas Tipo Examen (30)</h2>
+      <p>Incluye cálculo de solubilidad, mezclas de volúmenes (dilución) y efecto del pH. Usa calculadora.</p>
+
+      <div class="ex-grid">
+        
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">La solubilidad del fluoruro de calcio (CaF₂) en agua es 1,6·10⁻² g/L. Calcule su producto de solubilidad (Kps). Masas atómicas: Ca=40, F=19.</span>
+          </summary>
+          <div class="solution">
+            1. Mm(CaF₂) = 40 + 2(19) = 78 g/mol.<br>
+            2. Solubilidad molar (s) = 1.6·10⁻² / 78 = 2.05·10⁻⁴ M.<br>
+            3. Equilibrio: CaF₂(s) ⇄ Ca²⁺ + 2F⁻. (s, 2s).<br>
+            4. Kps = [Ca²⁺][F⁻]² = s · (2s)² = 4s³.<br>
+            5. Kps = 4 · (2.05·10⁻⁴)³ = 3.45·10⁻¹¹.
+            <div class="res-box">Kps = 3.45·10⁻¹¹</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">Sabiendo que el Kps del hidróxido de magnesio, Mg(OH)₂, es 1,8·10⁻¹¹, calcule la solubilidad en g/L y el pH de una disolución saturada.</span>
+          </summary>
+          <div class="solution">
+            1. Mg(OH)₂ ⇄ Mg²⁺ + 2OH⁻. Kps = 4s³.<br>
+            2. s = ∛(Kps/4) = ∛(1.8·10⁻¹¹ / 4) = 1.65·10⁻⁴ M.<br>
+            3. g/L = s · Mm (58.3) = 1.65·10⁻⁴ · 58.3 = 0.0096 g/L.<br>
+            4. [OH⁻] = 2s = 3.3·10⁻⁴ M.<br>
+            5. pOH = 3.48 → pH = 10.52.
+            <div class="res-box">s = 9.6 mg/L ; pH = 10.52</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Calcule la solubilidad del AgCl (Kps = 1,7·10⁻¹⁰) en: a) Agua pura. b) Una disolución 0,1 M de NaCl. Compare los resultados.</span>
+          </summary>
+          <div class="solution">
+            a) Agua: s = √Kps = √1.7·10⁻¹⁰ = 1.30·10⁻⁵ M.<br>
+            b) En NaCl 0.1 M: [Cl⁻] = 0.1 M (aprox, ya que s es muy pequeña).<br>
+            Kps = [Ag⁺][Cl⁻] → 1.7·10⁻¹⁰ = s' · (0.1).<br>
+            s' = 1.7·10⁻⁹ M.<br>
+            <strong>Conclusión:</strong> La solubilidad disminuye unas 10.000 veces.
+            <div class="res-box">s(agua)=1.3e-5 ; s(NaCl)=1.7e-9</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">¿Cuál será la concentración de ión Ca²⁺ necesaria para iniciar la precipitación de CaSO₄ en una disolución 0.02 M de Na₂SO₄? Kps(CaSO₄) = 2.4·10⁻⁵.</span>
+          </summary>
+          <div class="solution">
+            1. Disolución de Na₂SO₄ 0.02 M aporta [SO₄²⁻] = 0.02 M.<br>
+            2. Precipita cuando Q = Kps.<br>
+            3. [Ca²⁺][0.02] = 2.4·10⁻⁵.<br>
+            4. [Ca²⁺] = 2.4·10⁻⁵ / 0.02 = 1.2·10⁻³ M.
+            <div class="res-box">[Ca²⁺] > 1.2·10⁻³ M</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Se mezclan 100 mL de Pb(NO₃)₂ 2·10⁻³ M con 100 mL de KI 2·10⁻³ M. ¿Precipitará PbI₂? Kps = 7,1·10⁻⁹. (Suponga volúmenes aditivos).</span>
+          </summary>
+          <div class="solution">
+            1. Volumen total = 200 mL. Hay DILUCIÓN (factor 1/2 al ser volúmenes iguales).<br>
+            2. [Pb²⁺] = 1·10⁻³ M.<br>
+            3. [I⁻] = 1·10⁻³ M.<br>
+            4. Q = [Pb²⁺][I⁻]² = (10⁻³) · (10⁻³)² = 10⁻⁹.<br>
+            5. Comparar: Q (1·10⁻⁹) < Kps (7.1·10⁻⁹).
+            <div class="res-box">No precipita</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">A 50 mL de BaCl₂ 0.001 M se añaden 150 mL de Na₂SO₄ 0.002 M. Determine si se forma precipitado de BaSO₄ (Kps = 1,1·10⁻¹⁰).</span>
+          </summary>
+          <div class="solution">
+            1. V total = 200 mL.<br>
+            2. [Ba²⁺] = (0.05 L · 0.001 M) / 0.2 L = 2.5·10⁻⁴ M.<br>
+            3. [SO₄²⁻] = (0.15 L · 0.002 M) / 0.2 L = 1.5·10⁻³ M.<br>
+            4. Q = (2.5·10⁻⁴)(1.5·10⁻³) = 3.75·10⁻⁷.<br>
+            5. Q > Kps (1.1·10⁻¹⁰).
+            <div class="res-box">Sí precipita</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-ebau">EBAU</span>
+            <span class="ex-text">¿A qué pH comenzará a precipitar Mg(OH)₂ de una disolución que contiene Mg²⁺ 0.1 M? Kps = 1.8·10⁻¹¹.</span>
+          </summary>
+          <div class="solution">
+            1. Kps = [Mg²⁺][OH⁻]².<br>
+            2. 1.8·10⁻¹¹ = (0.1) · [OH⁻]².<br>
+            3. [OH⁻]² = 1.8·10⁻¹⁰ → [OH⁻] = 1.34·10⁻⁵ M.<br>
+            4. pOH = 4.87.
+            5. pH = 14 - 4.87 = 9.13.
+            <div class="res-box">pH > 9.13</div>
+          </div>
+        </details>
+
+        <details class="ex">
+          <summary>
+            <span class="ex-badge b-hard">HARD</span>
+            <span class="ex-text">Precipitación Fraccionada: Una disolución contiene Cl⁻ 0.01 M y CrO₄²⁻ 0.01 M. Se añade lentamente AgNO₃. ¿Qué sal precipita primero? Kps(AgCl)=1.8·10⁻¹⁰, Kps(Ag₂CrO₄)=2.5·10⁻¹².</span>
+          </summary>
+          <div class="solution">
+            1. Para AgCl: [Ag⁺] = Kps/[Cl⁻] = 1.8·10⁻¹⁰ / 0.01 = 1.8·10⁻⁸ M.<br>
+            2. Para Ag₂CrO₄: [Ag⁺]² = Kps/[CrO₄²⁻] = 2.5·10⁻¹⁰. [Ag⁺] = 1.58·10⁻⁵ M.<br>
+            3. Precipita primero la que necesita MENOS Ag⁺.
+            <div class="res-box">Precipita primero AgCl</div>
+          </div>
+        </details>
+
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">s del AgBr (Kps=5·10⁻¹³).</span></summary><div class="solution">s = 7.07·10⁻⁷ M.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Relación s y Kps para Fe(OH)₃.</span></summary><div class="solution">Kps = 27s⁴.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Por qué CaCO₃ se disuelve en HCl?</span></summary><div class="solution">CO₃²⁻ + 2H⁺ → H₂O + CO₂. Se consume el anión.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Kps de sal AB si s=10⁻⁵.</span></summary><div class="solution">Kps = 10⁻¹⁰.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Mezcla NaCl y AgNO₃. ¿Qué iones quedan?</span></summary><div class="solution">Na⁺, NO₃⁻ (espectadores) y saturación de Ag⁺/Cl⁻.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Unidades de Kps para PbCl₂.</span></summary><div class="solution">[M][M]² = M³.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Si s=1 g/L (Mm=100) en AB. Kps?</span></summary><div class="solution">s=0.01M. Kps=10⁻⁴.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Efecto de añadir NH₃ a AgCl.</span></summary><div class="solution">Forma complejo Ag(NH₃)₂⁺. Aumenta solubilidad.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿BaSO₄ soluble en agua? (Kps=10⁻¹⁰).</span></summary><div class="solution">Prácticamente insoluble. Se usa en radiografías.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">pH precipitación Fe(OH)₃ 0.01M (Kps=10⁻³⁸).</span></summary><div class="solution">[OH⁻]≈10⁻¹². pOH=12. pH=2. (Precipita muy ácido).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Si Q < Kps, ¿qué ocurre?</span></summary><div class="solution">Disolución insaturada. No precipita.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">s del CaF₂ en NaF 0.1M (Kps=4·10⁻¹¹).</span></summary><div class="solution">4s'(0.1)² = Kps. s' = 10⁻⁹ M.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Varía Kps con la cantidad de sólido?</span></summary><div class="solution">No, siempre que haya algo de sólido, Kps es constante.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿Varía Kps con la temperatura?</span></summary><div class="solution">Sí, es la única variable que cambia la constante.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Escribir equilibrio Al₂S₃.</span></summary><div class="solution">Al₂S₃(s) ⇄ 2Al³⁺ + 3S²⁻. Kps=[Al]²[S]³.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">¿PbCl₂ (Kps=10⁻⁵) o PbI₂ (10⁻⁹) más soluble?</span></summary><div class="solution">Calcular 's' para ambos. PbCl₂ es más soluble.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Añadir agua a solución saturada con sólido.</span></summary><div class="solution">Se disuelve más sólido hasta saturar de nuevo (o agotarse).</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">¿AgI soluble en HNO₃?</span></summary><div class="solution">No, I⁻ no es básico (de ácido fuerte HI). No reacciona.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Precipitar iones Cl⁻. ¿AgNO₃ o KNO₃?</span></summary><div class="solution">AgNO₃ (forma AgCl insoluble). KCl es soluble.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-hard">HARD</span><span class="ex-text">Mezclar volúmenes no iguales.</span></summary><div class="solution">Usar M1V1 = M2V2 para nuevas concentraciones.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Significado de sobresaturada.</span></summary><div class="solution">Inestable. Contiene más soluto del admitido. Precipita.</div></details>
+        <details class="ex"><summary><span class="ex-badge b-ebau">EBAU</span><span class="ex-text">Lavado de precipitados.</span></summary><div class="solution">Usar agua con ión común para no perder precipitado.</div></details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // PESTAÑAS
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('section.content-section');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+      btn.setAttribute('aria-selected', 'true');
+      const targetId = btn.getAttribute('data-target');
+      sections.forEach(sec => sec.removeAttribute('data-active'));
+      document.getElementById(targetId).setAttribute('data-active', '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // TEMA
+  const themeBtn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  });
+</script>
+
+</body>
+</html>
