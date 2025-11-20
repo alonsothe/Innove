@@ -1,640 +1,1509 @@
 <!DOCTYPE html>
 <html lang="es" data-scheme="dark">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Innove | Integral Master</title>
-  <link rel="icon" type="image/png" href="innoveAI.png" />
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Innove | La Biblia de las Integrales</title>
+    <link rel="icon" type="image/png" href="innoveAI.png" />
 
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$']],
-        processEscapes: true
-      },
-      options: { renderActions: { addMenu: [] } }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700;800;900&display=swap"
+        rel="stylesheet">
 
-  <style>
-    /* ============ VARIABLES ============ */
-    :root {
-      --radius: 24px;
-      --nav-height: 80px;
-      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            options: {
+                renderActions: { addMenu: [] },
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    /* TEMA OSCURO */
-    [data-scheme="dark"] {
-      --bg-body: #050505;
-      --bg-pattern: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 100%);
-      --text-main: #ffffff;
-      --text-muted: #a3a3a3;
-      --card-bg: rgba(20, 20, 20, 0.85);
-      --card-border: 1px solid rgba(255, 255, 255, 0.1);
-      --card-side-bg: rgba(255, 255, 255, 0.03);
-      --nav-bg: rgba(0, 0, 0, 0.9);
-      --shadow: 0 20px 50px -10px rgba(0,0,0,0.8);
-      --code-bg: #000000;
-      --example-card-bg: #0a0a0a;
-      --hover-bg: #1a1a1a;
-      --btn-icon: "☀️";
-      
-      /* Degradado del Título (Vertical como la imagen) */
-      --title-gradient: linear-gradient(180deg, #ffffff 30%, #666666 100%);
-    }
+    <style>
+        /* ============ VARIABLES & THEME ============ */
+        :root {
+            --radius: 24px;
+            --nav-height: 80px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
 
-    /* TEMA CLARO */
-    [data-scheme="light"] {
-      --bg-body: #ffffff;
-      --bg-pattern: radial-gradient(circle at 50% 0%, #f3f4f6 0%, #ffffff 100%);
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --card-bg: #ffffff;
-      --card-border: 1px solid rgba(0, 0, 0, 0.08);
-      --card-side-bg: #f8fafc;
-      --nav-bg: rgba(255, 255, 255, 0.95);
-      --shadow: 0 15px 40px -5px rgba(0,0,0,0.1);
-      --code-bg: #f1f5f9;
-      --example-card-bg: #ffffff;
-      --hover-bg: #f1f5f9;
-      --btn-icon: "🌙";
-      
-      --title-gradient: linear-gradient(180deg, #1e293b 30%, #64748b 100%);
-    }
+        [data-scheme="dark"] {
+            --bg-body: #050505;
+            --bg-pattern:
+                radial-gradient(circle at 15% 50%, rgba(45, 212, 191, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.08) 0%, transparent 25%);
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --card-border: 1px solid rgba(255, 255, 255, 0.08);
+            --card-side-bg: rgba(255, 255, 255, 0.02);
+            --nav-bg: rgba(5, 5, 5, 0.8);
+            --shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+            --code-bg: #0a0a0a;
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --btn-icon: "☀️";
+            --title-gradient: linear-gradient(180deg, #ffffff 20%, #888888 100%);
+            --glass: blur(20px) saturate(180%);
+        }
 
-    :root {
-      --color-eso: #2dd4bf;
-      --color-bach: #3b82f6;
-      --color-uni: #a855f7;
-    }
+        [data-scheme="light"] {
+            --bg-body: #ffffff;
+            --bg-pattern:
+                radial-gradient(circle at 15% 50%, rgba(45, 212, 191, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.05) 0%, transparent 25%);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: 1px solid rgba(0, 0, 0, 0.06);
+            --card-side-bg: #f8fafc;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+            --code-bg: #f1f5f9;
+            --hover-bg: #f1f5f9;
+            --btn-icon: "🌙";
+            --title-gradient: linear-gradient(180deg, #1e293b 20%, #64748b 100%);
+            --glass: blur(20px) saturate(180%);
+        }
 
-    /* ============ GENERAL ============ */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-body);
-      background-image: var(--bg-pattern);
-      color: var(--text-main);
-      padding-top: var(--nav-height);
-      min-height: 100vh;
-      transition: var(--transition);
-      overflow-x: hidden;
-    }
+        :root {
+            --color-eso: #2dd4bf;
+            --color-bach: #3b82f6;
+            --color-uni1: #f43f5e;
+            --color-uni2: #a855f7;
+            --accent: var(--color-eso);
+        }
 
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
-    .math-font { font-family: 'JetBrains Mono', monospace; }
+        /* ============ RESET & BASE ============ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* Orbes Ambientales */
-    .orb {
-      position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15;
-      animation: float 25s infinite ease-in-out; pointer-events: none;
-    }
-    .orb-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--color-eso); }
-    .orb-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: var(--color-uni); animation-delay: -5s; }
-    @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, 40px); } }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            background-image: var(--bg-pattern);
+            background-attachment: fixed;
+            color: var(--text-main);
+            padding-top: var(--nav-height);
+            min-height: 100vh;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
 
-    /* ============ NAVBAR ============ */
-    .navbar {
-      position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
-      background: var(--nav-bg); backdrop-filter: blur(15px);
-      border-bottom: var(--card-border); z-index: 1000;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 5%;
-    }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: var(--font-display);
+            letter-spacing: -0.02em;
+        }
 
-    .logo {
-      font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 800;
-      color: var(--text-main); display: flex; align-items: center; gap: 12px;
-      text-decoration: none;
-    }
-    
-    /* Logo Cuadrado Animado */
-    .logo-box {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--text-main), #666);
-      border-radius: 8px; color: var(--bg-body);
-      display: grid; place-items: center; font-size: 1.4rem;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    .logo:hover .logo-box { 
-      transform: rotate(15deg) scale(1.1); 
-      background: var(--color-bach); color: white;
-    }
+        .math-font {
+            font-family: var(--font-mono);
+        }
 
-    .nav-center {
-      display: flex; gap: 5px;
-      background: var(--card-bg); padding: 5px; border-radius: 50px;
-      border: var(--card-border);
-    }
+        /* ============ ANIMATIONS ============ */
+        @keyframes float {
 
-    .tab-btn {
-      background: transparent; border: none;
-      padding: 10px 25px; border-radius: 40px;
-      color: var(--text-muted); font-weight: 600; cursor: pointer;
-      transition: var(--transition); font-family: 'Outfit', sans-serif;
-    }
-    .tab-btn:hover { color: var(--text-main); background: var(--hover-bg); }
-    .tab-btn.active {
-      background: var(--text-main); color: var(--bg-body);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: scale(1.05);
-    }
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
 
-    .theme-toggle {
-      background: transparent; border: var(--card-border);
-      width: 42px; height: 42px; border-radius: 50%;
-      color: var(--text-main); cursor: pointer; display: grid; place-items: center;
-      font-size: 1.3rem; transition: var(--transition); position: relative;
-    }
-    .theme-toggle::before { content: var(--btn-icon); transition: 0.5s; }
-    .theme-toggle:hover { background: var(--hover-bg); border-color: var(--color-bach); }
-    .theme-toggle:hover::before { transform: rotate(180deg); }
+            50% {
+                transform: translate(20px, 40px);
+            }
+        }
 
-    /* ============ HERO & TITULO (ESTILO IMAGEN) ============ */
-    .container { max-width: 1100px; margin: 0 auto; padding: 50px 20px; }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
 
-    .hero { text-align: center; margin-bottom: 70px; animation: fadeIn 0.8s ease; }
-    
-    .hero h1 { 
-      font-family: 'Montserrat', sans-serif; 
-      font-size: clamp(3.5rem, 10vw, 6rem); 
-      font-weight: 900; margin-bottom: 10px; letter-spacing: -2px; line-height: 0.9;
-      display: flex; flex-direction: column; align-items: center;
-      text-transform: capitalize;
-    }
-    
-    .title-innove { 
-      color: var(--text-main); 
-      margin-bottom: 5px;
-    }
-    
-    /* DEGRADADO METÁLICO VERTICAL */
-    .title-integral { 
-      background: var(--title-gradient);
-      -webkit-background-clip: text; color: transparent;
-      position: relative; display: inline-block;
-      padding-bottom: 10px; /* Para que no se corte el degradado */
-    }
-    
-    .hero p { color: var(--text-muted); font-size: 1.2rem; margin-top: 15px; }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    /* ============ CARDS DE TEORÍA ============ */
-    .content-section { display: none; animation: slideUp 0.5s ease; }
-    .content-section.active { display: block; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
 
-    .stack-card {
-      display: grid; grid-template-columns: 280px 1fr;
-      background: var(--card-bg); border: var(--card-border);
-      border-radius: var(--radius); margin-bottom: 40px;
-      box-shadow: var(--shadow); overflow: hidden;
-      transition: transform 0.3s ease;
-    }
-    .stack-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
-    .card-left {
-      background: var(--card-side-bg); padding: 40px 30px;
-      display: flex; flex-direction: column; justify-content: center;
-      border-right: var(--card-border); position: relative;
-    }
-    .card-left::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
-      background: var(--accent);
-    }
-    .card-left h3 { font-size: 1.8rem; margin-top: 10px; font-weight: 800; letter-spacing: -0.5px; }
-    .tag { 
-      font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 2px;
-      color: var(--accent); display: inline-block; margin-bottom: 5px;
-    }
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.12;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
 
-    .card-right { padding: 40px; }
-    .card-right h4 { font-size: 1.15rem; margin: 25px 0 10px; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; }
-    .card-right h4:first-child { margin-top: 0; }
-    
-    .text-content { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 15px; }
+        .orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 70vw;
+            height: 70vw;
+            background: var(--color-eso);
+        }
 
-    /* ============ EJEMPLOS ============ */
-    .examples-section-title {
-      font-size: 1.5rem; margin: 50px 0 30px; font-weight: 700; color: var(--text-main);
-      display: flex; align-items: center; gap: 10px;
-      border-left: 5px solid var(--accent); padding-left: 15px;
-    }
-    
-    .examples-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-    }
+        .orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: var(--color-uni2);
+            animation-delay: -5s;
+        }
 
-    .ex-card {
-      background: var(--card-bg); border: var(--card-border);
-      border-radius: 20px; padding: 25px;
-      box-shadow: var(--shadow); position: relative;
-      transition: all 0.3s ease; display: flex; flex-direction: column;
-    }
-    .ex-card:hover { 
-      transform: translateY(-5px); border-color: var(--accent); 
-    }
+        /* ============ NAVBAR ============ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--nav-bg);
+            backdrop-filter: var(--glass);
+            -webkit-backdrop-filter: var(--glass);
+            border-bottom: var(--card-border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            transition: var(--transition);
+        }
 
-    .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .ex-num { 
-      background: var(--accent); color: white; 
-      width: 28px; height: 28px; border-radius: 8px; 
-      display: grid; place-items: center; font-weight: 800; font-size: 0.85rem;
-    }
-    .ex-title { font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-    .ex-math { 
-      font-family: 'JetBrains Mono'; font-size: 1.2rem; text-align: center; 
-      margin: 20px 0; color: var(--text-main); 
-    }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
 
-    /* DETAILS & SUMMARY */
-    details { margin-top: auto; background: var(--example-card-bg); border-radius: 12px; transition: 0.3s; }
-    summary { 
-      padding: 15px; cursor: pointer; font-weight: 600; font-size: 0.95rem; 
-      color: var(--text-muted); list-style: none; display: flex; justify-content: space-between;
-    }
-    summary:hover { color: var(--text-main); }
-    summary::after { content: "+"; font-weight: 800; font-size: 1.2rem; }
-    details[open] summary::after { content: "-"; color: var(--accent); }
-    
-    .solution-content { 
-      padding: 0 15px 15px; border-top: 1px solid var(--card-border); 
-      font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;
-    }
-    .final-result {
-      margin-top: 15px; display: block; font-weight: bold; color: var(--accent); 
-      font-family: 'JetBrains Mono'; border-top: 1px dashed var(--text-muted); padding-top: 10px; font-size: 1.1rem; text-align: center;
-    }
+        .logo-box {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--text-main), #666);
+            border-radius: 10px;
+            color: var(--bg-body);
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
 
-    /* Utiles */
-    .math-box {
-      background: var(--code-bg); padding: 20px; border-radius: 12px;
-      margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto;
-      font-family: 'JetBrains Mono'; font-size: 1.1rem; color: var(--text-main);
-    }
-    ul.clean-list { list-style: none; padding: 0; }
-    ul.clean-list li { margin-bottom: 12px; position: relative; padding-left: 25px; color: var(--text-muted); }
-    ul.clean-list li::before { content: "•"; color: var(--accent); position: absolute; left: 5px; font-weight: bold; font-size: 1.2em;}
-    
-    @media (max-width: 768px) {
-      .stack-card { grid-template-columns: 1fr; }
-      .card-left { flex-direction: row; justify-content: space-between; align-items: center; padding: 25px; border-right: none; border-bottom: 1px solid var(--card-border); }
-      .hero h1 { font-size: 3rem; }
-      .navbar { padding: 0 20px; }
-      .logo span { display: none; }
-      .nav-center { width: 100%; justify-content: center; }
-      .tab-btn { padding: 8px 16px; font-size: 0.85rem; }
-    }
-  </style>
+        .logo:hover .logo-box {
+            transform: rotate(15deg) scale(1.1);
+            background: var(--accent);
+            color: white;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 6px;
+            background: var(--card-bg);
+            padding: 6px;
+            border-radius: 50px;
+            border: var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-display);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: var(--hover-bg);
+        }
+
+        .tab-btn.active {
+            background: var(--text-main);
+            color: var(--bg-body);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transform: scale(1.02);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: var(--card-border);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            color: var(--text-main);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: var(--hover-bg);
+            border-color: var(--accent);
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle::before {
+            content: var(--btn-icon);
+        }
+
+        /* ============ HERO ============ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: scaleIn 0.8s ease;
+        }
+
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 6.5rem);
+            font-weight: 900;
+            margin-bottom: 15px;
+            letter-spacing: -3px;
+            line-height: 0.9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title-innove {
+            color: var(--text-main);
+        }
+
+        .title-integral {
+            background: var(--title-gradient);
+            -webkit-background-clip: text;
+            color: transparent;
+            padding-bottom: 10px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* ============ CONTENT SECTIONS ============ */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 20px;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ============ TOPIC BLOCK (THEORY + EXAMPLES) ============ */
+        .topic-block {
+            margin-bottom: 80px;
+        }
+
+        /* THEORY CARD */
+        .stack-card {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .stack-card:hover {
+            border-color: var(--accent);
+        }
+
+        .card-left {
+            background: var(--card-side-bg);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: var(--card-border);
+            position: relative;
+        }
+
+        .card-left::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent);
+            transition: height 0.3s ease;
+        }
+
+        .card-left h3 {
+            font-size: 2rem;
+            margin-top: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--accent);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .card-right {
+            padding: 40px;
+        }
+
+        .card-right h4 {
+            font-size: 1.2rem;
+            margin: 30px 0 15px;
+            color: var(--text-main);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-right h4::before {
+            content: "#";
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        .card-right h4:first-child {
+            margin-top: 0;
+        }
+
+        .text-content {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        /* MATH BOXES */
+        .math-box {
+            background: var(--code-bg);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 1.15rem;
+            color: var(--text-main);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* LISTS */
+        ul.clean-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.clean-list li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        ul.clean-list li::before {
+            content: "→";
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-family: var(--font-mono);
+        }
+
+        /* LINKER (Visual connection between theory and examples) */
+        .linker {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 0 0 25px 25px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .linker-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0.3;
+        }
+
+        .linker-icon {
+            color: var(--accent);
+        }
+
+        /* EXAMPLES GRID (Now inside topic blocks) */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 30px;
+            padding-left: 20px;
+            border-left: 2px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ex-card {
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .ex-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: var(--accent);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+        }
+
+        .ex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .ex-num {
+            background: var(--accent);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .ex-title {
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .ex-math {
+            font-family: var(--font-mono);
+            font-size: 1.3rem;
+            text-align: center;
+            margin: 25px 0;
+            color: var(--text-main);
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+
+        /* DETAILS & SUMMARY */
+        details {
+            margin-top: auto;
+            background: var(--code-bg);
+            border-radius: 14px;
+            transition: 0.3s;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        summary {
+            padding: 18px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        summary:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+        }
+
+        summary::after {
+            content: "+";
+            font-weight: 800;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        details[open] summary::after {
+            transform: rotate(45deg);
+            color: var(--accent);
+        }
+
+        .solution-content {
+            padding: 20px;
+            border-top: 1px solid var(--card-border);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .final-result {
+            margin-top: 20px;
+            display: block;
+            font-weight: bold;
+            color: var(--accent);
+            font-family: var(--font-mono);
+            border-top: 1px dashed var(--card-border);
+            padding-top: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 900px) {
+            .stack-card {
+                grid-template-columns: 1fr;
+            }
+
+            .card-left {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 30px;
+                border-right: none;
+                border-bottom: 1px solid var(--card-border);
+            }
+
+            .card-left::before {
+                width: 100%;
+                height: 4px;
+                bottom: 0;
+                top: auto;
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .nav-center {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 95%;
+                justify-content: center;
+                background: rgba(20, 20, 20, 0.9);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                z-index: 1001;
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                padding: 10px 15px;
+                flex: 1 1 40%;
+                font-size: 0.8rem;
+                text-align: center;
+            }
+
+            .container {
+                padding-bottom: 120px;
+            }
+
+            .examples-grid {
+                padding-left: 0;
+                border-left: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-  <nav class="navbar">
-    <a href="#" class="logo">
-      <div class="logo-box">∫</div>
-      <span>Innove</span>
-    </a>
-    <div class="nav-center">
-      <button class="tab-btn active" onclick="switchTab('eso', '#2dd4bf')">ESO</button>
-      <button class="tab-btn" onclick="switchTab('bach', '#3b82f6')">Bachillerato</button>
-      <button class="tab-btn" onclick="switchTab('uni', '#a855f7')">Universidad</button>
-    </div>
-    <button class="theme-toggle" id="themeBtn"></button>
-  </nav>
-
-  <main class="container">
-
-    <div class="hero">
-      <h1>
-        <span class="title-innove">Innove</span>
-        <span class="title-integral">Integral</span>
-      </h1>
-      <p>La referencia definitiva. Teoría completa y ejercicios resueltos.</p>
-    </div>
-
-    <div id="eso" class="content-section active" style="--accent: var(--color-eso);">
-      
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Fundamentos</span>
-          <h3>Introducción</h3>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <div class="logo-box">∫</div>
+            <span>Innove</span>
+        </a>
+        <div class="nav-center">
+            <button class="tab-btn active" onclick="switchTab('eso', '#2dd4bf')">ESO</button>
+            <button class="tab-btn" onclick="switchTab('bach', '#3b82f6')">Bachillerato</button>
+            <button class="tab-btn" onclick="switchTab('uni1', '#f43f5e')">Cálculo I</button>
+            <button class="tab-btn" onclick="switchTab('uni2', '#a855f7')">Cálculo II</button>
         </div>
-        <div class="card-right">
-          <p class="text-content">La integral es la inversa de la derivada. Si derivar es hallar la pendiente, integrar es hallar el área.</p>
-          <h4>Reglas de Integración Inmediata</h4>
-          <div class="math-box">
-             $$ \int x^n dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1) $$
-             $$ \int (ax+b)^n dx = \frac{(ax+b)^{n+1}}{a(n+1)} + C $$
-             $$ \int k \cdot f(x) dx = k \cdot \int f(x) dx $$
-          </div>
-        </div>
-      </div>
+        <button class="theme-toggle" id="themeBtn"></button>
+    </nav>
 
-      <h3 class="examples-section-title">⚡ Ejemplos Prácticos</h3>
-      <div class="examples-grid">
-        
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Potencia</span></div>
-          <div class="ex-math">$\int x^3 \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              1. Sumamos 1 al exponente: $3+1=4$.
-              <br>2. Dividimos por el nuevo exponente.
-              <span class="final-result">$$ \frac{x^4}{4} + C $$</span>
+    <main class="container">
+
+        <div class="hero">
+            <h1>
+                <span class="title-innove">Innove</span>
+                <span class="title-integral">La Biblia</span>
+            </h1>
+            <p>La colección más completa de teoría y ejercicios resueltos. Desde la ESO hasta la Universidad.</p>
+        </div>
+
+        <!-- =========================================
+         SECCIÓN ESO (FUNDAMENTOS)
+    ========================================== -->
+        <div id="eso" class="content-section active" style="--accent: var(--color-eso);">
+            <div class="section-header">
+                <h2 class="section-title">Fundamentos</h2>
+                <span class="section-subtitle">Nivel Básico</span>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Raíz</span></div>
-          <div class="ex-math">$\int \sqrt{x} \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $x^{1/2} \to x^{3/2} / (3/2) = \frac{2}{3}x^{3/2}$.
-              <span class="final-result">$$ \frac{2}{3}\sqrt{x^3} + C $$</span>
+            <!-- BLOQUE 1: CONCEPTO -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Concepto</span>
+                        <h3>¿Qué es integrar?</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">La integral es la operación inversa de la derivada. Geométricamente,
+                            representa el <strong>área bajo la curva</strong> de una función.</p>
+                        <div class="math-box">
+                            $$ \int x^n dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1) $$
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejemplos Prácticos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Potencia
+                                Simple</span></div>
+                        <div class="ex-math">$\int x^5 \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $n=5 \to n+1=6$. Dividimos por 6.
+                                <span class="final-result">$$ \frac{x^6}{6} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Raíz</span></div>
+                        <div class="ex-math">$\int \sqrt{x} \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $x^{1/2} \to x^{3/2} / (3/2)$.
+                                <span class="final-result">$$ \frac{2}{3}\sqrt{x^3} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Constante</span>
+                        </div>
+                        <div class="ex-math">$\int 7 \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                La integral de una constante $k$ es $kx$.
+                                <span class="final-result">$$ 7x + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Suma</span></div>
-          <div class="ex-math">$\int (2x+5) \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $\int 2x dx = x^2$. $\int 5 dx = 5x$.
-              <span class="final-result">$$ x^2 + 5x + C $$</span>
+            <!-- BLOQUE 2: LINEALIDAD -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Propiedades</span>
+                        <h3>Linealidad</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">La integral de una suma es la suma de las integrales, y las constantes
+                            salen fuera.</p>
+                        <div class="math-box">$$ \int (af(x) + bg(x)) dx = a\int f(x)dx + b\int g(x)dx $$</div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejemplos Prácticos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Polinomio</span>
+                        </div>
+                        <div class="ex-math">$\int (3x^2 - 4x + 5) \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Integramos cada término por separado.
+                                <span class="final-result">$$ x^3 - 2x^2 + 5x + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">5</span><span class="ex-title">Fracción
+                                Simple</span></div>
+                        <div class="ex-math">$\int (\frac{1}{x^2} + \sqrt[3]{x}) dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $x^{-2} + x^{1/3}$.
+                                <br>$\frac{x^{-1}}{-1} + \frac{x^{4/3}}{4/3}$.
+                                <span class="final-result">$$ -\frac{1}{x} + \frac{3}{4}\sqrt[3]{x^4} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
         </div>
-      </div>
-    </div>
 
-    <div id="bach" class="content-section" style="--accent: var(--color-bach);">
-      
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Memoria</span>
-          <h3>Inmediatas</h3>
-        </div>
-        <div class="card-right">
-          <p class="text-content">Tabla ampliada con trigonométricas y logarítmicas.</p>
-          <div class="math-box">
-             $$ \int \sin x dx = -\cos x \quad \int \cos x dx = \sin x $$
-             $$ \int \sec^2 x dx = \tan x \quad \int \csc^2 x dx = -\cot x $$
-             $$ \int \frac{1}{1+x^2} dx = \arctan x \quad \int \frac{1}{\sqrt{1-x^2}} dx = \arcsin x $$
-             $$ \int e^x dx = e^x \quad \int \frac{1}{x} dx = \ln|x| $$
-          </div>
-        </div>
-      </div>
-
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Trigonometría</span>
-          <h3>Potencias</h3>
-        </div>
-        <div class="card-right">
-          <h4>Potencias Impares ($\sin^3 x$)</h4>
-          <p class="text-content">Separa uno ($\sin^2 x \cdot \sin x$) y usa $\sin^2 x = 1 - \cos^2 x$. Luego haz cambio $u = \cos x$.</p>
-          
-          <h4>Potencias Pares ($\cos^2 x$)</h4>
-          <p class="text-content">Usa las fórmulas del ángulo doble para rebajar el grado:</p>
-          <div class="math-box">
-            $$ \cos^2 x = \frac{1+\cos 2x}{2} \quad \sin^2 x = \frac{1-\cos 2x}{2} $$
-          </div>
-        </div>
-      </div>
-      
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Técnica</span>
-          <h3>Métodos</h3>
-        </div>
-        <div class="card-right">
-           <h4>1. Integración por Partes (ALPES)</h4>
-           <p class="text-content">$\int u dv = uv - \int v du$. Orden de prioridad para $u$: <strong>A</strong>rcos, <strong>L</strong>ogaritmos, <strong>P</strong>olinomios, <strong>E</strong>xponenciales, <strong>S</strong>enos.</p>
-
-           <h4>2. Racionales (Fracciones Simples)</h4>
-           <ul class="clean-list">
-             <li><strong>Raíces Reales Simples:</strong> $\frac{P(x)}{(x-a)(x-b)} = \frac{A}{x-a} + \frac{B}{x-b}$.</li>
-             <li><strong>Raíces Múltiples:</strong> $\frac{P(x)}{(x-a)^2} = \frac{A}{x-a} + \frac{B}{(x-a)^2}$.</li>
-           </ul>
-        </div>
-      </div>
-
-      <h3 class="examples-section-title">🔥 Ejemplos de Examen</h3>
-      <div class="examples-grid">
-        
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Logarítmica</span></div>
-          <div class="ex-math">$\int \tan(x) \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              1. Escribir como $\int \frac{\sin x}{\cos x} dx$.
-              <br>2. Numerador es casi derivada del denominador.
-              <span class="final-result">$$ -\ln|\cos x| + C $$</span>
+        <!-- =========================================
+         SECCIÓN BACHILLERATO (LA BIBLIA)
+    ========================================== -->
+        <div id="bach" class="content-section" style="--accent: var(--color-bach);">
+            <div class="section-header">
+                <h2 class="section-title">La Biblia de las Integrales</h2>
+                <span class="section-subtitle">Bachillerato</span>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Por Partes</span></div>
-          <div class="ex-math">$\int x e^x \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $u=x, dv=e^x dx$.
-              <br>$uv - \int v du = x e^x - \int e^x dx$.
-              <span class="final-result">$$ e^x(x-1) + C $$</span>
+            <!-- BLOQUE 1: INMEDIATAS -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Tabla Maestra</span>
+                        <h3>Inmediatas</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">Dominar estas es esencial. Reconoce el patrón $f'(x)$.</p>
+                        <div class="math-box">
+                            $$ \int \cos f \cdot f' dx = \sin f $$
+                            $$ \int e^f \cdot f' dx = e^f $$
+                            $$ \int \frac{f'}{f} dx = \ln|f| $$
+                            $$ \int \frac{f'}{1+f^2} dx = \arctan f $$
+                            $$ \int \frac{f'}{\sqrt{1-f^2}} dx = \arcsin f $$
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Logarítmica</span>
+                        </div>
+                        <div class="ex-math">$\int \frac{x}{x^2+1} dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Numerador $x$ es casi derivada de $x^2+1$ ($2x$).
+                                <br>$\frac{1}{2} \int \frac{2x}{x^2+1} dx$.
+                                <span class="final-result">$$ \frac{1}{2}\ln(x^2+1) + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Exponencial</span>
+                        </div>
+                        <div class="ex-math">$\int x e^{x^2} dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Derivada de $x^2$ es $2x$. Ajustamos con $1/2$.
+                                <span class="final-result">$$ \frac{1}{2}e^{x^2} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Arcotangente</span>
+                        </div>
+                        <div class="ex-math">$\int \frac{1}{1+4x^2} dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $4x^2 = (2x)^2$. Derivada de $2x$ es $2$.
+                                <br>$\frac{1}{2} \int \frac{2}{1+(2x)^2} dx$.
+                                <span class="final-result">$$ \frac{1}{2}\arctan(2x) + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Sustitución</span></div>
-          <div class="ex-math">$\int x \sin(x^2) \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $t=x^2 \implies dt/2 = x dx$.
-              <br>$\frac{1}{2} \int \sin t dt = -\frac{1}{2} \cos t$.
-              <span class="final-result">$$ -\frac{1}{2}\cos(x^2) + C $$</span>
+            <!-- BLOQUE 2: SUSTITUCIÓN -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Método</span>
+                        <h3>Cambio de Variable</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">Sustituir una expresión compleja por $u$ para simplificar la integral.
+                        </p>
+                        <div class="math-box">$$ \int f(g(x))g'(x)dx = \int f(u)du $$</div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Raíz</span></div>
+                        <div class="ex-math">$\int x\sqrt{x^2+1} \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $u=x^2+1 \implies du=2x dx \implies x dx = du/2$.
+                                <br>$\int \sqrt{u} \frac{du}{2} = \frac{1}{2} \frac{u^{3/2}}{3/2}$.
+                                <span class="final-result">$$ \frac{1}{3}(x^2+1)^{3/2} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">5</span><span class="ex-title">Logaritmo</span>
+                        </div>
+                        <div class="ex-math">$\int \frac{\ln x}{x} \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $u=\ln x \implies du = \frac{1}{x} dx$.
+                                <br>$\int u du = \frac{u^2}{2}$.
+                                <span class="final-result">$$ \frac{(\ln x)^2}{2} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Trigonométrica</span></div>
-          <div class="ex-math">$\int \cos^2 x \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $\int \frac{1+\cos 2x}{2} dx = \frac{1}{2}x + \frac{1}{2}\int \cos 2x$.
-              <span class="final-result">$$ \frac{x}{2} + \frac{\sin 2x}{4} + C $$</span>
+            <!-- BLOQUE 3: POR PARTES -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Método</span>
+                        <h3>Integración por Partes</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">"Un Día Vi Una Vaca Vestida De Uniforme". Prioridad ALPES para elegir
+                            $u$.</p>
+                        <div class="math-box">$$ \int u \, dv = u v - \int v \, du $$</div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">6</span><span class="ex-title">Polinomio x
+                                Exp</span></div>
+                        <div class="ex-math">$\int x e^x \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $u=x, dv=e^x dx$.
+                                <span class="final-result">$$ e^x(x-1) + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">7</span><span class="ex-title">Logaritmo Solo</span>
+                        </div>
+                        <div class="ex-math">$\int \ln x \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $u=\ln x, dv=dx \implies du=1/x dx, v=x$.
+                                <br>$x\ln x - \int x(1/x) dx = x\ln x - \int dx$.
+                                <span class="final-result">$$ x(\ln x - 1) + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">8</span><span class="ex-title">Cíclica</span></div>
+                        <div class="ex-math">$\int e^x \cos x \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Se integra por partes dos veces y se despeja la integral original $I$.
+                                <span class="final-result">$$ \frac{e^x(\sin x + \cos x)}{2} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">5</span><span class="ex-title">Racional</span></div>
-          <div class="ex-math">$\int \frac{1}{x^2-1} \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $\frac{1}{2(x-1)} - \frac{1}{2(x+1)}$.
-              <span class="final-result">$$ \frac{1}{2}\ln\left|\frac{x-1}{x+1}\right| + C $$</span>
+            <!-- BLOQUE 4: TRIGONOMÉTRICAS (NUEVO) -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Técnica</span>
+                        <h3>Potencias Trigonométricas</h3>
+                    </div>
+                    <div class="card-right">
+                        <h4>Impares ($\sin^3 x$)</h4>
+                        <p class="text-content">Separa uno y usa $\sin^2+\cos^2=1$.</p>
+                        <h4>Pares ($\cos^2 x$)</h4>
+                        <p class="text-content">Usa ángulo doble: $\cos^2 x = \frac{1+\cos 2x}{2}$.</p>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">9</span><span class="ex-title">Potencia Par</span>
+                        </div>
+                        <div class="ex-math">$\int \sin^2 x \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $\int \frac{1-\cos 2x}{2} dx = \frac{1}{2}x - \frac{1}{2}\frac{\sin 2x}{2}$.
+                                <span class="final-result">$$ \frac{x}{2} - \frac{\sin 2x}{4} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">10</span><span class="ex-title">Potencia
+                                Impar</span></div>
+                        <div class="ex-math">$\int \cos^3 x \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $\int \cos^2 x \cdot \cos x dx = \int (1-\sin^2 x)\cos x dx$.
+                                <br>Cambio $u=\sin x$.
+                                <span class="final-result">$$ \sin x - \frac{\sin^3 x}{3} + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
-        </div>
 
-      </div>
-    </div>
+            <!-- BLOQUE 5: RACIONALES -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Método</span>
+                        <h3>Racionales</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">Si grado Num $\ge$ grado Den, <strong>DIVIDE PRIMERO</strong>.</p>
+                        <p class="text-content">Luego, descomposición en fracciones simples.</p>
+                        <ul class="clean-list">
+                            <li><strong>Raíces Reales Simples:</strong> $\frac{A}{x-a} + \frac{B}{x-b}$</li>
+                            <li><strong>Raíces Múltiples:</strong> $\frac{A}{x-a} + \frac{B}{(x-a)^2}$</li>
+                        </ul>
+                    </div>
+                </div>
 
-    <div id="uni" class="content-section" style="--accent: var(--color-uni);">
-      
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Geometría</span>
-          <h3>Aplicaciones Avanzadas</h3>
-        </div>
-        <div class="card-right">
-          <h4>1. Longitud de Arco</h4>
-          <div class="math-box">$$ L = \int_a^b \sqrt{1+(f'(x))^2} dx $$</div>
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
 
-          <h4>2. Volum de Revolució (Discos)</h4>
-          <div class="math-box">$$ V = \pi \int_a^b (f(x))^2 dx $$</div>
-
-          <h4>3. Superfície de Revolució</h4>
-          <div class="math-box">$$ S = 2\pi \int_a^b f(x)\sqrt{1+(f'(x))^2} dx $$</div>
-        </div>
-      </div>
-
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Análisis</span>
-          <h3>Rigor Matemático</h3>
-        </div>
-        <div class="card-right">
-          <h4>Integral de Riemann</h4>
-          <p class="text-content">Definición formal como límite de sumas:</p>
-          <div class="math-box">$$ \int_{a}^{b} f(x) dx = \lim_{||P|| \to 0} \sum_{i=1}^{N} f(\xi_i) \Delta x_i $$</div>
-
-          <h4>Integrals Impròpies</h4>
-          <ul class="clean-list">
-             <li><strong>1a Espècie:</strong> $\int_a^{+\infty}$. Límite $b \to \infty$.</li>
-             <li><strong>2a Espècie:</strong> Discontinuidad en el intervalo. Límite $\epsilon \to 0$.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="stack-card">
-        <div class="card-left">
-          <span class="tag">Vectorial</span>
-          <h3>Multivariable</h3>
-        </div>
-        <div class="card-right">
-          <h4>Teorema de Fubini</h4>
-          <p class="text-content">Para integrales dobles, permite iterar: $\iint = \int (\int dy) dx$.</p>
-
-          <h4>Teorema de Green</h4>
-          <div class="math-box">$$ \oint_C (P dx + Q dy) = \iint_D (\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}) dA $$</div>
-
-          <h4>Canvi de Variable (Jacobiano)</h4>
-          <p class="text-content">En polars: $dx dy = r dr d\theta$.</p>
-        </div>
-      </div>
-
-      <h3 class="examples-section-title">🎓 Ejemplos Universitarios</h3>
-      <div class="examples-grid">
-        
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Impropia T1</span></div>
-          <div class="ex-math">$\int_1^\infty \frac{1}{x^2} \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $\lim_{b\to\infty} [-1/x]_1^b = 0 - (-1)$.
-              <span class="final-result">$$ 1 \text{ (Converge)} $$</span>
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">11</span><span class="ex-title">Raíces
+                                Simples</span></div>
+                        <div class="ex-math">$\int \frac{1}{x^2-4} dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $\frac{1}{(x-2)(x+2)} = \frac{1/4}{x-2} - \frac{1/4}{x+2}$.
+                                <span class="final-result">$$ \frac{1}{4}\ln\left|\frac{x-2}{x+2}\right| + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">12</span><span class="ex-title">Con División</span>
+                        </div>
+                        <div class="ex-math">$\int \frac{x^2}{x+1} dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Dividimos: $x^2 = (x+1)(x-1) + 1$.
+                                <br>$\int (x-1 + \frac{1}{x+1}) dx$.
+                                <span class="final-result">$$ \frac{x^2}{2} - x + \ln|x+1| + C $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Longitud Arc</span></div>
-          <div class="ex-math">$\int_0^1 \sqrt{1+\frac{9}{4}x} dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              Para $y=x^{3/2}$. $y' = \frac{3}{2}\sqrt{x}$.
-              <span class="final-result">$$ \frac{8}{27}(13\sqrt{13}-8) $$</span>
+            <!-- BLOQUE 6: ÁREAS -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Aplicación</span>
+                        <h3>Cálculo de Áreas</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">Área encerrada entre dos curvas $f(x)$ y $g(x)$.</p>
+                        <div class="math-box">$$ A = \int_a^b |f(x) - g(x)| dx $$</div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">13</span><span class="ex-title">Parábola y
+                                Recta</span></div>
+                        <div class="ex-math">Área entre $y=x^2$ y $y=x$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Corte en $x=0, x=1$.
+                                <br>$\int_0^1 (x - x^2) dx = [\frac{x^2}{2} - \frac{x^3}{3}]_0^1$.
+                                <span class="final-result">$$ \frac{1}{6} \text{ u}^2 $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
             </div>
-          </details>
+
         </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Impropia T2</span></div>
-          <div class="ex-math">$\int_0^1 \frac{1}{\sqrt{x}} \, dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              Discontinuidad en 0. $\lim_{\epsilon\to 0} [2\sqrt{x}]_\epsilon^1$.
-              <span class="final-result">$$ 2 \text{ (Converge)} $$</span>
+        <!-- =========================================
+         SECCIÓN UNIVERSIDAD - CÁLCULO I
+    ========================================== -->
+        <div id="uni1" class="content-section" style="--accent: var(--color-uni1);">
+            <div class="section-header">
+                <h2 class="section-title">Cálculo I</h2>
+                <span class="section-subtitle">Syllabus Oficial</span>
             </div>
-          </details>
-        </div>
 
-        <div class="ex-card">
-          <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Volumen Cono</span></div>
-          <div class="ex-math">$\pi \int_0^H (\frac{R}{H}x)^2 dx$</div>
-          <details>
-            <summary>Ver Solución</summary>
-            <div class="solution-content">
-              $\pi \frac{R^2}{H^2} [\frac{x^3}{3}]_0^H$.
-              <span class="final-result">$$ \frac{1}{3}\pi R^2 H $$</span>
+            <!-- 1.3 RIEMANN & BARROW -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">1.3</span>
+                        <h3>Riemann & Barrow</h3>
+                    </div>
+                    <div class="card-right">
+                        <h4>Integral de Riemann</h4>
+                        <div class="math-box">$$ \int_a^b f(x) dx = \lim_{n \to \infty} \sum_{i=1}^n f(x_i^*) \Delta x
+                            $$</div>
+                        <h4>Regla de Barrow</h4>
+                        <p class="text-content">Si $F'(x) = f(x)$, entonces $\int_a^b f(x) dx = F(b) - F(a)$.</p>
+                    </div>
+                </div>
             </div>
-          </details>
+
+            <!-- 1.4 APLICACIONES -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">1.4</span>
+                        <h3>Aplicaciones</h3>
+                    </div>
+                    <div class="card-right">
+                        <h4>1.4.1 Cálculo de Áreas</h4>
+                        <p class="text-content">Área entre curvas: $\int_a^b [f(x)_{arriba} - g(x)_{abajo}] dx$.</p>
+
+                        <h4>1.4.2 Volúmenes de Revolución</h4>
+                        <div class="math-box">$$ V = \pi \int_a^b ([R(x)]^2 - [r(x)]^2) dx $$</div>
+
+                        <h4>1.4.3 Longitud de Arco</h4>
+                        <div class="math-box">$$ L = \int_a^b \sqrt{1 + [f'(x)]^2} dx $$</div>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Volumen</span></div>
+                        <div class="ex-math">$V$ de $y=\sqrt{x}$ en $[0,4]$ eje X</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $V = \pi \int_0^4 (\sqrt{x})^2 dx = \pi \int_0^4 x dx$.
+                                <br>$= \pi [\frac{x^2}{2}]_0^4 = \pi(8)$.
+                                <span class="final-result">$$ 8\pi \text{ u}^3 $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Longitud Arco</span>
+                        </div>
+                        <div class="ex-math">$L$ de $y=x^{3/2}$ en $[0,1]$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $y' = \frac{3}{2}x^{1/2} \implies (y')^2 = \frac{9}{4}x$.
+                                <br>$\int_0^1 \sqrt{1+\frac{9}{4}x} dx$.
+                                <span class="final-result">$$ \frac{8}{27}(13\sqrt{13}-8) $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.5 IMPROPIAS -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">1.5</span>
+                        <h3>Integrales Impropias</h3>
+                    </div>
+                    <div class="card-right">
+                        <h4>1.5.1 Primera Especie (Intervalo Infinito)</h4>
+                        <div class="math-box">$$ \int_1^\infty \frac{1}{x^p} dx $$</div>
+                        <p class="text-content">Converge si $p > 1$.</p>
+
+                        <h4>1.5.2 Segunda Especie (Discontinuidad)</h4>
+                        <div class="math-box">$$ \int_0^1 \frac{1}{x^p} dx $$</div>
+                        <p class="text-content">Converge si $p < 1$.</p>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Convergencia</span>
+                        </div>
+                        <div class="ex-math">$\int_1^\infty \frac{1}{x^2} dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $p=2 > 1$, por tanto converge.
+                                <br>Valor: $[-1/x]_1^\infty = 0 - (-1) = 1$.
+                                <span class="final-result">$$ 1 $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXTRA: SUSTITUCIÓN TRIGONOMÉTRICA -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Extra</span>
+                        <h3>Sustitución Trigonométrica</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">Para integrales con raíces cuadradas de sumas/restas de cuadrados.</p>
+                        <ul class="clean-list">
+                            <li>$\sqrt{a^2-x^2} \to x = a\sin\theta$</li>
+                            <li>$\sqrt{a^2+x^2} \to x = a\tan\theta$</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Caso Seno</span>
+                        </div>
+                        <div class="ex-math">$\int \sqrt{9-x^2} \, dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $x=3\sin\theta, dx=3\cos\theta d\theta$.
+                                <br>$\int \sqrt{9-9\sin^2\theta} \cdot 3\cos\theta d\theta = 9\int \cos^2\theta
+                                d\theta$.
+                                <span class="final-result">$$ \frac{9}{2}(\arcsin(x/3) + \frac{x\sqrt{9-x^2}}{9}) + C
+                                    $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
         </div>
 
-      </div>
-    </div>
+        <!-- =========================================
+         SECCIÓN UNIVERSIDAD - CÁLCULO II
+    ========================================== -->
+        <div id="uni2" class="content-section" style="--accent: var(--color-uni2);">
+            <div class="section-header">
+                <h2 class="section-title">Cálculo II</h2>
+                <span class="section-subtitle">Multivariable & Vectorial</span>
+            </div>
 
-  </main>
+            <!-- BLOQUE 1: INTEGRALES DOBLES -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">3D</span>
+                        <h3>Integrales Dobles</h3>
+                    </div>
+                    <div class="card-right">
+                        <p class="text-content">Volumen bajo una superficie. Teorema de Fubini para iterar.</p>
+                        <div class="math-box">$$ \iint_D f(x,y) dA $$</div>
+                        <h4>Coordenadas Polares</h4>
+                        <p class="text-content">No olvidar el Jacobiano $r$.</p>
+                        <div class="math-box">$$ \iint_D f(r,\theta) r \, dr d\theta $$</div>
+                    </div>
+                </div>
 
-  <script>
-    function switchTab(tabId, accentColor) {
-      document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      
-      const buttons = Array.from(document.querySelectorAll('.tab-btn'));
-      const activeBtn = buttons.find(b => b.getAttribute('onclick').includes(tabId));
-      if(activeBtn) activeBtn.classList.add('active');
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
 
-      document.documentElement.style.setProperty('--accent', accentColor);
-    }
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Rectángulo</span>
+                        </div>
+                        <div class="ex-math">$\int_0^1 \int_0^2 xy \, dy dx$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                $\int_0^2 y dy = 2$. Luego $\int_0^1 x(2) dx = [x^2]_0^1$.
+                                <span class="final-result">$$ 1 $$</span>
+                            </div>
+                        </details>
+                    </div>
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Polares</span></div>
+                        <div class="ex-math">$\iint_{x^2+y^2 \le 1} 1 \, dA$</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Área del círculo unitario.
+                                <br>$\int_0^{2\pi} \int_0^1 r dr d\theta = 2\pi [\frac{r^2}{2}]_0^1$.
+                                <span class="final-result">$$ \pi $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
 
-    const themeBtn = document.getElementById('themeBtn');
-    const html = document.documentElement;
+            <!-- BLOQUE 2: VECTORIAL -->
+            <div class="topic-block">
+                <div class="stack-card">
+                    <div class="card-left">
+                        <span class="tag">Física</span>
+                        <h3>Campos Vectoriales</h3>
+                    </div>
+                    <div class="card-right">
+                        <h4>Integral de Línea</h4>
+                        <p class="text-content">Trabajo $W = \int_C \vec{F} \cdot d\vec{r}$.</p>
+                        <h4>Teorema de Green</h4>
+                        <div class="math-box">$$ \oint_C P dx + Q dy = \iint_D (\frac{\partial Q}{\partial x} -
+                            \frac{\partial P}{\partial y}) dA $$</div>
+                    </div>
+                </div>
 
-    themeBtn.addEventListener('click', () => {
-      const current = html.getAttribute('data-scheme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-scheme', next);
-    });
-  </script>
+                <div class="linker"><span class="linker-icon">⬇</span><span>Ejercicios Resueltos</span>
+                    <div class="linker-line"></div>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="ex-card">
+                        <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Trabajo</span></div>
+                        <div class="ex-math">$\vec{F}=(y, -x)$ en círculo unitario</div>
+                        <details>
+                            <summary>Ver Solución</summary>
+                            <div class="solution-content">
+                                Parametrizamos $r(t)=(\cos t, \sin t)$.
+                                <br>$\int_0^{2\pi} (\sin t, -\cos t) \cdot (-\sin t, \cos t) dt$.
+                                <br>$\int_0^{2\pi} -1 dt$.
+                                <span class="final-result">$$ -2\pi $$</span>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabId, accentColor) {
+            // Ocultar secciones con fade out
+            const activeSection = document.querySelector('.content-section.active');
+            if (activeSection) {
+                activeSection.style.opacity = '0';
+                setTimeout(() => {
+                    activeSection.classList.remove('active');
+
+                    // Mostrar nueva sección
+                    const newSection = document.getElementById(tabId);
+                    newSection.classList.add('active');
+                    // Forzar reflow
+                    void newSection.offsetWidth;
+                    newSection.style.opacity = '1';
+
+                    // Re-render MathJax if needed
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([newSection]);
+                    }
+                }, 300);
+            } else {
+                document.getElementById(tabId).classList.add('active');
+            }
+
+            // Actualizar botones
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            const buttons = Array.from(document.querySelectorAll('.tab-btn'));
+            const activeBtn = buttons.find(b => b.getAttribute('onclick').includes(tabId));
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // Actualizar variable CSS global para el color de acento
+            document.documentElement.style.setProperty('--accent', accentColor);
+
+            // Actualizar orbes
+            const orb1 = document.querySelector('.orb-1');
+            const orb2 = document.querySelector('.orb-2');
+            orb1.style.background = accentColor;
+
+            if (tabId === 'eso') orb2.style.background = 'var(--color-bach)';
+            if (tabId === 'bach') orb2.style.background = 'var(--color-uni1)';
+            if (tabId === 'uni1') orb2.style.background = 'var(--color-uni2)';
+            if (tabId === 'uni2') orb2.style.background = 'var(--color-eso)';
+        }
+
+        const themeBtn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+
+        themeBtn.addEventListener('click', () => {
+            const current = html.getAttribute('data-scheme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-scheme', next);
+        });
+
+        // Inicializar animaciones de entrada
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.stack-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Fix for details/summary mathjax rendering issues
+            const details = document.querySelectorAll('details');
+            details.forEach(d => {
+                d.addEventListener('toggle', () => {
+                    if (d.open && window.MathJax) {
+                        MathJax.typesetPromise([d]);
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
+
 </html>
