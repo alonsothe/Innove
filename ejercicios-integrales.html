@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innove | Practice Mode</title>
+  <link rel="icon" type="image/png" href="innoveAI.png" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: { renderActions: { addMenu: [] } }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* ============ VARIABLES & ESTILOS BASE ============ */
+    :root {
+      --radius: 16px;
+      --nav-height: 80px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    [data-scheme="dark"] {
+      --bg-body: #000000;
+      --bg-pattern: linear-gradient(180deg, #000000 0%, #111111 100%);
+      --text-main: #ffffff;
+      --text-muted: #a3a3a3;
+      --card-bg: #0a0a0a;
+      --card-border: 1px solid #333333;
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --code-bg: #000000;
+      --example-bg: #161616;
+      --hover-bg: #222222;
+      --btn-icon: "☀️";
+      --title-gradient: linear-gradient(180deg, #ffffff 20%, #666666 100%);
+      --sol-highlight: #4ade80; /* Verde para resultados */
+    }
+
+    [data-scheme="light"] {
+      --bg-body: #ffffff;
+      --bg-pattern: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --card-bg: #ffffff;
+      --card-border: 1px solid #e5e5e5;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+      --code-bg: #f3f4f6;
+      --example-bg: #ffffff;
+      --hover-bg: #f3f4f6;
+      --btn-icon: "🌙";
+      --title-gradient: linear-gradient(180deg, #1e293b 20%, #64748b 100%);
+      --sol-highlight: #16a34a;
+    }
+
+    :root { --accent: #3b82f6; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif; background-color: var(--bg-body);
+      background-image: var(--bg-pattern); background-attachment: fixed;
+      color: var(--text-main); padding-top: var(--nav-height); min-height: 100vh;
+      transition: var(--transition);
+    }
+    h1, h2, h3 { font-family: 'Montserrat', sans-serif; letter-spacing: -0.03em; }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+      background: var(--nav-bg); backdrop-filter: blur(12px);
+      border-bottom: var(--card-border); z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 5%;
+    }
+    .logo-container {
+      display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-main);
+      font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.5rem;
+    }
+    .logo-square {
+      width: 44px; height: 44px; background: var(--text-main); color: var(--bg-body);
+      border-radius: 8px; display: grid; place-items: center; font-size: 1.6rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); font-family: serif; font-style: italic;
+    }
+    .logo-container:hover .logo-square { transform: rotate(15deg) scale(1.1); background: var(--accent); color: white; }
+
+    .nav-center { display: flex; gap: 4px; background: var(--card-border); padding: 4px; border-radius: 12px; }
+    .tab-btn {
+      background: transparent; border: none; padding: 8px 20px; border-radius: 8px;
+      color: var(--text-muted); font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 0.9rem;
+    }
+    .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .theme-toggle { background: transparent; border: 1px solid var(--text-muted); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; position: relative; }
+    .theme-toggle::before { content: var(--btn-icon); transition: 0.5s; display: block; }
+    .theme-toggle:hover::before { transform: rotate(180deg); }
+
+    /* HERO */
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+    .hero { text-align: center; margin-bottom: 60px; }
+    .hero h1 { font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; margin: 0; line-height: 1; display: flex; flex-direction: column; align-items: center; }
+    .title-integral { background: var(--title-gradient); -webkit-background-clip: text; color: transparent; padding-bottom: 10px; }
+
+    /* GRID SYSTEM */
+    .content-section { display: none; animation: slideUp 0.5s ease; }
+    .content-section.active { display: block; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section-title { 
+      font-size: 1.5rem; margin: 40px 0 20px; font-weight: 800; color: var(--text-main); 
+      border-left: 5px solid var(--accent); padding-left: 15px; 
+    }
+
+    .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    /* Grid más ancha para exámenes y textos largos */
+    .ex-grid-full { display: grid; grid-template-columns: 1fr; gap: 30px; }
+
+    .ex-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 20px; transition: all 0.3s ease; position: relative;
+      display: flex; flex-direction: column;
+    }
+    .ex-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+    .ex-badge { 
+      position: absolute; top: 15px; right: 15px; font-size: 0.75rem; 
+      font-weight: 800; color: var(--accent); background: rgba(128,128,128,0.1); padding: 4px 10px; border-radius: 6px; 
+    }
+    .ex-num { font-family: 'Montserrat'; font-weight: 900; color: var(--text-muted); font-size: 1.5rem; opacity: 0.4; display: block; margin-bottom: 10px;}
+    
+    .math-display { font-family: 'JetBrains Mono'; font-size: 1.1rem; text-align: center; margin: 15px 0; color: var(--text-main); }
+    .text-problem { font-size: 1rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 15px; padding-right: 30px; }
+
+    /* SOLUCIONES DETALLADAS */
+    details { margin-top: 15px; border-top: 1px dashed var(--card-border); padding-top: 15px; }
+    summary { cursor: pointer; color: var(--accent); font-weight: 700; font-size: 0.95rem; list-style: none; }
+    summary:hover { text-decoration: underline; }
+    
+    .sol { 
+      margin-top: 15px; padding: 20px; background: var(--example-bg); border-radius: 12px; 
+      font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; 
+    }
+    .sol strong { color: var(--text-main); font-weight: 700; display: block; margin-top: 10px; }
+    .sol strong:first-child { margin-top: 0; }
+    .res-box { 
+      margin-top: 15px; padding: 10px; border-left: 3px solid var(--sol-highlight); 
+      background: rgba(128,128,128,0.05); color: var(--sol-highlight); font-weight: bold; font-family: 'JetBrains Mono';
+    }
+    
+    @media (max-width: 768px) {
+      .navbar { padding: 0 15px; }
+      .logo span { display: none; }
+      .nav-center { width: 100%; justify-content: center; }
+      .tab-btn { padding: 6px 12px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="#" class="logo-container">
+      <div class="logo-square">∫</div>
+      Innove
+    </a>
+    <div class="nav-center">
+      <button class="tab-btn active" onclick="switchTab('eso', '#2dd4bf')">ESO</button>
+      <button class="tab-btn" onclick="switchTab('bach', '#3b82f6')">Bachillerato</button>
+      <button class="tab-btn" onclick="switchTab('uni', '#a855f7')">Universidad</button>
+    </div>
+    <button class="theme-toggle" id="themeBtn">☀</button>
+  </nav>
+
+  <main class="container">
+    <div class="hero">
+      <h1><span style="color:var(--text-main)">70 Ejercicios</span> <span class="title-integral">Full Practice</span></h1>
+      <p>Desde la base hasta el nivel de examen parcial universitario.</p>
+    </div>
+
+    <div id="eso" class="content-section active" style="--accent: #2dd4bf;">
+      <h3 class="section-title">Nivel Básico (Primitivas)</h3>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-num">01</span><div class="math-display">$\int 5 \, dx$</div><details><summary>Ver Solución</summary><div class="sol">La integral de una constante $k$ es $kx$.<div class="res-box">$5x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">02</span><div class="math-display">$\int x^6 \, dx$</div><details><summary>Ver Solución</summary><div class="sol">Regla de la potencia: sumar 1 al exponente y dividir.<div class="res-box">$\frac{x^7}{7} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">03</span><div class="math-display">$\int 4x^3 \, dx$</div><details><summary>Ver Solución</summary><div class="sol">El 4 multiplica. $\int x^3 = x^4/4$. Simplificamos.<div class="res-box">$x^4 + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">04</span><div class="math-display">$\int (3x^2 - 2x + 1) \, dx$</div><details><summary>Ver Solución</summary><div class="sol">Integral de la suma. $3(x^3/3) - 2(x^2/2) + x$.<div class="res-box">$x^3 - x^2 + x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">05</span><div class="math-display">$\int \frac{1}{x^4} \, dx$</div><details><summary>Ver Solución</summary><div class="sol">Escribir como $x^{-4}$. Sumar 1: $x^{-3}/-3$.<div class="res-box">$-\frac{1}{3x^3} + C$</div></div></details></div>
+        
+        <div class="ex-card"><span class="ex-num">06</span><div class="math-display">$\int \sqrt{x} \, dx$</div><details><summary>Ver Solución</summary><div class="sol">$x^{1/2} \to x^{3/2}/(3/2)$.<div class="res-box">$\frac{2}{3}x\sqrt{x} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">07</span><div class="math-display">$\int (2\sqrt{x} - 3) \, dx$</div><details><summary>Ver Solución</summary><div class="sol">$\int 2x^{1/2} - \int 3$.<div class="res-box">$\frac{4}{3}x^{3/2} - 3x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">08</span><div class="math-display">$\int (x+1)^2 \, dx$</div><details><summary>Ver Solución</summary><div class="sol">Expandir: $x^2 + 2x + 1$. Integrar.<div class="res-box">$\frac{x^3}{3} + x^2 + x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">09</span><div class="math-display">$\int \frac{1}{2\sqrt{x}} \, dx$</div><details><summary>Ver Solución</summary><div class="sol">Es la derivada de la raíz.<div class="res-box">$\sqrt{x} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">10</span><div class="math-display">$\int 10x^9 \, dx$</div><details><summary>Ver Solución</summary><div class="sol"><div class="res-box">$x^{10} + C$</div></div></details></div>
+
+        <div class="ex-card"><span class="ex-num">11</span><div class="math-display">$v(t)=5$. Posición?</div><details><summary>Ver Solución</summary><div class="sol"><div class="res-box">$x(t) = 5t + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">12</span><div class="math-display">$a(t)=9.8$. Velocidad?</div><details><summary>Ver Solución</summary><div class="sol"><div class="res-box">$v(t) = 9.8t + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">13</span><div class="math-display">$v(t)=3t^2$. Posición?</div><details><summary>Ver Solución</summary><div class="sol"><div class="res-box">$t^3 + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">14</span><div class="math-display">$v(t)=2t+1$. Posición?</div><details><summary>Ver Solución</summary><div class="sol"><div class="res-box">$t^2 + t + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">15</span><div class="math-display">$a(t)=6t$. Velocidad?</div><details><summary>Ver Solución</summary><div class="sol"><div class="res-box">$3t^2 + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">16</span><div class="math-display">$\int x^{-3} dx$</div><details><summary>Solución</summary><div class="sol">$\frac{x^{-2}}{-2}$<div class="res-box">$-1/(2x^2) + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">17</span><div class="math-display">$\int 4 dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$4x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">18</span><div class="math-display">$\int \pi dx$</div><details><summary>Solución</summary><div class="sol">$\pi$ es un número.<div class="res-box">$\pi x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">19</span><div class="math-display">$\int \frac{2}{3}x dx$</div><details><summary>Solución</summary><div class="sol">$\frac{2}{3} \frac{x^2}{2}$<div class="res-box">$\frac{1}{3}x^2 + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">20</span><div class="math-display">$\int (x-2) dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$\frac{x^2}{2} - 2x + C$</div></div></details></div>
+      </div>
+    </div>
+
+    <div id="bach" class="content-section" style="--accent: #3b82f6;">
+      <h3 class="section-title">Cálculo & Métodos (20 Ej.)</h3>
+      <div class="ex-grid">
+        <div class="ex-card"><span class="ex-num">01</span><div class="math-display">$\int x e^{x^2} dx$</div><details><summary>Solución</summary><div class="sol">Sustitución $u=x^2 \to du=2xdx$.<div class="res-box">$\frac{1}{2}e^{x^2} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">02</span><div class="math-display">$\int x \ln x dx$</div><details><summary>Solución</summary><div class="sol">Por partes $u=\ln x$.<div class="res-box">$\frac{x^2}{2}\ln x - \frac{x^2}{4} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">03</span><div class="math-display">$\int \sin^2 x dx$</div><details><summary>Solución</summary><div class="sol">Identidad $\frac{1-\cos 2x}{2}$.<div class="res-box">$\frac{x}{2} - \frac{\sin 2x}{4} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">04</span><div class="math-display">$\int \frac{1}{x^2-4} dx$</div><details><summary>Solución</summary><div class="sol">Fracciones simples $(x-2)(x+2)$.<div class="res-box">$\frac{1}{4}\ln|\frac{x-2}{x+2}| + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">05</span><div class="math-display">$\int \arctan x dx$</div><details><summary>Solución</summary><div class="sol">Por partes $u=\arctan x, dv=1$.<div class="res-box">$x\arctan x - \frac{1}{2}\ln(1+x^2)$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">06</span><div class="math-display">$\int \cos(3x) dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$\frac{1}{3}\sin(3x) + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">07</span><div class="math-display">$\int e^{2x+1} dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$\frac{1}{2}e^{2x+1} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">08</span><div class="math-display">$\int \frac{x}{1+x^2} dx$</div><details><summary>Solución</summary><div class="sol">Logarítmica.<div class="res-box">$\frac{1}{2}\ln(1+x^2) + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">09</span><div class="math-display">$\int (2x+1)^5 dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$\frac{(2x+1)^6}{12} + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">10</span><div class="math-display">$\int \tan x dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$-\ln|\cos x| + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">11</span><div class="math-display">$\int \frac{1}{\sqrt{1-x^2}} dx$</div><details><summary>Solución</summary><div class="sol"><div class="res-box">$\arcsin x + C$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">12</span><div class="math-display">$\int x \sin x dx$</div><details><summary>Solución</summary><div class="sol">Partes: $-x\cos x + \sin x$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">13</span><div class="math-display">$\int \frac{\ln x}{x} dx$</div><details><summary>Solución</summary><div class="sol">Sust $u=\ln x \to \frac{1}{2}(\ln x)^2$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">14</span><div class="math-display">$\int_0^1 e^x dx$</div><details><summary>Solución</summary><div class="sol">Definida.<div class="res-box">$e - 1$</div></div></details></div>
+        <div class="ex-card"><span class="ex-num">15</span><div class="math-display">$\int_0^\pi \sin x dx$</div><details><summary>Solución</summary><div class="sol">$-(-1) - (-1) = 2$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">16</span><div class="math-display">$\int \frac{1}{x \ln x} dx$</div><details><summary>Solución</summary><div class="sol">$\ln|\ln x| + C$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">17</span><div class="math-display">$\int x \sqrt{1+x^2} dx$</div><details><summary>Solución</summary><div class="sol">$\frac{1}{3}(1+x^2)^{3/2}$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">18</span><div class="math-display">$\int \cos^3 x dx$</div><details><summary>Solución</summary><div class="sol">$\sin x - \frac{\sin^3 x}{3}$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">19</span><div class="math-display">$\int \frac{x+1}{x} dx$</div><details><summary>Solución</summary><div class="sol">$x + \ln|x|$.</div></details></div>
+        <div class="ex-card"><span class="ex-num">20</span><div class="math-display">$\int_1^2 x^2 dx$</div><details><summary>Solución</summary><div class="sol">$7/3$.</div></details></div>
+      </div>
+
+      <h3 class="section-title" style="border-color:#f43f5e; margin-top:80px;">🔥 Selectividad / PAU (10 Problemas)</h3>
+      <div class="ex-grid-full">
+        
+        <div class="ex-card">
+          <span class="ex-badge">PAU 01</span>
+          <p class="text-problem"><strong>Área Recinto Cerrado:</strong> Calcula el área del recinto limitado por la parábola $y = 4x - x^2$ y la recta $y = x$. Realiza un esbozo de la gráfica.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Puntos de corte:</strong> Igualamos $4x - x^2 = x \implies 3x - x^2 = 0 \implies x(3-x)=0$. Puntos: $x=0$ y $x=3$.<br>
+              <strong>2. Planteamiento:</strong> La parábola está por encima en $(0,3)$ (prueba $x=1 \to y_p=3, y_r=1$).<br>
+              <strong>3. Integral:</strong> $\int_0^3 (4x - x^2 - x) \, dx = \int_0^3 (3x - x^2) \, dx$.<br>
+              <strong>4. Cálculo:</strong> $[\frac{3x^2}{2} - \frac{x^3}{3}]_0^3 = (\frac{27}{2} - \frac{27}{3}) - 0 = 13.5 - 9 = 4.5$.
+              <div class="res-box">4.5 u²</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 02</span>
+          <p class="text-problem"><strong>Optimización de Beneficios:</strong> La función de ingreso marginal de una empresa es $I'(x) = 20 - 0.02x$ y el coste marginal es $C'(x) = 5 + 0.01x$. Si los costes fijos son 100€, halla la función de Beneficio Total $B(x)$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Beneficio Marginal:</strong> $B'(x) = I'(x) - C'(x) = (20 - 0.02x) - (5 + 0.01x) = 15 - 0.03x$.<br>
+              <strong>2. Integrar:</strong> $B(x) = \int (15 - 0.03x) dx = 15x - 0.015x^2 + K$.<br>
+              <strong>3. Condición Inicial:</strong> Beneficio en 0 es igual a menos costes fijos. $B(0) = -100$.<br>
+              <strong>4. Hallar K:</strong> $0 - 0 + K = -100 \implies K = -100$.
+              <div class="res-box">$B(x) = -0.015x^2 + 15x - 100$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 03</span>
+          <p class="text-problem"><strong>Volumen de Revolución:</strong> Halla el volumen del cuerpo de revolución generado al girar la región limitada por $y=\sqrt{x-1}$, $x=5$ y el eje OX alrededor del eje de abscisas.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Límites:</strong> La función corta el eje X en $x=1$. El otro límite es $x=5$.<br>
+              <strong>2. Fórmula Discos:</strong> $V = \pi \int_a^b [f(x)]^2 dx$.<br>
+              <strong>3. Integral:</strong> $\pi \int_1^5 (\sqrt{x-1})^2 dx = \pi \int_1^5 (x-1) dx$.<br>
+              <strong>4. Cálculo:</strong> $\pi [\frac{x^2}{2} - x]_1^5 = \pi [(\frac{25}{2} - 5) - (\frac{1}{2} - 1)] = \pi [7.5 - (-0.5)] = 8\pi$.
+              <div class="res-box">$8\pi \approx 25.13 u^3$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 04</span>
+          <p class="text-problem"><strong>Valor Medio:</strong> Se estima que la temperatura en una ciudad sigue la función $T(t) = 20 + 10\sin(\frac{\pi t}{12})$ durante las 24 horas del día ($0 \le t \le 24$). Calcula la temperatura media del día.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Teorema Valor Medio:</strong> $T_{med} = \frac{1}{b-a} \int_a^b T(t) dt$.<br>
+              <strong>2. Planteamiento:</strong> $\frac{1}{24} \int_0^{24} (20 + 10\sin(\frac{\pi t}{12})) dt$.<br>
+              <strong>3. Integrar:</strong> La integral de 20 es $20t$. La de seno es coseno negativo ajustado: $-10 \cdot \frac{12}{\pi} \cos(\frac{\pi t}{12})$.<br>
+              <strong>4. Evaluar:</strong> El término seno/coseno se anula en un periodo completo (0 a 24). Solo queda la constante: $\frac{1}{24} [20t]_0^{24} = 20$.
+              <div class="res-box">20 ºC</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 05</span>
+          <p class="text-problem"><strong>Área con Valor Absoluto:</strong> Calcula el área de la región limitada por la función $f(x) = |x^2 - 4|$ y las rectas $x=0, x=3$ y el eje OX.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Analizar Valor Absoluto:</strong> $x^2-4$ es negativo en $(0,2)$ y positivo en $(2,3)$.<br>
+              <strong>2. Separar Integral:</strong> $\int_0^2 -(x^2-4) dx + \int_2^3 (x^2-4) dx$.<br>
+              <strong>3. Parte 1:</strong> $[4x - x^3/3]_0^2 = (8 - 8/3) = 16/3$.<br>
+              <strong>4. Parte 2:</strong> $[x^3/3 - 4x]_2^3 = (9-12) - (8/3-8) = -3 - (-16/3) = 7/3$.<br>
+              <strong>5. Suma:</strong> $16/3 + 7/3 = 23/3$.
+              <div class="res-box">23/3 u²</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 06</span>
+          <p class="text-problem"><strong>Problema de Física:</strong> Un cohete acelera con $a(t) = 6t$ m/s². Si parte del reposo ($v_0=0$) y desde la posición $x_0=10$m, ¿cuál es su posición a los 3 segundos?</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Velocidad:</strong> $v(t) = \int 6t dt = 3t^2 + C_1$. Como $v(0)=0 \to C_1=0$.<br>
+              <strong>2. Posición:</strong> $x(t) = \int 3t^2 dt = t^3 + C_2$.<br>
+              <strong>3. Condición Inicial:</strong> $x(0) = 10 \to C_2 = 10$.<br>
+              <strong>4. Evaluar:</strong> $x(3) = 3^3 + 10 = 27 + 10$.
+              <div class="res-box">37 metros</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 07</span>
+          <p class="text-problem"><strong>Área y Tangente:</strong> Halla el área encerrada entre la curva $y=x^2$, el eje de ordenadas (OY) y la recta tangente a la curva en el punto $x=2$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Recta Tangente:</strong> Punto $(2,4)$. Pendiente $y'=2x \to m=4$. Recta: $y-4=4(x-2) \to y=4x-4$.<br>
+              <strong>2. Corte Eje Y:</strong> La curva empieza en $x=0$. La tangente corta el eje Y en $y=-4$ (pero nos interesa el área entre $x=0$ y $x=2$).<br>
+              <strong>3. Planteamiento:</strong> La curva $x^2$ está por encima de la recta $4x-4$ en el intervalo $[0,2]$. (Ojo: en $[0,1]$ la recta es negativa).<br>
+              <strong>4. Integral:</strong> $\int_0^2 (x^2 - (4x-4)) dx = [\frac{x^3}{3} - 2x^2 + 4x]_0^2$.<br>
+              <strong>5. Cálculo:</strong> $(8/3 - 8 + 8) - 0$.
+              <div class="res-box">8/3 u²</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 08</span>
+          <p class="text-problem"><strong>Integral Definida con Parámetros:</strong> Halla $a > 0$ para que el área entre $y=x^2$ y la recta $y=a$ sea igual a 36 u².</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Cortes:</strong> $x^2 = a \implies x = \pm\sqrt{a}$.<br>
+              <strong>2. Simetría:</strong> Área $= 2 \int_0^{\sqrt{a}} (a - x^2) dx$.<br>
+              <strong>3. Integral:</strong> $2 [ax - \frac{x^3}{3}]_0^{\sqrt{a}} = 2(a\sqrt{a} - \frac{a\sqrt{a}}{3}) = 2(\frac{2}{3}a\sqrt{a}) = \frac{4}{3}a^{3/2}$.<br>
+              <strong>4. Ecuación:</strong> $\frac{4}{3}a^{3/2} = 36 \implies a^{3/2} = 27 \implies a = (27^{2/3}) = 9$.
+              <div class="res-box">$a = 9$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 09</span>
+          <p class="text-problem"><strong>Área Recinto Ilimitado (Intro):</strong> Calcula el área comprendida entre la curva $y = e^{-x}$, los ejes de coordenadas y la recta $x=b$. Luego calcula el límite cuando $b \to \infty$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Área(b):</strong> $\int_0^b e^{-x} dx = [-e^{-x}]_0^b = -e^{-b} - (-1) = 1 - e^{-b}$.<br>
+              <strong>2. Límite:</strong> $\lim_{b \to \infty} (1 - \frac{1}{e^b})$.<br>
+              <strong>3. Resultado:</strong> Como $1/e^\infty \to 0$, el límite es 1.
+              <div class="res-box">1 u²</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <span class="ex-badge">PAU 10</span>
+          <p class="text-problem"><strong>Cambio de Variable Definida:</strong> Calcula $\int_0^1 \frac{1}{1+\sqrt{x}} dx$ usando el cambio $t=\sqrt{x}$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Diferencial:</strong> $t^2=x \implies 2t dt = dx$.<br>
+              <strong>2. Límites:</strong> $x=0 \to t=0$; $x=1 \to t=1$.<br>
+              <strong>3. Nueva Integral:</strong> $\int_0^1 \frac{2t}{1+t} dt$.<br>
+              <strong>4. División:</strong> $\frac{2t}{t+1} = 2 - \frac{2}{t+1}$.<br>
+              <strong>5. Primitiva:</strong> $[2t - 2\ln|t+1|]_0^1 = (2 - 2\ln 2) - (0)$.
+              <div class="res-box">$2(1 - \ln 2)$</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div id="uni" class="content-section" style="--accent: #a855f7;">
+      <div class="section-header">
+        <h3>Nivel Examen Parcial</h3>
+        <p>Problemas extraídos de exámenes reales de ingeniería (UPC).</p>
+      </div>
+      <div class="ex-grid-large">
+        
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">01</span><span class="ex-title">Área a Trozos (UPC)</span></div>
+          <p class="text-problem">Calcula l'àrea que formen la funció $g(x)=x^2-x$ i la funció $f(x)$ definida per:
+          $$ f(x) = \begin{cases} x^3 & \text{si } x < 2 \\ 2x+4 & \text{si } x \ge 2 \end{cases} $$</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Puntos de corte:</strong><br>
+              - Tramo 1: $x^3 = x^2-x \implies x(x^2-x+1)=0$. Única real $x=0$.<br>
+              - Tramo 2: $2x+4 = x^2-x \implies x^2-3x-4=0 \implies x=4$ (el -1 no vale pues $x \ge 2$).<br>
+              <strong>2. Intervalos:</strong> Integraremos de 0 a 2 (con $x^3$) y de 2 a 4 (con $2x+4$).<br>
+              <strong>3. Integral 1:</strong> $\int_0^2 (x^3 - (x^2-x)) dx = [\frac{x^4}{4} - \frac{x^3}{3} + \frac{x^2}{2}]_0^2 = 4 - 8/3 + 2 = 10/3$.<br>
+              <strong>4. Integral 2:</strong> $\int_2^4 ((2x+4) - (x^2-x)) dx = \int_2^4 (-x^2+3x+4) dx$.<br>
+              Valor: $[-\frac{x^3}{3} + \frac{3x^2}{2} + 4x]_2^4 = 22/3$.<br>
+              <strong>5. Suma:</strong> $10/3 + 22/3 = 32/3$.
+              <div class="res-box">32/3 u²</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">02</span><span class="ex-title">Volumen Elipse (UPC)</span></div>
+          <p class="text-problem">Planteu la integral definida que permet calcular el volum de revolució que defineix la corba $\frac{(x-1)^2}{4} + \frac{(y-4)^2}{9} = 1$ al girar al voltant de l'eix OX.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Aislar y:</strong> $(y-4)^2 = 9(1 - \frac{(x-1)^2}{4})$. Arrel quadrada: $y = 4 \pm 3\sqrt{1 - \dots}$.<br>
+              <strong>2. Radios:</strong> Tenemos dos funciones, $R(x) = y_{sup}$ (signo +) y $r(x) = y_{inf}$ (signo -).<br>
+              <strong>3. Límites x:</strong> La elipse està centrada en $x=1$ amb semi-eix 2. Va de $-1$ a $3$.<br>
+              <strong>4. Mètode de les Volanderes (Washers):</strong> $V = \pi \int_a^b (R(x)^2 - r(x)^2) dx$.<br>
+              <strong>5. Plantejament:</strong>
+              <div class="res-box">$\pi \int_{-1}^{3} \left( \left[4 + 3\sqrt{1-\frac{(x-1)^2}{4}}\right]^2 - \left[4 - 3\sqrt{1-\frac{(x-1)^2}{4}}\right]^2 \right) dx$</div>
+              (Nota: Resolvent amb Pappus dona $2\pi(4) \cdot \pi(2)(3) = 24\pi^2$).
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">03</span><span class="ex-title">Impròpia (UPC)</span></div>
+          <p class="text-problem">Calculeu la següent integral: $\int_0^\infty \frac{e^{-x}}{1+e^{-x}} dx$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Canvi de Variable:</strong> Sigui $t = 1 + e^{-x}$.<br>
+              Derivant: $dt = -e^{-x} dx \implies -dt = e^{-x} dx$.<br>
+              <strong>2. Nous Límits:</strong><br>
+              Si $x=0 \implies t = 1+1 = 2$.<br>
+              Si $x \to \infty \implies t \to 1+0 = 1$.<br>
+              <strong>3. Integral en t:</strong> $\int_2^1 \frac{-1}{t} dt = \int_1^2 \frac{1}{t} dt$. (Hem canviat el signe invertint els límits).<br>
+              <strong>4. Resolució:</strong> $[\ln|t|]_1^2 = \ln 2 - \ln 1 = \ln 2$.
+              <div class="res-box">$\ln 2$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">04</span><span class="ex-title">Suma de Riemann</span></div>
+          <p class="text-problem">Calcula el límit com a integral: $\lim_{n \to \infty} \sum_{i=1}^n \frac{1}{n} \left( 1 + \frac{2i}{n} \right)^4$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Identificar estructura:</strong> $\Delta x = 1/n$. El terme variable és $i/n$.<br>
+              <strong>2. Funció:</strong> Podem veure-ho com $f(x) = (1+2x)^4$ en l'interval $[0,1]$.<br>
+              <strong>3. Integral:</strong> $\int_0^1 (1+2x)^4 dx$.<br>
+              <strong>4. Càlcul:</strong> Ajustem la derivada interna (2). $\frac{1}{2} \int (1+2x)^4 \cdot 2 dx$.<br>
+              Primitiva: $\frac{1}{2} \frac{(1+2x)^5}{5}$.<br>
+              <strong>5. Avaluar:</strong> $\frac{1}{10} [3^5 - 1^5] = \frac{242}{10}$.
+              <div class="res-box">24.2</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">05</span><span class="ex-title">Longitud Cicloide</span></div>
+          <p class="text-problem">Calcula la longitud d'un arc de la cicloide $x(t) = t - \sin t$, $y(t) = 1 - \cos t$ en $t \in [0, 2\pi]$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Derivades:</strong> $x' = 1-\cos t$, $y' = \sin t$.<br>
+              <strong>2. Integrand:</strong> $\sqrt{(1-\cos t)^2 + \sin^2 t} = \sqrt{1 - 2\cos t + \cos^2 t + \sin^2 t} = \sqrt{2 - 2\cos t}$.<br>
+              <strong>3. Identitat trigonomètrica:</strong> $1-\cos t = 2\sin^2(t/2)$. Així l'arrel queda $\sqrt{4\sin^2(t/2)} = 2\sin(t/2)$.<br>
+              <strong>4. Integral:</strong> $\int_0^{2\pi} 2\sin(t/2) dt = [-4\cos(t/2)]_0^{2\pi}$.<br>
+              <strong>5. Resultat:</strong> $-4(\cos \pi - \cos 0) = -4(-1 - 1) = 8$.
+              <div class="res-box">8 unitats</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">06</span><span class="ex-title">Doble (Canvi Ordre)</span></div>
+          <p class="text-problem">Calcula $\int_0^1 \int_y^1 e^{x^2} dx dy$. (Impossible d'integrar directament respecte x).</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Recinte:</strong> $0 \le y \le 1$ i $y \le x \le 1$. És un triangle amb vèrtexs (0,0), (1,0), (1,1).<br>
+              <strong>2. Nou Ordre:</strong> Fixem x primer: $0 \le x \le 1$. Llavors y va de $0$ a $x$.<br>
+              <strong>3. Nova Integral:</strong> $\int_0^1 \left( \int_0^x e^{x^2} dy \right) dx$.<br>
+              <strong>4. Primera fase:</strong> La integral de dy és y. Avaluada: $x - 0 = x$.<br>
+              <strong>5. Segona fase:</strong> $\int_0^1 x e^{x^2} dx$. És immediata (falta un 2).<br>
+              $[\frac{1}{2} e^{x^2}]_0^1 = \frac{1}{2}(e^1 - e^0)$.
+              <div class="res-box">$\frac{e-1}{2}$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">07</span><span class="ex-title">Teorema de Green</span></div>
+          <p class="text-problem">Usa Green per avaluar $\oint_C (3y dx + 2x dy)$ on C és el cercle unitari orientat positivament.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Identificar P i Q:</strong> $P=3y$, $Q=2x$.<br>
+              <strong>2. Derivades parcials:</strong> $\partial Q/\partial x = 2$, $\partial P/\partial y = 3$.<br>
+              <strong>3. Fórmula Green:</strong> $\iint_D (\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}) dA = \iint_D (2-3) dA$.<br>
+              <strong>4. Càlcul:</strong> $\iint_D -1 dA = -1 \cdot \text{Àrea}(D)$.<br>
+              <strong>5. Àrea Cercle:</strong> $\pi r^2 = \pi (1)^2 = \pi$.
+              <div class="res-box">$-\pi$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">08</span><span class="ex-title">Impròpia 2a Espècie</span></div>
+          <p class="text-problem">Estudia la convergència de $\int_0^1 \ln(x) dx$.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Problema:</strong> La funció $\ln x$ tendeix a $-\infty$ en 0. És impròpia.<br>
+              <strong>2. Límit:</strong> $\lim_{\epsilon \to 0^+} \int_\epsilon^1 \ln x dx$.<br>
+              <strong>3. Primitiva:</strong> Per parts, $\int \ln x = x\ln x - x$.<br>
+              <strong>4. Avaluar:</strong> $[x\ln x - x]_\epsilon^1 = (1\ln 1 - 1) - (\epsilon \ln \epsilon - \epsilon) = -1 - (\epsilon \ln \epsilon)$.<br>
+              <strong>5. L'Hôpital:</strong> $\lim \epsilon \ln \epsilon = \lim \frac{\ln \epsilon}{1/\epsilon} = \lim \frac{1/\epsilon}{-1/\epsilon^2} = 0$.<br>
+              El límit existeix i és -1.
+              <div class="res-box">Convergeix a -1</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">09</span><span class="ex-title">Volum Esfera (Triples)</span></div>
+          <p class="text-problem">Demostra el volum de l'esfera $x^2+y^2+z^2 \le R^2$ usant coordenades esfèriques.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Canvi esfèriques:</strong> Jacobiano $J = \rho^2 \sin \phi$.<br>
+              <strong>2. Límits:</strong> $\rho \in [0, R]$, $\theta \in [0, 2\pi]$, $\phi \in [0, \pi]$.<br>
+              <strong>3. Integral:</strong> $\int_0^{2\pi} d\theta \int_0^\pi \sin\phi d\phi \int_0^R \rho^2 d\rho$.<br>
+              <strong>4. Resolent:</strong><br>
+              - Part $\theta$: $2\pi$.<br>
+              - Part $\phi$: $[-\cos\phi]_0^\pi = -(-1 - 1) = 2$.<br>
+              - Part $\rho$: $[\rho^3/3]_0^R = R^3/3$.<br>
+              <strong>5. Producte:</strong> $2\pi \cdot 2 \cdot R^3/3$.
+              <div class="res-box">$\frac{4}{3}\pi R^3$</div>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">10</span><span class="ex-title">Teorema de Gauss</span></div>
+          <p class="text-problem">Calcula el flux del camp $\vec{F}=(x,y,z)$ a través de l'esfera unitaria usant el Teorema de la Divergència.</p>
+          <details>
+            <summary>Solución Paso a Paso</summary>
+            <div class="sol">
+              <strong>1. Divergència:</strong> $\nabla \cdot \vec{F} = \frac{\partial x}{\partial x} + \frac{\partial y}{\partial y} + \frac{\partial z}{\partial z} = 1 + 1 + 1 = 3$.<br>
+              <strong>2. Teorema:</strong> Flux $\Phi = \iiint_V (\nabla \cdot F) dV$.<br>
+              <strong>3. Integral:</strong> $\iiint_V 3 dV = 3 \cdot \iiint_V dV$.<br>
+              <strong>4. Interpretació:</strong> La integral triple de 1 és el volum de la regió (esfera r=1).<br>
+              <strong>5. Càlcul:</strong> $3 \cdot (\frac{4}{3}\pi (1)^3) = 4\pi$.
+              <div class="res-box">$4\pi$</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabId, accentColor) {
+      document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      
+      const buttons = Array.from(document.querySelectorAll('.tab-btn'));
+      const activeBtn = buttons.find(b => b.getAttribute('onclick').includes(tabId));
+      if(activeBtn) activeBtn.classList.add('active');
+      document.documentElement.style.setProperty('--accent', accentColor);
+    }
+
+    const themeBtn = document.getElementById('themeBtn');
+    const html = document.documentElement;
+    themeBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-scheme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-scheme', next);
+    });
+  </script>
+
+</body>
+</html>
