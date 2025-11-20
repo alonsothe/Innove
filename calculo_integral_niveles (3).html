@@ -1,339 +1,640 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-scheme="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cálculo integral — por niveles (teoría clara + MUCHOS ejercicios)</title>
-<meta name="color-scheme" content="light dark">
-<!-- MathJax for beautiful formulas with proper integral signs -->
-<script>
-window.MathJax = { tex: {inlineMath: [['\(','\)']], displayMath: [['\[','\]']]}, svg: {fontCache: 'global', linebreaks: {automatic: true, width: 'container'}} };,
-  svg: {fontCache: 'global'}
-};
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<style>
-  :root{
-    --bg:#f6f7fb; --paper:#ffffff; --ink:#111827; --muted:#4b5563;
-    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
-    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
-    --radius:16px; --maxw:80ch; --base:18px; --lh:1.85;
-  }
-  :root[data-theme="dark"]{
-    --bg:#0f172a; --paper:#0b1225; --ink:#eaf2ff; --muted:#aab7d9;
-    --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399;
-    --border:#203054; --shadow:0 10px 26px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-       font-size:var(--base);line-height:var(--lh);color:var(--ink);background:var(--bg)}
-  .progress{position:fixed;inset:0 0 auto 0;height:4px;width:0;z-index:70;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .topbar{position:sticky;top:0;z-index:60;backdrop-filter:blur(10px) saturate(140%);
-    background:color-mix(in oklab, var(--paper) 86%, transparent);border-bottom:1px solid var(--border);box-shadow:var(--shadow)}
-  .wrap{max-width:1200px;margin:0 auto;padding:10px 16px}
-  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;font-weight:900}
-  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),color-mix(in oklab,var(--brand) 45%,white 25%));color:#fff}
-  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
-  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:8px;background:color-mix(in oklab,var(--paper) 80%, transparent)}
-  .btn{border:1px solid var(--border);background:var(--paper);color:inherit;padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .btn.small{padding:6px 10px;font-weight:700}
-  .levels{display:flex;gap:8px;padding:8px 2px 10px;overflow:auto;scrollbar-width:thin}
-  .pill{border:1px solid var(--border);background:color-mix(in oklab,var(--paper) 88%, transparent);color:inherit;border-radius:14px;padding:8px 12px;font-weight:800;white-space:nowrap;cursor:pointer}
-  .pill[aria-selected="true"]{background:color-mix(in oklab,var(--brand) 22%, var(--paper));border-color:color-mix(in oklab,var(--brand) 60%, var(--border));color:#fff;box-shadow:0 10px 22px color-mix(in oklab,var(--brand) 20%, transparent)}
-  main{max-width:1200px;margin:0 auto;padding:16px}
-  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:22px clamp(16px,3vw,26px);background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
-  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
-  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
-  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
-  .lead{color:var(--muted)}
-  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--bg));border:1px solid var(--border);border-left:6px solid var(--accent);padding:12px 14px;border-radius:12px;margin:12px 0}
-  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;background:color-mix(in oklab,var(--paper) 70%, transparent);padding:12px;border:1px solid var(--border);border-radius:12px}
-  .toc a{text-decoration:none;color:color-mix(in oklab,var(--brand) 80%, var(--ink))}
-  section.level{display:none} section.level[data-active]{display:block}
-  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
-  .topbtn.show{display:block}
-  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--bg)); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
-  details{background:color-mix(in oklab,var(--paper) 94%, transparent); border:1px dashed var(--border); border-radius:10px; padding:8px 10px; margin:6px 0}
-  summary{cursor:pointer; font-weight:800}
-  code{background:color-mix(in oklab,var(--paper) 90%, transparent);border:1px solid var(--border);padding:2px 6px;border-radius:8px}
-  .eq{overflow-x:auto; background:color-mix(in oklab,var(--paper) 92%, var(--bg)); border:1px solid var(--border); border-left:6px solid var(--brand); padding:10px 14px; border-radius:12px; margin:12px 0}
-  .eq mjx-container{font-size:120% !important; max-width:100%;}
-  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
-  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-</style>
-</head>
-<body>
-  <div class="progress" id="progress"></div>
-  <div class="topbar">
-    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <a class="brand" href="#"><span class="badge">∫</span><span class="brand-title">Cálculo integral — por niveles</span></a>
-      <div class="reader" role="group" aria-label="Controles de lectura">
-        <button class="btn small" id="fs-down" title="Disminuir tamaño de letra">A−</button>
-        <button class="btn small" id="fs-up" title="Aumentar tamaño de letra">A+</button>
-        <button class="btn small" id="width-down" title="Reducir ancho de columna">⇤</button>
-        <button class="btn small" id="width-up" title="Aumentar ancho de columna">⇥</button>
-        <button class="btn" id="theme-toggle" title="Alternar tema claro/oscuro">☀️/🌙</button>
-      </div>
-    </div>
-    <div class="wrap">
-      <nav class="levels" id="levelBar" role="tablist" aria-label="Nivel">
-        <button class="pill" data-level="primaria" role="tab" aria-selected="true">Primaria</button>
-        <button class="pill" data-level="eso" role="tab" aria-selected="false">ESO</button>
-        <button class="pill" data-level="bach" role="tab" aria-selected="false">Bachillerato</button>
-        <button class="pill" data-level="uni" role="tab" aria-selected="false">Universidad</button>
-        <button class="pill" data-level="master" role="tab" aria-selected="false">Máster</button>
-        <button class="pill" data-level="phd" role="tab" aria-selected="false">Doctorado</button>
-      </nav>
-    </div>
-  </div>
-
-  <main>
-    <!-- ===== PRIMARIA ===== -->
-    <section id="sec-primaria" class="paper level" data-active>
-      <h1>Primaria — La idea de “sumar trocitos”</h1>
-      <p class="lead">Una <strong>integral</strong> es como sumar muchos trocitos muy pequeños para obtener un <strong>total</strong> (área, longitud, volumen…).</p>
-      <div class="grid-2">
-        <div class="callout"><strong>Área bajo una curva</strong>: divide el dibujo en tiras finas y súmalas.</div>
-        <div class="callout"><strong>Unidades</strong>: si \(f(x)\) está en m/s y sumas en el tiempo, obtienes metros (distancia).</div>
-      </div>
-      <h2>Cómo se escribe</h2>
-      <div class="eq">\[ \int_a^b f(x)\,\mathrm{d}x \]</div>
-      <ul>
-        <li>La “S alargada” \( \int \) significa “sumar”.</li>
-        <li>\(a\) y \(b\) son el inicio y el final; \(\mathrm{d}x\) dice que sumamos <em>en x</em>.</li>
-      </ul>
-      <h2>Ejercicios (100)</h2><div class="examples"><ol><li><details><summary>¿Qué representa \(\int_0^1 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 1.</details></li><li><details><summary>¿Qué representa \(\int_0^2 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 2.</details></li><li><details><summary>¿Qué representa \(\int_0^3 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 3.</details></li><li><details><summary>¿Qué representa \(\int_0^4 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 4.</details></li><li><details><summary>¿Qué representa \(\int_0^5 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 5.</details></li><li><details><summary>¿Qué representa \(\int_0^6 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 6.</details></li><li><details><summary>¿Qué representa \(\int_0^7 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 7.</details></li><li><details><summary>¿Qué representa \(\int_0^8 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 8.</details></li><li><details><summary>¿Qué representa \(\int_0^9 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 9.</details></li><li><details><summary>¿Qué representa \(\int_0^10 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 10.</details></li><li><details><summary>¿Qué representa \(\int_0^11 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 11.</details></li><li><details><summary>¿Qué representa \(\int_0^12 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 12.</details></li><li><details><summary>¿Qué representa \(\int_0^13 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 13.</details></li><li><details><summary>¿Qué representa \(\int_0^14 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 14.</details></li><li><details><summary>¿Qué representa \(\int_0^15 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 15.</details></li><li><details><summary>¿Qué representa \(\int_0^16 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 16.</details></li><li><details><summary>¿Qué representa \(\int_0^17 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 17.</details></li><li><details><summary>¿Qué representa \(\int_0^18 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 18.</details></li><li><details><summary>¿Qué representa \(\int_0^19 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 19.</details></li><li><details><summary>¿Qué representa \(\int_0^20 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 20.</details></li><li><details><summary>¿Qué representa \(\int_0^21 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 21.</details></li><li><details><summary>¿Qué representa \(\int_0^22 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 22.</details></li><li><details><summary>¿Qué representa \(\int_0^23 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 23.</details></li><li><details><summary>¿Qué representa \(\int_0^24 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 24.</details></li><li><details><summary>¿Qué representa \(\int_0^25 1\,\mathrm{d}x\)?</summary>El área de un rectángulo: valor = 25.</details></li><li><details><summary>\(\int_0^a 1\,\mathrm{d}x\)</summary>1a.</details></li><li><details><summary>\(\int_0^a 2\,\mathrm{d}x\)</summary>2a.</details></li><li><details><summary>\(\int_0^a 3\,\mathrm{d}x\)</summary>3a.</details></li><li><details><summary>\(\int_0^a 4\,\mathrm{d}x\)</summary>4a.</details></li><li><details><summary>\(\int_0^a 5\,\mathrm{d}x\)</summary>5a.</details></li><li><details><summary>\(\int_0^1 x\,\mathrm{d}x\)</summary>\(\tfrac{1^2}2\).</details></li><li><details><summary>\(\int_0^2 x\,\mathrm{d}x\)</summary>\(\tfrac{2^2}2\).</details></li><li><details><summary>\(\int_0^3 x\,\mathrm{d}x\)</summary>\(\tfrac{3^2}2\).</details></li><li><details><summary>\(\int_0^4 x\,\mathrm{d}x\)</summary>\(\tfrac{4^2}2\).</details></li><li><details><summary>\(\int_0^5 x\,\mathrm{d}x\)</summary>\(\tfrac{5^2}2\).</details></li><li><details><summary>\(\int_0^6 x\,\mathrm{d}x\)</summary>\(\tfrac{6^2}2\).</details></li><li><details><summary>\(\int_0^7 x\,\mathrm{d}x\)</summary>\(\tfrac{7^2}2\).</details></li><li><details><summary>\(\int_0^8 x\,\mathrm{d}x\)</summary>\(\tfrac{8^2}2\).</details></li><li><details><summary>\(\int_0^9 x\,\mathrm{d}x\)</summary>\(\tfrac{9^2}2\).</details></li><li><details><summary>\(\int_0^10 x\,\mathrm{d}x\)</summary>\(\tfrac{10^2}2\).</details></li><li><details><summary>\(\int_0^11 x\,\mathrm{d}x\)</summary>\(\tfrac{11^2}2\).</details></li><li><details><summary>\(\int_0^12 x\,\mathrm{d}x\)</summary>\(\tfrac{12^2}2\).</details></li><li><details><summary>\(\int_0^13 x\,\mathrm{d}x\)</summary>\(\tfrac{13^2}2\).</details></li><li><details><summary>\(\int_0^14 x\,\mathrm{d}x\)</summary>\(\tfrac{14^2}2\).</details></li><li><details><summary>\(\int_0^15 x\,\mathrm{d}x\)</summary>\(\tfrac{15^2}2\).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>Unidad de \(\int_0^t v(\tau)\,\mathrm{d}\tau\) si \(v\) está en m/s.</summary>Metros (m).</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>¿Qué significa el símbolo \(\int\)?</summary>Sumar infinitos trocitos muy pequeños.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li><li><details><summary>\(\int_a^b f(x)\,\mathrm{d}x\) con \(a<b\) y \(f\ge0\). ¿Signo del resultado?</summary>No negativo.</details></li></ol></div>
-    </section>
-
-    <!-- ===== ESO ===== -->
-    <section id="sec-eso" class="paper level">
-      <h1>ESO — Antiderivadas y área “con signos”</h1>
-      <p class="lead">La integral <em>indefinida</em> busca una función cuya derivada sea \(f\). La integral <em>definida</em> da el área firmada.</p>
-      <div class="toc">
-        <a href="#e-notacion">Notación</a>
-        <a href="#e-regla">Regla de la potencia</a>
-        <a href="#e-lin">Linealidad</a>
-        <a href="#e-def">Integral definida y sumas de Riemann</a>
-        <a href="#e-ej">Ejercicios</a>
-      </div>
-
-      <h2 id="e-notacion">Notación</h2>
-      <div class="eq">\[ \int f(x)\,\mathrm{d}x = F(x) + C \quad\text{si}\quad F'(x)=f(x) \]</div>
-
-      <h2 id="e-regla">Regla de la potencia</h2>
-      <div class="eq">\[ \int x^n\,\mathrm{d}x = \frac{x^{n+1}}{n+1} + C \quad (n\neq -1) \]</div>
-      <div class="eq">\[ \int \frac{1}{x}\,\mathrm{d}x = \ln|x| + C \]</div>
-
-      <h2 id="e-lin">Linealidad</h2>
-      <div class="eq">\[ \int (af+bg)\,\mathrm{d}x = a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x \]</div>
-
-      <h2 id="e-def">Definida y Riemann</h2>
-      <div class="eq">\[ \int_a^b f(x)\,\mathrm{d}x = \lim_{n\to\infty} \sum_{k=1}^n f(x_k^\*)\,\Delta x \]</div>
-      <p>Es el <strong>área firmada</strong>: por encima del eje \(x\) suma positivo, por debajo negativo.</p>
-
-      <h2 id="e-ej">Ejercicios (100)</h2><div class="examples"><ol><li><details><summary>\(\int x^0\,\mathrm{d}x\)</summary>\(\tfrac{x^1}{1}+C\)</details></li><li><details><summary>\(\int x^1\,\mathrm{d}x\)</summary>\(\tfrac{x^2}{2}+C\)</details></li><li><details><summary>\(\int x^2\,\mathrm{d}x\)</summary>\(\tfrac{x^3}{3}+C\)</details></li><li><details><summary>\(\int x^3\,\mathrm{d}x\)</summary>\(\tfrac{x^4}{4}+C\)</details></li><li><details><summary>\(\int x^4\,\mathrm{d}x\)</summary>\(\tfrac{x^5}{5}+C\)</details></li><li><details><summary>\(\int x^5\,\mathrm{d}x\)</summary>\(\tfrac{x^6}{6}+C\)</details></li><li><details><summary>\(\int x^6\,\mathrm{d}x\)</summary>\(\tfrac{x^7}{7}+C\)</details></li><li><details><summary>\(\int x^7\,\mathrm{d}x\)</summary>\(\tfrac{x^8}{8}+C\)</details></li><li><details><summary>\(\int x^8\,\mathrm{d}x\)</summary>\(\tfrac{x^9}{9}+C\)</details></li><li><details><summary>\(\int x^9\,\mathrm{d}x\)</summary>\(\tfrac{x^10}{10}+C\)</details></li><li><details><summary>\(\int x^10\,\mathrm{d}x\)</summary>\(\tfrac{x^11}{11}+C\)</details></li><li><details><summary>\(\int x^11\,\mathrm{d}x\)</summary>\(\tfrac{x^12}{12}+C\)</details></li><li><details><summary>\(\int x^12\,\mathrm{d}x\)</summary>\(\tfrac{x^13}{13}+C\)</details></li><li><details><summary>\(\int x^13\,\mathrm{d}x\)</summary>\(\tfrac{x^14}{14}+C\)</details></li><li><details><summary>\(\int x^14\,\mathrm{d}x\)</summary>\(\tfrac{x^15}{15}+C\)</details></li><li><details><summary>\(\int x^15\,\mathrm{d}x\)</summary>\(\tfrac{x^16}{16}+C\)</details></li><li><details><summary>\(\int x^16\,\mathrm{d}x\)</summary>\(\tfrac{x^17}{17}+C\)</details></li><li><details><summary>\(\int x^17\,\mathrm{d}x\)</summary>\(\tfrac{x^18}{18}+C\)</details></li><li><details><summary>\(\int x^18\,\mathrm{d}x\)</summary>\(\tfrac{x^19}{19}+C\)</details></li><li><details><summary>\(\int x^19\,\mathrm{d}x\)</summary>\(\tfrac{x^20}{20}+C\)</details></li><li><details><summary>\(\int \frac{1}{x}\,\mathrm{d}x\)</summary>\(\ln|x|+C\)</details></li><li><details><summary>\(\int (1x+0)\,\mathrm{d}x\)</summary>\(0.5x^2+0x+C\)</details></li><li><details><summary>\(\int (2x+1)\,\mathrm{d}x\)</summary>\(1.0x^2+1x+C\)</details></li><li><details><summary>\(\int (3x+2)\,\mathrm{d}x\)</summary>\(1.5x^2+2x+C\)</details></li><li><details><summary>\(\int (4x+3)\,\mathrm{d}x\)</summary>\(2.0x^2+3x+C\)</details></li><li><details><summary>\(\int (5x+4)\,\mathrm{d}x\)</summary>\(2.5x^2+4x+C\)</details></li><li><details><summary>\(\int (6x+5)\,\mathrm{d}x\)</summary>\(3.0x^2+5x+C\)</details></li><li><details><summary>\(\int (7x+6)\,\mathrm{d}x\)</summary>\(3.5x^2+6x+C\)</details></li><li><details><summary>\(\int (8x+7)\,\mathrm{d}x\)</summary>\(4.0x^2+7x+C\)</details></li><li><details><summary>\(\int (9x+8)\,\mathrm{d}x\)</summary>\(4.5x^2+8x+C\)</details></li><li><details><summary>\(\int (10x+9)\,\mathrm{d}x\)</summary>\(5.0x^2+9x+C\)</details></li><li><details><summary>\(\int_0^1 x\,\mathrm{d}x\)</summary>\(\tfrac{1^2}2\)</details></li><li><details><summary>\(\int_0^1 x^2\,\mathrm{d}x\)</summary>\(\tfrac{1^3}3\)</details></li><li><details><summary>\(\int_0^2 x\,\mathrm{d}x\)</summary>\(\tfrac{2^2}2\)</details></li><li><details><summary>\(\int_0^2 x^2\,\mathrm{d}x\)</summary>\(\tfrac{2^3}3\)</details></li><li><details><summary>\(\int_0^3 x\,\mathrm{d}x\)</summary>\(\tfrac{3^2}2\)</details></li><li><details><summary>\(\int_0^3 x^2\,\mathrm{d}x\)</summary>\(\tfrac{3^3}3\)</details></li><li><details><summary>\(\int_0^4 x\,\mathrm{d}x\)</summary>\(\tfrac{4^2}2\)</details></li><li><details><summary>\(\int_0^4 x^2\,\mathrm{d}x\)</summary>\(\tfrac{4^3}3\)</details></li><li><details><summary>\(\int_0^5 x\,\mathrm{d}x\)</summary>\(\tfrac{5^2}2\)</details></li><li><details><summary>\(\int_0^5 x^2\,\mathrm{d}x\)</summary>\(\tfrac{5^3}3\)</details></li><li><details><summary>\(\int_0^6 x\,\mathrm{d}x\)</summary>\(\tfrac{6^2}2\)</details></li><li><details><summary>\(\int_0^6 x^2\,\mathrm{d}x\)</summary>\(\tfrac{6^3}3\)</details></li><li><details><summary>\(\int_0^7 x\,\mathrm{d}x\)</summary>\(\tfrac{7^2}2\)</details></li><li><details><summary>\(\int_0^7 x^2\,\mathrm{d}x\)</summary>\(\tfrac{7^3}3\)</details></li><li><details><summary>\(\int_0^8 x\,\mathrm{d}x\)</summary>\(\tfrac{8^2}2\)</details></li><li><details><summary>\(\int_0^8 x^2\,\mathrm{d}x\)</summary>\(\tfrac{8^3}3\)</details></li><li><details><summary>\(\int_0^9 x\,\mathrm{d}x\)</summary>\(\tfrac{9^2}2\)</details></li><li><details><summary>\(\int_0^9 x^2\,\mathrm{d}x\)</summary>\(\tfrac{9^3}3\)</details></li><li><details><summary>\(\int_0^10 x\,\mathrm{d}x\)</summary>\(\tfrac{10^2}2\)</details></li><li><details><summary>\(\int_0^10 x^2\,\mathrm{d}x\)</summary>\(\tfrac{10^3}3\)</details></li><li><details><summary>\(\int_0^11 x\,\mathrm{d}x\)</summary>\(\tfrac{11^2}2\)</details></li><li><details><summary>\(\int_0^11 x^2\,\mathrm{d}x\)</summary>\(\tfrac{11^3}3\)</details></li><li><details><summary>\(\int_0^12 x\,\mathrm{d}x\)</summary>\(\tfrac{12^2}2\)</details></li><li><details><summary>\(\int_0^12 x^2\,\mathrm{d}x\)</summary>\(\tfrac{12^3}3\)</details></li><li><details><summary>\(\int_0^13 x\,\mathrm{d}x\)</summary>\(\tfrac{13^2}2\)</details></li><li><details><summary>\(\int_0^13 x^2\,\mathrm{d}x\)</summary>\(\tfrac{13^3}3\)</details></li><li><details><summary>\(\int_0^14 x\,\mathrm{d}x\)</summary>\(\tfrac{14^2}2\)</details></li><li><details><summary>\(\int_0^14 x^2\,\mathrm{d}x\)</summary>\(\tfrac{14^3}3\)</details></li><li><details><summary>\(\int_0^15 x\,\mathrm{d}x\)</summary>\(\tfrac{15^2}2\)</details></li><li><details><summary>\(\int_0^15 x^2\,\mathrm{d}x\)</summary>\(\tfrac{15^3}3\)</details></li><li><details><summary>\(\int_0^16 x\,\mathrm{d}x\)</summary>\(\tfrac{16^2}2\)</details></li><li><details><summary>\(\int_0^16 x^2\,\mathrm{d}x\)</summary>\(\tfrac{16^3}3\)</details></li><li><details><summary>\(\int_0^17 x\,\mathrm{d}x\)</summary>\(\tfrac{17^2}2\)</details></li><li><details><summary>\(\int_0^17 x^2\,\mathrm{d}x\)</summary>\(\tfrac{17^3}3\)</details></li><li><details><summary>\(\int_0^18 x\,\mathrm{d}x\)</summary>\(\tfrac{18^2}2\)</details></li><li><details><summary>\(\int_0^18 x^2\,\mathrm{d}x\)</summary>\(\tfrac{18^3}3\)</details></li><li><details><summary>\(\int_0^19 x\,\mathrm{d}x\)</summary>\(\tfrac{19^2}2\)</details></li><li><details><summary>\(\int_0^19 x^2\,\mathrm{d}x\)</summary>\(\tfrac{19^3}3\)</details></li><li><details><summary>\(\int_0^20 x\,\mathrm{d}x\)</summary>\(\tfrac{20^2}2\)</details></li><li><details><summary>\(\int_0^20 x^2\,\mathrm{d}x\)</summary>\(\tfrac{20^3}3\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>\(\int (af+bg)\,\mathrm{d}x\)</summary>\(a\int f\,\mathrm{d}x + b\int g\,\mathrm{d}x\)</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li><li><details><summary>¿Qué representa el +C?</summary>Constante de integración (familia de antiderivadas).</details></li><li><details><summary>Si \(f\ge0\) en \([a,b]\), ¿puede \(\int_a^b f\,\mathrm{d}x\) ser negativa?</summary>No.</details></li></ol></div>
-    </section>
-
-    <!-- ===== BACHILLERATO ===== -->
-    <section id="sec-bach" class="paper level">
-      <h1>Bachillerato — Teorema fundamental y técnicas básicas</h1>
-      <p class="lead">Conecta derivar e integrar; usa sustitución y partes; integra trigonométricas típicas.</p>
-      <div class="toc">
-        <a href="#b-tfc">Teorema Fundamental</a>
-        <a href="#b-sust">Sustitución simple</a>
-        <a href="#b-partes">Integración por partes</a>
-        <a href="#b-trig">Trigonométricas</a>
-        <a href="#b-ej">Ejercicios</a>
-      </div>
-
-      <h2 id="b-tfc">Teorema Fundamental del Cálculo</h2>
-      <div class="eq">\[ F(x)=\int_a^x f(t)\,\mathrm{d}t \ \Rightarrow\ F'(x)=f(x)\quad\text{y}\quad \int_a^b f(x)\,\mathrm{d}x = G(b)-G(a) \]</div>
-      <p>Si conoces una antiderivada \(G\) de \(f\), evalúa en extremos.</p>
-
-      <h2 id="b-sust">Sustitución (cambio de variable)</h2>
-      <div class="eq">\[ u=g(x),\quad \mathrm{d}u=g'(x)\,\mathrm{d}x,\quad \int f(g(x))\,g'(x)\,\mathrm{d}x = \int f(u)\,\mathrm{d}u \]</div>
-
-      <h2 id="b-partes">Por partes</h2>
-      <div class="eq">\[ \int u\,\mathrm{d}v = u\,v - \int v\,\mathrm{d}u \]</div>
-      <p>Elige \(u\) “que empeora al derivar poco” (regla LIATE: Logarítmica, Inversa trig., Algebraica, Trig., Exponencial).</p>
-
-      <h2 id="b-trig">Trigonométricas</h2>
-      <div class="eq">\[ \int \sin x\,\mathrm{d}x=-\cos x+C,\quad \int \cos x\,\mathrm{d}x=\sin x+C,\quad \int \sec^2 x\,\mathrm{d}x=\tan x+C \]</div>
-      <div class="eq">\[ \int \sec x\tan x\,\mathrm{d}x=\sec x+C,\quad \int \frac{1}{1+x^2}\,\mathrm{d}x=\arctan x+C \]</div>
-
-      <h2 id="b-ej">Ejercicios (100)</h2><div class="examples"><ol><li><details><summary>\(\int (1x+1)^1\,\mathrm{d}x\)</summary>\(\tfrac{(1x+1)^2}{2}+C\)</details></li><li><details><summary>\(\int (1x+1)^2\,\mathrm{d}x\)</summary>\(\tfrac{(1x+1)^3}{3}+C\)</details></li><li><details><summary>\(\int (1x+1)^3\,\mathrm{d}x\)</summary>\(\tfrac{(1x+1)^4}{4}+C\)</details></li><li><details><summary>\(\int (1x+1)^4\,\mathrm{d}x\)</summary>\(\tfrac{(1x+1)^5}{5}+C\)</details></li><li><details><summary>\(\int (2x+2)^1\,\mathrm{d}x\)</summary>\(\tfrac{(2x+2)^2}{4}+C\)</details></li><li><details><summary>\(\int (2x+2)^2\,\mathrm{d}x\)</summary>\(\tfrac{(2x+2)^3}{6}+C\)</details></li><li><details><summary>\(\int (2x+2)^3\,\mathrm{d}x\)</summary>\(\tfrac{(2x+2)^4}{8}+C\)</details></li><li><details><summary>\(\int (2x+2)^4\,\mathrm{d}x\)</summary>\(\tfrac{(2x+2)^5}{10}+C\)</details></li><li><details><summary>\(\int (3x+3)^1\,\mathrm{d}x\)</summary>\(\tfrac{(3x+3)^2}{6}+C\)</details></li><li><details><summary>\(\int (3x+3)^2\,\mathrm{d}x\)</summary>\(\tfrac{(3x+3)^3}{9}+C\)</details></li><li><details><summary>\(\int (3x+3)^3\,\mathrm{d}x\)</summary>\(\tfrac{(3x+3)^4}{12}+C\)</details></li><li><details><summary>\(\int (3x+3)^4\,\mathrm{d}x\)</summary>\(\tfrac{(3x+3)^5}{15}+C\)</details></li><li><details><summary>\(\int (4x+4)^1\,\mathrm{d}x\)</summary>\(\tfrac{(4x+4)^2}{8}+C\)</details></li><li><details><summary>\(\int (4x+4)^2\,\mathrm{d}x\)</summary>\(\tfrac{(4x+4)^3}{12}+C\)</details></li><li><details><summary>\(\int (4x+4)^3\,\mathrm{d}x\)</summary>\(\tfrac{(4x+4)^4}{16}+C\)</details></li><li><details><summary>\(\int (4x+4)^4\,\mathrm{d}x\)</summary>\(\tfrac{(4x+4)^5}{20}+C\)</details></li><li><details><summary>\(\int (5x+5)^1\,\mathrm{d}x\)</summary>\(\tfrac{(5x+5)^2}{10}+C\)</details></li><li><details><summary>\(\int (5x+5)^2\,\mathrm{d}x\)</summary>\(\tfrac{(5x+5)^3}{15}+C\)</details></li><li><details><summary>\(\int (5x+5)^3\,\mathrm{d}x\)</summary>\(\tfrac{(5x+5)^4}{20}+C\)</details></li><li><details><summary>\(\int (5x+5)^4\,\mathrm{d}x\)</summary>\(\tfrac{(5x+5)^5}{25}+C\)</details></li><li><details><summary>\(\int x\,e^{1x}\,\mathrm{d}x\)</summary>\(\tfrac{e^{1x}}{1}(x-\tfrac1{1})+C\)</details></li><li><details><summary>\(\int x\,e^{2x}\,\mathrm{d}x\)</summary>\(\tfrac{e^{2x}}{2}(x-\tfrac1{2})+C\)</details></li><li><details><summary>\(\int x\,e^{3x}\,\mathrm{d}x\)</summary>\(\tfrac{e^{3x}}{3}(x-\tfrac1{3})+C\)</details></li><li><details><summary>\(\int x\,e^{4x}\,\mathrm{d}x\)</summary>\(\tfrac{e^{4x}}{4}(x-\tfrac1{4})+C\)</details></li><li><details><summary>\(\int x\,e^{5x}\,\mathrm{d}x\)</summary>\(\tfrac{e^{5x}}{5}(x-\tfrac1{5})+C\)</details></li><li><details><summary>\(\int \cos(1x)\,\mathrm{d}x\)</summary>\(\tfrac1{1}\sin(1x)+C\)</details></li><li><details><summary>\(\int \sin(1x)\,\mathrm{d}x\)</summary>\(-\tfrac1{1}\cos(1x)+C\)</details></li><li><details><summary>\(\int \cos(2x)\,\mathrm{d}x\)</summary>\(\tfrac1{2}\sin(2x)+C\)</details></li><li><details><summary>\(\int \sin(2x)\,\mathrm{d}x\)</summary>\(-\tfrac1{2}\cos(2x)+C\)</details></li><li><details><summary>\(\int \cos(3x)\,\mathrm{d}x\)</summary>\(\tfrac1{3}\sin(3x)+C\)</details></li><li><details><summary>\(\int \sin(3x)\,\mathrm{d}x\)</summary>\(-\tfrac1{3}\cos(3x)+C\)</details></li><li><details><summary>\(\int \cos(4x)\,\mathrm{d}x\)</summary>\(\tfrac1{4}\sin(4x)+C\)</details></li><li><details><summary>\(\int \sin(4x)\,\mathrm{d}x\)</summary>\(-\tfrac1{4}\cos(4x)+C\)</details></li><li><details><summary>\(\int \cos(5x)\,\mathrm{d}x\)</summary>\(\tfrac1{5}\sin(5x)+C\)</details></li><li><details><summary>\(\int \sin(5x)\,\mathrm{d}x\)</summary>\(-\tfrac1{5}\cos(5x)+C\)</details></li><li><details><summary>\(\int \cos(6x)\,\mathrm{d}x\)</summary>\(\tfrac1{6}\sin(6x)+C\)</details></li><li><details><summary>\(\int \sin(6x)\,\mathrm{d}x\)</summary>\(-\tfrac1{6}\cos(6x)+C\)</details></li><li><details><summary>\(\int \cos(7x)\,\mathrm{d}x\)</summary>\(\tfrac1{7}\sin(7x)+C\)</details></li><li><details><summary>\(\int \sin(7x)\,\mathrm{d}x\)</summary>\(-\tfrac1{7}\cos(7x)+C\)</details></li><li><details><summary>\(\int \cos(8x)\,\mathrm{d}x\)</summary>\(\tfrac1{8}\sin(8x)+C\)</details></li><li><details><summary>\(\int \sin(8x)\,\mathrm{d}x\)</summary>\(-\tfrac1{8}\cos(8x)+C\)</details></li><li><details><summary>\(\int \cos(9x)\,\mathrm{d}x\)</summary>\(\tfrac1{9}\sin(9x)+C\)</details></li><li><details><summary>\(\int \sin(9x)\,\mathrm{d}x\)</summary>\(-\tfrac1{9}\cos(9x)+C\)</details></li><li><details><summary>\(\int \cos(10x)\,\mathrm{d}x\)</summary>\(\tfrac1{10}\sin(10x)+C\)</details></li><li><details><summary>\(\int \sin(10x)\,\mathrm{d}x\)</summary>\(-\tfrac1{10}\cos(10x)+C\)</details></li><li><details><summary>\(\int \frac{1}{x+1}\,\mathrm{d}x\)</summary>\(\ln|x+1|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+2}\,\mathrm{d}x\)</summary>\(\ln|x+2|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+3}\,\mathrm{d}x\)</summary>\(\ln|x+3|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+4}\,\mathrm{d}x\)</summary>\(\ln|x+4|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+5}\,\mathrm{d}x\)</summary>\(\ln|x+5|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+6}\,\mathrm{d}x\)</summary>\(\ln|x+6|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+7}\,\mathrm{d}x\)</summary>\(\ln|x+7|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+8}\,\mathrm{d}x\)</summary>\(\ln|x+8|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+9}\,\mathrm{d}x\)</summary>\(\ln|x+9|+C\)</details></li><li><details><summary>\(\int \frac{1}{x+10}\,\mathrm{d}x\)</summary>\(\ln|x+10|+C\)</details></li><li><details><summary>\(\int_0^\pi \sin(1x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(2x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(3x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(4x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(5x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(6x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(7x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(8x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(9x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int_0^\pi \sin(10x)\,\mathrm{d}x\)</summary>2 si n impar; 0 si n par.</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li><li><details><summary>\(\int \sec^2 x\,\mathrm{d}x\)</summary>\(\tan x + C\)</details></li><li><details><summary>\(\int x^2 e^x\,\mathrm{d}x\)</summary>Partes dos veces.</details></li><li><details><summary>\(\int \ln x\,\mathrm{d}x\)</summary>\(x\ln x - x + C\)</details></li></ol></div>
-    </section>
-
-    <!-- ===== UNIVERSIDAD ===== -->
-    <section id="sec-uni" class="paper level">
-      <h1>Universidad — Más técnicas, impropias y promedio</h1>
-      <p class="lead">Fracciones parciales, sustituciones trigonométricas, impropias y funciones especiales; además de métodos numéricos.</p>
-      <div class="toc">
-        <a href="#u-parciales">Fracciones parciales (racionales)</a>
-        <a href="#u-trigsub">Sustituciones trigonométricas</a>
-        <a href="#u-impropias">Integrales impropias</a>
-        <a href="#u-especiales">Beta y Gamma</a>
-        <a href="#u-num">Integración numérica</a>
-        <a href="#u-ej">Ejercicios</a>
-      </div>
-
-      <h2 id="u-parciales">Fracciones parciales</h2>
-      <div class="eq">\[ \int \frac{P(x)}{Q(x)}\,\mathrm{d}x,\ \ \deg P < \deg Q \Rightarrow \text{descomponer en sumas simples} \]</div>
-      <p>Ej.: \( \frac{2x+3}{(x-1)(x+2)} = \frac{A}{x-1} + \frac{B}{x+2} \).</p>
-
-      <h2 id="u-trigsub">Sustituciones trigonométricas</h2>
-      <div class="eq">\[ \sqrt{a^2-x^2}: x=a\sin\theta;\quad \sqrt{a^2+x^2}: x=a\tan\theta;\quad \sqrt{x^2-a^2}: x=a\sec\theta \]</div>
-
-      <h2 id="u-impropias">Impropias</h2>
-      <div class="eq">\[ \int_a^\infty f(x)\,\mathrm{d}x = \lim_{b\to\infty}\int_a^b f(x)\,\mathrm{d}x,\qquad \int_a^b \frac{1}{(x-c)^p}\,\mathrm{d}x \]</div>
-      <p>Convergencia: \( \int_1^\infty \frac{1}{x^p}\,\mathrm{d}x \) converge si \(p>1\); diverge si \(p\le1\).</p>
-
-      <h2 id="u-especiales">Funciones Beta y Gamma</h2>
-      <div class="eq">\[ \Gamma(s)=\int_0^\infty x^{s-1}\mathrm{e}^{-x}\,\mathrm{d}x,\qquad B(p,q)=\int_0^1 x^{p-1}(1-x)^{q-1}\,\mathrm{d}x=\frac{\Gamma(p)\Gamma(q)}{\Gamma(p+q)} \]</div>
-
-      <h2 id="u-num">Integración numérica</h2>
-      <div class="eq">\[ \text{Trapecios: }\ I\approx \frac{h}{2}\big(f(x_0)+2\sum_{k=1}^{n-1}f(x_k)+f(x_n)\big),\quad \text{Simpson: }\ I\approx \frac{h}{3}\big(f_0+4f_1+2f_2+\cdots+f_n\big) \]</div>
-
-      <h2 id="u-ej">Ejercicios (120)</h2><div class="examples"><ol><li><details><summary>\(\int \frac{1}{x^2+1^2}\,\mathrm{d}x\)</summary>\(\tfrac1{1}\arctan(x/1)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+1^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+2^2}\,\mathrm{d}x\)</summary>\(\tfrac1{2}\arctan(x/2)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+2^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+3^2}\,\mathrm{d}x\)</summary>\(\tfrac1{3}\arctan(x/3)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+3^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+4^2}\,\mathrm{d}x\)</summary>\(\tfrac1{4}\arctan(x/4)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+4^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+5^2}\,\mathrm{d}x\)</summary>\(\tfrac1{5}\arctan(x/5)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+5^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+6^2}\,\mathrm{d}x\)</summary>\(\tfrac1{6}\arctan(x/6)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+6^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+7^2}\,\mathrm{d}x\)</summary>\(\tfrac1{7}\arctan(x/7)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+7^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+8^2}\,\mathrm{d}x\)</summary>\(\tfrac1{8}\arctan(x/8)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+8^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+9^2}\,\mathrm{d}x\)</summary>\(\tfrac1{9}\arctan(x/9)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+9^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+10^2}\,\mathrm{d}x\)</summary>\(\tfrac1{10}\arctan(x/10)+C\)</details></li><li><details><summary>\(\int \frac{x}{x^2+10^2}\,\mathrm{d}x\)</summary>\(\tfrac12\ln(x^2+a^2)+C\)</details></li><li><details><summary>\(\int_1^\infty x^{-0.5}\,\mathrm{d}x\)</summary>Converge si p>1, vale 1/(p-1); diverge si p≤1.</details></li><li><details><summary>\(\int_1^\infty x^{-2}\,\mathrm{d}x\)</summary>Converge si p>1, vale 1/(p-1); diverge si p≤1.</details></li><li><details><summary>\(\int_1^\infty x^{-3}\,\mathrm{d}x\)</summary>Converge si p>1, vale 1/(p-1); diverge si p≤1.</details></li><li><details><summary>\(\Gamma(s)=\int_0^\infty x^{s-1}e^{-x}\,\mathrm{d}x\)</summary>Definición de Gamma.</details></li><li><details><summary>\(\int_0^1 x^{1-1}(1-x)^{1-1}\,\mathrm{d}x\)</summary>\(B(1,1)=\tfrac{\Gamma(1)^2}{\Gamma(21)}\)</details></li><li><details><summary>\(\int_0^1 x^{2-1}(1-x)^{2-1}\,\mathrm{d}x\)</summary>\(B(2,2)=\tfrac{\Gamma(2)^2}{\Gamma(22)}\)</details></li><li><details><summary>\(\int_0^1 x^{3-1}(1-x)^{3-1}\,\mathrm{d}x\)</summary>\(B(3,3)=\tfrac{\Gamma(3)^2}{\Gamma(23)}\)</details></li><li><details><summary>\(\int_0^1 x^{4-1}(1-x)^{4-1}\,\mathrm{d}x\)</summary>\(B(4,4)=\tfrac{\Gamma(4)^2}{\Gamma(24)}\)</details></li><li><details><summary>\(\int_0^1 x^{5-1}(1-x)^{5-1}\,\mathrm{d}x\)</summary>\(B(5,5)=\tfrac{\Gamma(5)^2}{\Gamma(25)}\)</details></li><li><details><summary>Trapecios con n=1: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=2: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=3: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=4: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=5: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=6: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=7: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=8: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=9: orden de error</summary>O(h^2)</details></li><li><details><summary>Trapecios con n=10: orden de error</summary>O(h^2)</details></li><li><details><summary>\(\int \frac{1}{\sqrt{a^2-x^2}}\,\mathrm{d}x\)</summary>\(\arcsin(x/a)+C\)</details></li><li><details><summary>\(\int \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\tfrac1a\arctan(x/a)+C\)</details></li><li><details><summary>\(\int \frac{1}{x\sqrt{x^2-a^2}}\,\mathrm{d}x\)</summary>\(\operatorname{arcsec}|x| + C\)</details></li><li><details><summary>\(\int_0^1 e^x\,\mathrm{d}x\)</summary>\(e^1-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(1x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^2 e^x\,\mathrm{d}x\)</summary>\(e^2-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(2x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^3 e^x\,\mathrm{d}x\)</summary>\(e^3-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(3x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^4 e^x\,\mathrm{d}x\)</summary>\(e^4-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(4x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^5 e^x\,\mathrm{d}x\)</summary>\(e^5-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(5x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^6 e^x\,\mathrm{d}x\)</summary>\(e^6-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(6x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^7 e^x\,\mathrm{d}x\)</summary>\(e^7-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(7x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^8 e^x\,\mathrm{d}x\)</summary>\(e^8-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(8x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^9 e^x\,\mathrm{d}x\)</summary>\(e^9-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(9x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^10 e^x\,\mathrm{d}x\)</summary>\(e^10-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(10x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^11 e^x\,\mathrm{d}x\)</summary>\(e^11-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(11x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^12 e^x\,\mathrm{d}x\)</summary>\(e^12-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(12x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^13 e^x\,\mathrm{d}x\)</summary>\(e^13-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(13x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^14 e^x\,\mathrm{d}x\)</summary>\(e^14-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(14x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int_0^15 e^x\,\mathrm{d}x\)</summary>\(e^15-1\)</details></li><li><details><summary>\(\int_0^\pi \cos(15x)\,\mathrm{d}x\)</summary>0</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int \frac{Ax+B}{x^2+px+q}\,\mathrm{d}x\)</summary>Completa cuadrados → log + arctan.</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li><li><details><summary>\(\int_0^\infty e^{-ax}\,\mathrm{d}x\) (a>0)</summary>\(1/a\)</details></li></ol></div>
-    </section>
-
-    <!-- ===== MÁSTER ===== -->
-    <section id="sec-master" class="paper level">
-      <h1>Máster — Integrales múltiples, cambio de variable y teoremas de circulación/flujo</h1>
-      <p class="lead">De una integral a muchas: dobles/triples, coordenadas polares/cilíndricas/esféricas, Jacobiano, y teoremas de Green, Stokes y Gauss.</p>
-      <div class="toc">
-        <a href="#m-dobles">Dobles y triples</a>
-        <a href="#m-cambio">Cambio de variable y Jacobiano</a>
-        <a href="#m-polares">Polares, cilíndricas, esféricas</a>
-        <a href="#m-linea">Integrales de línea y superficie</a>
-        <a href="#m-teoremas">Green, Stokes, Divergencia</a>
-        <a href="#m-ej">Ejercicios</a>
-      </div>
-
-      <h2 id="m-dobles">Dobles/triples</h2>
-      <div class="eq">\[ \iint_R f(x,y)\,\mathrm{d}A,\qquad \iiint_\Omega f(x,y,z)\,\mathrm{d}V \]</div>
-
-      <h2 id="m-cambio">Cambio de variable</h2>
-      <div class="eq">\[ (x,y)=\phi(u,v),\quad \iint_R f(x,y)\,\mathrm{d}A=\iint_{R'} f(\phi(u,v))\,\left|\det\frac{\partial(x,y)}{\partial(u,v)}\right|\,\mathrm{d}u\,\mathrm{d}v \]</div>
-
-      <h2 id="m-polares">Coordenadas especiales</h2>
-      <div class="eq">\[ \text{Polares: } (x,y)=(r\cos\theta,r\sin\theta),\ \mathrm{d}A=r\,\mathrm{d}r\,\mathrm{d}\theta \]</div>
-      <div class="eq">\[ \text{Cilíndricas: } \mathrm{d}V=r\,\mathrm{d}r\,\mathrm{d}\theta\,\mathrm{d}z;\quad \text{Esféricas: } \mathrm{d}V=\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta \]</div>
-
-      <h2 id="m-linea">Línea y superficie</h2>
-      <div class="eq">\[ \int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}=\int_a^b \mathbf{F}(\mathbf{r}(t))\cdot \mathbf{r}'(t)\,\mathrm{d}t,\quad \iint_S \mathbf{F}\cdot\mathrm{d}\mathbf{S} \]</div>
-
-      <h2 id="m-teoremas">Teoremas</h2>
-      <div class="eq">\[ \text{Green: } \oint_{\partial R} (P\,\mathrm{d}x+Q\,\mathrm{d}y) = \iint_R \left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}A \]</div>
-      <div class="eq">\[ \text{Stokes: } \oint_{\partial S} \mathbf{F}\cdot\mathrm{d}\mathbf{r} = \iint_S (\nabla\times\mathbf{F})\cdot\mathrm{d}\mathbf{S} \]</div>
-      <div class="eq">\[ \text{Divergencia (Gauss): } \iint_{\partial \Omega} \mathbf{F}\cdot\mathrm{d}\mathbf{S} = \iiint_\Omega (\nabla\cdot \mathbf{F})\,\mathrm{d}V \]</div>
-
-      <h2 id="m-ej">Ejercicios (50)</h2><div class="examples"><ol><li><details><summary>\(\iint_{r\le1} 1\,\mathrm{d}A\)</summary>\(\pi\)</details></li><li><details><summary>Volumen esfera radio R</summary>\(\tfrac{4}{3}\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>\(\int_C \mathbf{F}\cdot\mathrm{d}\mathbf{r}\) con \(\mathbf{F}=(y,-x)\) en círculo</summary>Usa Green: \(-2\cdot\) área</details></li><li><details><summary>Gauss: flujo de \(\mathbf{F}=(x,y,z)\) sobre esfera R</summary>\(4\pi R^3\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Jacobiano en polares</summary>\(|J|=r\)</details></li><li><details><summary>Jacobiano en esféricas</summary>\(|J|=\rho^2\sin\varphi\)</details></li><li><details><summary>Stokes relaciona circulación con</summary>rotacional (vorticidad)</details></li><li><details><summary>Green en el plano relaciona línea cerrada con</summary>doble integral de \(\partial Q/\partial x - \partial P/\partial y\)</details></li><li><details><summary>Stokes relaciona circulación con</summary>rotacional (vorticidad)</details></li><li><details><summary>Green en el plano relaciona línea cerrada con</summary>doble integral de \(\partial Q/\partial x - \partial P/\partial y\)</details></li><li><details><summary>Stokes relaciona circulación con</summary>rotacional (vorticidad)</details></li><li><details><summary>Green en el plano relaciona línea cerrada con</summary>doble integral de \(\partial Q/\partial x - \partial P/\partial y\)</details></li><li><details><summary>Stokes relaciona circulación con</summary>rotacional (vorticidad)</details></li><li><details><summary>Green en el plano relaciona línea cerrada con</summary>doble integral de \(\partial Q/\partial x - \partial P/\partial y\)</details></li></ol></div>
-    </section>
-
-    <!-- ===== DOCTORADO ===== -->
-    <section id="sec-phd" class="paper level">
-      <h1>Doctorado — Medida y Lebesgue, Fubini/Tonelli, Fourier y contornos</h1>
-      <p class="lead">Formulación moderna del integral, teoremas de convergencia, integrales oscilatorias y técnicas de análisis complejo. <strong>Más ejercicios y mejores</strong>.</p>
-      <div class="toc">
-        <a href="#d-lebesgue">Integral de Lebesgue</a>
-        <a href="#d-fubini">Fubini y Tonelli</a>
-        <a href="#d-convergencia">Convergencia (MDCT, DCT, MCT)</a>
-        <a href="#d-fourier">Transformada de Fourier</a>
-        <a href="#d-contorno">Integración por contornos</a>
-        <a href="#d-retos">Retos</a>
-      </div>
-
-      <h2 id="d-lebesgue">Lebesgue en dos líneas</h2>
-      <div class="eq">\[ \int f\,\mathrm{d}\mu = \int_0^\infty \mu(\{x:\ f(x)>t\})\,\mathrm{d}t - \int_0^\infty \mu(\{x:\ f(x)<-t\})\,\mathrm{d}t \]</div>
-      <p>Integra “por niveles” y permite pasar límites e integrales bajo hipótesis suaves.</p>
-
-      <h2 id="d-fubini">Fubini / Tonelli</h2>
-      <div class="eq">\[ \int\!\!\int f\,\mathrm{d}(\mu\times\nu) = \int\!\left(\int f\,\mathrm{d}\nu\right)\mathrm{d}\mu = \int\!\left(\int f\,\mathrm{d}\mu\right)\mathrm{d}\nu \]</div>
-      <p>Tonelli para \(f\ge 0\); Fubini si \(f\) es absolutamente integrable.</p>
-
-      <h2 id="d-convergencia">Convergencia</h2>
-      <ul>
-        <li><strong>MCT (Monótona)</strong>: \(f_n\uparrow f\Rightarrow \int f_n\to\int f\).</li>
-        <li><strong>DCT (Dominada)</strong>: \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p. \(\Rightarrow \int f_n\to\int f\).</li>
-        <li><strong>MDCT</strong>: criterio de convergencia para impropias con comparación.</li>
-      </ul>
-
-      <h2 id="d-fourier">Fourier (versión \(L^1\))</h2>
-      <div class="eq">\[ \mathcal{F}\{f\}(\xi)=\int_{-\infty}^{\infty} f(x)\,e^{-2\pi i x \xi}\,\mathrm{d}x,\qquad f(x)=\int_{-\infty}^{\infty} \mathcal{F}\{f\}(\xi)\,e^{2\pi i x \xi}\,\mathrm{d}\xi \]</div>
-
-      <h2 id="d-contorno">Contornos (residuos)</h2>
-      <div class="eq">\[ \oint_\Gamma f(z)\,\mathrm{d}z = 2\pi i \sum \mathrm{Res}(f,\ z_k) \]</div>
-      <p>Permite evaluar integrales reales oscilatorias o racionales trigonometricas extendiéndolas a \(\mathbb{C}\).</p>
-
-      <h2 id="d-retos">Retos (50)</h2><div class="examples"><ol><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>En DCT, si \(|f_n|\le g\in L^1\) y \(f_n\to f\) p.p., ¿qué ocurre?</summary>Se puede pasar el límite: \(\int f_n\to\int f\).</details></li><li><details><summary>\(\int_{-\infty}^{\infty} \frac{1}{x^2+a^2}\,\mathrm{d}x\)</summary>\(\pi/a\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>Transformada de Fourier de una gaussiana</summary>Otra gaussiana (auto-similar).</details></li><li><details><summary>Residuo: evalúa \(\int_0^\infty \frac{\cos ax}{x^2+b^2}\,\mathrm{d}x\)</summary>\(\tfrac{\pi}{2b}e^{-ab}\)</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li><li><details><summary>¿Cuándo aplica Tonelli?</summary>Para funciones no negativas.</details></li></ol></div>
-    </section>
-  </main>
-
-  <button class="topbtn" id="topbtn" aria-label="Subir">↑</button>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innove | Integral Master</title>
+  <link rel="icon" type="image/png" href="innoveAI.png" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
 
   <script>
-    // Persist settings
-    const root = document.documentElement;
-    const ls = window.localStorage;
-    function applySettings(){
-      const theme = ls.getItem('int_theme'); if(theme) root.setAttribute('data-theme', theme);
-      const base  = ls.getItem('int_base');  if(base)  root.style.setProperty('--base', base);
-      const maxw = ls.getItem('int_maxw');   if(maxw)  root.style.setProperty('--maxw', maxw);
-    } applySettings();
-
-    // Tabs
-    const sections = {
-      primaria: document.querySelector('#sec-primaria'),
-      eso: document.querySelector('#sec-eso'),
-      bach: document.querySelector('#sec-bach'),
-      uni: document.querySelector('#sec-uni'),
-      master: document.querySelector('#sec-master'),
-      phd: document.querySelector('#sec-phd'),
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: { renderActions: { addMenu: [] } }
     };
-    document.querySelectorAll('#levelBar .pill').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        document.querySelectorAll('#levelBar .pill').forEach(b=>b.setAttribute('aria-selected','false'));
-        btn.setAttribute('aria-selected','true');
-        const lvl = btn.dataset.level;
-        Object.values(sections).forEach(sec=>sec.removeAttribute('data-active'));
-        sections[lvl].setAttribute('data-active','');
-        window.scrollTo({top:0, behavior:'smooth'});
-      });
-    });
-
-    // Reader controls
-    document.querySelector('#fs-up').addEventListener('click', ()=>{
-      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base')); const next = Math.min(cur+1, 26);
-      root.style.setProperty('--base', next+'px'); ls.setItem('int_base', next+'px');
-    });
-    document.querySelector('#fs-down').addEventListener('click', ()=>{
-      const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base')); const next = Math.max(cur-1, 14);
-      root.style.setProperty('--base', next+'px'); ls.setItem('int_base', next+'px');
-    });
-    document.querySelector('#width-up').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--maxw')); const next = Math.min(val+6, 100);
-      root.style.setProperty('--maxw', next+'ch'); ls.setItem('int_maxw', next+'ch');
-    });
-    document.querySelector('#width-down').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--maxw')); const next = Math.max(val-6, 60);
-      root.style.setProperty('--maxw', next+'ch'); ls.setItem('int_maxw', next+'ch');
-    });
-    const themeBtn = document.querySelector('#theme-toggle');
-    themeBtn.addEventListener('click', ()=>{
-      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-      const next = current === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next); ls.setItem('int_theme', next);
-    });
-
-    // Progress + top button
-    const bar = document.querySelector('#progress'); const topbtn = document.querySelector('#topbtn');
-    function onScroll(){ const h=document.documentElement; const scrolled=(h.scrollTop)/(h.scrollHeight-h.clientHeight);
-      bar.style.width=(scrolled*100)+'%'; topbtn.classList.toggle('show', h.scrollTop>300); }
-    window.addEventListener('scroll', onScroll); topbtn.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'})); onScroll();
   </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* ============ VARIABLES ============ */
+    :root {
+      --radius: 24px;
+      --nav-height: 80px;
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* TEMA OSCURO */
+    [data-scheme="dark"] {
+      --bg-body: #050505;
+      --bg-pattern: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 100%);
+      --text-main: #ffffff;
+      --text-muted: #a3a3a3;
+      --card-bg: rgba(20, 20, 20, 0.85);
+      --card-border: 1px solid rgba(255, 255, 255, 0.1);
+      --card-side-bg: rgba(255, 255, 255, 0.03);
+      --nav-bg: rgba(0, 0, 0, 0.9);
+      --shadow: 0 20px 50px -10px rgba(0,0,0,0.8);
+      --code-bg: #000000;
+      --example-card-bg: #0a0a0a;
+      --hover-bg: #1a1a1a;
+      --btn-icon: "☀️";
+      
+      /* Degradado del Título (Vertical como la imagen) */
+      --title-gradient: linear-gradient(180deg, #ffffff 30%, #666666 100%);
+    }
+
+    /* TEMA CLARO */
+    [data-scheme="light"] {
+      --bg-body: #ffffff;
+      --bg-pattern: radial-gradient(circle at 50% 0%, #f3f4f6 0%, #ffffff 100%);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --card-bg: #ffffff;
+      --card-border: 1px solid rgba(0, 0, 0, 0.08);
+      --card-side-bg: #f8fafc;
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --shadow: 0 15px 40px -5px rgba(0,0,0,0.1);
+      --code-bg: #f1f5f9;
+      --example-card-bg: #ffffff;
+      --hover-bg: #f1f5f9;
+      --btn-icon: "🌙";
+      
+      --title-gradient: linear-gradient(180deg, #1e293b 30%, #64748b 100%);
+    }
+
+    :root {
+      --color-eso: #2dd4bf;
+      --color-bach: #3b82f6;
+      --color-uni: #a855f7;
+    }
+
+    /* ============ GENERAL ============ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-body);
+      background-image: var(--bg-pattern);
+      color: var(--text-main);
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+      transition: var(--transition);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+    .math-font { font-family: 'JetBrains Mono', monospace; }
+
+    /* Orbes Ambientales */
+    .orb {
+      position: fixed; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.15;
+      animation: float 25s infinite ease-in-out; pointer-events: none;
+    }
+    .orb-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: var(--color-eso); }
+    .orb-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: var(--color-uni); animation-delay: -5s; }
+    @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, 40px); } }
+
+    /* ============ NAVBAR ============ */
+    .navbar {
+      position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+      background: var(--nav-bg); backdrop-filter: blur(15px);
+      border-bottom: var(--card-border); z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;
+    }
+
+    .logo {
+      font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 800;
+      color: var(--text-main); display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    
+    /* Logo Cuadrado Animado */
+    .logo-box {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--text-main), #666);
+      border-radius: 8px; color: var(--bg-body);
+      display: grid; place-items: center; font-size: 1.4rem;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .logo:hover .logo-box { 
+      transform: rotate(15deg) scale(1.1); 
+      background: var(--color-bach); color: white;
+    }
+
+    .nav-center {
+      display: flex; gap: 5px;
+      background: var(--card-bg); padding: 5px; border-radius: 50px;
+      border: var(--card-border);
+    }
+
+    .tab-btn {
+      background: transparent; border: none;
+      padding: 10px 25px; border-radius: 40px;
+      color: var(--text-muted); font-weight: 600; cursor: pointer;
+      transition: var(--transition); font-family: 'Outfit', sans-serif;
+    }
+    .tab-btn:hover { color: var(--text-main); background: var(--hover-bg); }
+    .tab-btn.active {
+      background: var(--text-main); color: var(--bg-body);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: scale(1.05);
+    }
+
+    .theme-toggle {
+      background: transparent; border: var(--card-border);
+      width: 42px; height: 42px; border-radius: 50%;
+      color: var(--text-main); cursor: pointer; display: grid; place-items: center;
+      font-size: 1.3rem; transition: var(--transition); position: relative;
+    }
+    .theme-toggle::before { content: var(--btn-icon); transition: 0.5s; }
+    .theme-toggle:hover { background: var(--hover-bg); border-color: var(--color-bach); }
+    .theme-toggle:hover::before { transform: rotate(180deg); }
+
+    /* ============ HERO & TITULO (ESTILO IMAGEN) ============ */
+    .container { max-width: 1100px; margin: 0 auto; padding: 50px 20px; }
+
+    .hero { text-align: center; margin-bottom: 70px; animation: fadeIn 0.8s ease; }
+    
+    .hero h1 { 
+      font-family: 'Montserrat', sans-serif; 
+      font-size: clamp(3.5rem, 10vw, 6rem); 
+      font-weight: 900; margin-bottom: 10px; letter-spacing: -2px; line-height: 0.9;
+      display: flex; flex-direction: column; align-items: center;
+      text-transform: capitalize;
+    }
+    
+    .title-innove { 
+      color: var(--text-main); 
+      margin-bottom: 5px;
+    }
+    
+    /* DEGRADADO METÁLICO VERTICAL */
+    .title-integral { 
+      background: var(--title-gradient);
+      -webkit-background-clip: text; color: transparent;
+      position: relative; display: inline-block;
+      padding-bottom: 10px; /* Para que no se corte el degradado */
+    }
+    
+    .hero p { color: var(--text-muted); font-size: 1.2rem; margin-top: 15px; }
+
+    /* ============ CARDS DE TEORÍA ============ */
+    .content-section { display: none; animation: slideUp 0.5s ease; }
+    .content-section.active { display: block; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .stack-card {
+      display: grid; grid-template-columns: 280px 1fr;
+      background: var(--card-bg); border: var(--card-border);
+      border-radius: var(--radius); margin-bottom: 40px;
+      box-shadow: var(--shadow); overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    .stack-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+
+    .card-left {
+      background: var(--card-side-bg); padding: 40px 30px;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: var(--card-border); position: relative;
+    }
+    .card-left::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
+      background: var(--accent);
+    }
+    .card-left h3 { font-size: 1.8rem; margin-top: 10px; font-weight: 800; letter-spacing: -0.5px; }
+    .tag { 
+      font-size: 0.75rem; text-transform: uppercase; font-weight: 800; letter-spacing: 2px;
+      color: var(--accent); display: inline-block; margin-bottom: 5px;
+    }
+
+    .card-right { padding: 40px; }
+    .card-right h4 { font-size: 1.15rem; margin: 25px 0 10px; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 5px; }
+    .card-right h4:first-child { margin-top: 0; }
+    
+    .text-content { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 15px; }
+
+    /* ============ EJEMPLOS ============ */
+    .examples-section-title {
+      font-size: 1.5rem; margin: 50px 0 30px; font-weight: 700; color: var(--text-main);
+      display: flex; align-items: center; gap: 10px;
+      border-left: 5px solid var(--accent); padding-left: 15px;
+    }
+    
+    .examples-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .ex-card {
+      background: var(--card-bg); border: var(--card-border);
+      border-radius: 20px; padding: 25px;
+      box-shadow: var(--shadow); position: relative;
+      transition: all 0.3s ease; display: flex; flex-direction: column;
+    }
+    .ex-card:hover { 
+      transform: translateY(-5px); border-color: var(--accent); 
+    }
+
+    .ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .ex-num { 
+      background: var(--accent); color: white; 
+      width: 28px; height: 28px; border-radius: 8px; 
+      display: grid; place-items: center; font-weight: 800; font-size: 0.85rem;
+    }
+    .ex-title { font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+    .ex-math { 
+      font-family: 'JetBrains Mono'; font-size: 1.2rem; text-align: center; 
+      margin: 20px 0; color: var(--text-main); 
+    }
+
+    /* DETAILS & SUMMARY */
+    details { margin-top: auto; background: var(--example-card-bg); border-radius: 12px; transition: 0.3s; }
+    summary { 
+      padding: 15px; cursor: pointer; font-weight: 600; font-size: 0.95rem; 
+      color: var(--text-muted); list-style: none; display: flex; justify-content: space-between;
+    }
+    summary:hover { color: var(--text-main); }
+    summary::after { content: "+"; font-weight: 800; font-size: 1.2rem; }
+    details[open] summary::after { content: "-"; color: var(--accent); }
+    
+    .solution-content { 
+      padding: 0 15px 15px; border-top: 1px solid var(--card-border); 
+      font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .final-result {
+      margin-top: 15px; display: block; font-weight: bold; color: var(--accent); 
+      font-family: 'JetBrains Mono'; border-top: 1px dashed var(--text-muted); padding-top: 10px; font-size: 1.1rem; text-align: center;
+    }
+
+    /* Utiles */
+    .math-box {
+      background: var(--code-bg); padding: 20px; border-radius: 12px;
+      margin: 20px 0; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto;
+      font-family: 'JetBrains Mono'; font-size: 1.1rem; color: var(--text-main);
+    }
+    ul.clean-list { list-style: none; padding: 0; }
+    ul.clean-list li { margin-bottom: 12px; position: relative; padding-left: 25px; color: var(--text-muted); }
+    ul.clean-list li::before { content: "•"; color: var(--accent); position: absolute; left: 5px; font-weight: bold; font-size: 1.2em;}
+    
+    @media (max-width: 768px) {
+      .stack-card { grid-template-columns: 1fr; }
+      .card-left { flex-direction: row; justify-content: space-between; align-items: center; padding: 25px; border-right: none; border-bottom: 1px solid var(--card-border); }
+      .hero h1 { font-size: 3rem; }
+      .navbar { padding: 0 20px; }
+      .logo span { display: none; }
+      .nav-center { width: 100%; justify-content: center; }
+      .tab-btn { padding: 8px 16px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <nav class="navbar">
+    <a href="#" class="logo">
+      <div class="logo-box">∫</div>
+      <span>Innove</span>
+    </a>
+    <div class="nav-center">
+      <button class="tab-btn active" onclick="switchTab('eso', '#2dd4bf')">ESO</button>
+      <button class="tab-btn" onclick="switchTab('bach', '#3b82f6')">Bachillerato</button>
+      <button class="tab-btn" onclick="switchTab('uni', '#a855f7')">Universidad</button>
+    </div>
+    <button class="theme-toggle" id="themeBtn"></button>
+  </nav>
+
+  <main class="container">
+
+    <div class="hero">
+      <h1>
+        <span class="title-innove">Innove</span>
+        <span class="title-integral">Integral</span>
+      </h1>
+      <p>La referencia definitiva. Teoría completa y ejercicios resueltos.</p>
+    </div>
+
+    <div id="eso" class="content-section active" style="--accent: var(--color-eso);">
+      
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Fundamentos</span>
+          <h3>Introducción</h3>
+        </div>
+        <div class="card-right">
+          <p class="text-content">La integral es la inversa de la derivada. Si derivar es hallar la pendiente, integrar es hallar el área.</p>
+          <h4>Reglas de Integración Inmediata</h4>
+          <div class="math-box">
+             $$ \int x^n dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1) $$
+             $$ \int (ax+b)^n dx = \frac{(ax+b)^{n+1}}{a(n+1)} + C $$
+             $$ \int k \cdot f(x) dx = k \cdot \int f(x) dx $$
+          </div>
+        </div>
+      </div>
+
+      <h3 class="examples-section-title">⚡ Ejemplos Prácticos</h3>
+      <div class="examples-grid">
+        
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Potencia</span></div>
+          <div class="ex-math">$\int x^3 \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              1. Sumamos 1 al exponente: $3+1=4$.
+              <br>2. Dividimos por el nuevo exponente.
+              <span class="final-result">$$ \frac{x^4}{4} + C $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Raíz</span></div>
+          <div class="ex-math">$\int \sqrt{x} \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $x^{1/2} \to x^{3/2} / (3/2) = \frac{2}{3}x^{3/2}$.
+              <span class="final-result">$$ \frac{2}{3}\sqrt{x^3} + C $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Suma</span></div>
+          <div class="ex-math">$\int (2x+5) \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $\int 2x dx = x^2$. $\int 5 dx = 5x$.
+              <span class="final-result">$$ x^2 + 5x + C $$</span>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div id="bach" class="content-section" style="--accent: var(--color-bach);">
+      
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Memoria</span>
+          <h3>Inmediatas</h3>
+        </div>
+        <div class="card-right">
+          <p class="text-content">Tabla ampliada con trigonométricas y logarítmicas.</p>
+          <div class="math-box">
+             $$ \int \sin x dx = -\cos x \quad \int \cos x dx = \sin x $$
+             $$ \int \sec^2 x dx = \tan x \quad \int \csc^2 x dx = -\cot x $$
+             $$ \int \frac{1}{1+x^2} dx = \arctan x \quad \int \frac{1}{\sqrt{1-x^2}} dx = \arcsin x $$
+             $$ \int e^x dx = e^x \quad \int \frac{1}{x} dx = \ln|x| $$
+          </div>
+        </div>
+      </div>
+
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Trigonometría</span>
+          <h3>Potencias</h3>
+        </div>
+        <div class="card-right">
+          <h4>Potencias Impares ($\sin^3 x$)</h4>
+          <p class="text-content">Separa uno ($\sin^2 x \cdot \sin x$) y usa $\sin^2 x = 1 - \cos^2 x$. Luego haz cambio $u = \cos x$.</p>
+          
+          <h4>Potencias Pares ($\cos^2 x$)</h4>
+          <p class="text-content">Usa las fórmulas del ángulo doble para rebajar el grado:</p>
+          <div class="math-box">
+            $$ \cos^2 x = \frac{1+\cos 2x}{2} \quad \sin^2 x = \frac{1-\cos 2x}{2} $$
+          </div>
+        </div>
+      </div>
+      
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Técnica</span>
+          <h3>Métodos</h3>
+        </div>
+        <div class="card-right">
+           <h4>1. Integración por Partes (ALPES)</h4>
+           <p class="text-content">$\int u dv = uv - \int v du$. Orden de prioridad para $u$: <strong>A</strong>rcos, <strong>L</strong>ogaritmos, <strong>P</strong>olinomios, <strong>E</strong>xponenciales, <strong>S</strong>enos.</p>
+
+           <h4>2. Racionales (Fracciones Simples)</h4>
+           <ul class="clean-list">
+             <li><strong>Raíces Reales Simples:</strong> $\frac{P(x)}{(x-a)(x-b)} = \frac{A}{x-a} + \frac{B}{x-b}$.</li>
+             <li><strong>Raíces Múltiples:</strong> $\frac{P(x)}{(x-a)^2} = \frac{A}{x-a} + \frac{B}{(x-a)^2}$.</li>
+           </ul>
+        </div>
+      </div>
+
+      <h3 class="examples-section-title">🔥 Ejemplos de Examen</h3>
+      <div class="examples-grid">
+        
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Logarítmica</span></div>
+          <div class="ex-math">$\int \tan(x) \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              1. Escribir como $\int \frac{\sin x}{\cos x} dx$.
+              <br>2. Numerador es casi derivada del denominador.
+              <span class="final-result">$$ -\ln|\cos x| + C $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Por Partes</span></div>
+          <div class="ex-math">$\int x e^x \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $u=x, dv=e^x dx$.
+              <br>$uv - \int v du = x e^x - \int e^x dx$.
+              <span class="final-result">$$ e^x(x-1) + C $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Sustitución</span></div>
+          <div class="ex-math">$\int x \sin(x^2) \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $t=x^2 \implies dt/2 = x dx$.
+              <br>$\frac{1}{2} \int \sin t dt = -\frac{1}{2} \cos t$.
+              <span class="final-result">$$ -\frac{1}{2}\cos(x^2) + C $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Trigonométrica</span></div>
+          <div class="ex-math">$\int \cos^2 x \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $\int \frac{1+\cos 2x}{2} dx = \frac{1}{2}x + \frac{1}{2}\int \cos 2x$.
+              <span class="final-result">$$ \frac{x}{2} + \frac{\sin 2x}{4} + C $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">5</span><span class="ex-title">Racional</span></div>
+          <div class="ex-math">$\int \frac{1}{x^2-1} \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $\frac{1}{2(x-1)} - \frac{1}{2(x+1)}$.
+              <span class="final-result">$$ \frac{1}{2}\ln\left|\frac{x-1}{x+1}\right| + C $$</span>
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="uni" class="content-section" style="--accent: var(--color-uni);">
+      
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Geometría</span>
+          <h3>Aplicaciones Avanzadas</h3>
+        </div>
+        <div class="card-right">
+          <h4>1. Longitud de Arco</h4>
+          <div class="math-box">$$ L = \int_a^b \sqrt{1+(f'(x))^2} dx $$</div>
+
+          <h4>2. Volum de Revolució (Discos)</h4>
+          <div class="math-box">$$ V = \pi \int_a^b (f(x))^2 dx $$</div>
+
+          <h4>3. Superfície de Revolució</h4>
+          <div class="math-box">$$ S = 2\pi \int_a^b f(x)\sqrt{1+(f'(x))^2} dx $$</div>
+        </div>
+      </div>
+
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Análisis</span>
+          <h3>Rigor Matemático</h3>
+        </div>
+        <div class="card-right">
+          <h4>Integral de Riemann</h4>
+          <p class="text-content">Definición formal como límite de sumas:</p>
+          <div class="math-box">$$ \int_{a}^{b} f(x) dx = \lim_{||P|| \to 0} \sum_{i=1}^{N} f(\xi_i) \Delta x_i $$</div>
+
+          <h4>Integrals Impròpies</h4>
+          <ul class="clean-list">
+             <li><strong>1a Espècie:</strong> $\int_a^{+\infty}$. Límite $b \to \infty$.</li>
+             <li><strong>2a Espècie:</strong> Discontinuidad en el intervalo. Límite $\epsilon \to 0$.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="stack-card">
+        <div class="card-left">
+          <span class="tag">Vectorial</span>
+          <h3>Multivariable</h3>
+        </div>
+        <div class="card-right">
+          <h4>Teorema de Fubini</h4>
+          <p class="text-content">Para integrales dobles, permite iterar: $\iint = \int (\int dy) dx$.</p>
+
+          <h4>Teorema de Green</h4>
+          <div class="math-box">$$ \oint_C (P dx + Q dy) = \iint_D (\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}) dA $$</div>
+
+          <h4>Canvi de Variable (Jacobiano)</h4>
+          <p class="text-content">En polars: $dx dy = r dr d\theta$.</p>
+        </div>
+      </div>
+
+      <h3 class="examples-section-title">🎓 Ejemplos Universitarios</h3>
+      <div class="examples-grid">
+        
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">1</span><span class="ex-title">Impropia T1</span></div>
+          <div class="ex-math">$\int_1^\infty \frac{1}{x^2} \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $\lim_{b\to\infty} [-1/x]_1^b = 0 - (-1)$.
+              <span class="final-result">$$ 1 \text{ (Converge)} $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">2</span><span class="ex-title">Longitud Arc</span></div>
+          <div class="ex-math">$\int_0^1 \sqrt{1+\frac{9}{4}x} dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              Para $y=x^{3/2}$. $y' = \frac{3}{2}\sqrt{x}$.
+              <span class="final-result">$$ \frac{8}{27}(13\sqrt{13}-8) $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">3</span><span class="ex-title">Impropia T2</span></div>
+          <div class="ex-math">$\int_0^1 \frac{1}{\sqrt{x}} \, dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              Discontinuidad en 0. $\lim_{\epsilon\to 0} [2\sqrt{x}]_\epsilon^1$.
+              <span class="final-result">$$ 2 \text{ (Converge)} $$</span>
+            </div>
+          </details>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-header"><span class="ex-num">4</span><span class="ex-title">Volumen Cono</span></div>
+          <div class="ex-math">$\pi \int_0^H (\frac{R}{H}x)^2 dx$</div>
+          <details>
+            <summary>Ver Solución</summary>
+            <div class="solution-content">
+              $\pi \frac{R^2}{H^2} [\frac{x^3}{3}]_0^H$.
+              <span class="final-result">$$ \frac{1}{3}\pi R^2 H $$</span>
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabId, accentColor) {
+      document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      
+      const buttons = Array.from(document.querySelectorAll('.tab-btn'));
+      const activeBtn = buttons.find(b => b.getAttribute('onclick').includes(tabId));
+      if(activeBtn) activeBtn.classList.add('active');
+
+      document.documentElement.style.setProperty('--accent', accentColor);
+    }
+
+    const themeBtn = document.getElementById('themeBtn');
+    const html = document.documentElement;
+
+    themeBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-scheme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-scheme', next);
+    });
+  </script>
+
 </body>
 </html>
