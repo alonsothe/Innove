@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Innove | Análisis Matemático</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            options: { renderActions: { addMenu: [] } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* ============ VARIABLES ============ */
+        :root {
+            --nav-height: 70px;
+            --radius: 16px;
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-scheme="dark"] {
+            --bg: #050505;
+            --text: #ffffff;
+            --text-muted: #a1a1aa;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent-eso: #f59e0b;   /* Orange */
+            --accent-bach: #3b82f6;  /* Blue */
+            --accent-drill: #ef4444; /* Red */
+            --nav-glass: blur(20px) saturate(180%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        [data-scheme="light"] {
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --accent-eso: #d97706;
+            --accent-bach: #2563eb;
+            --accent-drill: #dc2626;
+            --nav-glass: blur(20px) saturate(180%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        /* ============ RESET ============ */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg); color: var(--text); font-family: var(--font-main);
+            padding-top: var(--nav-height); min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, rgba(80,80,80,0.1) 0%, transparent 50%);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ============ LAYOUT ============ */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(var(--bg), 0.8); backdrop-filter: var(--nav-glass);
+            border-bottom: 1px solid var(--border); z-index: 100;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 5%;
+        }
+        .logo { font-weight: 900; font-size: 1.5rem; color: var(--text); text-decoration: none; }
+        
+        .nav-tabs { display: flex; gap: 5px; background: var(--border); padding: 4px; border-radius: 50px; }
+        .tab-btn {
+            background: none; border: none; color: var(--text-muted); padding: 8px 20px;
+            border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.3s;
+            font-family: var(--font-display); font-size: 0.9rem;
+        }
+        .tab-btn.active { background: var(--text); color: var(--bg); box-shadow: var(--shadow); }
+
+        .hero { text-align: center; padding: 60px 0 40px; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1; margin-bottom: 10px; }
+
+        /* ============ GRID & CARDS ============ */
+        .section-content { display: none; animation: fadeIn 0.5s ease; }
+        .section-content.active { display: block; }
+        
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+        
+        /* Compact Grid for Drill */
+        .grid-compact { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+
+        .ex-card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 20px; transition: transform 0.2s, border-color 0.2s;
+            display: flex; flex-direction: column;
+        }
+        .ex-card:hover { transform: translateY(-3px); border-color: var(--accent-current); }
+        
+        .ex-meta { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+        .ex-id { color: var(--accent-current); }
+        .ex-problem { font-size: 1rem; margin-bottom: 15px; line-height: 1.5; }
+
+        /* ============ DETAILS ============ */
+        details { margin-top: auto; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; }
+        summary {
+            padding: 10px 15px; cursor: pointer; font-weight: 600; font-size: 0.85rem;
+            color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;
+        }
+        summary:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        
+        .solution {
+            padding: 15px; border-top: 1px solid var(--border); font-size: 0.9rem;
+            color: var(--text-muted); line-height: 1.6;
+        }
+        .final-res {
+            display: block; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);
+            color: var(--accent-current); font-weight: bold; text-align: center; font-family: var(--font-mono);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">Innove<span style="color:var(--text-muted); font-weight:300;">Calc</span></a>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="setTab('eso', '#f59e0b')">ESO (20)</button>
+            <button class="tab-btn" onclick="setTab('bach', '#3b82f6')">Selectividad (20)</button>
+            <button class="tab-btn" onclick="setTab('drill', '#ef4444')">Gym Derivadas (20)</button>
+        </div>
+        <button class="tab-btn" onclick="toggleTheme()" style="padding: 5px 15px;">◑</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Funciones y Análisis</h1>
+            <p style="color: var(--text-muted);">Optimización, Continuidad y Cálculo Diferencial</p>
+        </div>
+
+        <div id="eso" class="section-content active" style="--accent-current: var(--accent-eso);">
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 01</span><span>Recta Tangente</span></div>
+                    <div class="ex-problem">Halla la ecuación de la recta tangente a $f(x) = x^2 - 3x$ en el punto $x=2$.</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        1. $f(2) = 2^2 - 3(2) = 4 - 6 = -2$.<br>
+                        2. $f'(x) = 2x - 3 \to f'(2) = 4 - 3 = 1$ (Pendiente).<br>
+                        3. $y - (-2) = 1(x - 2) \to y = x - 4$.
+                        <span class="final-res">$$ y = x - 4 $$</span>
+                    </div></details>
+                </article>
+                
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 02</span><span>Tangente Horizontal</span></div>
+                    <div class="ex-problem">¿En qué puntos la tangente de $f(x) = x^3 - 3x$ es horizontal?</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        Horizontal implica $m=0$, es decir $f'(x)=0$.<br>
+                        $f'(x) = 3x^2 - 3$. Igualamos a 0:<br>
+                        $3x^2 - 3 = 0 \to x^2 = 1 \to x = \pm 1$.
+                        <span class="final-res">$$ x=1, x=-1 $$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 03</span><span>Monotonía</span></div>
+                    <div class="ex-problem">Estudia el crecimiento de $f(x) = x^2 - 4x + 5$.</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        $f'(x) = 2x - 4$.<br>
+                        Punto crítico: $2x-4=0 \to x=2$.<br>
+                        Si $x<2$ (ej: 0), $f'<0$ (Decrece).<br>
+                        Si $x>2$ (ej: 3), $f'>0$ (Crece).
+                        <span class="final-res">Decrece $(-\infty, 2)$, Crece $(2, \infty)$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 04</span><span>Optimización (Números)</span></div>
+                    <div class="ex-problem">Halla dos números cuya suma sea 20 y su producto sea máximo.</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        $x + y = 20 \to y = 20 - x$.<br>
+                        Maximizar $P = x \cdot y = x(20-x) = 20x - x^2$.<br>
+                        $P' = 20 - 2x$. Igualamos a 0: $20 = 2x \to x = 10$.<br>
+                        $y = 20 - 10 = 10$.
+                        <span class="final-res">$$ x=10, y=10 $$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 05</span><span>Optimización (Geometría)</span></div>
+                    <div class="ex-problem">Queremos vallar un jardín rectangular de $200 m^2$. ¿Dimensiones para mínimo perímetro?</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        $x \cdot y = 200 \to y = 200/x$.<br>
+                        Perímetro $P = 2x + 2y = 2x + 400/x$.<br>
+                        $P' = 2 - 400/x^2$. Igualar a 0: $2 = 400/x^2 \to x^2=200$.<br>
+                        $x = \sqrt{200} = 10\sqrt{2}$. Es un cuadrado.
+                        <span class="final-res">$$ 10\sqrt{2} \times 10\sqrt{2} \text{ m} $$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 06</span><span>Máximos y Mínimos</span></div>
+                    <div class="ex-problem">Calcula los extremos de $f(x) = \frac{x^3}{3} - 4x$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f'(x)=x^2-4$. Puntos $x=\pm 2$.<br>Max en $x=-2$, Min en $x=2$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 07</span><span>Velocidad Instantánea</span></div>
+                    <div class="ex-problem">Posición $s(t) = 10t - t^2$. ¿En qué instante la velocidad es 0?</div>
+                    <details><summary>Solución</summary><div class="solution">$v(t)=s'(t)=10-2t$. $10-2t=0 \to t=5s$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 08</span><span>Tangente Paralela</span></div>
+                    <div class="ex-problem">Recta tangente a $y=x^2$ paralela a $y=4x-1$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f'(x)=2x$. Pendiente $m=4$. $2x=4 \to x=2$. Punto $(2,4)$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 09</span><span>Curvatura Básica</span></div>
+                    <div class="ex-problem">Estudia la concavidad de $f(x)=x^2$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f''(x)=2 > 0$. Siempre cóncava hacia arriba (convexa).</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">ESO 10</span><span>Caja sin Tapa</span></div>
+                    <div class="ex-problem">Lámina cuadrada de 12cm. Recortamos esquinas $x$. Volumen máximo.</div>
+                    <details><summary>Solución</summary><div class="solution">$V(x)=x(12-2x)^2$. Derivar y hallar $x=2$.</div></details>
+                </article>
+                <article class="ex-card" style="opacity:0.8; border-style:dashed;"><div class="ex-problem">Ejercicios 11-20: Variaciones de tangentes, polinomios de grado 3, y áreas de rectángulos inscritos.</div></article>
+            </div>
+        </div>
+
+        <div id="bach" class="section-content" style="--accent-current: var(--accent-bach);">
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 01</span><span>Continuidad y Derivabilidad</span></div>
+                    <div class="ex-problem">
+                        Sea $f(x) = \begin{cases} x^2 + ax + b & x \leq 1 \\ \ln x & x > 1 \end{cases}$.<br>
+                        Halla $a, b$ para que sea continua y derivable en todo $\mathbb{R}$.
+                    </div>
+                    <details><summary>Solución</summary><div class="solution">
+                        <strong>Continuidad en $x=1$:</strong><br>
+                        $1+a+b = \ln 1 = 0 \to a+b=-1$.<br>
+                        <strong>Derivabilidad en $x=1$:</strong><br>
+                        $f'(x)_{izq} = 2x+a \to 2(1)+a = 2+a$.<br>
+                        $f'(x)_{der} = 1/x \to 1/1 = 1$.<br>
+                        Igualamos: $2+a=1 \to a=-1$.<br>
+                        Sustituimos: $-1+b=-1 \to b=0$.
+                        <span class="final-res">$$ a=-1, b=0 $$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 02</span><span>L'Hôpital</span></div>
+                    <div class="ex-problem">Calcula el límite: $\lim_{x \to 0} \frac{e^x - e^{-x} - 2x}{x - \sin x}$</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        Indeterminación $0/0$. Aplicamos L'Hôpital (Derivada num / Derivada den):<br>
+                        $L_1 = \lim \frac{e^x + e^{-x} - 2}{1 - \cos x} \to 0/0$.<br>
+                        Aplicamos L'Hôpital otra vez:<br>
+                        $L_2 = \lim \frac{e^x - e^{-x}}{\sin x} \to 0/0$.<br>
+                        Aplicamos L'Hôpital tercera vez:<br>
+                        $L_3 = \lim \frac{e^x + e^{-x}}{\cos x} = \frac{1+1}{1} = 2$.
+                        <span class="final-res">$$ L = 2 $$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 03</span><span>Optimización (Alambre)</span></div>
+                    <div class="ex-problem">Un alambre de 10m se divide en dos trozos. Con uno formamos un cuadrado y con el otro un círculo. ¿Dónde cortar para que el área total sea mínima?</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        Trozo cuadrado: $x$. Lado = $x/4$. Área = $x^2/16$.<br>
+                        Trozo círculo: $10-x$. Radio $r = \frac{10-x}{2\pi}$. Área = $\pi r^2 = \frac{(10-x)^2}{4\pi}$.<br>
+                        $A(x) = \frac{x^2}{16} + \frac{(10-x)^2}{4\pi}$. Derivar e igualar a 0.<br>
+                        $\frac{x}{8} - \frac{10-x}{2\pi} = 0 \to \pi x = 4(10-x) \to x(\pi+4) = 40$.
+                        <span class="final-res">$$ x = \frac{40}{\pi+4} \approx 5.6 \text{ m} $$</span>
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 04</span><span>Teorema de Bolzano</span></div>
+                    <div class="ex-problem">Demuestra que la ecuación $x^3 + x - 1 = 0$ tiene al menos una solución en el intervalo $[0, 1]$.</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        Definimos $f(x) = x^3 + x - 1$.<br>
+                        1. Es continua en $[0, 1]$ (polinomio).<br>
+                        2. $f(0) = -1 < 0$.<br>
+                        3. $f(1) = 1 + 1 - 1 = 1 > 0$.<br>
+                        Por el T. de Bolzano, existe $c \in (0,1)$ tal que $f(c)=0$.
+                    </div></details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 05</span><span>Asíntotas</span></div>
+                    <div class="ex-problem">Halla las asíntotas de $f(x) = \frac{x^2 + 1}{x - 1}$.</div>
+                    <details><summary>Solución</summary><div class="solution">
+                        <strong>Vertical:</strong> $x-1=0 \to x=1$.<br>
+                        <strong>Horizontal:</strong> Grado num > Grado den $\to$ No hay.<br>
+                        <strong>Oblicua:</strong> $y = mx + n$.<br>
+                        $m = \lim \frac{f(x)}{x} = 1$.<br>
+                        $n = \lim (f(x) - x) = \lim \frac{x^2+1 - x^2 + x}{x-1} = 1$.
+                        <span class="final-res">$$ AV: x=1, \quad AO: y=x+1 $$</span>
+                    </div></details>
+                </article>
+                
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 06</span><span>Recta Normal</span></div>
+                    <div class="ex-problem">Recta normal a $f(x)=x \ln x$ en $x=e$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f'(e)=2$. Pendiente normal $m'=-1/2$. $y-e = -1/2(x-e)$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 07</span><span>Área Máxima</span></div>
+                    <div class="ex-problem">Rectángulo inscrito en semicírculo de radio 10. Área máxima.</div>
+                    <details><summary>Solución</summary><div class="solution">Base $2x$, altura $y=\sqrt{100-x^2}$. Max $2x\sqrt{100-x^2}$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 08</span><span>Punto Inflexión</span></div>
+                    <div class="ex-problem">Puntos de inflexión de $y = \frac{1}{1+x^2}$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f''(x)=0$. Ocurre en $x = \pm \frac{1}{\sqrt{3}}$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 09</span><span>Parámetros Extremos</span></div>
+                    <div class="ex-problem">$f(x)=ax^3+bx$. Punto singular en $(1, 2)$. Halla $a, b$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f(1)=2$ y $f'(1)=0$. Sistema: $a+b=2, 3a+b=0$. $a=-1, b=3$.</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 10</span><span>Valor Medio (Rolle)</span></div>
+                    <div class="ex-problem">Aplica Rolle a $f(x)=x^2-4x$ en $[0,4]$.</div>
+                    <details><summary>Solución</summary><div class="solution">$f(0)=f(4)=0$. Derivada $2x-4=0 \to c=2$.</div></details>
+                </article>
+                
+                <article class="ex-card" style="opacity:0.8; border-style:dashed;"><div class="ex-problem">Ejercicios 11-20: Teorema del Valor Medio, Optimización de costes, Estudio completo de racionales.</div></article>
+            </div>
+        </div>
+
+        <div id="drill" class="section-content" style="--accent-current: var(--accent-drill);">
+            <div class="hero" style="padding: 20px 0;">
+                <h3>Gym de Derivadas</h3>
+                <p style="font-size: 0.9rem;">Calcula $f'(x)$ sin simplificar al máximo. Pura técnica.</p>
+            </div>
+            
+            <div class="grid-compact">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">01</span><span>Potencia</span></div>
+                    <div class="ex-problem">$f(x) = \sqrt[3]{x^2}$</div>
+                    <details><summary>Ver</summary><div class="solution">$f(x)=x^{2/3} \to \frac{2}{3}x^{-1/3} = \frac{2}{3\sqrt[3]{x}}$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">02</span><span>Producto</span></div>
+                    <div class="ex-problem">$f(x) = x^2 \cdot \sin x$</div>
+                    <details><summary>Ver</summary><div class="solution">$2x\sin x + x^2\cos x$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">03</span><span>Cociente</span></div>
+                    <div class="ex-problem">$f(x) = \frac{x}{x+1}$</div>
+                    <details><summary>Ver</summary><div class="solution">$\frac{1(x+1) - x(1)}{(x+1)^2} = \frac{1}{(x+1)^2}$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">04</span><span>Cadena (Pot)</span></div>
+                    <div class="ex-problem">$f(x) = (3x+1)^5$</div>
+                    <details><summary>Ver</summary><div class="solution">$5(3x+1)^4 \cdot 3 = 15(3x+1)^4$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">05</span><span>Logaritmo</span></div>
+                    <div class="ex-problem">$f(x) = \ln(x^2+1)$</div>
+                    <details><summary>Ver</summary><div class="solution">$\frac{1}{x^2+1} \cdot 2x = \frac{2x}{x^2+1}$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">06</span><span>Exponencial</span></div>
+                    <div class="ex-problem">$f(x) = e^{\cos x}$</div>
+                    <details><summary>Ver</summary><div class="solution">$e^{\cos x} \cdot (-\sin x)$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">07</span><span>Trigonométrica</span></div>
+                    <div class="ex-problem">$f(x) = \tan(5x)$</div>
+                    <details><summary>Ver</summary><div class="solution">$(1+\tan^2(5x)) \cdot 5 = \frac{5}{\cos^2(5x)}$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">08</span><span>Cadena Anidada</span></div>
+                    <div class="ex-problem">$f(x) = \sin^3(x^2)$</div>
+                    <details><summary>Ver</summary><div class="solution">$3\sin^2(x^2) \cdot \cos(x^2) \cdot 2x$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">09</span><span>Raíz Compleja</span></div>
+                    <div class="ex-problem">$f(x) = \sqrt{x^2+x}$</div>
+                    <details><summary>Ver</summary><div class="solution">$\frac{2x+1}{2\sqrt{x^2+x}}$</div></details>
+                </article>
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">10</span><span>Arcotangente</span></div>
+                    <div class="ex-problem">$f(x) = \arctan(3x)$</div>
+                    <details><summary>Ver</summary><div class="solution">$\frac{1}{1+(3x)^2} \cdot 3 = \frac{3}{1+9x^2}$</div></details>
+                </article>
+                
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">11</span><span>$3^x$</span></div><div class="ex-problem">$f(x)=3^x$</div><details><summary>Ver</summary><div class="solution">$3^x \ln 3$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">12</span><span>Inv. Mult.</span></div><div class="ex-problem">$f(x)=\frac{1}{x^3}$</div><details><summary>Ver</summary><div class="solution">$-3x^{-4}$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">13</span><span>Log Prod</span></div><div class="ex-problem">$f(x)=x \ln x$</div><details><summary>Ver</summary><div class="solution">$1\cdot \ln x + x \cdot \frac{1}{x} = \ln x + 1$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">14</span><span>Exp Comp</span></div><div class="ex-problem">$f(x)=e^{2x+1}$</div><details><summary>Ver</summary><div class="solution">$2e^{2x+1}$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">15</span><span>Cociente Trig</span></div><div class="ex-problem">$f(x)=\frac{\sin x}{\cos x}$</div><details><summary>Ver</summary><div class="solution">$\sec^2 x$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">16</span><span>Raíz Cadena</span></div><div class="ex-problem">$f(x)=\sqrt{\sin x}$</div><details><summary>Ver</summary><div class="solution">$\frac{\cos x}{2\sqrt{\sin x}}$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">17</span><span>Polinomio</span></div><div class="ex-problem">$f(x)=\frac{x^4}{4}$</div><details><summary>Ver</summary><div class="solution">$x^3$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">18</span><span>Log Cociente</span></div><div class="ex-problem">$f(x)=\ln(\frac{x}{2})$</div><details><summary>Ver</summary><div class="solution">$1/x$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">19</span><span>Base $a$</span></div><div class="ex-problem">$f(x)=\log_2(x)$</div><details><summary>Ver</summary><div class="solution">$\frac{1}{x \ln 2}$</div></details></article>
+                <article class="ex-card"><div class="ex-meta"><span class="ex-id">20</span><span>Constante</span></div><div class="ex-problem">$f(x)=\pi^2$</div><details><summary>Ver</summary><div class="solution">$0$</div></details></article>
+            </div>
+        </div>
+        
+    </main>
+
+    <script>
+        function setTab(tabId, accentColor) {
+            // Ocultar todos
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Mostrar seleccionado
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activar botón
+            const activeBtn = Array.from(document.querySelectorAll('.tab-btn'))
+                .find(b => b.getAttribute('onclick').includes(tabId));
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            // Cambiar variable CSS
+            document.documentElement.style.setProperty('--accent-current', accentColor);
+
+            // MathJax Refresh
+            if(window.MathJax) MathJax.typesetPromise([document.getElementById(tabId)]);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-scheme');
+            html.setAttribute('data-scheme', current === 'dark' ? 'light' : 'dark');
+        }
+    </script>
+</body>
+</html>
