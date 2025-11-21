@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Estructura Atómica | Teoría Completa</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚛️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-color: #ffffff;
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    --accent: #8b5cf6;
+    --accent-glow: rgba(139, 92, 246, 0.15);
+    --highlight: #ec4899;
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --accent: #a78bfa;
+    --accent-glow: rgba(167, 139, 250, 0.15);
+    --glass-bg: rgba(24, 24, 27, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --card-hover: rgba(39, 39, 42, 0.8);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+    overflow-x: hidden;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--highlight);
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.3;
+    animation-delay: 7s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+  }
+
+  .glass:hover {
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateY(-2px);
+  }
+
+  h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+    margin: 2.5rem 0 1.5rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+  }
+
+  h3 {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin: 1.5rem 0 0.8rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p {
+    margin-bottom: 1.2rem;
+    color: var(--text-secondary);
+    text-align: justify;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  ol, ul {
+    margin-left: 20px;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chem {
+    font-family: var(--font-chem);
+    font-size: 0.9em;
+    color: var(--accent);
+    background: var(--accent-glow);
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: help;
+  }
+
+  .chem:hover {
+    background: var(--accent);
+    color: var(--bg-color);
+    transform: scale(1.05);
+  }
+
+  .equation-box {
+    background: var(--accent-glow);
+    border-left: 4px solid var(--accent);
+    padding: 20px;
+    margin: 20px 0;
+    font-family: var(--font-chem);
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 0 8px 8px 0;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .equation-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+  }
+
+  .header {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    padding: 12px 16px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  @media (min-width: 768px) {
+    .header {
+      padding: 14px 24px;
+      gap: 16px;
+    }
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    animation: orbit 4s linear infinite;
+  }
+
+  @keyframes orbit {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .logo-text div:first-child {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-weight: 800;
+  }
+
+  .logo-text div:last-child {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle:hover {
+    background: var(--accent-glow);
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 12px;
+      gap: 8px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      z-index: 99;
+      justify-content: flex-start;
+    }
+
+    .nav-menu.open {
+      max-height: 500px;
+    }
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: none;
+  }
+
+  @media (min-width: 769px) {
+    .nav-btn {
+      display: inline-block;
+    }
+
+    .nav-btn:nth-child(n+4) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu.open .nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  .nav-btn:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    transform: rotate(20deg) scale(1.1);
+    background: var(--accent-glow);
+  }
+
+  section.content-section {
+    display: none;
+  }
+
+  section[data-active] {
+    display: block;
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    padding: clamp(20px, 5vw, 40px);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.05;
+    pointer-events: none;
+    animation: moveBackground 15s ease-in-out infinite;
+  }
+
+  @keyframes moveBackground {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(50px, 50px); }
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .chem-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .chem-table th {
+    text-align: left;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--glass-border);
+    padding: 12px;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--accent-glow);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table tr:hover td {
+    background: var(--accent-glow);
+    transform: scale(1.01);
+  }
+
+  .note {
+    background: rgba(139, 92, 246, 0.1);
+    border-left: 4px solid var(--accent);
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+    transition: all 0.3s ease;
+  }
+
+  .note:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-left-width: 6px;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.1rem; }
+    h3 { font-size: 0.95rem; }
+    p { font-size: 0.9rem; }
+    .card { padding: 14px; }
+    .header { padding: 10px 12px; }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; }
+  }
+
+  @media (min-width: 769px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.3rem; }
+  }
+
+  sub {
+    font-size: 0.7em;
+    vertical-align: sub;
+  }
+
+  sup {
+    font-size: 0.7em;
+    vertical-align: super;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="#" class="logo">
+    <div class="logo-icon">⚛️</div>
+    <div class="logo-text">
+      <div>Estructura Atómica</div>
+      <div>Modelo Cuántico</div>
+    </div>
+  </a>
+
+  <nav class="nav-menu" id="navMenu">
+    <button class="nav-btn" data-target="historia" aria-selected="true">📜 Historia</button>
+    <button class="nav-btn" data-target="estructura" aria-selected="false">🔬 Estructura</button>
+    <button class="nav-btn" data-target="cuantico" aria-selected="false">🌊 Modelo Cuántico</button>
+    <button class="nav-btn" data-target="orbitales" aria-selected="false">🎯 Orbitales</button>
+    <button class="nav-btn" data-target="configuracion" aria-selected="false">⚡ Configuración</button>
+    <button class="nav-btn" data-target="periodica" aria-selected="false">📊 Tabla Periódica</button>
+    <button class="nav-btn" data-target="enlace" aria-selected="false">🔗 Enlace Químico</button>
+  </nav>
+
+  <button class="menu-toggle" id="menuToggle" title="Menú">☰</button>
+  <button class="theme-toggle" id="themeToggle" title="Cambiar tema">🌙</button>
+</header>
+
+<main class="container">
+
+  <section id="historia" class="content-section" data-active>
+    <div class="card glass">
+      <h1>📜 Historia de los Modelos Atómicos</h1>
+      <p>La comprensión del <strong>átomo</strong> ha evolucionado dramáticamente a lo largo de la historia. Desde las primeras ideas filosóficas hasta el modelo cuántico actual, cada teoría ha aportado piezas clave al rompecabezas atómico.</p>
+
+      <h2>🏛️ Modelo de Dalton (1803)</h2>
+      <p>John Dalton propuso la primera teoría atómica científica:</p>
+      <ul>
+        <li>Los átomos son partículas indivisibles e indestructibles.</li>
+        <li>Todos los átomos de un elemento son idénticos.</li>
+        <li>Los átomos se combinan en proporciones definidas.</li>
+        <li>Las reacciones químicas son reorganizaciones de átomos.</li>
+      </ul>
+      <div class="note">
+        <strong>⚛️ Modelo:</strong> Esfera sólida e indivisible, como una bola de billar.
+      </div>
+
+      <h2>🍇 Modelo de Thomson (1904)</h2>
+      <p>J.J. Thomson descubrió el electrón y propuso el modelo del "pudín de pasas":</p>
+      <ul>
+        <li>El átomo es una esfera de carga positiva.</li>
+        <li>Los electrones (negativos) están incrustados en esta esfera.</li>
+        <li>El átomo es eléctricamente neutro.</li>
+      </ul>
+      <p><strong>Descubrimiento clave:</strong> Experimento del tubo de rayos catódicos → Relación carga/masa del electrón (e/m)</p>
+
+      <h2>🎯 Modelo de Rutherford (1911)</h2>
+      <p>Ernest Rutherford realizó el experimento de la lámina de oro:</p>
+      <ul>
+        <li>El átomo tiene un <strong>núcleo</strong> pequeño, denso y positivo.</li>
+        <li>Los electrones orbitan alrededor del núcleo.</li>
+        <li>La mayor parte del átomo es espacio vacío.</li>
+      </ul>
+      <div class="equation-box">Átomo = Núcleo (p⁺ + n⁰) + Electrones (e⁻)</div>
+      <p><strong>Problema:</strong> Según la física clásica, los electrones en órbita deberían radiar energía y colapsar en el núcleo.</p>
+
+      <h2>🌟 Modelo de Bohr (1913)</h2>
+      <p>Niels Bohr introdujo la cuantización de energía:</p>
+      <ul>
+        <li>Los electrones orbitan en niveles de energía definidos (órbitas estacionarias).</li>
+        <li>Los electrones solo pueden estar en órbitas con energía cuantizada.</li>
+        <li>Absorben o emiten energía al saltar entre niveles: <span class="chem">ΔE = hν</span></li>
+      </ul>
+      <div class="equation-box">E<sub>n</sub> = -13.6 eV / n²</div>
+      <p>donde n = 1, 2, 3... (número cuántico principal)</p>
+      <p><strong>Éxito:</strong> Explicó el espectro de emisión del hidrógeno perfectamente.</p>
+      <p><strong>Limitación:</strong> Solo funcionaba para átomos con un electrón.</p>
+
+      <h2>🌊 Modelo Mecánico-Cuántico (1926)</h2>
+      <p>Schrödinger, Heisenberg, Dirac y otros desarrollaron la mecánica cuántica moderna:</p>
+      <ul>
+        <li>Los electrones no tienen órbitas definidas, sino <strong>orbitales</strong> (regiones de probabilidad).</li>
+        <li>Ecuación de Schrödinger describe el comportamiento ondulatorio del electrón.</li>
+        <li>Principio de incertidumbre de Heisenberg: No se puede conocer simultáneamente posición y momento exactos.</li>
+        <li>Dualidad onda-partícula: Los electrones exhiben propiedades de onda y partícula.</li>
+      </ul>
+
+      <div class="note">
+        <strong>💡 Modelo actual:</strong> El átomo es un núcleo rodeado de una "nube electrónica" donde la probabilidad de encontrar electrones varía según los orbitales cuánticos.
+      </div>
+    </div>
+  </section>
+
+  <section id="estructura" class="content-section">
+    <div class="card glass">
+      <h1>🔬 Estructura del Átomo</h1>
+
+      <h2>🧩 Partículas Subatómicas Fundamentales</h2>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Partícula</th>
+              <th>Símbolo</th>
+              <th>Carga (C)</th>
+              <th>Carga relativa</th>
+              <th>Masa (kg)</th>
+              <th>Masa relativa (u)</th>
+              <th>Ubicación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Protón</td>
+              <td>p⁺</td>
+              <td>+1.602×10⁻¹⁹</td>
+              <td>+1</td>
+              <td>1.673×10⁻²⁷</td>
+              <td>1.007</td>
+              <td>Núcleo</td>
+            </tr>
+            <tr>
+              <td>Neutrón</td>
+              <td>n⁰</td>
+              <td>0</td>
+              <td>0</td>
+              <td>1.675×10⁻²⁷</td>
+              <td>1.009</td>
+              <td>Núcleo</td>
+            </tr>
+            <tr>
+              <td>Electrón</td>
+              <td>e⁻</td>
+              <td>-1.602×10⁻¹⁹</td>
+              <td>-1</td>
+              <td>9.109×10⁻³¹</td>
+              <td>0.0005</td>
+              <td>Orbitales</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🔢 Número Atómico y Número Másico</h2>
+      <p><strong>Número atómico (Z):</strong> Número de protones en el núcleo. Define el elemento químico.</p>
+      <div class="equation-box">Z = número de protones = número de electrones (átomo neutro)</div>
+
+      <p><strong>Número másico (A):</strong> Suma de protones y neutrones.</p>
+      <div class="equation-box">A = Z + N (donde N = número de neutrones)</div>
+
+      <h3>Notación Nuclear</h3>
+      <p>Un átomo se representa como:</p>
+      <div class="equation-box"><sup>A</sup><sub>Z</sub>X</div>
+      <p>Ejemplo: <span class="chem"><sup>23</sup><sub>11</sub>Na</span> tiene 11 protones, 11 electrones y 12 neutrones.</p>
+
+      <h2>☢️ Isótopos</h2>
+      <p>Los <strong>isótopos</strong> son átomos del mismo elemento con diferente número de neutrones:</p>
+      <ul>
+        <li>Mismo Z (mismo elemento)</li>
+        <li>Diferente A (diferente masa)</li>
+        <li>Propiedades químicas idénticas</li>
+        <li>Propiedades físicas ligeramente diferentes</li>
+      </ul>
+
+      <h3>Ejemplos de Isótopos</h3>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Elemento</th>
+              <th>Isótopos</th>
+              <th>Protones</th>
+              <th>Neutrones</th>
+              <th>Abundancia</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="3">Hidrógeno</td>
+              <td><sup>1</sup>H (Protio)</td>
+              <td>1</td>
+              <td>0</td>
+              <td>99.985%</td>
+            </tr>
+            <tr>
+              <td><sup>2</sup>H (Deuterio)</td>
+              <td>1</td>
+              <td>1</td>
+              <td>0.015%</td>
+            </tr>
+            <tr>
+              <td><sup>3</sup>H (Tritio)</td>
+              <td>1</td>
+              <td>2</td>
+              <td>Trazas</td>
+            </tr>
+            <tr>
+              <td rowspan="3">Carbono</td>
+              <td><sup>12</sup>C</td>
+              <td>6</td>
+              <td>6</td>
+              <td>98.89%</td>
+            </tr>
+            <tr>
+              <td><sup>13</sup>C</td>
+              <td>6</td>
+              <td>7</td>
+              <td>1.11%</td>
+            </tr>
+            <tr>
+              <td><sup>14</sup>C</td>
+              <td>6</td>
+              <td>8</td>
+              <td>Trazas (radiactivo)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>⚖️ Masa Atómica Promedio</h2>
+      <p>La masa atómica que aparece en la tabla periódica es un promedio ponderado de los isótopos:</p>
+      <div class="equation-box">Masa atómica = Σ (masa isótopo × abundancia fraccionaria)</div>
+
+      <p><strong>Ejemplo Carbono:</strong></p>
+      <p>Masa = (12 × 0.9889) + (13 × 0.0111) = 12.011 u</p>
+
+      <h2>⚡ Iones</h2>
+      <p><strong>Catión:</strong> Átomo que pierde electrones → carga positiva</p>
+      <div class="equation-box">Na → Na⁺ + e⁻</div>
+
+      <p><strong>Anión:</strong> Átomo que gana electrones → carga negativa</p>
+      <div class="equation-box">Cl + e⁻ → Cl⁻</div>
+
+      <div class="note">
+        <strong>💡 Importante:</strong> Los iones tienen diferente número de electrones que protones, pero mantienen el mismo número de protones (mismo elemento). El número de neutrones no cambia en la ionización.
+      </div>
+    </div>
+  </section>
+
+  <section id="cuantico" class="content-section">
+    <div class="card glass">
+      <h1>🌊 Modelo Cuántico del Átomo</h1>
+
+      <h2>📖 Bachillerato — Introducción Cuántica</h2>
+      <p>El <strong>modelo cuántico</strong> describe los electrones mediante funciones de onda (orbitales) que indican la probabilidad de encontrar un electrón en una región del espacio.</p>
+
+      <h2>🔢 Números Cuánticos</h2>
+      <p>Cada electrón en un átomo se describe mediante cuatro números cuánticos:</p>
+
+      <h3>1️⃣ Número Cuántico Principal (n)</h3>
+      <ul>
+        <li>Define el <strong>nivel de energía</strong> o capa electrónica</li>
+        <li>Valores: n = 1, 2, 3, 4, 5, 6, 7...</li>
+        <li>A mayor n, mayor energía y distancia del núcleo</li>
+        <li>Máximo de electrones por nivel: <span class="chem">2n²</span></li>
+      </ul>
+
+      <h3>2️⃣ Número Cuántico Secundario o Azimutal (ℓ)</h3>
+      <ul>
+        <li>Define la <strong>forma del orbital</strong> (subnivel)</li>
+        <li>Valores: ℓ = 0, 1, 2, 3... (n-1)</li>
+        <li>Notación de subni veles:</li>
+      </ul>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>ℓ</th>
+              <th>Subnivel</th>
+              <th>Forma</th>
+              <th>Máx. electrones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td>s</td>
+              <td>Esférica</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>p</td>
+              <td>Lobular (3 orbitales)</td>
+              <td>6</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>d</td>
+              <td>Compleja (5 orbitales)</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>f</td>
+              <td>Muy compleja (7 orbitales)</td>
+              <td>14</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3️⃣ Número Cuántico Magnético (m<sub>ℓ</sub>)</h3>
+      <ul>
+        <li>Define la <strong>orientación del orbital</strong> en el espacio</li>
+        <li>Valores: -ℓ, ..., 0, ..., +ℓ</li>
+        <li>Ejemplo: Para ℓ=1 (orbital p), m<sub>ℓ</sub> = -1, 0, +1 (tres orientaciones: p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>)</li>
+      </ul>
+
+      <h3>4️⃣ Número Cuántico de Espín (m<sub>s</sub>)</h3>
+      <ul>
+        <li>Define el <strong>momento angular intrínseco</strong> del electrón</li>
+        <li>Valores: +½ o -½ (spin "arriba" ↑ o "abajo" ↓)</li>
+        <li>Cada orbital puede contener máximo 2 electrones con espines opuestos</li>
+      </ul>
+
+      <h2>🎓 Universitario — Ecuación de Schrödinger</h2>
+      <p>La ecuación de Schrödinger independiente del tiempo describe el comportamiento cuántico:</p>
+      <div class="equation-box">ĤΨ = EΨ</div>
+      <p>donde:</p>
+      <ul>
+        <li>Ĥ = operador hamiltoniano (energía total)</li>
+        <li>Ψ = función de onda (orbital)</li>
+        <li>E = energía del estado</li>
+      </ul>
+
+      <p>Para el átomo de hidrógeno:</p>
+      <div class="equation-box">-ℏ²/(2m)∇²Ψ - (e²/4πε₀r)Ψ = EΨ</div>
+
+      <h2>📊 Principios Fundamentales</h2>
+
+      <h3>🚫 Principio de Exclusión de Pauli</h3>
+      <p>No pueden existir dos electrones en un átomo con los mismos cuatro números cuánticos. Consecuencia: Máximo 2 electrones por orbital (con espines opuestos).</p>
+
+      <h3>📈 Principio de Aufbau</h3>
+      <p>Los electrones ocupan primero los orbitales de menor energía disponibles.</p>
+      <p>Orden de llenado (regla de Madelung):</p>
+      <div class="equation-box">1s < 2s < 2p < 3s < 3p < 4s < 3d < 4p < 5s < 4d < 5p < 6s < 4f < 5d < 6p < 7s < 5f < 6d < 7p</div>
+
+      <h3>↕️ Regla de Hund</h3>
+      <p>Al llenar orbitales de igual energía (degenerados), los electrones ocupan primero todos los orbitales individualmente con espines paralelos antes de aparear.</p>
+
+      <div class="note">
+        <strong>💡 Analogía de los números cuánticos:</strong> n = edificio, ℓ = piso, m<sub>ℓ</sub> = apartamento, m<sub>s</sub> = habitante (máximo 2 por apartamento).
+      </div>
+    </div>
+  </section>
+
+  <section id="orbitales" class="content-section">
+    <div class="card glass">
+      <h1>🎯 Orbitales Atómicos</h1>
+
+      <h2>📖 Concepto de Orbital</h2>
+      <p>Un <strong>orbital</strong> es una región del espacio donde existe alta probabilidad (90-95%) de encontrar un electrón. A diferencia de las órbitas de Bohr, los orbitales son tridimensionales y probabilísticos.</p>
+
+      <h2>🔵 Orbitales s (ℓ = 0)</h2>
+      <ul>
+        <li><strong>Forma:</strong> Esférica</li>
+        <li><strong>Número de orbitales:</strong> 1 por nivel</li>
+        <li><strong>Orientación:</strong> Sin dirección preferida</li>
+        <li><strong>Máximo de electrones:</strong> 2</li>
+      </ul>
+      <p>Ejemplos: 1s, 2s, 3s, 4s...</p>
+      <p>El orbital 1s es el más pequeño y cercano al núcleo. Los orbitales 2s, 3s, etc., son más grandes y tienen nodos radiales.</p>
+
+      <h2>🎈 Orbitales p (ℓ = 1)</h2>
+      <ul>
+        <li><strong>Forma:</strong> Dos lóbulos opuestos (forma de "pesa" o "mancuerna")</li>
+        <li><strong>Número de orbitales:</strong> 3 por nivel (a partir de n=2)</li>
+        <li><strong>Orientación:</strong> p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub> (perpendiculares entre sí)</li>
+        <li><strong>Máximo de electrones:</strong> 6 (2 por orbital)</li>
+      </ul>
+      <p>Ejemplos: 2p, 3p, 4p...</p>
+      <p>Cada orbital p tiene un nodo planar que pasa por el núcleo.</p>
+
+      <h2>🌸 Orbitales d (ℓ = 2)</h2>
+      <ul>
+        <li><strong>Forma:</strong> Más compleja (4 con forma de "trébol" de 4 lóbulos, 1 con dos lóbulos y un anillo)</li>
+        <li><strong>Número de orbitales:</strong> 5 por nivel (a partir de n=3)</li>
+        <li><strong>Orientaciones:</strong> d<sub>xy</sub>, d<sub>xz</sub>, d<sub>yz</sub>, d<sub>x²-y²</sub>, d<sub>z²</sub></li>
+        <li><strong>Máximo de electrones:</strong> 10 (2 por orbital)</li>
+      </ul>
+      <p>Ejemplos: 3d, 4d, 5d...</p>
+      <p>Importantes en elementos de transición y sus propiedades magnéticas/colores.</p>
+
+      <h2>🎆 Orbitales f (ℓ = 3)</h2>
+      <ul>
+        <li><strong>Forma:</strong> Muy compleja (múltiples lóbulos)</li>
+        <li><strong>Número de orbitales:</strong> 7 por nivel (a partir de n=4)</li>
+        <li><strong>Máximo de electrones:</strong> 14 (2 por orbital)</li>
+      </ul>
+      <p>Ejemplos: 4f, 5f...</p>
+      <p>Característicos de lantánidos y actínidos.</p>
+
+      <h2>⚡ Energía de los Orbitales</h2>
+      <p>En átomos con <strong>un solo electrón</strong> (H, He⁺, Li²⁺...):</p>
+      <ul>
+        <li>La energía depende solo de n</li>
+        <li>Todos los orbitales del mismo nivel tienen igual energía (degenerados)</li>
+        <li>E<sub>n</sub> = -13.6 eV × Z² / n²</li>
+      </ul>
+
+      <p>En átomos con <strong>múltiples electrones</strong>:</p>
+      <ul>
+        <li>La energía depende de n y ℓ</li>
+        <li>Efecto de apantallamiento: electrones internos "protegen" a externos del núcleo</li>
+        <li>Orden de energía: ns < np < nd < nf (para el mismo n)</li>
+        <li>Anomalías: 4s < 3d, 5s < 4d, 6s < 4f < 5d</li>
+      </ul>
+
+      <h2>📊 Diagrama de Energías</h2>
+      <div class="equation-box">
+1s < 2s < 2p < 3s < 3p < 4s ≈ 3d < 4p < 5s ≈ 4d < 5p < 6s ≈ 4f ≈ 5d < 6p < 7s ≈ 5f ≈ 6d
+      </div>
+
+      <div class="note">
+        <strong>💡 Densidad de probabilidad:</strong> |Ψ|² representa la probabilidad de encontrar el electrón en un punto. Los orbitales son superficies que encierran el 90-95% de esta probabilidad.
+      </div>
+    </div>
+  </section>
+
+  <section id="configuracion" class="content-section">
+    <div class="card glass">
+      <h1>⚡ Configuración Electrónica</h1>
+
+      <h2>📖 Bachillerato — Notación Básica</h2>
+      <p>La <strong>configuración electrónica</strong> muestra cómo se distribuyen los electrones en los orbitales de un átomo.</p>
+
+      <h3>Notación Estándar</h3>
+      <p>Formato: <span class="chem">nℓ<sup>x</sup></span> donde n es el nivel, ℓ el subnivel (s,p,d,f), y x el número de electrones.</p>
+
+      <h3>Ejemplos:</h3>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Elemento</th>
+              <th>Z</th>
+              <th>Configuración</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>H</td>
+              <td>1</td>
+              <td>1s¹</td>
+            </tr>
+            <tr>
+              <td>He</td>
+              <td>2</td>
+              <td>1s²</td>
+            </tr>
+            <tr>
+              <td>C</td>
+              <td>6</td>
+              <td>1s² 2s² 2p²</td>
+            </tr>
+            <tr>
+              <td>N</td>
+              <td>7</td>
+              <td>1s² 2s² 2p³</td>
+            </tr>
+            <tr>
+              <td>O</td>
+              <td>8</td>
+              <td>1s² 2s² 2p⁴</td>
+            </tr>
+            <tr>
+              <td>Ne</td>
+              <td>10</td>
+              <td>1s² 2s² 2p⁶</td>
+            </tr>
+            <tr>
+              <td>Na</td>
+              <td>11</td>
+              <td>1s² 2s² 2p⁶ 3s¹</td>
+            </tr>
+            <tr>
+              <td>Ar</td>
+              <td>18</td>
+              <td>1s² 2s² 2p⁶ 3s² 3p⁶</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Notación Abreviada (Configuración de Kernel)</h3>
+      <p>Se usa el gas noble anterior para abreviar:</p>
+      <ul>
+        <li>Na (Z=11): [Ne] 3s¹</li>
+        <li>Ca (Z=20): [Ar] 4s²</li>
+        <li>Fe (Z=26): [Ar] 3d⁶ 4s²</li>
+        <li>Br (Z=35): [Ar] 3d¹⁰ 4s² 4p⁵</li>
+      </ul>
+
+      <h2>📋 Diagramas Orbitales</h2>
+      <p>Representación gráfica con cajas (orbitales) y flechas (electrones):</p>
+      <p><strong>Carbono (C):</strong> [He] 2s² 2p²</p>
+      <div class="equation-box">
+2s: [↑↓]    2p: [↑] [↑] [ ]
+      </div>
+
+      <p><strong>Oxígeno (O):</strong> [He] 2s² 2p⁴</p>
+      <div class="equation-box">
+2s: [↑↓]    2p: [↑↓] [↑] [↑]
+      </div>
+
+      <h2>⚠️ Excepciones a la Regla</h2>
+      <p>Algunos elementos tienen configuraciones anómalas por estabilidad extra de subniveles semillenos o llenos:</p>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Elemento</th>
+              <th>Z</th>
+              <th>Esperada</th>
+              <th>Real</th>
+              <th>Razón</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cr</td>
+              <td>24</td>
+              <td>[Ar] 3d⁴ 4s²</td>
+              <td>[Ar] 3d⁵ 4s¹</td>
+              <td>d⁵ semilleno estable</td>
+            </tr>
+            <tr>
+              <td>Cu</td>
+              <td>29</td>
+              <td>[Ar] 3d⁹ 4s²</td>
+              <td>[Ar] 3d¹⁰ 4s¹</td>
+              <td>d¹⁰
