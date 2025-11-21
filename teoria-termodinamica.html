@@ -1,550 +1,1027 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<link rel="icon" type="image/png" href="innoveAI.png" />
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Termodinámica Química</title>
-<meta name="color-scheme" content="light dark">
-<!-- MathJax for LaTeX rendering -->
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Termodinámica | Teoría Completa</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
-    --brand:#0ea5e9; --accent:#22d3ee; --accent2:#06b6d4;
-    --border:#e9edf6; --shadow:0 8px 28px rgba(16,24,40,.08);
-    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
+  :root {
+    --bg-color: #ffffff;
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    --accent: #ef4444;
+    --accent-glow: rgba(239, 68, 68, 0.15);
+    --highlight: #f59e0b;
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
   }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b1220; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9;
-      --brand:#38bdf8; --accent:#22d3ee; --accent2:#06b6d4; --border:#203054;
-      --shadow:0 10px 26px rgba(0,0,0,.35);
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --accent: #f87171;
+    --accent-glow: rgba(248, 113, 113, 0.15);
+    --glass-bg: rgba(24, 24, 27, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --card-hover: rgba(39, 39, 42, 0.8);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+    overflow-x: hidden;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--highlight);
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.3;
+    animation-delay: 7s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+  }
+
+  .glass:hover {
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+  }
+
+  h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+    margin: 2.5rem 0 1.5rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+  }
+
+  h3 {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin: 1.5rem 0 0.8rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p {
+    margin-bottom: 1.2rem;
+    color: var(--text-secondary);
+    text-align: justify;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  ol, ul {
+    margin-left: 20px;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chem {
+    font-family: var(--font-chem);
+    font-size: 0.9em;
+    color: var(--accent);
+    background: var(--accent-glow);
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: help;
+  }
+
+  .chem:hover {
+    background: var(--accent);
+    color: var(--bg-color);
+    transform: scale(1.05);
+  }
+
+  .equation-box {
+    background: var(--accent-glow);
+    border-left: 4px solid var(--accent);
+    padding: 20px;
+    margin: 20px 0;
+    font-family: var(--font-chem);
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 0 8px 8px 0;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .equation-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 20px;
     }
   }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    font-size:var(--base); line-height:var(--lh); color:var(--ink);
-    background:radial-gradient(1100px 700px at 80% -10%, #e0f2fe 0%, transparent 60%),
-               radial-gradient(900px 600px at 10% 110%, #cffafe 0%, transparent 65%), var(--bg);
+
+  .header {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    padding: 12px 16px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
   }
-  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
-    background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
-    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
-  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
-  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
-  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 70%,white 10%),color-mix(in oklab,var(--accent) 65%,white 20%));
-    color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
-  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
-  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .btn.small{padding:6px 10px;font-weight:700}
-  main{max-width:1200px;margin:0 auto;padding:16px}
-  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
-    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
-  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
-  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
-  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
-  .lead{color:var(--muted)}
-  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 8%);border:1px solid var(--border);
-    border-radius:12px;padding:12px 14px;margin:12px 0}
-  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
-  .toc a{display:block;text-decoration:none;border:1px solid var(--border);border-radius:12px;padding:10px 12px;
-    color:color-mix(in oklab,var(--brand) 80%, var(--ink));background:color-mix(in oklab,var(--paper) 88%, transparent)}
-  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 6%);
-    border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
-  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
-  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border);
-    border-radius:10px;padding:8px 10px;margin:8px 0}
-  summary{cursor:pointer;font-weight:700}
-  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--paper);border:1px solid var(--border);
-    border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
-  .topbtn.show{display:block}
+
+  @media (min-width: 768px) {
+    .header {
+      padding: 14px 24px;
+      gap: 16px;
+    }
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .logo-text div:first-child {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-weight: 800;
+  }
+
+  .logo-text div:last-child {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle:hover {
+    background: var(--accent-glow);
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 12px;
+      gap: 8px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      z-index: 99;
+      justify-content: flex-start;
+    }
+
+    .nav-menu.open {
+      max-height: 500px;
+    }
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: none;
+  }
+
+  @media (min-width: 769px) {
+    .nav-btn {
+      display: inline-block;
+    }
+
+    .nav-btn:nth-child(n+4) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu.open .nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  .nav-btn:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    transform: rotate(20deg) scale(1.1);
+    background: var(--accent-glow);
+  }
+
+  section.content-section {
+    display: none;
+  }
+
+  section[data-active] {
+    display: block;
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    padding: clamp(20px, 5vw, 40px);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.05;
+    pointer-events: none;
+    animation: moveBackground 15s ease-in-out infinite;
+  }
+
+  @keyframes moveBackground {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(50px, 50px); }
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .chem-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .chem-table th {
+    text-align: left;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--glass-border);
+    padding: 12px;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--accent-glow);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table tr:hover td {
+    background: var(--accent-glow);
+    transform: scale(1.01);
+  }
+
+  .note {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid var(--accent);
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+    transition: all 0.3s ease;
+  }
+
+  .note:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-left-width: 6px;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.1rem; }
+    h3 { font-size: 0.95rem; }
+    p { font-size: 0.9rem; }
+    .card { padding: 14px; }
+    .header { padding: 10px 12px; }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; }
+  }
+
+  @media (min-width: 769px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.3rem; }
+  }
+
+  sub {
+    font-size: 0.7em;
+    vertical-align: sub;
+  }
+
+  sup {
+    font-size: 0.7em;
+    vertical-align: super;
+  }
+
 </style>
 </head>
 <body>
-  <div class="progress" id="progress"></div>
-  <div class="topbar">
-    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <a class="brand" href="#top">
-        <div class="badge">🔥</div>
-        <div>
-          <h1 class="brand-title">Termodinámica Química</h1>
-          <div class="lead">Teoría clara, fórmulas guiadas y ejercicios con respuesta</div>
-        </div>
-      </a>
-      <div class="reader">
-        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
-        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
-        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
-        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
-        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="#" class="logo">
+    <div class="logo-icon">🔥</div>
+    <div class="logo-text">
+      <div>Termodinámica</div>
+      <div>Energía y Entropía</div>
+    </div>
+  </a>
+
+  <nav class="nav-menu" id="navMenu">
+    <button class="nav-btn" data-target="conceptos" aria-selected="true">📚 Conceptos</button>
+    <button class="nav-btn" data-target="primera-ley" aria-selected="false">1️⃣ Primera Ley</button>
+    <button class="nav-btn" data-target="segunda-ley" aria-selected="false">2️⃣ Segunda Ley</button>
+    <button class="nav-btn" data-target="entalpia" aria-selected="false">🔥 Entalpía</button>
+    <button class="nav-btn" data-target="entropia" aria-selected="false">📊 Entropía</button>
+    <button class="nav-btn" data-target="gibbs" aria-selected="false">⚡ Energía Libre</button>
+    <button class="nav-btn" data-target="equilibrio" aria-selected="false">⚖️ Equilibrio</button>
+  </nav>
+
+  <button class="menu-toggle" id="menuToggle" title="Menú">☰</button>
+  <button class="theme-toggle" id="themeToggle" title="Cambiar tema">🌙</button>
+</header>
+
+<main class="container">
+
+  <section id="conceptos" class="content-section" data-active>
+    <div class="card glass">
+      <h1>📚 Conceptos Fundamentales de Termodinámica</h1>
+      <p>La <strong>termodinámica</strong> es la rama de la física que estudia las transformaciones de energía y las relaciones entre calor, trabajo y otras formas de energía. Es fundamental para entender procesos químicos, físicos y biológicos.</p>
+
+      <h2>📖 Bachillerato — Introducción</h2>
+      <p>La termodinámica se ocupa de tres conceptos clave:</p>
+      <ul>
+        <li><strong>Sistema:</strong> Porción del universo que estudiamos (puede ser abierto, cerrado o aislado).</li>
+        <li><strong>Entorno:</strong> Todo lo que rodea al sistema.</li>
+        <li><strong>Universo termodinámico:</strong> Sistema + entorno.</li>
+      </ul>
+
+      <h3>🔍 Tipos de Sistemas</h3>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Intercambio de Materia</th>
+              <th>Intercambio de Energía</th>
+              <th>Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Abierto</td>
+              <td>Sí</td>
+              <td>Sí</td>
+              <td>Olla sin tapa</td>
+            </tr>
+            <tr>
+              <td>Cerrado</td>
+              <td>No</td>
+              <td>Sí</td>
+              <td>Botella cerrada</td>
+            </tr>
+            <tr>
+              <td>Aislado</td>
+              <td>No</td>
+              <td>No</td>
+              <td>Termo ideal</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🎓 Universitario — Variables y Funciones de Estado</h2>
+      <p>Las <strong>funciones de estado</strong> dependen únicamente del estado actual del sistema, no del camino seguido para alcanzarlo. Las principales son:</p>
+      <ul>
+        <li><strong>Presión (P):</strong> Fuerza por unidad de área.</li>
+        <li><strong>Volumen (V):</strong> Espacio ocupado.</li>
+        <li><strong>Temperatura (T):</strong> Medida de energía cinética promedio.</li>
+        <li><strong>Energía Interna (U):</strong> Suma de todas las energías microscópicas.</li>
+        <li><strong>Entalpía (H):</strong> U + PV, calor a presión constante.</li>
+        <li><strong>Entropía (S):</strong> Medida del desorden molecular.</li>
+        <li><strong>Energía Libre de Gibbs (G):</strong> H - TS, espontaneidad de procesos.</li>
+      </ul>
+
+      <h2>🌡️ Variables Extensivas e Intensivas</h2>
+      <p><strong>Variables extensivas:</strong> Dependen de la cantidad de materia (V, n, U, H, S, G).</p>
+      <p><strong>Variables intensivas:</strong> No dependen de la cantidad (P, T, densidad, concentración).</p>
+
+      <div class="note">
+        <strong>💡 Concepto clave:</strong> La termodinámica clásica trata con sistemas macroscópicos en equilibrio. Las propiedades microscópicas se conectan mediante la mecánica estadística.
       </div>
     </div>
-  </div>
+  </section>
 
-  <main>
-    <section class="paper" id="top">
-      <h1>Guía de Termodinámica Química</h1>
-      <p class="lead">Doce capítulos con <strong>teoría destilada</strong>, <strong>recuadros de fórmulas</strong> (con <em>cuándo</em> usar cada una), <strong>ejemplos resueltos</strong> y <strong>ejercicios con respuesta</strong>. Convención de signos de <em>química</em>: \(\delta q>0\) si el sistema <em>absorbe</em> calor; \(\delta w>0\) si el trabajo se hace <em>sobre</em> el sistema (por PV: \(\delta w= -P_{\rm ext}\,dV\) si el sistema se expande).</p>
-      <div class="callout"><strong>Cómo estudiar.</strong> 1) Revisa objetivos. 2) Lee el recuadro de fórmulas. 3) Estudia 1–2 ejemplos. 4) Practica 8 ejercicios (📝) y despliega las respuestas. Usa unidades SI salvo que se indique.</div>
-      <div class="toc">
-        <a href="#cap1">1. Conceptos y 0ª ley</a>
-        <a href="#cap2">2. Gases ideales y reales</a>
-        <a href="#cap3">3. 1er principio y entalpía</a>
-        <a href="#cap4">4. Capacidades, Hess y calorimetría</a>
-        <a href="#cap5">5. 2º principio y entropía</a>
-        <a href="#cap6">6. Potenciales y Maxwell</a>
-        <a href="#cap7">7. Equilibrio químico</a>
-        <a href="#cap8">8. Equilibrio de fases</a>
-        <a href="#cap9">9. Mezclas: μ, actividad y fugacidad</a>
-        <a href="#cap10">10. Propiedades coligativas</a>
-        <a href="#cap11">11. Electroquímica (termo)</a>
-        <a href="#cap12">12. Termo de reacciones (T,p)</a>
-      </div>
-    </section>
+  <section id="primera-ley" class="content-section">
+    <div class="card glass">
+      <h1>1️⃣ Primera Ley de la Termodinámica</h1>
 
-    <!-- ========= CAPÍTULO 1 ========= -->
-    <section class="paper" id="cap1">
-      <h2>1. Conceptos y 0ª ley</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Sistema/entorno, estados y funciones, variables extensivas/intensivas, equilibrio, temperatura.</div>
-      <div class="callout"><strong>📌 Ideas y fórmulas.</strong>
-        <ul>
-          <li>Estado definido por variables (p, T, n, V, composición). Funciones de estado: U, H, S, G, A (F).</li>
-          <li>0ª ley: si A en equilibrio térmico con B y B con C ⇒ A con C. Define <em>temperatura</em>.</li>
-          <li>Tipos de sistema: aislado, cerrado, abierto. Fronteras adiabática/diatérmica.</li>
-          <li>Trabajo PV <em>reversible</em>: \(\delta w_{rev} = -P\,dV\). Gases ideales: \(PV=nRT\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Diferencia entre camino y estado</summary>El calor \(q\) y el trabajo \(w\) dependen del camino; \(\Delta U, \Delta H, \Delta S, \Delta G\) dependen solo del estado inicial/final.</details></li>
-          <li><details><summary>Trabajo de expansión reversible isoterma ideal</summary>\(w_{rev}= -nRT\,\ln\tfrac{V_2}{V_1}= nRT\,\ln\tfrac{P_2}{P_1}\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Clasifica: café en vaso de papel dentro de termo cerrado</summary>Sistema <em>cerrado</em> (masa fija) aproximadamente <em>adiabático</em>.</details></li>
-          <li><details><summary>¿Cuál es función de estado? q, w, U, H</summary>U y H.</details></li>
-          <li><details><summary>Ideal, isoterma: \(n=1\) mol, \(T=298\,K\), \(V_1=10\,L\to V_2=20\,L\). Calcula \(w_{rev}\)</summary>\(w=-nRT\ln 2 \approx -1\cdot 8.314\cdot298\cdot0.693 \approx -1.72\,kJ\).</details></li>
-          <li><details><summary>¿Extensiva o intensiva? T, p, V, n, \(\rho\)</summary>T/p/intensivas; V/n/extensivas; \(\rho\) intensiva.</details></li>
-          <li><details><summary>Para gas ideal, ¿depende U de V?</summary>No; \(U=U(T)\).</details></li>
-          <li><details><summary>Equilibrio térmico vs mecánico</summary>T constante vs p uniforme (no hay fuerzas no balanceadas).</details></li>
-          <li><details><summary>Trabajo <em>irrev.</em> con \(P_{ext}\) constante</summary>\(w=-P_{ext}\,\Delta V\).</details></li>
-          <li><details><summary>Enunciado 0ª ley</summary>Transitivad del equilibrio térmico ⇒ existencia de temperatura.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 2 ========= -->
-    <section class="paper" id="cap2">
-      <h2>2. Gases ideales y reales</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Ecuaciones de estado, factores de compresibilidad, diagrama p–V–T.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Ideal: \(PV=nRT\). Mezclas ideales: \(P=\sum_i y_i P\), \(U=\sum U_i(T)\).</li>
-          <li>Van der Waals: \(\left(P+\tfrac{a n^2}{V^2}\right)(V-nb)=nRT\). Punto crítico por \(\partial P/\partial V=\partial^2 P/\partial V^2=0\).</li>
-          <li>Factor Z: \(Z=\tfrac{PV}{nRT}\). Para reales: \(P=Z\,nRT/V\). Correlaciones de compresibilidad.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>¿Cuándo usar Van der Waals?</summary>Cerca de licuefacción o a p altas (interacciones/volumen propio relevantes).</details></li>
-          <li><details><summary>Estimación con Z</summary>Si Z=0.9, reemplaza \(P\) por \(0.9\,nRT/V\) para estimar trabajo/energía.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Calcula Z para 2 mol, 10 L, 300 K a 25 bar</summary>\(Z=PV/(nRT)=25\cdot10^5\cdot0.01/(2\cdot8.314\cdot300)\approx 0.50\).</details></li>
-          <li><details><summary>Cond. crítica van der Waals</summary>\(T_c=8a/(27Rb)\), \(P_c=a/(27b^2)\), \(V_c=3nb\).</details></li>
-          <li><details><summary>¿Z&gE;1 o &lE;1? Atracciones dominan</summary>Z<1.</details></li>
-          <li><details><summary>Mezcla ideal: y=0.6/0.4, P=5 bar. p parciales</summary>p₁=3 bar, p₂=2 bar.</details></li>
-          <li><details><summary>Trabajo isoterma ideal con Z≈const</summary>\(w\approx -\int P\,dV= -Z nRT\ln(V_2/V_1)\).</details></li>
-          <li><details><summary>Gas ideal: dU</summary>\(dU=C_V\,dT\).</details></li>
-          <li><details><summary>Gas ideal monoatómico: C_V y C_P</summary>\(C_V=\tfrac{3}{2}R\), \(C_P=\tfrac{5}{2}R\).</details></li>
-          <li><details><summary>Define Z</summary>Medida de no idealidad: 1 ideal, ≠1 real.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 3 ========= -->
-    <section class="paper" id="cap3">
-      <h2>3. Primer principio y entalpía</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Energía interna, balance de energía, procesos PV, entalpía.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>1er principio: \(dU=\delta q+\delta w\). Solo PV: \(\delta w= -P_{ext}\,dV\).</li>
-          <li>Enthalpía: \(H=U+pV\) ⇒ \(dH=\delta q+Vdp+p\,dV\). A p cte: \(\delta q_p=dH\).</li>
-          <li>Procesos ideales: adiabático rev. \(PV^\gamma=const\), \(T V^{\gamma-1}=const\), \(\gamma=C_P/C_V\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Compresión adiabática reversible (ideal)</summary>\(T_2=T_1\,(V_1/V_2)^{\gamma-1}\).</details></li>
-          <li><details><summary>Isobara: calor igual a ΔH</summary>En reacciones a p≈const, el calor medido = \(\Delta H\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Expansión libre ideal: q, w, ΔU</summary>\(w=0, q=0, \Delta U=0\).</details></li>
-          <li><details><summary>Adiabática rev., monoatómico: \(T_1=300\,K\), \(V_2=\tfrac{1}{2}V_1\). \(T_2?\)</summary>\(\gamma=5/3\) ⇒ \(T_2=300\,(2)^{2/3}\approx 476\,K\).</details></li>
-          <li><details><summary>Isoterma ideal: q vs w</summary>\(\Delta U=0\) ⇒ \(q=-w\).</details></li>
-          <li><details><summary>Demuestra \(C_P-C_V=R\) (ideal)</summary>Usa \(H=U+RT\) y derivadas a T cte.</details></li>
-          <li><details><summary>Unidad de entalpía específica</summary>J/mol o kJ/mol.</details></li>
-          <li><details><summary>Identifica proceso con \(PV^\gamma=const\)</summary>Adiabático reversible.</details></li>
-          <li><details><summary>Trabajo en compresión irreversible a p_ext cte</summary>\(w= -p_{ext}\,\Delta V\).</details></li>
-          <li><details><summary>Signo de q en reacción endotérmica</summary>q>0 (absorbe calor).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 4 ========= -->
-    <section class="paper" id="cap4">
-      <h2>4. Capacidades, Hess y calorimetría</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> \(C_P, C_V\), relaciones, ley de Hess, calorimetría (bomba/constante de presión).</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>\(C_V = (\partial U/\partial T)_V\), \(C_P = (\partial H/\partial T)_P\). Ideal: \(C_P-C_V=R\).</li>
-          <li>Hess: \(\Delta H\) es aditiva por rutas. \(\Delta H_{rxn}^\circ = \sum \,\nu\,\Delta H_f^\circ (productos) - \sum \,\nu\,\Delta H_f^\circ (reactivos)\).</li>
-          <li>Calorimetría: bomba (V cte ⇒ q=\(\Delta U\)); a p cte ⇒ q=\(\Delta H\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Kirchhoff</summary>\(\Delta H^\circ(T_2)=\Delta H^\circ(T_1)+\int_{T_1}^{T_2} \! \Delta C_P\,dT\).</details></li>
-          <li><details><summary>Mezcla caliente + fría (p cte)</summary>Balance de energía: \(m_1 c_1 (T_f-T_1)+m_2 c_2 (T_f-T_2)=0\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Calcula \(\Delta H_{rxn}^\circ\) con tabulados</summary>Aplica Hess con coeficientes estequiométricos.</details></li>
-          <li><details><summary>Bomba calorimétrica: masa agua y ΔT</summary>\(q=C_{cal}\,\Delta T\) ⇒ \(\Delta U\) del proceso.</details></li>
-          <li><details><summary>Mezcla 100 g a 80 °C con 200 g a 20 °C (agua)</summary>\(T_f=40\,°C\).</details></li>
-          <li><details><summary>Ideal: relación Mayer</summary>\(C_P-C_V=R\).</details></li>
-          <li><details><summary>\(C_P\) vs \(C_V\)</summary>\(C_P> C_V\) (expansión a p cte realiza trabajo).</details></li>
-          <li><details><summary>Unidades de calorimetría</summary>J,K, kg, mol según base.</details></li>
-          <li><details><summary>\(\Delta H_f^\circ\) de elementos estándar</summary>Cero por convención.</details></li>
-          <li><details><summary>¿\(\Delta H\) depende de p?</summary>Débilmente (vía \(\Delta C_P\) y compresibilidad; suele despreciarse a presiones moderadas).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 5 ========= -->
-    <section class="paper" id="cap5">
-      <h2>5. Segundo principio y entropía</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Enunciados, cuantificación de \(\Delta S\), ciclos y rendimiento.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Clausius: \(\oint \tfrac{\delta q}{T} \le 0\). Para cambios reversibles: \(dS=\tfrac{\delta q_{rev}}{T}\).</li>
-          <li>Isoterma ideal: \(\Delta S = nR\ln\tfrac{V_2}{V_1} = -nR\ln\tfrac{P_2}{P_1}\).</li>
-          <li>Cambio de fase rev.: \(\Delta S = \tfrac{\Delta H_{trans}}{T_{trans}}\).</li>
-          <li>Eficiencia de Carnot: \(\eta=1-\tfrac{T_c}{T_h}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Entropía de calentamiento a p cte</summary>\(\Delta S= \int C_P\,\tfrac{dT}{T}= C_P\ln(T_2/T_1)\) si \(C_P\) constante.</details></li>
-          <li><details><summary>Entropía total en mezcla espontánea ideal</summary>\(\Delta S_{mix}= -R\sum n_i\ln x_i >0\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Fusión de hielo a 0 °C: \(\Delta S\) del sistema</summary>\(\Delta S=\Delta H_{fus}/T\approx 6.01\,kJ/mol / 273.15\,K = 22.0\,J/(mol\,K)\).</details></li>
-          <li><details><summary>Expansión libre ideal: \(\Delta S?\)</summary>\(\Delta S=nR\ln(V_2/V_1)>0\) para el gas; entorno compensa ⇒ \(\Delta S_{univ}>0\).</details></li>
-          <li><details><summary>¿Cuándo \(\Delta S_{univ}=0\)?</summary>Procesos reversibles.</details></li>
-          <li><details><summary>Calentamiento 298→398 K con \(C_P=75\,J/(mol\,K)\)</summary>\(\Delta S = 75\ln(398/298)=22.2\,J/(mol\,K)\).</details></li>
-          <li><details><summary>Entropía de vaporización de agua a 100 °C</summary>\(\Delta S \approx 40.7\,kJ/mol / 373.15\,K = 109\,J/(mol\,K)\).</details></li>
-          <li><details><summary>\(\eta\) máxima entre 600 K y 300 K</summary>0.5.</details></li>
-          <li><details><summary>Mezcla ideal 1 mol A + 1 mol B</summary>\(\Delta S_{mix}=2R\ln 2=11.53\,J/K\cdot mol\) total.</details></li>
-          <li><details><summary>Clausius desigualdad: ¿qué implica?</summary>Direccionalidad del tiempo/irreversibilidad.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 6 ========= -->
-    <section class="paper" id="cap6">
-      <h2>6. Potenciales y relaciones de Maxwell</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Criterios de espontaneidad y equilibrio; ecuaciones fundamentales; Maxwell.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Diferenciales fundamentales (sistemas cerrados): \(dU=T\,dS-p\,dV\); \(dH=T\,dS+V\,dp\); \(dA=-p\,dV-S\,dT\); \(dG=V\,dp-S\,dT\).</li>
-          <li>Criterios: a T,V cte ↓A; a T,p cte ↓G. Equilibrio cuando dA=dG=0.</li>
-          <li>Maxwell (ej.): \( (\partial T/\partial V)_S = -(\partial p/\partial S)_V \), \( (\partial S/\partial p)_T = - (\partial V/\partial T)_p \).</li>
-          <li>Multipropiedad: \(\mu_i=(\partial G/\partial n_i)_{T,p,n_j}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Demuestra \(dG=Vdp-SdT\)</summary>De \(G=H-TS\) y \(dH=T dS+V dp\).</details></li>
-          <li><details><summary>Criterio de equilibrio a T,p cte para reacción</summary>\(dG=\sum \mu_i\,dn_i\). En eq.: \(\sum \nu_i\mu_i=0\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Condición de equilibrio de fases</summary>\(\mu_i^{(\alpha)}=\mu_i^{(\beta)}\) para cada i.</details></li>
-          <li><details><summary>Define A y G</summary>A=Helmholtz=U−TS; G=Gibbs=H−TS.</details></li>
-          <li><details><summary>\( (\partial G/\partial T)_p\)</summary>\(-S\).</details></li>
-          <li><details><summary>\( (\partial G/\partial p)_T\)</summary>\(V\).</details></li>
-          <li><details><summary>Estabilidad: \( (\partial^2 G/\partial \xi^2)_{T,p}>0\)</summary>Condición de mínimo.</details></li>
-          <li><details><summary>\(\mu\) de gas ideal</summary>\(\mu=\mu^\circ(T)+RT\ln(p/p^\circ)\).</details></li>
-          <li><details><summary>Relación de Gibbs–Duhem</summary>\(\sum n_i\,d\mu_i= -S\,dT+V\,dp\).</details></li>
-          <li><details><summary>Significado físico de \(\mu\)</summary>Energía libre molar parcial; “tendencia” a escapar/reaccionar.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 7 ========= -->
-    <section class="paper" id="cap7">
-      <h2>7. Equilibrio químico</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Constante K, cociente Q, relación con \(\Delta G\), van't Hoff, Le Châtelier.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>\(\Delta G=\Delta G^\circ + RT\ln Q\). En equilibrio: \(\Delta G=0\) ⇒ \(\Delta G^\circ = -RT\ln K\).</li>
-          <li>Constantes: \(K_p, K_c, K_x, K_a\) según variables. Para gases ideales: \(K_p=K_c(RT)^{\Delta n}\).</li>
-          <li>Van't Hoff: \(\tfrac{d\ln K}{dT}=\tfrac{\Delta H^\circ}{RT^2}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Calcula K a 298 K de \(\Delta G^\circ= -34.5\,kJ/mol\)</summary>\(K=\exp(34.5\,000/(8.314\cdot298))\approx 2.6\times10^6\).</details></li>
-          <li><details><summary>Dirección espontánea</summary>Si \(Q<K\): avanza a productos (\(\Delta G<0\)).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Relaciona K y \(\Delta H^\circ>0\) al subir T</summary>K aumenta (endotérmica favorecida al calentar).</details></li>
-          <li><details><summary>\(K_p\) de \(N_2O_4 \rightleftharpoons 2 NO_2\)</summary>Expresa \(K_p= (p_{NO_2}^2/p_{N_2O_4})/p^\circ\).</details></li>
-          <li><details><summary>Extensión de reacción \(\xi\) a T,p</summary>Equilibrio cuando \( (\partial G/\partial \xi)_{T,p}=0\).</details></li>
-          <li><details><summary>Si \(\Delta G^\circ>0\), ¿puede haber productos?</summary>Sí, si \(Q\ll 1\) o por acoplamiento (p.ej., electroquímica).</details></li>
-          <li><details><summary>Efecto de aumentar p total en reacción con \(\Delta n<0\)</summary>Favorece productos.</details></li>
-          <li><details><summary>\(K\) y catalizador</summary>Un catalizador no cambia K; solo la velocidad.</details></li>
-          <li><details><summary>Van't Hoff: pendiente del gráfico \(\ln K\) vs \(1/T\)</summary>Pendiente = \(-\Delta H^\circ/R\).</details></li>
-          <li><details><summary>Relación entre \(K_p\) y \(K_c\)</summary>\(K_p=K_c(RT)^{\Delta n}\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 8 ========= -->
-    <section class="paper" id="cap8">
-      <h2>8. Equilibrio de fases</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Regla de fases, Clapeyron/Clausius–Clapeyron, diagramas p–T.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Regla de Gibbs: \(F=C-P+2\) (variables intensivas independientes).</li>
-          <li>Clapeyron: \(\tfrac{dp}{dT}=\tfrac{\Delta S}{\Delta V}=\tfrac{\Delta H}{T\,\Delta V}\).</li>
-          <li>Clausius–Clapeyron (vaporización ideal): \(\ln p= -\tfrac{\Delta H_{vap}}{R}\,\tfrac{1}{T}+C\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Entalpía de vaporización a partir de curva ln p vs 1/T</summary>Pendiente = \(-\Delta H_{vap}/R\).</details></li>
-          <li><details><summary>Punto triple</summary>Fases s, l, g en equilibrio (F=C−P+2=1−3+2=0 ⇒ no grados de libertad).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Agua: pendiente de fusión en p–T</summary>Negativa (hielo menos denso que agua líquida).</details></li>
-          <li><details><summary>Calcula \(\Delta S\) de sublimación a T</summary>\(\Delta S=\Delta H_{sub}/T\).</details></li>
-          <li><details><summary>Si \(\Delta V\to 0\) (s→l), \(dp/dT\)?</summary>Muy grande ⇒ línea casi vertical.</details></li>
-          <li><details><summary>Define azeótropo</summary>Mezcla que hierve a composición constante (\(y=x\) en ebullición).</details></li>
-          <li><details><summary>Regla de fases a p fija en binario líquido–vapor</summary>\(F=C-P+1=2-2+1=1\): una variable (p.ej. T) fija composición.</details></li>
-          <li><details><summary>¿Qué igualdades definen coexistencia?</summary>Igualdad de potencial químico de cada componente en ambas fases.</details></li>
-          <li><details><summary>Clausius–Clapeyron linealización</summary>Gráfica \(\ln p\) vs \(1/T\) es línea recta para \(\Delta H_{vap}\) ≈ const.</details></li>
-          <li><details><summary>Triple del CO₂ a 5.11 bar</summary>Debajo no hay líquido (sólo sublimación).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 9 ========= -->
-    <section class="paper" id="cap9">
-      <h2>9. Mezclas: potencial químico, actividad y fugacidad</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Propiedades parciales molares, modelos de solución, γ y φ.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>\(\mu_i=\mu_i^\circ(T)+RT\ln a_i\). Líquidos: \(a_i=\gamma_i x_i\) (Raoult/Henry). Gases: \(a_i=\phi_i y_i p/p^\circ\).</li>
-          <li>Gibbs–Duhem: \(\sum x_i\,d\mu_i=0\) a T,p constantes.</li>
-          <li>Propiedades parciales: \(\overline{M}_i=(\partial M/\partial n_i)_{T,p,n_j}\). Mezcla ideal: \(\overline{G}_i=\mu_i\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Desvío positivo/negativo a Raoult</summary>γ>1 ⇒ volatilidad ↑ (interacciones débiles); γ<1 ⇒ fuerte atracción.</details></li>
-          <li><details><summary>Fugacidad de gas real</summary>\(f=\phi p\). A bajas p, \(\phi\to1\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Para solución ideal, \(\mu_i\)</summary>\(\mu_i=\mu_i^\circ+RT\ln x_i\).</details></li>
-          <li><details><summary>Define coeficiente de actividad</summary>\(\gamma_i=a_i/x_i\).</details></li>
-          <li><details><summary>Relación entre \(K_p\) y fugacidades reales</summary>\(K=\prod f_i^{\nu_i}\) a T,p.</details></li>
-          <li><details><summary>\(a_i\) de soluto muy diluido (ley de Henry)</summary>\(a_i\approx k_H x_i\) relativo a estándar de Henry.</details></li>
-          <li><details><summary>\(\Delta G_{mix}\) ideal</summary>\(RT\sum n_i\ln x_i<0\).</details></li>
-          <li><details><summary>Coef. de fugacidad de gas ideal</summary>\(\phi=1\).</details></li>
-          <li><details><summary>\(\mu\) y presión: \( (\partial \mu/\partial p)_T\)</summary>\(\overline{V}\) (volumen parcial molar).</details></li>
-          <li><details><summary>¿Qué mide un osmómetro?</summary>Presión osmótica ⇒ actividades.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 10 ========= -->
-    <section class="paper" id="cap10">
-      <h2>10. Propiedades coligativas</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Descenso de presión de vapor, ebullición/solidificación, ósmosis, factor de van't Hoff.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Raoult (soluto no volátil, ideal): \(p_1= x_1 p_1^\star\) ⇒ \(\Delta p = p_1^\star - p_1= x_2 p_1^\star\).</li>
-          <li>\(\Delta T_b=K_b m\), \(\Delta T_f=K_f m\), \(\Pi = i m RT\) (diluidas), con \(i\) factor de van't Hoff.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Determina masa molar por crioscopia</summary>De \(\Delta T_f=K_f m\) ⇒ moles = \(\tfrac{\Delta T_f\,m_{solvente}}{K_f}\).</details></li>
-          <li><details><summary>Electrolitos fuertes</summary>\(i>1\) por disociación (aprox. igual al número de iones por fórmula a dilución alta).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>\(0.5\,m\) NaCl: \(\Pi\) a 298 K, asume \(i=2\)</summary>\(\Pi\approx i m RT =2\cdot0.5\cdot8.314\cdot298\approx 2.48\,MPa\).</details></li>
-          <li><details><summary>\(\Delta T_b\) de 1 m sacarosa (no electrolito)</summary>\(\Delta T_b=K_b m\) (p.ej. agua: 0.512 K ⇒ 0.512 K).</details></li>
-          <li><details><summary>Descenso relativo de p_vapor</summary>\(\Delta p/p^\star = x_2\) (ideal).</details></li>
-          <li><details><summary>Congelación de salmuera</summary>\(\Delta T_f= i K_f m\) ⇒ anticongelante.</details></li>
-          <li><details><summary>Ósmosis inversa</summary>Aplicar p>\(\Pi\) para forzar flujo contrario.</details></li>
-          <li><details><summary>Si hay asociación, \(i\) es…</summary><i><1</i>.</details></li>
-          <li><details><summary>Unidades de molalidad</summary>mol de soluto / kg de solvente.</details></li>
-          <li><details><summary>Raoult vs Henry</summary>Raoult para componentes mayoritarios; Henry para solutos diluidos.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 11 ========= -->
-    <section class="paper" id="cap11">
-      <h2>11. Electroquímica (termodinámica)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Relación \(\Delta G\)–E, ecuación de Nernst, pH y actividades, K–E°.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>\(\Delta G = -n F E\). Estándar: \(\Delta G^\circ = -n F E^\circ\).</li>
-          <li>Nernst: \(E=E^\circ -\tfrac{RT}{nF}\ln Q\) (25 °C: \(E=E^\circ -0.05916/n\,\log Q\)).</li>
-          <li>\(K\) y \(E^\circ\): \(E^\circ=\tfrac{RT}{nF}\ln K\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Pila Daniell (Zn/Cu)</summary>n=2; \(E=E^\circ - (0.0592/2)\log\tfrac{[Cu^{2+}]}{[Zn^{2+}]}\).</details></li>
-          <li><details><summary>pH de electrodo de hidrógeno</summary>\(E=E^\circ -0.0592\,\text{pH}\) (a 1 atm H₂, a_H⁺=10^{-pH}).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Si \(E^\circ=1.10\,V\) y n=2, K a 298 K</summary>\(K=\exp(nF E^\circ/RT)\approx \exp(2\cdot96485\cdot1.10/(8.314\cdot298))\approx 1.6\times10^{37}\).</details></li>
-          <li><details><summary>Concentración cuando pila se apaga (E=0)</summary>\(Q=K\) (equilibrio).</details></li>
-          <li><details><summary>Relación E y espontaneidad</summary>E>0 ⇒ \(\Delta G<0\).</details></li>
-          <li><details><summary>Si se duplican todas las actividades</summary>En reacción redox general, E cambia según \(\log Q\) (no por escala lineal).</details></li>
-          <li><details><summary>Unidades: F</summary>96485 C/mol e⁻.</details></li>
-          <li><details><summary>Polaridad de polos en pila galvánica</summary>Cátodo: reducción, polo positivo.</details></li>
-          <li><details><summary>pH y potencial de O₂/H₂O</summary>Depende de [H⁺]: Nernst con n=4.</details></li>
-          <li><details><summary>¿Cambia E° con la estequiometría escalada?</summary>No: E° independiente de multiplicar reacción; n y ΔG° escalan de forma que E° constante.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 12 ========= -->
-    <section class="paper" id="cap12">
-      <h2>12. Termodinámica de reacciones (T, p)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Extensión de reacción, dependencia con T y p, flama adiabática (idea).</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Extensión \(\xi\): \(dn_i = \nu_i\,d\xi\). A T,p cte: \(\left(\tfrac{\partial G}{\partial \xi}\right)_{T,p}= \Delta_r G = \sum \nu_i \mu_i\).</li>
-          <li>Kirchhoff para \(\Delta H_r^\circ(T)\): \(=\Delta H_r^\circ(T_0)+\int_{T_0}^T \! \Delta C_P\,dT\).</li>
-          <li>Dependencia de \(K(T)\): van't Hoff (ver cap. 7). Efecto de p en gases: vía actividades/fugacidades.</li>
-          <li>Flama adiabática (idea): \(|\Delta H_r|\) = incremento entálpico de productos hasta \(T_{ad}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Calcula \(T_{ad}\) de combustión CH₄ (bosquejo)</summary>\(-\Delta H_r(T_0)=\int_{T_0}^{T_{ad}} \! \sum n_p C_{P,p}(T)\,dT\).</details></li>
-          <li><details><summary>Equilibrio con compresiones</summary>Si \(\Delta n<0\), comprimir (↑p) favorece productos.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (8)</h4>
-        <ol>
-          <li><details><summary>Escribe \(dG\) en función de \(dT,dp,d\xi\)</summary>\(dG= -S\,dT+V\,dp+\Delta_r G\,d\xi\).</details></li>
-          <li><details><summary>\(\Delta_r G^\circ\) y K</summary>\(\Delta_r G^\circ=-RT\ln K\).</details></li>
-          <li><details><summary>Si \(\Delta C_P\)≈const, integra Kirchhoff</summary>\(\Delta H_r^\circ(T)\approx \Delta H_r^\circ(T_0)+\Delta C_P (T-T_0)\).</details></li>
-          <li><details><summary>Define \(\xi\)</summary>Variable que mide el avance de reacción (mol de reacción).</details></li>
-          <li><details><summary>Dependencia de \(\Delta_r G\) con p (gases ideales)</summary>\(\Delta_r G=\Delta_r G^\circ + RT\ln Q\), con Q en términos de presiones.</details></li>
-          <li><details><summary>Si \(K=1\) a T*, entonces…</summary>\(\Delta G^\circ=0\) a T*.</details></li>
-          <li><details><summary>Efecto de inerte a p cte</summary>Generalmente no cambia la composición de equilibrio (diluye pero p total fija).</details></li>
-          <li><details><summary>Unidades típicas de \(K_p\)</summary>Adimensional si se define respecto a estado estándar; usar \(p/p^\circ\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="paper">
-      <h2>Errores típicos y trucos</h2>
+      <h2>📖 Bachillerato — Conservación de la Energía</h2>
+      <p>La <strong>Primera Ley</strong> establece que la energía no se crea ni se destruye, solo se transforma. Para un sistema cerrado:</p>
+      <div class="equation-box">ΔU = Q - W</div>
+      <p>donde:</p>
       <ul>
-        <li>Mezclar signos de trabajo (física vs química). <em>Aquí</em>: \(\delta w>0\) sobre el sistema.</li>
-        <li>Usar \(\Delta S=\tfrac{q}{T}\) en procesos irreversibles. Solo es válido con \(q_{rev}\).</li>
-        <li>Olvidar el término \(\Delta n\) al convertir entre \(K_p\) y \(K_c\).</li>
-        <li>Tratar actividades = fracciones molares fuera de soluciones ideales.</li>
-        <li>Querer que un catalizador cambie K: solo acelera el equilibrio.</li>
+        <li><strong>ΔU:</strong> Cambio en energía interna del sistema.</li>
+        <li><strong>Q:</strong> Calor absorbido por el sistema (positivo si entra, negativo si sale).</li>
+        <li><strong>W:</strong> Trabajo realizado por el sistema (positivo si el sistema lo hace, negativo si se hace sobre él).</li>
       </ul>
-    </section>
-  </main>
 
-  <button class="topbtn" id="topbtn">↑ Arriba</button>
+      <div class="note">
+        <strong>⚠️ Convención de signos:</strong> Q > 0 (sistema absorbe calor), Q < 0 (sistema libera calor). W > 0 (sistema hace trabajo, expansión), W < 0 (trabajo sobre el sistema, compresión).
+      </div>
 
-  <script>
-    const $ = s => document.querySelector(s);
-    // Progress bar + top button
-    const bar = $('#progress');
-    function updateProgress(){
-      const h = document.documentElement;
-      const sc = h.scrollTop || document.body.scrollTop;
-      const max = (h.scrollHeight - h.clientHeight);
-      const p = max>0 ? (sc/max)*100 : 0;
-      bar.style.width = p + '%';
-      $('#topbtn').classList.toggle('show', sc>600);
-    }
-    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+      <h2>🔧 Trabajo en Procesos Termodinámicos</h2>
+      <p>Para un gas que se expande o comprime reversiblemente:</p>
+      <div class="equation-box">W = ∫ P dV</div>
+      <p>Para un proceso a presión constante (isobárico):</p>
+      <div class="equation-box">W = P ΔV</div>
 
-    // Reader controls
-    const root = document.documentElement;
-    $('#fs-up').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
-      root.style.setProperty('--base', Math.min(val+1, 22)+'px');
-    });
-    $('#fs-down').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
-      root.style.setProperty('--base', Math.max(val-1, 14)+'px');
-    });
-    $('#width-up').addEventListener('click', ()=>{
-      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
-      const num = parseFloat(w);
-      root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
-    });
-    $('#width-down').addEventListener('click', ()=>{
-      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
-      const num = parseFloat(w);
-      root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
-    });
-    $('#theme-toggle').addEventListener('click', ()=>{
-      const light = getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff';
-      if(light){ // switch to dark palette
-        root.style.setProperty('--bg','#0b1220'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff');
-        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#38bdf8'); root.style.setProperty('--accent','#22d3ee'); root.style.setProperty('--accent2','#06b6d4'); root.style.setProperty('--border','#203054');
-      }else{ // back to light
-        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
-        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#0ea5e9'); root.style.setProperty('--accent','#22d3ee'); root.style.setProperty('--accent2','#06b6d4'); root.style.setProperty('--border','#e9edf6');
-      }
-    });
-    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-  </script>
-</body>
-</html>
+      <h2>🎓 Universitario — Formulación Rigurosa</h2>
+      <p>La forma diferencial de la Primera Ley:</p>
+      <div class="equation-box">dU = δQ - δW</div>
+      <p>donde δ indica que Q y W no son funciones de estado exactas (dependen del camino), pero U sí lo es.</p>
+
+      <h3>📊 Procesos Específicos</h3>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Proceso</th>
+              <th>Condición</th>
+              <th>ΔU</th>
+              <th>Q</th>
+              <th>W</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Isotérmico</td>
+              <td>T = constante</td>
+              <td>0 (gas ideal)</td>
+              <td>nRT ln(V<sub>f</sub>/V<sub>i</sub>)</td>
+              <td>Q</td>
+            </tr>
+            <tr>
+              <td>Adiabático</td>
+              <td>Q = 0</td>
+              <td>-W</td>
+              <td>0</td>
+              <td>C<sub>V</sub>ΔT</td>
+            </tr>
+            <tr>
+              <td>Isocórico</td>
+              <td>V = constante</td>
+              <td>Q</td>
+              <td>nC<sub>V</sub>ΔT</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>Isobárico</td>
+              <td>P = constante</td>
+              <td>nC<sub>V</sub>ΔT</td>
+              <td>nC<sub>P</sub>ΔT</td>
+              <td>PΔV</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🧮 Capacidades Caloríficas</h2>
+      <p>Capacidad calorífica a volumen constante:</p>
+      <div class="equation-box">C<sub>V</sub> = (∂U/∂T)<sub>V</sub></div>
+      <p>Capacidad calorífica a presión constante:</p>
+      <div class="equation-box">C<sub>P</sub> = (∂H/∂T)<sub>P</sub></div>
+      <p>Para gases ideales: <span class="chem">C<sub>P</sub> - C<sub>V</sub> = nR</span></p>
+    </div>
+  </section>
+
+  <section id="segunda-ley" class="content-section">
+    <div class="card glass">
+      <h1>2️⃣ Segunda Ley de la Termodinámica</h1>
+
+      <h2>📖 Bachillerato — Dirección de Procesos</h2>
+      <p>La <strong>Segunda Ley</strong> establece que los procesos naturales tienden a aumentar el desorden (entropía) del universo. Ningún proceso es 100% eficiente en convertir calor en trabajo.</p>
+      <p>Enunciados clásicos:</p>
+      <ul>
+        <li><strong>Clausius:</strong> El calor no fluye espontáneamente de un cuerpo frío a uno caliente.</li>
+        <li><strong>Kelvin-Planck:</strong> Es imposible construir una máquina que transforme completamente calor en trabajo sin otros cambios.</li>
+      </ul>
+
+      <h2>🎓 Universitario — Entropía como Función de Estado</h2>
+      <p>La entropía (S) cuantifica el desorden. Para un proceso reversible:</p>
+      <div class="equation-box">dS = δQ<sub>rev</sub> / T</div>
+      <p>Para cualquier proceso en el universo:</p>
+      <div class="equation-box">ΔS<sub>universo</sub> = ΔS<sub>sistema</sub> + ΔS<sub>entorno</sub> ≥ 0</div>
+      <ul>
+        <li>ΔS<sub>universo</sub> > 0: Proceso irreversible (espontáneo).</li>
+        <li>ΔS<sub>universo</sub> = 0: Proceso reversible (equilibrio).</li>
+        <li>ΔS<sub>universo</sub> < 0: Proceso imposible.</li>
+      </ul>
+
+      <h2>🔄 Ciclos Termodinámicos</h2>
+      <h3>Ciclo de Carnot</h3>
+      <p>El ciclo de Carnot es el ciclo más eficiente posible entre dos focos térmicos. Consta de:</p>
+      <ol>
+        <li>Expansión isotérmica (T<sub>H</sub>): Absorbe Q<sub>H</sub></li>
+        <li>Expansión adiabática: Temperatura cae a T<sub>C</sub></li>
+        <li>Compresión isotérmica (T<sub>C</sub>): Cede Q<sub>C</sub></li>
+        <li>Compresión adiabática: Temperatura sube a T<sub>H</sub></li>
+      </ol>
+      <p>Eficiencia del ciclo de Carnot:</p>
+      <div class="equation-box">η = 1 - T<sub>C</sub>/T<sub>H</sub></div>
+
+      <h2>🌡️ Tercera Ley de la Termodinámica</h2>
+      <p>La <strong>Tercera Ley</strong> establece que la entropía de un cristal perfecto a 0 K es cero:</p>
+      <div class="equation-box">S(0 K) = 0</div>
+      <p>Esto permite calcular entropías absolutas a cualquier temperatura.</p>
+
+      <div class="note">
+        <strong>💡 Implicación práctica:</strong> La Segunda Ley explica por qué ciertos procesos son espontáneos (romper un huevo, mezclar gases) pero sus inversos no lo son. La entropía del universo siempre aumenta.
+      </div>
+    </div>
+  </section>
+
+  <section id="entalpia" class="content-section">
+    <div class="card glass">
+      <h1>🔥 Entalpía y Termoquímica</h1>
+
+      <h2>📖 Bachillerato — Calor de Reacción</h2>
+      <p>La <strong>entalpía (H)</strong> es una función de estado que representa el contenido calórico de un sistema a presión constante:</p>
+      <div class="equation-box">H = U + PV</div>
+      <p>El cambio de entalpía en una reacción:</p>
+      <div class="equation-box">ΔH = H<sub>productos</sub> - H<sub>reactivos</sub></div>
+      <ul>
+        <li>ΔH < 0: Reacción <strong>exotérmica</strong> (libera calor).</li>
+        <li>ΔH > 0: Reacción <strong>endotérmica</strong> (absorbe calor).</li>
+      </ul>
+
+      <h2>🔥 Tipos de Entalpía</h2>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Definición</th>
+              <th>Símbolo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Formación</td>
+              <td>Formar 1 mol de compuesto desde elementos en estado estándar</td>
+              <td>ΔH<sub>f</sub>°</td>
+            </tr>
+            <tr>
+              <td>Combustión</td>
+              <td>Quemar 1 mol de sustancia completamente</td>
+              <td>ΔH<sub>c</sub>°</td>
+            </tr>
+            <tr>
+              <td>Disolución</td>
+              <td>Disolver 1 mol de soluto</td>
+              <td>ΔH<sub>sol</sub></td>
+            </tr>
+            <tr>
+              <td>Neutralización</td>
+              <td>Reacción ácido-base formando 1 mol H₂O</td>
+              <td>ΔH<sub>neut</sub></td>
+            </tr>
+            <tr>
+              <td>Vaporización</td>
+              <td>Evaporar 1 mol de líquido</td>
+              <td>ΔH<sub>vap</sub></td>
+            </tr>
+            <tr>
+              <td>Fusión</td>
+              <td>Fundir 1 mol de sólido</td>
+              <td>ΔH<sub>fus</sub></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>📊 Ley de Hess</h2>
+      <p>El cambio de entalpía total de una reacción es independiente del camino seguido. Si una reacción puede expresarse como suma de otras:</p>
+      <div class="equation-box">ΔH<sub>total</sub> = ΔH<sub>1</sub> + ΔH<sub>2</sub> + ΔH<sub>3</sub> + ...</div>
+
+      <h2>🧮 Cálculo de ΔH de Reacción</h2>
+      <p>Usando entalpías de formación estándar:</p>
+      <div class="equation-box">ΔH°<sub>reacción</sub> = Σ ΔH°<sub>f</sub>(productos) - Σ ΔH°<sub>f</sub>(reactivos)</div>
+
+      <p><strong>Ejemplo:</strong> Combustión del metano</p>
+      <div class="equation-box">CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l)</div>
+      <p>ΔH° = [ΔH°<sub>f</sub>(CO₂) + 2ΔH°<sub>f</sub>(H₂O)] - [ΔH°<sub>f</sub>(CH₄) + 2ΔH°<sub>f</sub>(O₂)]</p>
+      <p>ΔH° = [-393.5 + 2(-285.8)] - [-74.8 + 0] = -890.3 kJ/mol</p>
+
+      <h2>🎓 Universitario — Dependencia con la Temperatura</h2>
+      <p>Ecuación de Kirchhoff:</p>
+      <div class="equation-box">dΔH/dT = ΔC<sub>P</sub></div>
+      <p>O integrada:</p>
+      <div class="equation-box">ΔH(T₂) = ΔH(T₁) + ∫<sub>T₁</sub><sup>T₂</sup> ΔC<sub>P</sub> dT</div>
+
+      <div class="note">
+        <strong>💡 Estado estándar:</strong> Condiciones de referencia (25°C, 1 atm). Las entalpías de formación de elementos en su forma más estable se definen como cero.
+      </div>
+    </div>
+  </section>
+
+  <section id="entropia" class="content-section">
+    <div class="card glass">
+      <h1>📊 Entropía y Desorden Molecular</h1>
+
+      <h2>📖 Bachillerato — Concepto de Desorden</h2>
+      <p>La <strong>entropía (S)</strong> es una medida del desorden o aleatoriedad de un sistema. A mayor desorden, mayor entropía.</p>
+      <p>Tendencias generales:</p>
+      <ul>
+        <li>S(gas) > S(líquido) > S(sólido)</li>
+        <li>Mayor temperatura → Mayor entropía</li>
+        <li>Más moléculas de gas → Mayor entropía</li>
+        <li>Moléculas más complejas → Mayor entropía</li>
+      </ul>
+
+      <h2>🔄 Cambio de Entropía en Reacciones</h2>
+      <p>Similar a la entalpía, el cambio de entropía se calcula:</p>
+      <div class="equation-box">ΔS° = Σ S°(productos) - Σ S°(reactivos)</div>
+
+      <h2>🎓 Universitario — Definición Estadística</h2>
+      <p>Boltzmann relacionó entropía con probabilidad termodinámica (Ω):</p>
+      <div class="equation-box">S = k<sub>B</sub> ln Ω</div>
+      <p>donde k<sub>B</sub> = 1.38 × 10<sup>-23</sup> J/K es la constante de Boltzmann.</p>
+
+      <h2>🌡️ Entropía en Procesos Físicos</h2>
+      <p>Para cambios de fase reversibles:</p>
+      <div class="equation-box">ΔS = ΔH<sub>fase</sub> / T</div>
+
+      <p><strong>Fusión del hielo:</strong></p>
+      <p>ΔS<sub>fus</sub> = ΔH<sub>fus</sub> / T = 6.01 kJ/mol / 273.15 K = 22.0 J/(mol·K)</p>
+
+      <h2>📈 Entropía de Mezcla</h2>
+      <p>Cuando se mezclan gases ideales:</p>
+      <div class="equation-box">ΔS<sub>mezcla</sub> = -R Σ n<sub>i</sub> ln(x<sub>i</sub>)</div>
+      <p>donde x<sub>i</sub> es la fracción molar de cada componente.</p>
+
+      <h2>🔬 Cambio de Entropía del Universo</h2>
+      <p>Para determinar espontaneidad:</p>
+      <div class="equation-box">ΔS<sub>universo</sub> = ΔS<sub>sistema</sub> + ΔS<sub>entorno</sub></div>
+      <p>A temperatura constante:</p>
+      <div class="equation-box">ΔS<sub>entorno</sub> = -ΔH<sub>sistema</sub> / T</div>
+
+      <div class="note">
+        <strong>💡 Entropía absoluta:</strong> A diferencia de la entalpía, la entropía tiene valores absolutos gracias a la Tercera Ley. Todos los valores S° son positivos.
+      </div>
+    </div>
+  </section>
+
+  <section id="gibbs" class="content-section">
+    <div class="card glass">
+      <h1>⚡ Energía Libre de Gibbs</h1>
+
+      <h2>📖 Bachillerato — Espontaneidad de Procesos</h2>
+      <p>La <strong>energía libre de Gibbs (G)</strong> combina entalpía y entropía para predecir la espontaneidad de procesos a temperatura y presión constantes:</p>
+      <div class="equation-box">G = H - TS</div>
+      <p>El cambio de energía libre:</p>
+      <div class="equation-box">ΔG = ΔH - TΔS</div>
+
+      <h2>✅ Criterios de Espontaneidad</h2>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>ΔG</th>
+              <th>Significado</th>
+              <th>Proceso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ΔG < 0</td>
+              <td>Espontáneo</td>
+              <td>Ocurre naturalmente hacia adelante</td>
+            </tr>
+            <tr>
+              <td>ΔG = 0</td>
+              <td>Equilibrio</td>
+              <td>No hay cambio neto</td>
+            </tr>
+            <tr>
+              <td>ΔG > 0</td>
+              <td>No espontáneo</td>
+              <td>Requiere energía externa</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🧮 Análisis según ΔH y ΔS</h2>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>ΔH</th>
+              <th>ΔS</th>
+              <th>ΔG</th>
+              <th>Espontaneidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>< 0</td>
+              <td>> 0</td>
+              <td>Siempre < 0</td>
+              <td>Espontánea a toda T</td>
+            </tr>
+            <tr>
+              <td>> 0</td>
+              <td>< 0</td>
+              <td>Siempre > 0</td>
+              <td>Nunca espontánea</td>
+            </tr>
+            <tr>
+              <td>< 0</td>
+              <td>< 0</td>
+              <td>Depende de T</td>
+              <td>Espontánea a T baja</td>
+            </tr>
+            <tr>
+              <td>> 0</td>
+              <td>> 0</td>
+              <td>Depende de T</td>
+              <td>Espontánea a T alta</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>📊 Cálculo de ΔG°</h2>
+      <p>Usando energías libres de formación estándar:</p>
+      <div class="equation-box">ΔG°<sub>reacción</sub> = Σ ΔG°<sub>f</sub>(productos) - Σ ΔG°<sub>f</sub>(reactivos)</div>
+
+      <p>O mediante:</p>
+      <div class="equation-box">ΔG° = ΔH° - TΔS°</div>
+
+      <h2>🎓 Universitario — Relación con Equilibrio</h2>
+      <p>La energía libre estándar se relaciona con la constante de equilibrio:</p>
+      <div class="equation-box">ΔG° = -RT ln K</div>
+      <p>En condiciones no estándar:</p>
+      <div class="equation-box">ΔG = ΔG° + RT ln Q</div>
+      <p>donde Q es el cociente de reacción.</p>
+
+      <h2>⚡ Potencial Electroquímico</h2>
+      <p>En reacciones redox:</p>
+      <div class="equation-box">ΔG° = -nFE°</div>
+      <p>donde:</p>
+      <ul>
+        <li>n = número de electrones transferidos</li>
+        <li>F = constante de Faraday (96485 C/mol)</li>
+        <li>E° = potencial estándar de celda (V)</li>
+      </ul>
+
+      <div class="note">
+        <strong>💡 Temperatura de inversión:</strong> Cuando ΔH y ΔS tienen el mismo signo, existe una temperatura T = ΔH/ΔS donde ΔG = 0, marcando el cambio de espontaneidad.
+      </div>
+    </div>
+  </section>
+
+  <section id="equilibrio" class="content-section">
+    <div class="card glass">
+      <h1>⚖️ Equilibrio Termodinámico y Químico</h1>
+
+      <h2>📖 Bachillerato — Equilibrio Químico</h2>
+      <p>En el <strong>equilibrio químico</strong>, las velocidades de reacción directa e inversa son iguales. La posición de equilibrio se describe mediante la constante de equilibrio K.</p>
+      <p>Para la reacción: aA + bB ⇌ cC + dD</p>
+      <div class="equation-box">K = [C]<sup>c</sup>[D]<sup>d</sup> / [A]<sup>a</sup>[B]<sup>b</sup></div>
+
+      <h2>🔄 Principio de Le Chatelier</h2>
+      <p>Si un sistema en equilibrio sufre una perturbación, el equilibrio se desplaza para contrarrestar dicha perturbación:</p>
+      <ul>
+        <li><strong>Concentración:</strong> Añadir reactivo desplaza hacia productos.</li>
+        <li><strong>Presión:</strong> Aumentarla favorece el lado con menos moles de gas.</li>
+        <li><strong>Temperatura:</strong> Aumentarla favorece reacción endotérmica (ΔH > 0).</li>
+      </ul>
+
+      <h2>🎓 Universitario — Termodinámica del Equilibrio</h2>
+      <p>En el equilibrio, ΔG = 0, lo que lleva a:</p>
+      <div class="equation-box">ΔG° = -RT ln K</div>
+      <p>Esta ecuación fundamental relaciona termodinámica con equilibrio:</p>
+      <ul>
+        <li>Si K > 1: ΔG° < 0, productos favorecidos</li>
+        <li>Si K < 1: ΔG° > 0, reactivos favorecidos</li>
+        <li>Si K = 1: ΔG° = 0, equilibrio simétrico</li>
+      </ul>
+
+      <h2>🌡️ Dependencia de K con la Temperatura</h2>
+      <p>Ecuación de van't Hoff:</p>
+      <div class="equation-box">d(ln K)/dT = ΔH° / RT²</div>
+      <p>Forma integrada:</p>
 
 
