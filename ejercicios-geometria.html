@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Innove | Banco de Ejercicios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            options: {
+                renderActions: { addMenu: [] }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* ============ VARIABLES ============ */
+        :root {
+            --nav-height: 70px;
+            --radius: 16px;
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-scheme="dark"] {
+            --bg: #050505;
+            --bg-alt: #0a0a0a;
+            --text: #ffffff;
+            --text-muted: #a1a1aa;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent-eso: #2dd4bf;
+            --accent-bach: #60a5fa;
+            --accent-uni: #f472b6;
+            --nav-glass: blur(20px) saturate(180%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        [data-scheme="light"] {
+            --bg: #f8fafc;
+            --bg-alt: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --accent-eso: #0d9488;
+            --accent-bach: #2563eb;
+            --accent-uni: #db2777;
+            --nav-glass: blur(20px) saturate(180%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        /* ============ RESET ============ */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            padding-top: var(--nav-height);
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, rgba(100,100,100,0.1) 0%, transparent 50%);
+        }
+
+        /* ============ UTILS ============ */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+        
+        /* ============ NAVBAR ============ */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(var(--bg), 0.8); backdrop-filter: var(--nav-glass);
+            border-bottom: 1px solid var(--border); z-index: 100;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 5%;
+        }
+        .logo { font-weight: 900; font-size: 1.5rem; color: var(--text); text-decoration: none; }
+        .nav-tabs {
+            display: flex; gap: 5px; background: var(--border); padding: 4px; border-radius: 50px;
+        }
+        .tab-btn {
+            background: none; border: none; color: var(--text-muted); padding: 8px 20px;
+            border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.3s;
+            font-family: var(--font-display);
+        }
+        .tab-btn.active { background: var(--text); color: var(--bg); shadow: var(--shadow); }
+        
+        /* ============ HERO ============ */
+        .hero { text-align: center; padding: 80px 0 40px; }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; margin-bottom: 10px; }
+        .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        /* ============ SECTIONS & GRID ============ */
+        .section-content { display: none; animation: fadeIn 0.5s ease; }
+        .section-content.active { display: block; }
+        
+        .difficulty-header {
+            display: flex; align-items: center; gap: 15px; margin: 40px 0 20px;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        }
+        .badge {
+            padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; text-transform: uppercase;
+            font-weight: 800; letter-spacing: 1px;
+        }
+
+        .grid-layout {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;
+        }
+
+        /* ============ EXERCISE CARD ============ */
+        .ex-card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 25px; transition: transform 0.2s, border-color 0.2s; position: relative;
+            display: flex; flex-direction: column;
+        }
+        .ex-card:hover { transform: translateY(-3px); border-color: var(--accent-current); }
+        
+        .ex-meta { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
+        .ex-id { color: var(--accent-current); }
+        
+        .ex-problem { font-size: 1.1rem; margin-bottom: 20px; line-height: 1.6; }
+        .math-block {
+            background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; 
+            margin: 10px 0; font-family: var(--font-mono); font-size: 0.95rem; text-align: center;
+            border: 1px solid var(--border);
+        }
+        [data-scheme="light"] .math-block { background: rgba(0,0,0,0.05); }
+
+        /* ============ SOLUTION TOGGLE ============ */
+        details { margin-top: auto; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; }
+        summary {
+            padding: 12px 15px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            color: var(--text-muted); user-select: none; transition: 0.2s;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        summary:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        summary::after { content: "+"; font-size: 1.2em; }
+        details[open] summary::after { content: "-"; }
+        
+        .solution {
+            padding: 20px; border-top: 1px solid var(--border); font-size: 0.95rem;
+            color: var(--text-muted); line-height: 1.7; animation: slideDown 0.3s ease;
+        }
+        .final-res {
+            display: block; margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--border);
+            color: var(--accent-current); font-weight: bold; text-align: center; font-family: var(--font-mono);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">Innove<span style="color:var(--text-muted); font-weight:300;">Math</span></a>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="setTab('eso', '#2dd4bf')">ESO</button>
+            <button class="tab-btn" onclick="setTab('bach', '#60a5fa')">Bachillerato</button>
+            <button class="tab-btn" onclick="setTab('uni', '#f472b6')">Universidad</button>
+        </div>
+        <button class="tab-btn" onclick="toggleTheme()" style="padding: 5px 15px;">◑</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Banco de Ejercicios</h1>
+            <p>Colección intensiva: Desde la recta básica hasta diagonalización espectral.</p>
+        </div>
+
+        <div id="eso" class="section-content active" style="--accent-current: var(--accent-eso);">
+            
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(45, 212, 191, 0.2); color: #2dd4bf;">Nivel Básico</span>
+                <h3>La Recta en el Plano</h3>
+            </div>
+
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#01</span><span>Cálculo de Pendiente</span></div>
+                    <div class="ex-problem">Calcula la pendiente de la recta que pasa por los puntos $A(2, 3)$ y $B(5, 9)$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Usamos la fórmula $m = \frac{y_2 - y_1}{x_2 - x_1}$.
+                            <br>Sustituimos: $m = \frac{9 - 3}{5 - 2} = \frac{6}{3}$.
+                            <span class="final-res">$$ m = 2 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#02</span><span>Ecuación Explícita</span></div>
+                    <div class="ex-problem">Halla la ecuación de la recta con pendiente $m=-3$ y ordenada en el origen $n=4$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            La forma explícita es $y = mx + n$.
+                            <br>Sustituimos directamente los valores dados.
+                            <span class="final-res">$$ y = -3x + 4 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#03</span><span>Punto-Pendiente</span></div>
+                    <div class="ex-problem">Ecuación de la recta que pasa por $P(-1, 2)$ y tiene pendiente $m=5$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Fórmula: $y - y_0 = m(x - x_0)$.
+                            <br>$y - 2 = 5(x - (-1)) \Rightarrow y - 2 = 5(x+1)$.
+                            <br>$y = 5x + 5 + 2$.
+                            <span class="final-res">$$ y = 5x + 7 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#04</span><span>Rectas Paralelas</span></div>
+                    <div class="ex-problem">Encuentra una recta paralela a $y = 2x - 1$ que pase por el origen $(0,0)$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Si son paralelas, tienen la misma pendiente $m=2$.
+                            <br>Como pasa por $(0,0)$, entonces $n=0$.
+                            <span class="final-res">$$ y = 2x $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                 <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#05</span><span>Vector Director</span></div>
+                    <div class="ex-problem">Dada la recta con vector director $\vec{v}=(-2, 3)$ que pasa por $P(1,1)$, halla su ecuación continua.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Ecuación continua: $\frac{x-x_0}{v_x} = \frac{y-y_0}{v_y}$.
+                            <span class="final-res">$$ \frac{x-1}{-2} = \frac{y-1}{3} $$</span>
+                        </div>
+                    </details>
+                </article>
+                
+                </div>
+        </div>
+
+        <div id="bach" class="section-content" style="--accent-current: var(--accent-bach);">
+            
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(96, 165, 250, 0.2); color: #60a5fa;">Nivel Selectividad (PAU)</span>
+                <h3>Problemas de Examen (Largos)</h3>
+            </div>
+
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 01</span><span>Intersección y Distancia</span></div>
+                    <div class="ex-problem">
+                        Dadas las rectas:
+                        $$ r: \frac{x-2}{1} = \frac{y-3}{-1} = \frac{z}{2} $$
+                        $$ s: \begin{cases} x = 1 + \lambda \\ y = \lambda \\ z = -\lambda \end{cases} $$
+                        Estudia su posición relativa y calcula la distancia mínima entre ellas.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución Completa</summary>
+                        <div class="solution">
+                            <strong>1. Vectores y Puntos:</strong><br>
+                            $P_r(2,3,0), \vec{v}_r(1,-1,2)$ <br>
+                            $P_s(1,0,0), \vec{v}_s(1,1,-1)$ <br>
+                            Vector $\vec{P_sP_r} = (1, 3, 0)$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>2. Rango de Matrices:</strong><br>
+                            Calculamos el producto mixto $[\vec{P_sP_r}, \vec{v}_r, \vec{v}_s]$.
+                            $$ \det \begin{pmatrix} 1 & 3 & 0 \\ 1 & -1 & 2 \\ 1 & 1 & -1 \end{pmatrix} = 1(1-2) - 3(-1-2) = -1 + 9 = 8 \neq 0 $$
+                            Como el determinante no es 0, los vectores son linealmente independientes.
+                            <br><strong>Conclusión:</strong> Las rectas se cruzan.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>3. Distancia:</strong><br>
+                            $$ d(r,s) = \frac{|[\vec{P_sP_r}, \vec{v}_r, \vec{v}_s]|}{|\vec{v}_r \times \vec{v}_s|} $$
+                            $\vec{v}_r \times \vec{v}_s = (-1, 3, 2)$. Módulo = $\sqrt{1+9+4} = \sqrt{14}$.
+                            <span class="final-res">$$ d(r,s) = \frac{8}{\sqrt{14}} \approx 2.14 u $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 02</span><span>Plano y Parámetros</span></div>
+                    <div class="ex-problem">
+                        Considera el plano $\pi: x + y + mz = 3$ y la recta $r: x = y-1 = \frac{z-2}{2}$.
+                        <br>a) Halla $m$ para que $r$ sea paralela a $\pi$.
+                        <br>b) Para $m=1$, halla el punto de corte.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            <strong>a) Paralelismo:</strong><br>
+                            El vector normal de $\pi$ es $\vec{n}=(1,1,m)$. El de $r$ es $\vec{v}=(1,1,2)$.
+                            <br>Para ser paralelos, $\vec{n} \cdot \vec{v} = 0$.
+                            <br>$1(1) + 1(1) + m(2) = 0 \Rightarrow 2 + 2m = 0$.
+                            <span class="final-res">$$ m = -1 $$</span>
+                            <br>
+                            <strong>b) Corte con $m=1$:</strong><br>
+                            Pasamos $r$ a paramétricas: $x=\lambda, y=1+\lambda, z=2+2\lambda$.
+                            <br>Sustituimos en $\pi (x+y+z=3)$:
+                            <br>$\lambda + (1+\lambda) + (2+2\lambda) = 3$
+                            <br>$4\lambda + 3 = 3 \Rightarrow 4\lambda = 0 \Rightarrow \lambda = 0$.
+                            <br>Punto de corte sustituyendo $\lambda=0$ en $r$:
+                            <span class="final-res">$$ P(0, 1, 2) $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 03</span><span>Punto Simétrico</span></div>
+                    <div class="ex-problem">Calcula el punto simétrico de $P(1,0,2)$ respecto al plano $\pi: 2x - y + z - 4 = 0$.</div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            <strong>1. Recta perpendicular:</strong><br>
+                            Pasa por $P$ con vector $\vec{n}=(2,-1,1)$.
+                            <br>$r: \{x=1+2t, y=-t, z=2+t\}$.
+                            <br><strong>2. Punto de corte $M$:</strong>
+                            <br>$2(1+2t) - (-t) + (2+t) - 4 = 0$
+                            <br>$2+4t+t+2+t-4 = 0 \Rightarrow 6t = 0 \Rightarrow t=0$.
+                            <br>El punto de corte es $M(1,0,2)$. ¡Coincide con P!
+                            <br>Esto significa que $P$ pertenece al plano.
+                            <span class="final-res">$$ P' = P(1, 0, 2) $$</span>
+                        </div>
+                    </details>
+                </article>
+            </div>
+
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text);">Refuerzo</span>
+                <h3>Geometría 3D (Ejercicios Cortos)</h3>
+            </div>
+            
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">STD 01</span><span>Ecuación del Plano</span></div>
+                    <div class="ex-problem">Plano determinado por $P(1,1,1)$, $\vec{u}(1,0,0)$ y $\vec{v}(0,2,1)$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Determinante igualado a 0:
+                            $$ \begin{vmatrix} x-1 & y-1 & z-1 \\ 1 & 0 & 0 \\ 0 & 2 & 1 \end{vmatrix} = 0 $$
+                            Desarrollando por primera columna: $1 \cdot ((y-1)(1) - (z-1)(2)) = 0$.
+                            <span class="final-res">$$ y - 2z + 1 = 0 $$</span>
+                        </div>
+                    </details>
+                </article>
+                
+                <article class="ex-card">
+                     <div class="ex-meta"><span class="ex-id">STD 02</span><span>Área Triángulo</span></div>
+                     <div class="ex-problem">Área del triángulo formado por $A(1,0,0)$, $B(0,1,0)$, $C(0,0,1)$.</div>
+                     <details>
+                         <summary>Ver Solución</summary>
+                         <div class="solution">
+                             Vectores $\vec{AB}=(-1,1,0)$ y $\vec{AC}=(-1,0,1)$.
+                             <br>Producto vectorial: $(1, 1, 1)$.
+                             <br>Área = $\frac{1}{2}|\vec{AB} \times \vec{AC}|$.
+                             <span class="final-res">$$ \frac{\sqrt{3}}{2} u^2 $$</span>
+                         </div>
+                     </details>
+                 </article>
+            </div>
+        </div>
+
+        <div id="uni" class="section-content" style="--accent-current: var(--accent-uni);">
+            
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(244, 114, 182, 0.2); color: #f472b6;">Nivel Parcial</span>
+                <h3>Diagonalización y Álgebra Lineal</h3>
+            </div>
+
+            <div class="grid-layout">
+                <article class="ex-card" style="border-color: var(--accent-uni); box-shadow: 0 0 15px rgba(244,114,182,0.1);">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 01</span><span>Problema Completo</span></div>
+                    <div class="ex-problem">
+                        <strong>(De tu imagen)</strong> Dada la matriz $A$, justifica si diagonaliza y halla $D$ y $P$:
+                        $$ A = \begin{pmatrix} 1 & 0 & 0 \\ 1 & 2 & 0 \\ 1 & 1 & 1 \end{pmatrix} $$
+                    </div>
+                    <details>
+                        <summary>Ver Resolución Paso a Paso</summary>
+                        <div class="solution">
+                            <strong>1. Valores Propios (Polinomio Característico):</strong><br>
+                            Como $A$ es triangular inferior, los valores propios son los elementos de la diagonal.
+                            $$ \lambda_1 = 1 \text{ (multiplicidad algebraica } m_a=2) $$
+                            $$ \lambda_2 = 2 \text{ (multiplicidad algebraica } m_a=1) $$
+                            <br>
+                            <strong>2. Condición de Diagonalización:</strong><br>
+                            Para $\lambda=2$, $m_g=1$ siempre.
+                            <br>Para $\lambda=1$, necesitamos que $\dim(\ker(A-I)) = 2$.
+                            $$ A - I = \begin{pmatrix} 0 & 0 & 0 \\ 1 & 1 & 0 \\ 1 & 1 & 0 \end{pmatrix} $$
+                            El rango de esta matriz es 1 (filas 2 y 3 son iguales).
+                            <br>$m_g(1) = 3 - \text{Rango} = 3 - 1 = 2$.
+                            <br>Como $m_g = m_a$ para todos, <strong>A es diagonalizable</strong>.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>3. Vectores Propios (Construcción de P):</strong><br>
+                            $\underline{\lambda=1}$: Resolvemos $(A-I)\vec{v} = \vec{0} \Rightarrow x+y=0 \Rightarrow x=-y$. $z$ es libre.
+                            <br>Base: $\vec{v}_1 = (-1, 1, 0)$ y $\vec{v}_2 = (0, 0, 1)$.
+                            <br><br>
+                            $\underline{\lambda=2}$: Resolvemos $(A-2I)\vec{v} = \vec{0}$.
+                            $$ \begin{pmatrix} -1 & 0 & 0 \\ 1 & 0 & 0 \\ 1 & 1 & -1 \end{pmatrix} \begin{pmatrix} x \\ y \\ z \end{pmatrix} = 0 $$
+                            $x=0$. Luego $y-z=0 \Rightarrow y=z$.
+                            <br>Base: $\vec{v}_3 = (0, 1, 1)$.
+                            <span class="final-res">
+                                $$ D = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 2 \end{pmatrix}, \quad P = \begin{pmatrix} -1 & 0 & 0 \\ 1 & 0 & 1 \\ 0 & 1 & 1 \end{pmatrix} $$
+                            </span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 02</span><span>Matriz con Parámetros</span></div>
+                    <div class="ex-problem">
+                        Estudia para qué valores de $a$ la matriz es diagonalizable:
+                        $$ A = \begin{pmatrix} 1 & a & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 2 \end{pmatrix} $$
+                    </div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Valores propios: $\lambda=1$ ($m_a=2$), $\lambda=2$ ($m_a=1$).
+                            <br>Para diagonalizar, necesitamos $\dim(\ker(A-I))=2$.
+                            $$ A-I = \begin{pmatrix} 0 & a & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 1 \end{pmatrix} $$
+                            El rango depende de $a$:
+                            <br>Si $a \neq 0$, el rango es 2 (hay un menor $2\times2$ no nulo con la $a$ y el $1$). Entonces $m_g = 3-2=1 \neq m_a$. <strong>No diagonaliza.</strong>
+                            <br>Si $a = 0$, el rango es 1. $m_g = 3-1=2 = m_a$. <strong>Sí diagonaliza.</strong>
+                            <span class="final-res">$$ a = 0 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 03</span><span>Diagonalización Ortogonal</span></div>
+                    <div class="ex-problem">
+                        Dada la matriz simétrica $A = \begin{pmatrix} 0 & 2 \\ 2 & 3 \end{pmatrix}$, halla una matriz ortogonal $Q$ tal que $Q^T A Q = D$.
+                    </div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Polinomio: $\lambda^2 - 3\lambda - 4 = 0 \Rightarrow (\lambda-4)(\lambda+1)=0$.
+                            <br>$\lambda_1=4, \lambda_2=-1$.
+                            <br>Vectores propios:
+                            <br>Para 4: $-4x+2y=0 \to y=2x \to \vec{v}_1=(1,2)$. Normalizado: $\frac{1}{\sqrt{5}}(1,2)$.
+                            <br>Para -1: $x+2y=0 \to x=-2y \to \vec{v}_2=(-2,1)$. Normalizado: $\frac{1}{\sqrt{5}}(-2,1)$.
+                            <span class="final-res">$$ Q = \frac{1}{\sqrt{5}}\begin{pmatrix} 1 & -2 \\ 2 & 1 \end{pmatrix} $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                 <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 04</span><span>Teórico: Cayley-Hamilton</span></div>
+                    <div class="ex-problem">
+                        Si $A$ tiene polinomio característico $p(\lambda) = \lambda^2 - 5\lambda + 6$, calcula $A^{-1}$ en función de $A$ e $I$.
+                    </div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Por Cayley-Hamilton: $A^2 - 5A + 6I = 0$.
+                            <br>Despejamos $I$: $6I = 5A - A^2$.
+                            <br>Multiplicamos por $A^{-1}$: $6A^{-1} = 5I - A$.
+                            <span class="final-res">$$ A^{-1} = \frac{1}{6}(5I - A) $$</span>
+                        </div>
+                    </details>
+                </article>
+
+            </div>
+        </div>
+        
+    </main>
+
+    <script>
+        function setTab(tabId, accentColor) {
+            // Ocultar todos
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Mostrar seleccionado
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activar botón
+            const activeBtn = Array.from(document.querySelectorAll('.tab-btn'))
+                .find(b => b.getAttribute('onclick').includes(tabId));
+            if(activeBtn) activeBtn.classList.add('active');
+
+            // Recalcular MathJax para contenido oculto
+            if(window.MathJax) {
+                MathJax.typesetPromise([document.getElementById(tabId)]);
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-scheme');
+            html.setAttribute('data-scheme', current === 'dark' ? 'light' : 'dark');
+        }
+    </script>
+</body>
+</html>
