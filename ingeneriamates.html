@@ -1,618 +1,1719 @@
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Matemáticas de Ingeniería — Teoría clara + 144 ejercicios</title>
-<meta name="color-scheme" content="light dark">
-<!-- MathJax for LaTeX rendering -->
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-  :root{
-    --bg:#f7f9fc; --paper:#ffffff; --ink:#121826; --muted:#48536b;
-    --brand:#2563eb; --accent:#0ea5e9; --accent2:#22c55e;
-    --border:#d9e1f2; --shadow:0 8px 28px rgba(16,24,40,.08);
-    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b1220; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9;
-      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#34d399; --border:#203054;
-      --shadow:0 10px 26px rgba(0,0,0,.35);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innove | Scientific Exam Suite</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <!-- MATHJAX -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true,
+        tags: 'ams'
+      },
+      options: {
+        renderActions: { addMenu: [] }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* 
+        ========================================
+        1. VARIABLES & THEME CONFIGURATION
+        ========================================
+        */
+    :root {
+      /* Dimensions */
+      --sidebar-width: 280px;
+      --header-height: 70px;
+      --card-radius: 16px;
+      --modal-radius: 24px;
+
+      /* Typography */
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Animations */
+      --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+      --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
     }
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    font-size:var(--base); line-height:var(--lh); color:var(--ink);
-    background:radial-gradient(1000px 700px at 80% -10%, #ddecff 0%, transparent 60%),
-               radial-gradient(900px 600px at 10% 110%, #e2f2ff 0%, transparent 65%), var(--bg);
-  }
-  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
-    background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
-    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
-  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
-  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
-  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 70%,white 10%),color-mix(in oklab,var(--accent) 65%,white 20%));
-    color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent)}
-  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
-  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .btn.small{padding:6px 10px;font-weight:700}
-  main{max-width:1200px;margin:0 auto;padding:16px}
-  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
-    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 10%)}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
-  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
-  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
-  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
-  .lead{color:var(--muted)}
-  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 5%);border:1px solid var(--border);
-    border-radius:12px;padding:12px 14px;margin:12px 0}
-  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
-  .toc a{display:block;text-decoration:none;border:1px solid var(--border);border-radius:12px;padding:10px 12px;
-    color:color-mix(in oklab,var(--brand) 80%, var(--ink));background:color-mix(in oklab,var(--paper) 88%, transparent)}
-  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%);
-    border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
-  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
-  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border);
-    border-radius:10px;padding:8px 10px;margin:8px 0}
-  summary{cursor:pointer;font-weight:700}
-  code.k{padding:.1em .35em;border:1px solid var(--border);border-radius:8px;background:color-mix(in oklab,var(--paper) 90%, transparent)}
-  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--paper);border:1px solid var(--border);
-    border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
-  .topbtn.show{display:block}
-</style>
+
+    [data-theme="dark"] {
+      /* Backgrounds */
+      --bg-app: #050505;
+      --bg-sidebar: #0a0a0a;
+      --bg-card: #111111;
+      --bg-card-hover: #161616;
+      --bg-modal: #0f0f0f;
+      --bg-input: #1a1a1a;
+
+      /* Text */
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #52525b;
+
+      /* Borders */
+      --border-light: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+
+      /* Accents */
+      --accent-primary: #6366f1;
+      /* Indigo */
+      --accent-secondary: #8b5cf6;
+      /* Violet */
+      --accent-success: #10b981;
+      /* Emerald */
+      --accent-warning: #f59e0b;
+      /* Amber */
+      --accent-danger: #ef4444;
+      /* Red */
+
+      /* Shadows */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.6);
+      --glow-primary: 0 0 20px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-theme="light"] {
+      /* Backgrounds */
+      --bg-app: #f8fafc;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --bg-modal: #ffffff;
+      --bg-input: #f1f5f9;
+
+      /* Text */
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
+
+      /* Borders */
+      --border-light: rgba(0, 0, 0, 0.06);
+      --border-hover: rgba(0, 0, 0, 0.1);
+
+      /* Accents */
+      --accent-primary: #4f46e5;
+      --accent-secondary: #7c3aed;
+      --accent-success: #059669;
+      --accent-warning: #d97706;
+      --accent-danger: #dc2626;
+
+      /* Shadows */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
+      --glow-primary: 0 0 20px rgba(79, 70, 229, 0.1);
+    }
+
+    /* 
+        ========================================
+        2. RESET & UTILITIES
+        ========================================
+        */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      transition: background-color var(--duration-normal) var(--ease-out);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-hover);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-tertiary);
+    }
+
+    /* Typography Utilities */
+    .h1 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .h2 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+    }
+
+    .text-muted {
+      color: var(--text-secondary);
+    }
+
+    /* 
+        ========================================
+        3. SIDEBAR NAVIGATION
+        ========================================
+        */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 100%;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      z-index: 10;
+      transition: transform var(--duration-normal) var(--ease-out);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      padding-left: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: var(--glow-primary);
+    }
+
+    .brand-text {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: all var(--duration-fast);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-input);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-primary);
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      opacity: 0.7;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .stats-card {
+      background: var(--bg-input);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border-hover);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-success);
+      width: 0%;
+      transition: width 1s var(--ease-out);
+    }
+
+    /* 
+        ========================================
+        4. MAIN CONTENT AREA
+        ========================================
+        */
+    .main-content {
+      flex-grow: 1;
+      height: 100%;
+      overflow-y: auto;
+      padding: 40px 60px;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+      animation: slideDown 0.6s var(--ease-out);
+    }
+
+    .header-content h1 {
+      margin-bottom: 8px;
+    }
+
+    .header-content p {
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 16px;
+    }
+
+    .theme-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      display: grid;
+      place-items: center;
+      color: var(--text-secondary);
+      transition: all var(--duration-fast);
+    }
+
+    .theme-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      animation: fadeIn 0.8s var(--ease-out);
+    }
+
+    .filter-chip {
+      padding: 8px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all var(--duration-fast);
+    }
+
+    .filter-chip:hover {
+      border-color: var(--accent-primary);
+      color: var(--text-primary);
+    }
+
+    .filter-chip.active {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    /* 
+        ========================================
+        5. EXERCISE GRID & CARDS
+        ========================================
+        */
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      padding-bottom: 60px;
+    }
+
+    .exercise-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--card-radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--duration-fast);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s var(--ease-out) backwards;
+    }
+
+    .exercise-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+      background: var(--bg-card-hover);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-diff-easy {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent-success);
+    }
+
+    .badge-diff-medium {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--accent-warning);
+    }
+
+    .badge-diff-hard {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--accent-danger);
+    }
+
+    .badge-topic {
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    .card-id {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .card-body {
+      flex-grow: 1;
+      margin-bottom: 20px;
+    }
+
+    .problem-preview {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .view-sol-btn {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-sol-btn::after {
+      content: '→';
+      transition: transform 0.2s;
+    }
+
+    .exercise-card:hover .view-sol-btn::after {
+      transform: translateX(4px);
+    }
+
+    /* 
+        ========================================
+        6. FULL SCREEN MODAL
+        ========================================
+        */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity var(--duration-normal);
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+    }
+
+    .modal-content {
+      width: 90%;
+      max-width: 1000px;
+      height: 90%;
+      background: var(--bg-modal);
+      border-radius: var(--modal-radius);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.95) translateY(20px);
+      transition: transform var(--duration-normal) var(--ease-out);
+      overflow: hidden;
+    }
+
+    .modal-backdrop.active .modal-content {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+    }
+
+    .modal-title-group h2 {
+      margin-bottom: 4px;
+    }
+
+    .modal-subtitle {
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+      font-size: 0.9rem;
+    }
+
+    .close-modal-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+
+    .close-modal-btn:hover {
+      background: var(--accent-danger);
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .problem-section {
+      padding-right: 40px;
+      border-right: 1px solid var(--border-light);
+    }
+
+    .solution-section {
+      padding-left: 10px;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-primary);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .problem-text {
+      font-size: 1.25rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .step-card {
+      background: var(--bg-input);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 3px solid var(--accent-secondary);
+      animation: slideInRight 0.5s var(--ease-out) backwards;
+    }
+
+    .step-number {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .final-answer {
+      margin-top: 40px;
+      padding: 24px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--accent-success);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .final-label {
+      color: var(--accent-success);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* 
+        ========================================
+        7. ANIMATIONS
+        ========================================
+        */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 80px;
+        padding: 16px;
+      }
+
+      .brand-text,
+      .nav-text,
+      .stats-card {
+        display: none;
+      }
+
+      .brand {
+        justify-content: center;
+        padding: 0;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .modal-body {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-section {
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        padding-bottom: 30px;
+        margin-bottom: 30px;
+        padding-right: 0;
+      }
+
+      .solution-section {
+        padding-left: 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="progress" id="progress"></div>
-  <div class="topbar">
-    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <a class="brand" href="#top">
-        <div class="badge">∑</div>
-        <div>
-          <h1 class="brand-title">Matemáticas de Ingeniería</h1>
-          <div class="lead">Teoría clara, fórmulas entendibles y 144 ejercicios graduados</div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">Σ</div>
+      <span class="brand-text">Innove</span>
+    </div>
+
+    <nav class="nav-menu">
+      <button class="nav-item active" onclick="filterExercises('all')">
+        <span class="nav-icon">📚</span>
+        <span class="nav-text">Todo</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('c1')">
+        <span class="nav-icon">∫</span>
+        <span class="nav-text">Cálculo I</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('c2')">
+        <span class="nav-icon">∬</span>
+        <span class="nav-text">Cálculo II</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('c3')">
+        <span class="nav-icon">∭</span>
+        <span class="nav-text">Cálculo III</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="stats-card">
+        <div class="stat-row">
+          <span>Progreso</span>
+          <span id="progress-text">0/50</span>
         </div>
-      </a>
-      <div class="reader">
-        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
-        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
-        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
-        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
-        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="header">
+      <div class="header-content">
+        <h1 class="h1">Banco de Parciales UPC</h1>
+        <p class="text-muted">Colección definitiva de ejercicios de alta dificultad. Diseñado para estudiantes de
+          ingeniería y ciencias.</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-btn" onclick="toggleTheme()">☀</button>
+      </div>
+    </header>
+
+    <div class="filter-bar" id="topic-filters">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="exercise-grid" id="grid">
+      <!-- Populated by JS -->
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 class="h2" id="modal-title">Título del Problema</h2>
+          <span class="modal-subtitle" id="modal-id">ID: C1-001</span>
+        </div>
+        <button class="close-modal-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="problem-section">
+          <span class="section-label">Enunciado</span>
+          <div class="problem-text" id="modal-problem">
+            <!-- LaTeX Problem -->
+          </div>
+          <div class="tags" id="modal-tags">
+            <!-- Tags -->
+          </div>
+        </div>
+        <div class="solution-section" id="modal-steps">
+          <span class="section-label">Solución Paso a Paso</span>
+          <!-- Steps injected here -->
+        </div>
       </div>
     </div>
   </div>
 
-  <main>
-    <section class="paper" id="top">
-      <h1>Guía de Matemáticas de Ingeniería</h1>
-      <p class="lead">Doce capítulos con teoría mejorada, <strong>recuadros de fórmulas</strong> que explican cuándo y por qué aplicar cada expresión, <strong>ejemplos resueltos paso a paso</strong> y <strong>12 ejercicios por capítulo</strong> (144 en total) con respuesta breve para autoevaluarte.</p>
-      <div class="callout"><strong>Cómo usarla.</strong> Lee la teoría (🧠), revisa el recuadro de fórmulas (📌), estudia 2–5 ejemplos (🔍) y prueba los 12 ejercicios (📝). Ajusta el tamaño de letra y el ancho con los controles de la barra superior.</div>
-      <div class="toc">
-        <a href="#cap1">1. Límites y continuidad</a>
-        <a href="#cap2">2. Derivación — reglas y funciones</a>
-        <a href="#cap3">3. Aplicaciones: extremos, Taylor, Newton–Raphson</a>
-        <a href="#cap4">4. Integrales — definición y propiedades</a>
-        <a href="#cap5">5. Técnicas de integración</a>
-        <a href="#cap6">6. Series numéricas</a>
-        <a href="#cap7">7. Series de potencias y Taylor</a>
-        <a href="#cap8">8. EDO de 1º y 2º orden (lineales)</a>
-        <a href="#cap9">9. Álgebra lineal</a>
-        <a href="#cap10">10. Cálculo vectorial y teoremas</a>
-        <a href="#cap11">11. Transformadas de Laplace y Fourier</a>
-        <a href="#cap12">12. Probabilidad y estadística</a>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 1 ========= -->
-    <section class="paper" id="cap1">
-      <h2>1. Límites y continuidad</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Dominar la definición de \(\lim\), reconocer discontinuidades, y usar compresión y l’Hôpital con criterio.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>Álgebra de límites: si existen \(\lim f\) y \(\lim g\), entonces \(\lim(f\pm g)=\lim f\pm\lim g\), \(\lim(fg)=(\lim f)(\lim g)\), \(\lim(f/g)=(\lim f)/(\lim g)\) si el denominador límite \(\ne 0\).</li>
-          <li>Compresión: si \(\alpha(x)\le f(x)\le \beta(x)\) y \(\lim\alpha=\lim\beta=L\), entonces \(\lim f=L\).</li>
-          <li>Estándar: \(\lim_{x\to 0} \dfrac{\sin x}{x}=1\), \(\lim_{x\to 0}\dfrac{1-\cos x}{x^2}=\tfrac12\).</li>
-          <li>l’Hôpital: para \(0/0\) o \(\infty/\infty\), \(\displaystyle \lim \frac{f}{g}=\lim \frac{f'}{g'}\) si este último existe y \(g'\ne0\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (3)</h4>
-        <ol>
-          <li><details><summary>\(\displaystyle \lim_{x\to 0} \frac{\sin(5x)}{x}\)</summary>Multiplica y divide por 5: \(\dfrac{\sin(5x)}{x}=5\,\dfrac{\sin(5x)}{5x}\to 5\cdot1=5\).</details></li>
-          <li><details><summary>\(\displaystyle \lim_{x\to 1} \frac{x^2-1}{x-1}\)</summary>Factoriza: \(\frac{(x-1)(x+1)}{x-1}\to x+1\to 2\).</details></li>
-          <li><details><summary>\(\displaystyle \lim_{x\to 0} \frac{1-\cos x}{x^2}\)</summary>Usa la forma estándar: vale \(\tfrac12\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{\sin(3x)}{x}\)</summary>Respuesta: 3.</details></li>
-          <li><details><summary>\(\lim_{x\to 2} \dfrac{x^2-4}{x-2}\)</summary>Respuesta: 4.</details></li>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{\tan x}{x}\)</summary>Respuesta: 1.</details></li>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{e^{x}-1}{x}\)</summary>Respuesta: 1.</details></li>
-          <li><details><summary>\(\lim_{x\to \infty} \dfrac{3x^2-1}{x^2+2}\)</summary>Coeficientes líderes → 3.</details></li>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{\sqrt{1+ax}-1}{x}\)</summary>Racionaliza → \(a/2\).</details></li>
-          <li><details><summary>Continuidad de \(f(x)=\begin{cases}x^2,&x\le 1\\2x+1,&x>1\end{cases}\)</summary>No es continua en 1 (saltan 1 y 3). Ajusta tramos para continuidad.</details></li>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{\ln(1+x)}{x}\)</summary>Respuesta: 1.</details></li>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{\sin x- x}{x^3}\)</summary>Serie de Taylor → \(-\tfrac16\).</details></li>
-          <li><details><summary>\(\lim_{x\to 0} \dfrac{\sqrt{1+x}-\sqrt{1-x}}{x}\)</summary>Racionaliza → 1.</details></li>
-          <li><details><summary>\(\lim_{x\to\infty} \big(1+\tfrac{k}{x}\big)^{x}\)</summary>Respuesta: \(e^{k}\).</details></li>
-          <li><details><summary>Define \(f(1)=c\) para continuidad de \(\dfrac{x^2-1}{x-1}\) en 1</summary>Debe ser \(c=2\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 2 ========= -->
-    <section class="paper" id="cap2">
-      <h2>2. Derivación — reglas y funciones</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Derivar funciones elementales y compuestas justificando cada regla.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>Linealidad: \((af+bg)'=af'+bg'\).</li>
-          <li>Producto y cociente: \((fg)'=f'g+fg'\), \(\displaystyle (f/g)'=\frac{f'g-fg'}{g^2}\).</li>
-          <li>Cadena: \((f\circ g)'=(f'\circ g)\,g'\).</li>
-          <li>Derivadas básicas: \( (x^n)'=nx^{n-1}\), \((e^x)'=e^x\), \((\ln x)'=1/x\), \((\sin x)'=\cos x\), \((\cos x)'=-\sin x\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(y=\ln(\sin x)\)</summary>Cadena: \(y'=\dfrac{1}{\sin x}\cdot\cos x=\cot x\).</details></li>
-          <li><details><summary>\(y=\dfrac{e^{2x}}{x^3}\)</summary>Cociente: \(y'=\dfrac{2e^{2x}x^3-3x^2e^{2x}}{x^6}=\dfrac{e^{2x}(2x-3)}{x^4}\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\frac{d}{dx}\,x^n\)</summary>\(nx^{n-1}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,e^{ax}\)</summary>\(ae^{ax}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\ln(ax+b)\)</summary>\(\dfrac{a}{ax+b}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\sin(5x)\)</summary>\(5\cos(5x)\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\tan x\)</summary>\(\sec^2 x\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\sqrt{x}\)</summary>\(\tfrac{1}{2\sqrt x}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\ln\!\big(\sqrt{1+x^2}\big)\)</summary>\(\dfrac{x}{1+x^2}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\dfrac{\sin x}{x}\)</summary>\(\dfrac{x\cos x-\sin x}{x^2}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,x e^{x}\)</summary>\(e^x(x+1)\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\cos(x^2)\)</summary>\(-2x\sin(x^2)\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\arctan x\)</summary>\(\dfrac{1}{1+x^2}\).</details></li>
-          <li><details><summary>\(\frac{d}{dx}\,\dfrac{\ln x}{x}\)</summary>\(\dfrac{1-\ln x}{x^2}\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 3 ========= -->
-    <section class="paper" id="cap3">
-      <h2>3. Aplicaciones: extremos, Taylor, Newton–Raphson</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Optimizar funciones, estudiar concavidad e inflexión y aproximar con Taylor; resolver raíces con Newton.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>Extremos: \(f'(c)=0\) (necesaria). Test de \(f''\): si \(f''(c)>0\) mínimo; si \(<0\) máximo.</li>
-          <li>Taylor: \(\displaystyle T_n(x)=\sum_{k=0}^n \frac{f^{(k)}(a)}{k!}(x-a)^k\); error de Lagrange \(\displaystyle R_{n+1}=\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}\).</li>
-          <li>Newton–Raphson: \(x_{k+1}=x_k-\dfrac{f(x_k)}{f'(x_k)}\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>Minimiza \(A(x)=2x+\dfrac{100}{x}\), \(x>0\)</summary>\(A'=2-100/x^2=0\Rightarrow x=\sqrt{50}\). \(A''=200/x^3>0\) ⇒ mínimo.</details></li>
-          <li><details><summary>\(\ln(1+x)\) con \(T_2\) en 0</summary>\(x-\tfrac{x^2}{2}\) para \(|x|<1\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Críticos de \(x^3-3x\)</summary>0, ±1; clasifica con \(f''\).</details></li>
-          <li><details><summary>Máximo de \(\sin x\cos x\)</summary>\(=\tfrac12\sin 2x\) → máximo \(1/2\).</details></li>
-          <li><details><summary>Puntos de inflexión de \(x^4-2x^2\)</summary>En 0 y ±1.</details></li>
-          <li><details><summary>\(T_3\) de \(e^x\) en 0</summary>\(1+x+\tfrac{x^2}{2}+\tfrac{x^3}{6}\).</details></li>
-          <li><details><summary>\(T_2\) de \(\cos x\) en 0</summary>\(1-\tfrac{x^2}{2}\).</details></li>
-          <li><details><summary>Una iteración de Newton para \(x^2-2=0\) desde \(x_0=1\)</summary>\(x_1=1-\frac{-1}{2}=1.5\).</details></li>
-          <li><details><summary>Dos iteraciones de Newton para \(\cos x=x\) desde 0.5</summary>Converge a ≈0.7391.</details></li>
-          <li><details><summary>Optimiza \(V=x(10-2x)^2\)</summary>Deriva y resuelve \(V'=0\); solución \(x=\tfrac{10}{6}\).</details></li>
-          <li><details><summary>Aproxima \(\sqrt{1.1}\) con Taylor de \(\sqrt{1+x}\)</summary>≈ \(1+\tfrac{1}{2}0.1-\tfrac{1}{8}0.1^2\)=1.0487.</details></li>
-          <li><details><summary>Error de truncamiento de \(T_3\) de \(\sin x\) en \(|x|\le 0.2\)</summary>\(|R_4|\le \tfrac{|x|^4}{4!}\le 0.2^4/24\).</details></li>
-          <li><details><summary>Clasifica \(f(x)=x^3\)</summary>Crítico 0, inflexión en 0.</details></li>
-          <li><details><summary>Newton en \(x^3-2=0\) desde 1</summary>Dos pasos: 1→1.5→1.347...</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 4 ========= -->
-    <section class="paper" id="cap4">
-      <h2>4. Integrales — definición y propiedades</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Entender la integral definida como límite de sumas y aplicar el Teorema Fundamental del Cálculo (FTC).</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>Linealidad, simetría y descomposición de intervalos.</li>
-          <li>Cambio de variable: si \(u=g(x)\), \(\int f(g)g'\,dx=\int f(u)\,du\).</li>
-          <li>Partes: \(\int u\,dv=uv-\int v\,du\).</li>
-          <li>FTC: si \(F'=f\), entonces \(\displaystyle \int_a^b f=F(b)-F(a)\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(\int x e^x\,dx\)</summary>Partes con \(u=x\), \(dv=e^x dx\): \(xe^x-e^x+C\).</details></li>
-          <li><details><summary>\(\int_0^{\pi} \sin x\,dx\)</summary>Antiderivada \(-\cos x\) → 2.</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\int x^n\,dx\)</summary>\(\tfrac{x^{n+1}}{n+1}+C\) (\(n\ne-1\)).</details></li>
-          <li><details><summary>\(\int e^{ax}\,dx\)</summary>\(\tfrac{1}{a}e^{ax}+C\).</details></li>
-          <li><details><summary>\(\int \cos x\,dx\)</summary>\(\sin x+C\).</details></li>
-          <li><details><summary>\(\int_0^{\pi} \cos x\,dx\)</summary>0 (simetría).</details></li>
-          <li><details><summary>\(\int \dfrac{1}{x}\,dx\)</summary>\(\ln|x|+C\).</details></li>
-          <li><details><summary>\(\int (3x^2-4x+1)\,dx\)</summary>\(x^3-2x^2+x+C\).</details></li>
-          <li><details><summary>\(\int_1^{e} \dfrac{1}{x}\,dx\)</summary>1.</details></li>
-          <li><details><summary>\(\int \sin(2x)\,dx\)</summary>\(-\tfrac{1}{2}\cos 2x+C\).</details></li>
-          <li><details><summary>\(\int_0^{1} (1-2x)\,dx\)</summary>0.</details></li>
-          <li><details><summary>\(\dfrac{d}{dx}\int_0^{x} \cos(t^2)\,dt\)</summary>\(\cos(x^2)\) (FTC parte 1).</details></li>
-          <li><details><summary>\(\int_0^{\pi/2} \sin x\,dx\)</summary>1.</details></li>
-          <li><details><summary>\(\int (x+1)e^x\,dx\)</summary>\(xe^x+e^x+C\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 5 ========= -->
-    <section class="paper" id="cap5">
-      <h2>5. Técnicas de integración</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Elegir entre sustitución, partes o fracciones parciales con criterio.</div>
-      <div class="callout"><strong>📌 Guía rápida.</strong>
-        <ul>
-          <li>Forma \(f(g(x))g'(x)\) → sustitución.</li>
-          <li>Producto polinomio·exp/trig → partes (a veces iterada).</li>
-          <li>Racionales → fracciones parciales tras factorizar el denominador.</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(\int \dfrac{dx}{x^2+1}\)</summary>\(\arctan x+C\).</details></li>
-          <li><details><summary>\(\int \dfrac{2x+1}{x^2+x}\,dx\)</summary>Parciales: \(\dfrac{A}{x}+\dfrac{B}{x+1}\) → \(A=1\), \(B=1\). Integra: \(\ln|x|+\ln|x+1|+C\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\int x\sin x\,dx\)</summary>Partes: \(-x\cos x+\sin x+C\).</details></li>
-          <li><details><summary>\(\int \ln x\,dx\)</summary>Partes: \(x\ln x-x+C\).</details></li>
-          <li><details><summary>\(\int \dfrac{dx}{(x+a)^2}\)</summary>\(-\dfrac{1}{x+a}+C\).</details></li>
-          <li><details><summary>\(\int \dfrac{x^2+1}{x}\,dx\)</summary>Divide: \(\tfrac{x^2+1}{x}=x+\tfrac{1}{x}\) → integra.</details></li>
-          <li><details><summary>\(\int x e^{2x}\,dx\)</summary>Partes una vez.</details></li>
-          <li><details><summary>\(\int \dfrac{dx}{x^2-1}\)</summary>Parciales con factores lineales.</details></li>
-          <li><details><summary>\(\int \dfrac{dx}{x^2+4x+5}\)</summary>Completa cuadrado y usa arctan.</details></li>
-          <li><details><summary>\(\int x\cos x\,dx\)</summary>Partes.</details></li>
-          <li><details><summary>\(\int \dfrac{x+2}{x^2+2x}\,dx\)</summary>Parciales.</details></li>
-          <li><details><summary>\(\int \sqrt{ax+b}\,dx\)</summary>Sustitución \(u=\sqrt{ax+b}\) o \(u=ax+b\).</details></li>
-          <li><details><summary>\(\int e^{x}\sin x\,dx\)</summary>Partes dos veces o método tabular.</details></li>
-          <li><details><summary>\(\int \dfrac{dx}{x(x+1)}\)</summary>Parciales.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 6 ========= -->
-    <section class="paper" id="cap6">
-      <h2>6. Series numéricas</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Determinar convergencia/divergencia con el criterio adecuado.</div>
-      <div class="callout"><strong>📌 Criterios.</strong>
-        <ul>
-          <li>Comparación, razón (d’Alembert), raíz (Cauchy), integral, Leibniz para alternantes.</li>
-          <li>Geométrica: \(\sum ar^n=\dfrac{a}{1-r}\) si \(|r|<1\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(\sum \dfrac{1}{n^p}\)</summary>Converge si \(p>1\) (criterio integral).</details></li>
-          <li><details><summary>\(\sum \dfrac{(-1)^n}{n}\)</summary>Alternante → converge condicionalmente (Leibniz).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\sum \dfrac{1}{n}\)</summary>Diverge.</details></li>
-          <li><details><summary>\(\sum \dfrac{1}{n^{3/2}}\)</summary>Converge.</details></li>
-          <li><details><summary>\(\sum \dfrac{n!}{n^n}\)</summary>Converge (raíz).</details></li>
-          <li><details><summary>\(\sum \dfrac{2^n}{n!}\)</summary>Converge (razón).</details></li>
-          <li><details><summary>\(\sum \dfrac{(-1)^n}{\sqrt n}\)</summary>Converge condicionalmente.</details></li>
-          <li><details><summary>\(\sum \dfrac{3^n}{2^n}\)</summary>Diverge (geométrica con \(r=3/2\)).</details></li>
-          <li><details><summary>\(\sum \dfrac{\ln n}{n^2}\)</summary>Converge (comparación con \(1/n^{3/2}\)).</details></li>
-          <li><details><summary>\(\sum \dfrac{1}{n(\ln n)^2}\)</summary>Converge (Cauchy–Condensación).</details></li>
-          <li><details><summary>\(\sum \dfrac{1}{n\ln n}\)</summary>Diverge.</details></li>
-          <li><details><summary>\(\sum (-1)^n\dfrac{\ln n}{n}\)</summary>Converge (Leibniz).</details></li>
-          <li><details><summary>\(\sum \dfrac{n}{n+1}\)</summary>Diverge.</details></li>
-          <li><details><summary>\(\sum \dfrac{1}{n^2+n}\)</summary>Converge (telescópica por parciales).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 7 ========= -->
-    <section class="paper" id="cap7">
-      <h2>7. Series de potencias y Taylor</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Hallar radios de convergencia y aproximar funciones.</div>
-      <div class="callout"><strong>📌 Fórmulas/ideas.</strong>
-        <ul>
-          <li>Serie \(\sum a_n (x-a)^n\) con radio \(R=1/\limsup \sqrt[n]{|a_n|}\).</li>
-          <li>Dentro de \(|x-a|<R\) converge absolutamente; en la frontera hay que analizar aparte.</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(\dfrac{1}{1-x}=\sum_{n\ge0} x^n\)</summary>Para \(|x|<1\).</details></li>
-          <li><details><summary>Taylor de \(\sin x\) en 0</summary>\(x-\tfrac{x^3}{3!}+\tfrac{x^5}{5!}-\cdots\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Radio para \(\sum \dfrac{x^n}{n!}\)</summary>\(R=\infty\).</details></li>
-          <li><details><summary>Radio para \(\sum n x^n\)</summary>\(R=1\).</details></li>
-          <li><details><summary>Taylor de \(e^x\) a orden 3</summary>\(1+x+\tfrac{x^2}{2}+\tfrac{x^3}{6}\).</details></li>
-          <li><details><summary>Taylor de \(\ln(1+x)\) a orden 3</summary>\(x-\tfrac{x^2}{2}+\tfrac{x^3}{3}\).</details></li>
-          <li><details><summary>Taylor de \(\arctan x\) a orden 3</summary>\(x-\tfrac{x^3}{3}\).</details></li>
-          <li><details><summary>Radio de \(\sum \dfrac{(x-2)^n}{3^n}\)</summary>\(R=3\).</details></li>
-          <li><details><summary>Evalúa \(\sum_{n\ge0} (-1)^n x^{2n}\)</summary>\(=\dfrac{1}{1+x^2}\) para \(|x|<1\).</details></li>
-          <li><details><summary>Usa serie para aproximar \(\ln 1.1\)</summary>≈0.09531.</details></li>
-          <li><details><summary>Serie de \(\cos x\)</summary>\(1-\tfrac{x^2}{2!}+\tfrac{x^4}{4!}-\cdots\).</details></li>
-          <li><details><summary>Serie de \(\dfrac{1}{1+x}\)</summary>\(1-x+x^2-\cdots\) (\(|x|<1\)).</details></li>
-          <li><details><summary>Convergencia en \(x=1\) para \(\sum \dfrac{x^n}{n}\)</summary>Diverge.</details></li>
-          <li><details><summary>Convergencia en \(x=-1\) para \(\sum \dfrac{x^n}{n}\)</summary>Converge condicionalmente.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 8 ========= -->
-    <section class="paper" id="cap8">
-      <h2>8. EDO de 1º y 2º orden (lineales)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Resolver EDO separables y lineales con coeficientes constantes, y forzamientos sencillos.</div>
-      <div class="callout"><strong>📌 Recetas.</strong>
-        <ul>
-          <li>Separable: \(y'=f(x)g(y) \Rightarrow \int \frac{dy}{g(y)}=\int f(x)\,dx\).</li>
-          <li>Lineal 1º orden: \(y'+p(x)y=q(x)\); factor integrante \(\mu=e^{\int p}\).</li>
-          <li>2º orden homogénea C.C.: \(ay''+by'+cy=0\) → característica \(ar^2+br+c=0\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(y'+y=e^x\)</summary>\(\mu=e^x\). \((ye^x)'=e^{2x}\) → \(y=\tfrac{1}{2}e^x+Ce^{-x}\).</details></li>
-          <li><details><summary>\(y''-3y'+2y=0\)</summary>Raíces 1 y 2 → \(y=C_1e^x+C_2e^{2x}\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(y'=xy\)</summary>Separable → \(y=Ce^{x^2/2}\).</details></li>
-          <li><details><summary>\(y'+2y=0\)</summary>\(y=Ce^{-2x}\).</details></li>
-          <li><details><summary>\(y'+y=\sin x\)</summary>Factor integrante; particular sinusoidal.</details></li>
-          <li><details><summary>\(y''+y=0\)</summary>\(y=C_1\cos x+C_2\sin x\).</details></li>
-          <li><details><summary>\(y''-y=0\)</summary>\(y=C_1e^x+C_2e^{-x}\).</details></li>
-          <li><details><summary>\(y''+2y'+y=0\)</summary>Raíz doble −1 → \(y=(C_1+C_2 x)e^{-x}\).</details></li>
-          <li><details><summary>\(y''+y=\cos x\)</summary>Particular \(A\cos x+B\sin x\).</details></li>
-          <li><details><summary>\(y'+\tfrac{1}{x}y=1\)</summary>Lineal 1º orden.</details></li>
-          <li><details><summary>\(y'=(1+y^2)\)</summary>Separable → \(\arctan y=x+C\).</details></li>
-          <li><details><summary>\(y'+3y=e^{-x}\)</summary>Factor integrante.</details></li>
-          <li><details><summary>\(y''+4y=\sin 2x\)</summary>Resonancia: particular \(Cx\cos 2x+Dx\sin 2x\).</details></li>
-          <li><details><summary>\(y''-3y'+2y=e^x\)</summary>Particular \(Ax e^x\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 9 ========= -->
-    <section class="paper" id="cap9">
-      <h2>9. Álgebra lineal</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Operar con matrices, resolver \(Ax=b\), encontrar autovalores y diagonalizar cuando sea posible.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>Rango: nº máx. de filas/columnas l.i.</li>
-          <li>Regla de Cramer (si \(\det A\ne0\)): \(x_i=\dfrac{\det A_i}{\det A}\).</li>
-          <li>Autovalores: \(\det(A-\lambda I)=0\); si \(A\) tiene base de autovectores, \(A=PDP^{-1}\).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>Gauss en un 3×3</summary>Escalonar hasta forma triangular y resolver retro-sustituyendo.</details></li>
-          <li><details><summary>Autovalores de \(\begin{bmatrix}2&1\\0&3\end{bmatrix}\)</summary>\(\lambda=2,3\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Inversa de \(\begin{bmatrix}a&b\\c&d\end{bmatrix}\)</summary>\(\dfrac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}\).</details></li>
-          <li><details><summary>Rango de una matriz 3×3</summary>Reduce por filas.</details></li>
-          <li><details><summary>Soluciona \(Ax=b\) (2×2)</summary>Sustitución o Cramer.</details></li>
-          <li><details><summary>Autovalores de \(\begin{bmatrix}0&-1\\1&0\end{bmatrix}\)</summary>\(\pm i\).</details></li>
-          <li><details><summary>Diagonaliza \(\begin{bmatrix}3&0\\0&2\end{bmatrix}\)</summary>Ya diagonal.</details></li>
-          <li><details><summary>¿Es invertible \(\begin{bmatrix}1&2\\2&4\end{bmatrix}\)?</summary>No, \(\det=0\).</details></li>
-          <li><details><summary>Proyección de \(\vec v\) sobre \(\vec u\)</summary>\(\text{proj}_u v=\dfrac{v\cdot u}{u\cdot u}u\).</details></li>
-          <li><details><summary>Norma \(\|x\|_2\) y distancia</summary>Euclídea.</details></li>
-          <li><details><summary>Ortogonalidad de vectores</summary>Si \(u\cdot v=0\).</details></li>
-          <li><details><summary>Mínimos cuadrados para 2 puntos</summary>Normal \((A^TA)\hat x=A^Tb\).</details></li>
-          <li><details><summary>Base propia de \(\begin{bmatrix}2&1\\0&2\end{bmatrix}\)</summary>No diagonalizable (un solo autovalor).</details></li>
-          <li><details><summary>Rango vs nulidad</summary>Teorema rango-nulidad.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 10 ========= -->
-    <section class="paper" id="cap10">
-      <h2>10. Cálculo vectorial y teoremas</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Calcular gradiente, divergencia y rotacional, e integrar campos usando Green, Gauss y Stokes.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>\(\nabla f=(\partial_x f,\partial_y f,\partial_z f)\), \(\operatorname{div}\,\vec F=\nabla\cdot\vec F\), \(\operatorname{rot}\,\vec F=\nabla\times\vec F\).</li>
-          <li>Green (2D), Gauss (3D), Stokes (superficies abiertas).</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (1)</h4>
-        <ol>
-          <li><details><summary>Flujo de \(\vec F=(x,y,z)\) por la esfera de radio R</summary>\(\operatorname{div}\vec F=3\). Gauss: flujo = \(\iiint_V 3\,dV=3\cdot\tfrac{4}{3}\pi R^3=4\pi R^3\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Gradiente de \(x^2y+z\)</summary>\((2xy, x^2, 1)\).</details></li>
-          <li><details><summary>Divergencia de \((x,y,z)\)</summary>3.</details></li>
-          <li><details><summary>Rotacional de \((0,0,\phi(x,y))\)</summary>\((\partial_y\phi,-\partial_x\phi,0)\).</details></li>
-          <li><details><summary>Campo conservativo?</summary>Si \(\nabla\times\vec F=0\) en dominio simplemente conexo.</details></li>
-          <li><details><summary>Potencial de \(\vec F=(2x,2y,2z)\)</summary>\(\phi=x^2+y^2+z^2\)+cte.</details></li>
-          <li><details><summary>Integral de línea de \((y,0)\) en recta (0,0)→(1,1)</summary>\(\int y\,dx=\int_0^1 t\,dt=1/2\).</details></li>
-          <li><details><summary>Green para \(P=0, Q=x\) en rectángulo</summary>Área del dominio.</details></li>
-          <li><details><summary>Flujo de \(\vec F=(x,0,0)\) por plano \(x=1\)</summary>\(\iint 1\,dS\)=área.</details></li>
-          <li><details><summary>Circulación de \(\vec F=(−y,x,0)\) alrededor de círculo</summary>Usa Stokes → \(\iint (\nabla\times F)\cdot n\,dS=2\pi r^2\).</details></li>
-          <li><details><summary>Plano tangente a \(z=x^2+y^2\) en (1,1,2)</summary>\(z-2=2(x-1)+2(y-1)\).</details></li>
-          <li><details><summary>Área por Green de polígono</summary>Fórmula del área con integral de línea.</details></li>
-          <li><details><summary>Trabajo de \(\vec F=(y,0)\) en curva \(y=x^2\)</summary>Parametriza y evalúa.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 11 ========= -->
-    <section class="paper" id="cap11">
-      <h2>11. Transformadas de Laplace y Fourier</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Resolver EDO lineales y analizar señales con transformadas.</div>
-      <div class="callout"><strong>📌 Tablas básicas.</strong>
-        <ul>
-          <li>Laplace: \(\mathcal L\{1\}=1/s\), \(\mathcal L\{e^{at}\}=1/(s-a)\), \(\mathcal L\{\sin bt\}=b/(s^2+b^2)\).</li>
-          <li>Derivación: \(\mathcal L\{f'\}=sF(s)-f(0)\).</li>
-          <li>Fourier: \(\mathcal F\{f\}(\omega)=\int f(t)e^{-i\omega t}\,dt\); convolución ↔ producto.</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>\(y'+y=e^{t}\) con Laplace</summary>Transforma, despeja \(Y(s)\), y antitransforma: \(y=\tfrac12 e^t + Ce^{-t}\).</details></li>
-          <li><details><summary>Respuesta impulso de \(y''+y=\delta(t)\)</summary>\(y=\sin t\,H(t)\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Laplace de \(t\)</summary>\(1/s^2\).</details></li>
-          <li><details><summary>Laplace de \(\cos bt\)</summary>\(s/(s^2+b^2)\).</details></li>
-          <li><details><summary>Desplazamiento temporal: \(f(t-a)H(t-a)\)</summary>\(e^{-as}F(s)\).</details></li>
-          <li><details><summary>Resuelve \(y'+2y=1\) con Laplace</summary>\(y=\tfrac12+Ce^{-2t}\).</details></li>
-          <li><details><summary>Convolución de exponenciales iguales</summary>Suma de exponenciales con polinomio en t.</details></li>
-          <li><details><summary>Fourier de gaussiana</summary>Otra gaussiana.</details></li>
-          <li><details><summary>Fourier de rectángulo</summary>\(\operatorname{sinc}\).</details></li>
-          <li><details><summary>Serie de Fourier de función impar</summary>Solo coeficientes \(b_n\).</details></li>
-          <li><details><summary>Laplace de \(H(t)\)</summary>\(1/s\).</details></li>
-          <li><details><summary>Laplace de \(\delta(t-a)\)</summary>\(e^{-as}\).</details></li>
-          <li><details><summary>Resuelve \(y''+y=\sin t\)</summary>Usa Laplace.</details></li>
-          <li><details><summary>Espectro de \(\cos \omega_0 t\)</summary>Picos en \(\pm\omega_0\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 12 ========= -->
-    <section class="paper" id="cap12">
-      <h2>12. Probabilidad y estadística</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Modelar incertidumbre, calcular probabilidades y construir IC/pruebas sencillas.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>\(\operatorname{Var}(X)=E[X^2]-E[X]^2\).</li>
-          <li>Binomial: \(P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}\).</li>
-          <li>Poisson: \(P(X=k)=e^{-\lambda}\lambda^k/k!\).</li>
-          <li>Normal: tipifica \(Z=\dfrac{X-\mu}{\sigma}\).</li>
-          <li>Exponencial: \(E[X]=1/\lambda\), sin memoria.</li>
-        </ul>
-      </div>
-      <div class="examples">
-        <h4>🔍 Ejemplos resueltos (2)</h4>
-        <ol>
-          <li><details><summary>Diseño por Poisson (averías/h)</summary>\(P(X\le k)=\sum_{j=0}^k e^{-\lambda}\lambda^j/j!\).</details></li>
-          <li><details><summary>IC de media con \(n\ge 30\)</summary>\(\bar x \pm z_{\alpha/2}\,\sigma/\sqrt n\).</details></li>
-        </ol>
-      </div>
-      <div class="examples">
-        <h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Binomial \(n=10\), \(p=0.2\): \(P(X=3)\)</summary>\(\binom{10}{3}0.2^3 0.8^7\).</details></li>
-          <li><details><summary>Poisson \(\lambda=4\): \(P(X=0)\)</summary>\(e^{-4}\).</details></li>
-          <li><details><summary>Exponencial \(\lambda=2\): \(E[X]\)</summary>0.5.</details></li>
-          <li><details><summary>Normal(\(\mu,\sigma\)): \(P(\mu-\sigma<X<\mu+\sigma)\)</summary>≈0.68.</details></li>
-          <li><details><summary>Composición de varianzas \(Var(aX+b)\)</summary>\(a^2 Var(X)\).</details></li>
-          <li><details><summary>Teorema central del límite</summary>Media muestral ≈ normal para n grande.</details></li>
-          <li><details><summary>IC media con \(\sigma\) desconocida</summary>t de Student.</details></li>
-          <li><details><summary>Prueba Z bilateral</summary>Rechaza si |Z|>\(z_{\alpha/2}\).</details></li>
-          <li><details><summary>Prueba t para medias</summary>Usa t con \(n-1\) g.l.</details></li>
-          <li><details><summary>Bayes simple</summary>\(P(A|B)=\dfrac{P(B|A)P(A)}{P(B)}\).</details></li>
-          <li><details><summary>Bernoulli: \(Var(X)\)</summary>\(p(1-p)\).</details></li>
-          <li><details><summary>Poisson: \(Var(X)\)</summary>\(\lambda\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="paper">
-      <h2>Errores típicos y remedios</h2>
-      <ul>
-        <li>Usar l’Hôpital sin indeterminación \(0/0\) o \(\infty/\infty\) → factoriza o racionaliza primero.</li>
-        <li>Olvidar la constante de integración → recuerda “+C”.</li>
-        <li>Confundir conservativo con \(\nabla\cdot\vec F=0\) → lo decisivo es \(\nabla\times\vec F=0\) en dominio adecuado.</li>
-      </ul>
-    </section>
-  </main>
-
-  <button class="topbtn" id="topbtn">↑ Arriba</button>
-
   <script>
-    const $ = s => document.querySelector(s);
-    // Progress bar + top button
-    const bar = $('#progress');
-    function updateProgress(){
-      const h = document.documentElement;
-      const sc = h.scrollTop || document.body.scrollTop;
-      const max = (h.scrollHeight - h.clientHeight);
-      const p = max>0 ? (sc/max)*100 : 0;
-      bar.style.width = p + '%';
-      $('#topbtn').classList.toggle('show', sc>600);
-    }
-    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    const exercises = [
+      // ============================================================
+      // CÁLCULO I: ANÁLISIS REAL Y COMPLEJO (20 EJERCICIOS)
+      // ============================================================
+      {
+        id: "C1-001",
+        category: "c1",
+        topic: "Números Complejos",
+        difficulty: "Hard",
+        problem: "Resuelve la ecuación $z^4 + 16 = 0$ en $\\mathbb{C}$. Representa gráficamente las soluciones y calcula el área del polígono que forman.",
+        steps: [
+          "Escribimos la ecuación como $z^4 = -16$.",
+          "Pasamos a forma polar: $-16 = 16 e^{i(\\pi + 2k\\pi)}$.",
+          "Las raíces cuartas son $z_k = \\sqrt[4]{16} e^{i(\\frac{\\pi + 2k\\pi}{4})}$ para $k=0,1,2,3$.",
+          "Módulo $r=2$. Argumentos: $\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4$.",
+          "Soluciones: $z_0 = \\sqrt{2}(1+i)$, $z_1 = \\sqrt{2}(-1+i)$, $z_2 = \\sqrt{2}(-1-i)$, $z_3 = \\sqrt{2}(1-i)$.",
+          "Forman un cuadrado de lado $2\\sqrt{2}$ (distancia entre $z_0$ y $z_1$).",
+          "Área = $(2\\sqrt{2})^2 = 8$."
+        ],
+        solution: "$$ z \\in \\{ \\sqrt{2}(\\pm 1 \\pm i) \\}, \\quad \\text{Área} = 8 $$"
+      },
+      {
+        id: "C1-002",
+        category: "c1",
+        topic: "Límites (Infinitésimos)",
+        difficulty: "Hard",
+        problem: "Calcula el límite: $$\\lim_{x \\to 0} \\frac{\\ln(\\cos x) + x^2/2}{x^4}$$",
+        steps: [
+          "Evaluamos: $\\ln(1) + 0 = 0$, denom $0$. Indeterminación $0/0$.",
+          "Usamos Taylor para $\\cos x \\approx 1 - x^2/2 + x^4/24$.",
+          "$\\ln(\\cos x) \\approx \\ln(1 - (x^2/2 - x^4/24))$.",
+          "Usamos $\\ln(1-u) \\approx -u - u^2/2$. Aquí $u = x^2/2 - x^4/24$.",
+          "$\\ln(\\cos x) \\approx -(x^2/2 - x^4/24) - (x^2/2)^2/2 = -x^2/2 + x^4/24 - x^4/8 = -x^2/2 - x^4/12$.",
+          "Sustituimos en el límite: $\\frac{(-x^2/2 - x^4/12) + x^2/2}{x^4}$.",
+          "Simplificamos: $\\frac{-x^4/12}{x^4} = -1/12$."
+        ],
+        solution: "$$ -\\frac{1}{12} $$"
+      },
+      {
+        id: "C1-003",
+        category: "c1",
+        topic: "Continuidad (Parámetros)",
+        difficulty: "Medium",
+        problem: "Halla $a, b$ para que $f(x)$ sea derivable en todo $\\mathbb{R}$: $$ f(x) = \\begin{cases} \\sin(\pi x) + a & x \\le 1 \\\\ b \\ln x + x & x > 1 \\end{cases} $$",
+        steps: [
+          "Continuidad en $x=1$: $\\lim_{x\\to 1^-} (\\sin \\pi + a) = a$. $\\lim_{x\\to 1^+} (0 + 1) = 1$. $\\Rightarrow a=1$.",
+          "Derivabilidad: $f'(x) = \\pi \\cos(\\pi x)$ si $x<1$, $f'(x) = b/x + 1$ si $x>1$.",
+          "Derivadas laterales en $x=1$: $f'(1^-) = \\pi \\cos(\\pi) = -\\pi$.",
+          "$f'(1^+) = b/1 + 1 = b+1$.",
+          "Igualamos: $-\\pi = b+1 \\Rightarrow b = -\\pi - 1$."
+        ],
+        solution: "$$ a=1, \\quad b = -(\\pi + 1) $$"
+      },
+      {
+        id: "C1-004",
+        category: "c1",
+        topic: "Taylor (Error)",
+        difficulty: "Hard",
+        problem: "Aproxima $\\sqrt[3]{28}$ usando un polinomio de Taylor de orden 2 y acota el error cometido.",
+        steps: [
+          "Sea $f(x) = x^{1/3}$. Buscamos un punto cercano con raíz exacta: $a=27$.",
+          "$f(27) = 3$.",
+          "$f'(x) = \\frac{1}{3}x^{-2/3} \\Rightarrow f'(27) = \\frac{1}{3} \\frac{1}{9} = \\frac{1}{27}$.",
+          "$f''(x) = -\\frac{2}{9}x^{-5/3} \\Rightarrow f''(27) = -\\frac{2}{9} \\frac{1}{243} = -\\frac{2}{2187}$.",
+          "$P_2(x) = 3 + \\frac{1}{27}(x-27) - \\frac{1}{2187}(x-27)^2$.",
+          "Evaluamos en $x=28$: $P_2(28) = 3 + \\frac{1}{27} - \\frac{1}{2187} \\approx 3.03658$.",
+          "Error (Lagrange): $R_2 = \\frac{f'''(c)}{6}(1)^3$. $f'''(x) = \\frac{10}{27}x^{-8/3}$.",
+          "Acotamos en $(27, 28)$: $|R_2| < \\frac{10/27 \\cdot 27^{-8/3}}{6} \\approx 10^{-6}$."
+        ],
+        solution: "$$ \\approx 3.03658, \\quad |E| < 10^{-5} $$"
+      },
+      {
+        id: "C1-005",
+        category: "c1",
+        topic: "Optimización (Geometría)",
+        difficulty: "Hard",
+        problem: "Se quiere inscribir un cono de volumen máximo dentro de una esfera de radio $R$. Halla la altura del cono.",
+        steps: [
+          "Sea $r$ el radio del cono y $h$ su altura.",
+          "Sección transversal: triángulo isósceles en círculo.",
+          "Relación pitagórica: $r^2 + (h-R)^2 = R^2 \\Rightarrow r^2 = R^2 - (h-R)^2 = 2Rh - h^2$.",
+          "Volumen $V(h) = \\frac{1}{3}\\pi r^2 h = \\frac{\\pi}{3}(2Rh^2 - h^3)$.",
+          "Dominio: $h \\in [0, 2R]$.",
+          "Derivamos: $V'(h) = \\frac{\\pi}{3}(4Rh - 3h^2)$.",
+          "Puntos críticos: $h(4R - 3h) = 0 \\Rightarrow h=0$ (min) o $h = \\frac{4}{3}R$ (max).",
+          "El radio será $r = \\sqrt{2R(4R/3) - 16R^2/9} = \\frac{2\\sqrt{2}}{3}R$."
+        ],
+        solution: "$$ h = \\frac{4}{3}R, \\quad V_{max} = \\frac{32}{81}\\pi R^3 $$"
+      },
+      {
+        id: "C1-006",
+        category: "c1",
+        topic: "Derivada Implícita",
+        difficulty: "Medium",
+        problem: "Halla la recta tangente a la curva $x^3 + y^3 = 6xy$ (Folium de Descartes) en el punto $(3,3)$.",
+        steps: [
+          "Verificamos punto: $27 + 27 = 6(3)(3) = 54$. Correcto.",
+          "Derivamos implícitamente respecto a $x$: $3x^2 + 3y^2 y' = 6(y + xy')$.",
+          "Sustituimos $(3,3)$: $3(9) + 3(9)y' = 6(3 + 3y')$.",
+          "$27 + 27y' = 18 + 18y'$.",
+          "$9y' = -9 \\Rightarrow y' = -1$.",
+          "Ecuación recta: $y - 3 = -1(x - 3) \\Rightarrow y = -x + 6$."
+        ],
+        solution: "$$ x + y = 6 $$"
+      },
+      {
+        id: "C1-007",
+        category: "c1",
+        topic: "Teorema Valor Medio",
+        difficulty: "Hard",
+        problem: "Demuestra que $|\\sin b - \\sin a| \\le |b - a|$ para todo $a,b \\in \\mathbb{R}$.",
+        steps: [
+          "Sea $f(x) = \\sin x$. Es continua y derivable en todo $\\mathbb{R}$.",
+          "Por el TVM en $[a,b]$, existe $c \\in (a,b)$ tal que $\\frac{f(b)-f(a)}{b-a} = f'(c)$.",
+          "$\\frac{\\sin b - \\sin a}{b-a} = \\cos c$.",
+          "Tomamos valor absoluto: $|\\frac{\\sin b - \\sin a}{b-a}| = |\\cos c|$.",
+          "Sabemos que $|\\cos c| \\le 1$.",
+          "Por tanto, $|\\sin b - \\sin a| \\le |b - a|$."
+        ],
+        solution: "$$ \\text{Q.E.D. (Lipschitziana con } K=1) $$"
+      },
+      {
+        id: "C1-008",
+        category: "c1",
+        topic: "Límites (Exponencial)",
+        difficulty: "Medium",
+        problem: "Calcula $\\lim_{x \\to \\infty} (\\frac{x^2+1}{x^2-1})^{x^2}$.",
+        steps: [
+          "Forma $1^\\infty$. Usamos la fórmula $e^{\\lim g(f-1)}$.",
+          "$L = e^{\\lim_{x\\to\\infty} x^2 (\\frac{x^2+1}{x^2-1} - 1)}$.",
+          "Simplificamos paréntesis: $\\frac{x^2+1 - (x^2-1)}{x^2-1} = \\frac{2}{x^2-1}$.",
+          "Límite exponente: $\\lim x^2 \\frac{2}{x^2-1} = 2$.",
+          "Resultado final $e^2$."
+        ],
+        solution: "$$ e^2 $$"
+      },
+      {
+        id: "C1-009",
+        category: "c1",
+        topic: "Complejos (Geometría)",
+        difficulty: "Hard",
+        problem: "Determina el lugar geométrico de $z$ tal que $\\text{Re}(\\frac{z-1}{z+1}) = 0$.",
+        steps: [
+          "Sea $w = \\frac{z-1}{z+1}$. Si su parte real es 0, es imaginario puro.",
+          "$w + \\bar{w} = 0$.",
+          "$\\frac{z-1}{z+1} + \\frac{\\bar{z}-1}{\\bar{z}+1} = 0$.",
+          "$(z-1)(\\bar{z}+1) + (z+1)(\\bar{z}-1) = 0$.",
+          "$z\\bar{z} + z - \\bar{z} - 1 + z\\bar{z} - z + \\bar{z} - 1 = 0$.",
+          "$2|z|^2 - 2 = 0 \\Rightarrow |z|^2 = 1$.",
+          "Es la circunferencia unitaria (excluyendo $z=-1$)."
+        ],
+        solution: "$$ |z|=1, z \\neq -1 $$"
+      },
+      {
+        id: "C1-010",
+        category: "c1",
+        topic: "Funciones Hiperbólicas",
+        difficulty: "Medium",
+        problem: "Demuestra que $\\text{arctanh}(x) = \\frac{1}{2} \\ln(\\frac{1+x}{1-x})$.",
+        steps: [
+          "Sea $y = \\text{arctanh}(x) \\Rightarrow x = \\tanh y = \\frac{e^y - e^{-y}}{e^y + e^{-y}}$.",
+          "$x(e^y + e^{-y}) = e^y - e^{-y}$. Multiplicamos por $e^y$: $x(e^{2y}+1) = e^{2y}-1$.",
+          "$xe^{2y} + x = e^{2y} - 1$.",
+          "$e^{2y}(x-1) = -1-x \\Rightarrow e^{2y} = \\frac{1+x}{1-x}$.",
+          "$2y = \\ln(\\frac{1+x}{1-x}) \\Rightarrow y = \\frac{1}{2}\\ln(\\frac{1+x}{1-x})$."
+        ],
+        solution: "$$ |x|<1 $$"
+      },
+      {
+        id: "C1-011",
+        category: "c1",
+        topic: "Razón de Cambio",
+        difficulty: "Hard",
+        problem: "Una escalera de 5m se desliza por una pared. Si la base se aleja a 0.5 m/s, ¿a qué velocidad baja el extremo superior cuando la base está a 3m?",
+        steps: [
+          "Pitágoras: $x^2 + y^2 = 25$.",
+          "Derivamos respecto a $t$: $2x \\frac{dx}{dt} + 2y \\frac{dy}{dt} = 0$.",
+          "Datos: $x=3$, $dx/dt = 0.5$. Hallamos $y$: $3^2 + y^2 = 25 \\Rightarrow y=4$.",
+          "$2(3)(0.5) + 2(4) \\frac{dy}{dt} = 0$.",
+          "$3 + 8 \\frac{dy}{dt} = 0 \\Rightarrow \\frac{dy}{dt} = -3/8$ m/s."
+        ],
+        solution: "$$ -0.375 \\text{ m/s} $$"
+      },
+      {
+        id: "C1-012",
+        category: "c1",
+        topic: "Integral Definida",
+        difficulty: "Medium",
+        problem: "Calcula $\\int_0^{\\pi} |\\cos x| dx$.",
+        steps: [
+          "El coseno cambia de signo en $\\pi/2$.",
+          "Dividimos intervalo: $\\int_0^{\\pi/2} \\cos x dx + \\int_{\\pi/2}^{\\pi} -\\cos x dx$.",
+          "$[\\sin x]_0^{\\pi/2} - [\\sin x]_{\\pi/2}^{\\pi}$.",
+          "$(1 - 0) - (0 - 1) = 1 + 1 = 2$."
+        ],
+        solution: "$$ 2 $$"
+      },
+      {
+        id: "C1-013",
+        category: "c1",
+        topic: "Teorema Fundamental",
+        difficulty: "Hard",
+        problem: "Calcula $F'(x)$ si $F(x) = \\int_{x^2}^{e^x} \\sqrt{1+t^2} dt$.",
+        steps: [
+          "Usamos la regla de Leibniz generalizada.",
+          "$F'(x) = f(b(x))b'(x) - f(a(x))a'(x)$.",
+          "$f(t) = \\sqrt{1+t^2}$. $b(x)=e^x, a(x)=x^2$.",
+          "$F'(x) = \\sqrt{1+(e^x)^2} \\cdot e^x - \\sqrt{1+(x^2)^2} \\cdot 2x$.",
+          "$F'(x) = e^x\\sqrt{1+e^{2x}} - 2x\\sqrt{1+x^4}$."
+        ],
+        solution: "$$ e^x\\sqrt{1+e^{2x}} - 2x\\sqrt{1+x^4} $$"
+      },
+      {
+        id: "C1-014",
+        category: "c1",
+        topic: "Optimización (Costes)",
+        difficulty: "Medium",
+        problem: "Se quiere vallar un campo rectangular de 216 $m^2$ dividido en dos por una valla paralela a un lado. Minimiza la longitud de valla.",
+        steps: [
+          "Lados $x, y$. Área $xy = 216 \\Rightarrow y = 216/x$.",
+          "Longitud valla $L = 2x + 3y$ (3 tramos de $y$ o viceversa, asumimos 3 verticales).",
+          "$L(x) = 2x + 3(216/x) = 2x + 648/x$.",
+          "$L'(x) = 2 - 648/x^2 = 0 \\Rightarrow x^2 = 324 \\Rightarrow x=18$.",
+          "$y = 216/18 = 12$.",
+          "Longitud mínima: $2(18) + 3(12) = 36 + 36 = 72$."
+        ],
+        solution: "$$ 72 \\text{ m} $$"
+      },
+      {
+        id: "C1-015",
+        category: "c1",
+        topic: "Límites (Trigonométricos)",
+        difficulty: "Hard",
+        problem: "$\\lim_{x \\to 0} \\frac{\\tan x - \\sin x}{x^3}$.",
+        steps: [
+          "$\\tan x = \\sin x / \\cos x$.",
+          "Num: $\\sin x (\\frac{1}{\\cos x} - 1) = \\sin x \\frac{1-\\cos x}{\\cos x}$.",
+          "Equivalencias: $\\sin x \\sim x$, $1-\\cos x \\sim x^2/2$, $\\cos x \\to 1$.",
+          "Límite $\\approx \\frac{x \\cdot x^2/2}{x^3} = 1/2$."
+        ],
+        solution: "$$ 1/2 $$"
+      },
+      {
+        id: "C1-016",
+        category: "c1",
+        topic: "Derivada Inversa",
+        difficulty: "Hard",
+        problem: "Sea $f(x) = x^3 + x + 1$. Calcula $(f^{-1})'(3)$.",
+        steps: [
+          "Sabemos que $(f^{-1})'(y_0) = \\frac{1}{f'(x_0)}$ donde $f(x_0)=y_0$.",
+          "Buscamos $x_0$ tal que $x^3+x+1 = 3$. A ojo, $x_0=1$.",
+          "$f'(x) = 3x^2 + 1$.",
+          "$f'(1) = 3(1)^2 + 1 = 4$.",
+          "Entonces $(f^{-1})'(3) = 1/4$."
+        ],
+        solution: "$$ 0.25 $$"
+      },
+      {
+        id: "C1-017",
+        category: "c1",
+        topic: "Continuidad Uniforme",
+        difficulty: "Hard",
+        problem: "¿Es $f(x) = x^2$ uniformemente continua en $\\mathbb{R}$?",
+        steps: [
+          "Definición: $\\forall \\epsilon > 0, \\exists \\delta > 0$ tal que $|x-y|<\\delta \\implies |x^2-y^2|<\\epsilon$.",
+          "Tomamos $x_n = n, y_n = n + 1/n$. $|x_n-y_n| \\to 0$.",
+          "$|f(x_n)-f(y_n)| = |n^2 - (n^2 + 2 + 1/n^2)| = 2 + 1/n^2 > 2$.",
+          "La distancia de las imágenes no se hace pequeña. No es U.C."
+        ],
+        solution: "$$ \\text{No} $$"
+      },
+      {
+        id: "C1-018",
+        category: "c1",
+        topic: "Complejos (Potencias)",
+        difficulty: "Medium",
+        problem: "Calcula $i^i$ (Valor principal).",
+        steps: [
+          "Definición: $z^w = e^{w \\ln z}$.",
+          "$\\ln i = \\ln|i| + i \\arg(i) = 0 + i\\pi/2$.",
+          "$i^i = e^{i (i\\pi/2)} = e^{-\\pi/2}$.",
+          "Es un número real."
+        ],
+        solution: "$$ e^{-\\pi/2} \\approx 0.207 $$"
+      },
+      {
+        id: "C1-019",
+        category: "c1",
+        topic: "Asíntotas",
+        difficulty: "Medium",
+        problem: "Halla la asíntota oblicua de $f(x) = \\frac{x^2+3x+1}{x-1}$.",
+        steps: [
+          "Grado num = Grado den + 1 $\\implies$ Hay oblicua.",
+          "División polinómica: $(x^2+3x+1) : (x-1)$.",
+          "$x^2-x \\to 4x+1$. $4x-4 \\to 5$.",
+          "Cociente $x+4$, Resto $5$.",
+          "$f(x) = x+4 + \\frac{5}{x-1}$."
+        ],
+        solution: "$$ y = x + 4 $$"
+      },
+      {
+        id: "C1-020",
+        category: "c1",
+        topic: "Newton-Raphson",
+        difficulty: "Medium",
+        problem: "Escribe la iteración para hallar $\\sqrt{5}$.",
+        steps: [
+          "Buscamos raíz de $f(x) = x^2 - 5$.",
+          "$f'(x) = 2x$.",
+          "Fórmula: $x_{n+1} = x_n - \\frac{x_n^2-5}{2x_n}$.",
+          "Simplificando: $x_{n+1} = \\frac{1}{2}(x_n + \\frac{5}{x_n})$ (Método de Herón)."
+        ],
+        solution: "$$ x_{n+1} = 0.5(x_n + 5/x_n) $$"
+      },
 
-    // Reader controls
-    const root = document.documentElement;
-    $('#fs-up').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
-      root.style.setProperty('--base', Math.min(val+1, 22)+'px');
-    });
-    $('#fs-down').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
-      root.style.setProperty('--base', Math.max(val-1, 14)+'px');
-    });
-    $('#width-up').addEventListener('click', ()=>{
-      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
-      const num = parseFloat(w);
-      root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
-    });
-    $('#width-down').addEventListener('click', ()=>{
-      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
-      const num = parseFloat(w);
-      root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
-    });
-    $('#theme-toggle').addEventListener('click', ()=>{
-      const light = getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff';
-      if(light){ // switch to dark palette
-        root.style.setProperty('--bg','#0b1220'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff');
-        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc'); root.style.setProperty('--accent2','#34d399'); root.style.setProperty('--border','#203054');
-      }else{ // back to light
-        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#121826');
-        root.style.setProperty('--muted','#48536b'); root.style.setProperty('--brand','#2563eb'); root.style.setProperty('--accent','#0ea5e9'); root.style.setProperty('--accent2','#22c55e'); root.style.setProperty('--border','#d9e1f2');
+      // ============================================================
+      // CÁLCULO II: INTEGRACIÓN Y SERIES (15 EJERCICIOS)
+      // ============================================================
+      {
+        id: "C2-001",
+        category: "c2",
+        topic: "Integral Racional",
+        difficulty: "Hard",
+        problem: "Calcula $\\int \\frac{dx}{x^4+1}$.",
+        steps: [
+          "Factorizamos $x^4+1 = (x^2+1)^2 - 2x^2 = (x^2+\\sqrt{2}x+1)(x^2-\\sqrt{2}x+1)$.",
+          "Descomposición en fracciones simples: $\\frac{Ax+B}{...} + \\frac{Cx+D}{...}$.",
+          "Es largo. Truco: sumar y restar $x^2$ en numerador multiplicado.",
+          "Solución involucra $\\ln$ y $\\arctan$."
+        ],
+        solution: "$$ \\frac{1}{4\\sqrt{2}} \\ln \\frac{x^2+\\sqrt{2}x+1}{x^2-\\sqrt{2}x+1} + \\dots $$"
+      },
+      {
+        id: "C2-002",
+        category: "c2",
+        topic: "Integral Impropia",
+        difficulty: "Hard",
+        problem: "Estudia la convergencia de $\\int_0^\\infty \\frac{\\sin x}{x} dx$ (Integral de Dirichlet).",
+        steps: [
+          "En $0$ el límite es 1, no hay problema.",
+          "En $\\infty$: Convergencia condicional.",
+          "Dirichlet: $\\int \\sin x$ acotada, $1/x$ decrece a 0 $\\implies$ Converge.",
+          "Absoluta: $\\int |\\sin x|/x$ diverge (comparando con armónica)."
+        ],
+        solution: "$$ \\text{Converge a } \\pi/2 $$"
+      },
+      {
+        id: "C2-003",
+        category: "c2",
+        topic: "Volumen (Sólido)",
+        difficulty: "Medium",
+        problem: "Volumen generado por la región entre $y=x^2$ y $y=4$ al girar alrededor de $y=4$.",
+        steps: [
+          "Radio de giro $R(x) = 4 - x^2$.",
+          "Límites intersección: $x^2=4 \\Rightarrow x=\\pm 2$.",
+          "Método discos: $V = \\pi \\int_{-2}^2 (4-x^2)^2 dx$.",
+          "Simetría: $2\\pi \\int_0^2 (16 - 8x^2 + x^4) dx$.",
+          "$2\\pi [16x - \\frac{8}{3}x^3 + \\frac{1}{5}x^5]_0^2 = \\frac{512\\pi}{15}$."
+        ],
+        solution: "$$ \\frac{512\\pi}{15} $$"
+      },
+      {
+        id: "C2-004",
+        category: "c2",
+        topic: "Series Potencias",
+        difficulty: "Hard",
+        problem: "Suma de la serie $\\sum_{n=1}^\\infty n x^n$ para $|x|<1$.",
+        steps: [
+          "Sabemos $\\sum x^n = \\frac{1}{1-x}$.",
+          "Derivamos: $\\sum n x^{n-1} = \\frac{1}{(1-x)^2}$.",
+          "Multiplicamos por $x$: $\\sum n x^n = \\frac{x}{(1-x)^2}$."
+        ],
+        solution: "$$ \\frac{x}{(1-x)^2} $$"
+      },
+      {
+        id: "C2-005",
+        category: "c2",
+        topic: "EDO Lineal",
+        difficulty: "Medium",
+        problem: "Resuelve $y' + y\\tan x = \\cos x$.",
+        steps: [
+          "Factor integrante: $\\mu(x) = e^{\\int \\tan x dx} = e^{-\\ln(\\cos x)} = \\sec x$.",
+          "Multiplicamos: $\\sec x y' + y \\sec x \\tan x = 1$.",
+          "$(y \\sec x)' = 1$.",
+          "Integramos: $y \\sec x = x + C$.",
+          "$y = (x+C)\\cos x$."
+        ],
+        solution: "$$ y = x\\cos x + C\\cos x $$"
+      },
+      {
+        id: "C2-006",
+        category: "c2",
+        topic: "Longitud de Arco",
+        difficulty: "Hard",
+        problem: "Longitud de la astroide $x^{2/3} + y^{2/3} = a^{2/3}$.",
+        steps: [
+          "Parametrización: $x = a\\cos^3 t, y = a\\sin^3 t, t \\in [0, 2\\pi]$.",
+          "$x' = -3a\\cos^2 t \\sin t, y' = 3a\\sin^2 t \\cos t$.",
+          "$(x')^2 + (y')^2 = 9a^2 \\sin^2 t \\cos^2 t (\\cos^2 t + \\sin^2 t) = 9a^2 \\sin^2 t \\cos^2 t$.",
+          "Raíz: $3a |\\sin t \\cos t| = \\frac{3a}{2} |\\sin 2t|$.",
+          "Integral: $4 \\int_0^{\\pi/2} \\frac{3a}{2} \\sin 2t dt = 6a [-\\frac{\\cos 2t}{2}]_0^{\\pi/2} = 6a$."
+        ],
+        solution: "$$ 6a $$"
+      },
+      {
+        id: "C2-007",
+        category: "c2",
+        topic: "Criterios Series",
+        difficulty: "Hard",
+        problem: "Converge $\\sum (1 - \\cos(1/n))$?",
+        steps: [
+          "Usamos comparación asintótica.",
+          "$1 - \\cos u \\sim u^2/2$ cuando $u \\to 0$.",
+          "Aquí $u=1/n$, así que $a_n \\sim \\frac{1}{2n^2}$.",
+          "Como $\\sum 1/n^2$ converge (p-serie p=2), la original converge."
+        ],
+        solution: "$$ \\text{Converge} $$"
+      },
+      {
+        id: "C2-008",
+        category: "c2",
+        topic: "Área Polar",
+        difficulty: "Medium",
+        problem: "Área de un pétalo de la rosa $r = \\cos 3\\theta$.",
+        steps: [
+          "Pétalo: $-\\pi/6 \\le \\theta \\le \\pi/6$.",
+          "Área = $\\frac{1}{2} \\int r^2 d\\theta = \\frac{1}{2} \\int_{-\\pi/6}^{\\pi/6} \\cos^2 3\\theta d\\theta$.",
+          "Identidad: $\\cos^2 u = \\frac{1+\\cos 2u}{2}$.",
+          "$\\frac{1}{4} \\int (1 + \\cos 6\\theta) d\\theta = \\frac{1}{4} [\\theta + \\frac{\\sin 6\\theta}{6}]$.",
+          "Evaluando: $\\frac{1}{4}(\\frac{\\pi}{3} + 0) = \\frac{\\pi}{12}$."
+        ],
+        solution: "$$ \\pi/12 $$"
+      },
+      {
+        id: "C2-009",
+        category: "c2",
+        topic: "EDO Exacta",
+        difficulty: "Medium",
+        problem: "$(2xy + x^2)dx + (x^2 + y^2)dy = 0$.",
+        steps: [
+          "$M_y = 2x$, $N_x = 2x$. Es exacta.",
+          "$\\frac{\\partial f}{\\partial x} = 2xy + x^2 \\Rightarrow f = x^2y + x^3/3 + g(y)$.",
+          "$\\frac{\\partial f}{\\partial y} = x^2 + g'(y) = x^2 + y^2 \\Rightarrow g'(y) = y^2 \\Rightarrow g(y) = y^3/3$.",
+          "Solución: $x^2y + x^3/3 + y^3/3 = C$."
+        ],
+        solution: "$$ 3x^2y + x^3 + y^3 = K $$"
+      },
+      {
+        id: "C2-010",
+        category: "c2",
+        topic: "Integral Trigonométrica",
+        difficulty: "Hard",
+        problem: "$\\int \\sec^3 x dx$.",
+        steps: [
+          "Integración por partes: $u=\\sec x, dv=\\sec^2 x$.",
+          "$I = \\sec x \\tan x - \\int \\sec x \\tan^2 x dx$.",
+          "$\\tan^2 = \\sec^2 - 1 \\Rightarrow I = \\sec x \\tan x - \\int (\\sec^3 x - \\sec x)$.",
+          "$I = \\sec x \\tan x - I + \\ln|\\sec + \\tan|$.",
+          "$2I = \\dots \\Rightarrow I = \\frac{1}{2}(\\sec x \\tan x + \\ln|\\sec x + \\tan x|)$."
+        ],
+        solution: "$$ \\frac{1}{2}(\\sec x \\tan x + \\ln|\\sec + \\tan|) $$"
+      },
+      {
+        id: "C2-011",
+        category: "c2",
+        topic: "Serie Alternada",
+        difficulty: "Medium",
+        problem: "Error al aproximar $\\sum_{n=1}^\\infty \\frac{(-1)^{n+1}}{n^2}$ con 10 términos.",
+        steps: [
+          "Serie alternada convergente (Leibniz).",
+          "El error es menor que el primer término despreciado.",
+          "$|E| < a_{11} = \\frac{1}{11^2} = \\frac{1}{121}$.",
+          "$1/121 \\approx 0.008$."
+        ],
+        solution: "$$ < 0.0083 $$"
+      },
+      {
+        id: "C2-012",
+        category: "c2",
+        topic: "Centroide",
+        difficulty: "Medium",
+        problem: "Centroide del semicírculo $y=\\sqrt{r^2-x^2}$.",
+        steps: [
+          "Por simetría $\\bar{x}=0$.",
+          "$\\bar{y} = \\frac{1}{A} \\int_{-r}^r \\frac{1}{2}[f(x)]^2 dx$.",
+          "$A = \\pi r^2/2$. Integral: $\\frac{1}{2} \\int (r^2-x^2) = \\frac{1}{2}[r^2x - x^3/3]_{-r}^r = \\frac{2}{3}r^3$.",
+          "$\\bar{y} = \\frac{2}{\\pi r^2} \\frac{2}{3}r^3 = \\frac{4r}{3\\pi}$."
+        ],
+        solution: "$$ (0, \\frac{4r}{3\\pi}) $$"
+      },
+      {
+        id: "C2-013",
+        category: "c2",
+        topic: "EDO Bernoulli",
+        difficulty: "Hard",
+        problem: "$y' + y = y^2$.",
+        steps: [
+          "Bernoulli $n=2$. Cambio $u = y^{1-2} = y^{-1}$.",
+          "$u' = -y^{-2}y'$. Sustituimos.",
+          "$-u' + u = 1 \\Rightarrow u' - u = -1$.",
+          "Lineal. Sol: $u = 1 + Ce^x$.",
+          "$y = 1/(1+Ce^x)$."
+        ],
+        solution: "$$ y = \\frac{1}{1+Ce^x} $$"
+      },
+      {
+        id: "C2-014",
+        category: "c2",
+        topic: "Sustitución Weierstrass",
+        difficulty: "Hard",
+        problem: "$\\int \\frac{dx}{1+\\sin x}$.",
+        steps: [
+          "Cambio universal $t = \\tan(x/2)$. $dx = \\frac{2dt}{1+t^2}, \\sin x = \\frac{2t}{1+t^2}$.",
+          "$\\int \\frac{1}{1 + \\frac{2t}{1+t^2}} \\frac{2dt}{1+t^2} = \\int \\frac{2dt}{1+t^2+2t} = \\int \\frac{2dt}{(t+1)^2}$.",
+          "$= -\\frac{2}{t+1} = -\\frac{2}{\\tan(x/2)+1}$."
+        ],
+        solution: "$$ \\frac{-2}{1+\\tan(x/2)} + C $$"
+      },
+      {
+        id: "C2-015",
+        category: "c2",
+        topic: "Series (Raabe)",
+        difficulty: "Hard",
+        problem: "Converge $\\sum \\frac{1 \\cdot 3 \\cdots (2n-1)}{2 \\cdot 4 \\cdots (2n)}$.",
+        steps: [
+          "Cociente $a_{n+1}/a_n = \\frac{2n+1}{2n+2} \\to 1$. D'Alembert falla.",
+          "Raabe: $n(1 - \\frac{a_{n+1}}{a_n}) = n(1 - \\frac{2n+1}{2n+2}) = n(\\frac{1}{2n+2}) \\to 1/2$.",
+          "Como $L=1/2 < 1$, diverge."
+        ],
+        solution: "$$ \\text{Diverge} $$"
+      },
+
+      // ============================================================
+      // CÁLCULO III: MULTIVARIABLE Y VECTORIAL (15 EJERCICIOS)
+      // ============================================================
+      {
+        id: "C3-001",
+        category: "c3",
+        topic: "Límites Multivariable",
+        difficulty: "Hard",
+        problem: "Analiza $\\lim_{(x,y)\\to(0,0)} \\frac{x^2 y}{x^4 + y^2}$.",
+        steps: [
+          "Trayectorias rectas $y=mx$: $\\frac{x^2(mx)}{x^4+m^2x^2} = \\frac{mx}{x^2+m^2} \\to 0$.",
+          "Trayectoria parábola $y=x^2$: $\\frac{x^2(x^2)}{x^4+(x^2)^2} = \\frac{x^4}{2x^4} = 1/2$.",
+          "Límites distintos $\\Rightarrow$ No existe."
+        ],
+        solution: "$$ \\text{No existe} $$"
+      },
+      {
+        id: "C3-002",
+        category: "c3",
+        topic: "Plano Tangente",
+        difficulty: "Medium",
+        problem: "Plano tangente a la superficie $z = x^2 - y^2$ en $(2,1,3)$.",
+        steps: [
+          "$f_x = 2x \\to 4$. $f_y = -2y \\to -2$.",
+          "Ecuación: $z - z_0 = f_x(x-x_0) + f_y(y-y_0)$.",
+          "$z - 3 = 4(x-2) - 2(y-1)$.",
+          "$4x - 2y - z = 3$."
+        ],
+        solution: "$$ 4x - 2y - z = 3 $$"
+      },
+      {
+        id: "C3-003",
+        category: "c3",
+        topic: "Multiplicadores Lagrange",
+        difficulty: "Hard",
+        problem: "Distancia mínima del origen a la superficie $xyz^2 = 2$.",
+        steps: [
+          "Minimizar $f = x^2+y^2+z^2$ sujeto a $g = xyz^2 - 2 = 0$.",
+          "$\\nabla f = \\lambda \\nabla g$: $(2x, 2y, 2z) = \\lambda(yz^2, xz^2, 2xyz)$.",
+          "Multiplicando por variables: $2x^2 = \\lambda xyz^2$, $2y^2 = \\lambda xyz^2$, $2z^2 = 2\\lambda xyz^2$.",
+          "$2x^2 = 2y^2 = z^2$. $z = \\pm x\\sqrt{2}$.",
+          "Sustituyendo en restricción: $x(x)(2x^2) = 2 \\Rightarrow x^4=1$.",
+          "Punto $(1,1,\\sqrt{2})$. Distancia $\\sqrt{1+1+2} = 2$."
+        ],
+        solution: "$$ 2 $$"
+      },
+      {
+        id: "C3-004",
+        category: "c3",
+        topic: "Integral Doble (Polar)",
+        difficulty: "Medium",
+        problem: "$\\int_{-\\infty}^\\infty e^{-x^2} dx$ usando integrales dobles.",
+        steps: [
+          "Sea $I = \\int e^{-x^2}$. $I^2 = \\iint e^{-(x^2+y^2)} dA$.",
+          "Polares: $\\int_0^{2\\pi} d\\theta \\int_0^\\infty e^{-r^2} r dr$.",
+          "$2\\pi [-\\frac{1}{2}e^{-r^2}]_0^\\infty = 2\\pi (0 - (-1/2)) = \\pi$.",
+          "$I = \\sqrt{\\pi}$."
+        ],
+        solution: "$$ \\sqrt{\\pi} $$"
+      },
+      {
+        id: "C3-005",
+        category: "c3",
+        topic: "Cambio Variable Triple",
+        difficulty: "Hard",
+        problem: "Volumen del elipsoide $\\frac{x^2}{a^2} + \\frac{y^2}{b^2} + \\frac{z^2}{c^2} = 1$.",
+        steps: [
+          "Cambio: $x=au, y=bv, z=cw$. Jacobiano $abc$.",
+          "Región se convierte en esfera unitaria $u^2+v^2+w^2=1$.",
+          "$V = \\iiint abc du dv dw = abc \\cdot \\text{Vol(Esfera)}$.",
+          "$abc \\cdot \\frac{4}{3}\\pi (1)^3$."
+        ],
+        solution: "$$ \\frac{4}{3}\\pi abc $$"
+      },
+      {
+        id: "C3-006",
+        category: "c3",
+        topic: "Campos Conservativos",
+        difficulty: "Medium",
+        problem: "Halla el potencial de $\\vec{F} = (2xy, x^2 + z^2, 2yz)$.",
+        steps: [
+          "$\\phi_x = 2xy \\Rightarrow \\phi = x^2y + g(y,z)$.",
+          "$\\phi_y = x^2 + g_y = x^2 + z^2 \\Rightarrow g_y = z^2 \\Rightarrow g = yz^2 + h(z)$.",
+          "$\\phi_z = 2yz + h'(z) = 2yz \\Rightarrow h' = 0$.",
+          "$\\phi = x^2y + yz^2 + C$."
+        ],
+        solution: "$$ \\phi = x^2y + yz^2 + C $$"
+      },
+      {
+        id: "C3-007",
+        category: "c3",
+        topic: "Teorema Green",
+        difficulty: "Hard",
+        problem: "Trabajo de $\\vec{F} = (e^x - y^3, \\cos y + x^3)$ sobre círculo unitario.",
+        steps: [
+          "Green: $\\iint (Q_x - P_y) dA$.",
+          "$Q_x = 3x^2$, $P_y = -3y^2$.",
+          "$\\iint (3x^2 + 3y^2) dA = 3 \\iint r^2 dA$.",
+          "Polares: $3 \\int_0^{2\\pi} \\int_0^1 r^2 r dr d\\theta$.",
+          "$3(2\\pi) [r^4/4]_0^1 = 6\\pi (1/4) = 3\\pi/2$."
+        ],
+        solution: "$$ 3\\pi/2 $$"
+      },
+      {
+        id: "C3-008",
+        category: "c3",
+        topic: "Teorema Stokes",
+        difficulty: "Hard",
+        problem: "Circulación de $\\vec{F} = (y, z, x)$ en la intersección de $x^2+y^2=1$ y $x+z=1$.",
+        steps: [
+          "Superficie $S$: Plano $z=1-x$ dentro del cilindro. Normal $\\vec{n} = (1,0,1)/\\sqrt{2}$ (hacia arriba).",
+          "$\\text{rot } \\vec{F} = (-1, -1, -1)$.",
+          "$\\iint (-1,-1,-1) \\cdot (1,0,1) dA_{xy}$ (proyección).",
+          "$\\iint (-1-1) dA_{xy} = -2 \\text{Área}(D)$.",
+          "Área círculo unitario $\\pi$. Resultado $-2\\pi$."
+        ],
+        solution: "$$ -2\\pi $$"
+      },
+      {
+        id: "C3-009",
+        category: "c3",
+        topic: "Teorema Divergencia",
+        difficulty: "Medium",
+        problem: "Flujo de $\\vec{F} = (x, y, z)$ a través de cualquier superficie cerrada $S$.",
+        steps: [
+          "$\\text{div } \\vec{F} = 1+1+1 = 3$.",
+          "$\\iint_S \\vec{F} \\cdot d\\vec{S} = \\iiint_V 3 dV = 3 \\text{Vol}(V)$."
+        ],
+        solution: "$$ 3 \\times \\text{Volumen} $$"
+      },
+      {
+        id: "C3-010",
+        category: "c3",
+        topic: "Regla Cadena (Árbol)",
+        difficulty: "Medium",
+        problem: "Si $z = f(u,v)$, $u=x+y, v=x-y$, halla $\\frac{\\partial z}{\\partial x} \\frac{\\partial z}{\\partial y}$.",
+        steps: [
+          "$z_x = z_u u_x + z_v v_x = z_u + z_v$.",
+          "$z_y = z_u u_y + z_v v_y = z_u - z_v$.",
+          "Producto: $(z_u + z_v)(z_u - z_v) = (z_u)^2 - (z_v)^2$."
+        ],
+        solution: "$$ (\\frac{\\partial z}{\\partial u})^2 - (\\frac{\\partial z}{\\partial v})^2 $$"
+      },
+      {
+        id: "C3-011",
+        category: "c3",
+        topic: "Derivada Direccional Max",
+        difficulty: "Medium",
+        problem: "Dirección de máximo crecimiento de $f(x,y,z) = xe^{yz}$ en $(1,0,2)$.",
+        steps: [
+          "Gradiente $\\nabla f = (e^{yz}, xze^{yz}, xye^{yz})$.",
+          "En $(1,0,2)$: $(e^0, 2e^0, 0) = (1, 2, 0)$.",
+          "Dirección: vector $(1,2,0)$ normalizado."
+        ],
+        solution: "$$ \\frac{1}{\\sqrt{5}}(1, 2, 0) $$"
+      },
+      {
+        id: "C3-012",
+        category: "c3",
+        topic: "Integral de Línea",
+        difficulty: "Medium",
+        problem: "Masa de un alambre helicoidal $\\vec{r}(t) = (\\cos t, \\sin t, t)$, $0\\le t \\le 2\\pi$, densidad $\\rho(x,y,z) = z$.",
+        steps: [
+          "$ds = |\\vec{r}'(t)| dt = |(-\\sin t, \\cos t, 1)| dt = \\sqrt{2} dt$.",
+          "$\\int_0^{2\\pi} t \\sqrt{2} dt = \\sqrt{2} [t^2/2]_0^{2\\pi}$.",
+          "$\\sqrt{2} (2\\pi^2) = 2\\sqrt{2}\\pi^2$."
+        ],
+        solution: "$$ 2\\sqrt{2}\\pi^2 $$"
+      },
+      {
+        id: "C3-013",
+        category: "c3",
+        topic: "Superficie Paramétrica",
+        difficulty: "Hard",
+        problem: "Área del toro $\\vec{r}(u,v) = ((R+r\\cos v)\\cos u, (R+r\\cos v)\\sin u, r\\sin v)$.",
+        steps: [
+          "Calculamos $\\vec{r}_u$ y $\\vec{r}_v$.",
+          "Producto cruz $|\\vec{r}_u \\times \\vec{r}_v| = r(R+r\\cos v)$.",
+          "Integral: $\\int_0^{2\\pi} \\int_0^{2\\pi} r(R+r\\cos v) du dv$.",
+          "$2\\pi r [Rv + r\\sin v]_0^{2\\pi} = 2\\pi r (2\\pi R) = 4\\pi^2 Rr$."
+        ],
+        solution: "$$ 4\\pi^2 Rr $$"
+      },
+      {
+        id: "C3-014",
+        category: "c3",
+        topic: "Hessiano",
+        difficulty: "Medium",
+        problem: "Clasifica extremos de $f = x^4 + y^4 - 4xy + 1$.",
+        steps: [
+          "Puntos críticos: $4x^3-4y=0, 4y^3-4x=0 \\Rightarrow y=x^3, x^9=x$.",
+          "Soluciones: $(0,0), (1,1), (-1,-1)$.",
+          "Hessiano $H = 12x^2 \\cdot 12y^2 - (-4)^2 = 144x^2y^2 - 16$.",
+          "$(0,0): H=-16$ (Silla).",
+          "$(1,1): H=128 > 0, f_{xx}=12 > 0$ (Mínimo)."
+        ],
+        solution: "$$ (0,0) \\text{ Silla}, (\\pm 1, \\pm 1) \\text{ Mínimos} $$"
+      },
+      {
+        id: "C3-015",
+        category: "c3",
+        topic: "Flujo (Cubo)",
+        difficulty: "Hard",
+        problem: "Flujo de $\\vec{F}=(x,y,z)$ a través de las caras del cubo unitario $[0,1]^3$.",
+        steps: [
+          "Por Divergencia: $\\iiint 3 dV = 3(1) = 3$.",
+          "Cálculo directo: 6 caras.",
+          "Caras $x=1$: $\\vec{F}\\cdot\\vec{i} = 1$. Área 1. Flujo 1.",
+          "Cara $x=0$: $\\vec{F}\\cdot(-\\vec{i}) = 0$.",
+          "Igual para $y, z$. Total $1+1+1 = 3$."
+        ],
+        solution: "$$ 3 $$"
       }
+    ];
+
+    const modal = document.getElementById('modal');
+    let currentFilter = 'all';
+
+    function renderGrid(data) {
+      grid.innerHTML = data.map((ex, index) => `
+  <article class="exercise-card" style="animation-delay: ${index * 0.05}s" onclick="openModal('${ex.id}')">
+    <div class="card-header">
+      <div class="card-badges">
+        <span class="badge badge-diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
+        <span class="badge badge-topic">${ex.topic}</span>
+      </div>
+      <span class="card-id">${ex.id}</span>
+    </div>
+    <div class="card-body">
+      <div class="problem-preview">${ex.problem}</div>
+    </div>
+    <div class="card-footer">
+      <span class="view-sol-btn">Ver Solución Completa</span>
+    </div>
+  </article>
+  `).join('');
+
+      if (window.MathJax) MathJax.typesetPromise([grid]);
+    }
+
+    function openModal(id) {
+      const ex = exercises.find(e => e.id === id);
+      if (!ex) return;
+
+      document.getElementById('modal-title').textContent = ex.topic;
+      document.getElementById('modal-id').textContent = ex.id;
+      document.getElementById('modal-problem').innerHTML = ex.problem;
+
+      const stepsContainer = document.getElementById('modal-steps');
+      stepsContainer.innerHTML = '<span class="section-label">Solución Paso a Paso</span>';
+
+      ex.steps.forEach((step, i) => {
+        stepsContainer.innerHTML += `
+  <div class="step-card" style="animation-delay: ${i * 0.1}s">
+    <span class="step-number">PASO ${i + 1}</span>
+    <div class="step-content">${step}</div>
+  </div>
+  `;
+      });
+
+      stepsContainer.innerHTML += `
+  <div class="final-answer">
+    <span class="final-label">Resultado Final</span>
+    <div class="final-math">${ex.solution}</div>
+  </div>
+  `;
+
+      modal.classList.add('active');
+      if (window.MathJax) MathJax.typesetPromise([modal]);
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    function filterExercises(cat) {
+      currentFilter = cat;
+
+      // Update sidebar active state
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const filtered = cat === 'all' ? exercises : exercises.filter(e => e.category === cat);
+      renderGrid(filtered);
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    // Close modal on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
     });
-    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Initial Render (Empty until data injected)
+    renderGrid(exercises);
+
   </script>
 </body>
-</html>
 
+</html>
