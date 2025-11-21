@@ -2,349 +2,1250 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Química | Polímeros y Macromoléculas</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-
-<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Polímeros | Química Premium</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-    /* --- VARIABLES DE DISEÑO (ESTILO DOCUMENTACIÓN LIMPIA) --- */
-    :root {
-        /* MODO CLARO */
-        --bg: #ffffff;
-        --surface: #f9fafb;
-        --text-main: #1f2937;
-        --text-soft: #6b7280;
-        --border: #e5e7eb;
-        
-        /* Paleta Primaria (Énfasis en la Claridad) */
-        --primary: #10b981;      /* Verde Esmeralda */
-        --primary-soft: #ecfdf5;
-        --secondary: #f97316;    /* Naranja (Contraste Mecanismos) */
+  :root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --accent: #06b6d4;
+    --accent-light: #22d3ee;
+    --highlight: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(148, 163, 184, 0.1);
+    --radius: 16px;
+  }
 
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        --radius: 16px;
-        --font-head: 'Outfit', sans-serif;
+  :root[data-theme="light"] {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent: #0891b2;
+    --accent-light: #06b6d4;
+    --highlight: #f59e0b;
+    --success: #059669;
+    --danger: #dc2626;
+    --glass-bg: rgba(248, 250, 252, 0.7);
+    --glass-border: rgba(30, 41, 59, 0.1);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background 0.4s ease;
+    padding-bottom: 100px;
+    overflow-x: hidden;
+  }
+
+  /* ORBES ANIMADOS MEJORADOS */
+  .orbs-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    animation: float-orbit 20s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    top: -150px;
+    right: -100px;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, var(--highlight), #ff6b35);
+    bottom: -100px;
+    left: -150px;
+    opacity: 0.25;
+    animation-delay: 5s;
+  }
+
+  .orb-3 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, var(--success), #34d399);
+    top: 50%;
+    left: 10%;
+    opacity: 0.2;
+    animation-delay: 10s;
+  }
+
+  @keyframes float-orbit {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(30px, -40px); }
+    50% { transform: translate(-20px, 30px); }
+    75% { transform: translate(40px, 20px); }
+  }
+
+  /* HEADER PREMIUM */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.85));
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 1.2rem 1rem;
+  }
+
+  :root[data-theme="light"] header {
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.9));
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 3vw, 1.4rem);
+    font-family: 'Poppins', sans-serif;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-icon {
+    font-size: 2.2rem;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px var(--accent)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent)); }
+  }
+
+  .nav {
+    display: flex;
+    gap: 0.8rem;
+    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .nav-btn {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(34, 211, 238, 0.1));
+    border: 1px solid var(--accent);
+    color: var(--text-primary);
+    padding: 0.7rem 1.4rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-btn:hover {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
+  }
+
+  .nav-btn[aria-selected="true"] {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #0f172a;
+    box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
+  }
+
+  .nav-btn.hidden {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.8rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+  }
+
+  .menu-toggle:hover {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(34, 211, 238, 0.2));
+    transform: rotate(90deg);
+  }
+
+  .theme-toggle {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(34, 211, 238, 0.1));
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.7rem 1.2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+  }
+
+  .theme-toggle:hover {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #0f172a;
+    transform: rotate(20deg) scale(1.1);
+  }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  section {
+    display: none;
+  }
+
+  section.active {
+    display: block;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent-light), var(--highlight));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideInLeft 0.8s ease-out;
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    margin: 2.5rem 0 1.2rem;
+    color: var(--accent-light);
+    position: relative;
+    padding-left: 0;
+  }
+
+  h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 80%;
+    background: linear-gradient(180deg, var(--accent), var(--highlight));
+    border-radius: 2px;
+    margin-right: 12px;
+  }
+
+  h2 {
+    padding-left: 16px;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 1.2rem;
+    text-align: justify;
+    line-height: 1.8;
+  }
+
+  ul, ol {
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  strong {
+    color: var(--accent-light);
+    font-weight: 700;
+  }
+
+  code {
+    background: var(--bg-secondary);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-light);
+    font-size: 0.9em;
+  }
+
+  /* PREMIUM CARDS */
+  .card {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.05), rgba(34, 211, 238, 0.05));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: slideInUp 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .card:hover::before {
+    left: 100%;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(6, 182, 212, 0.2), inset 0 1px 0 rgba(148, 163, 184, 0.1);
+    transform: translateY(-8px);
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title::before {
+    content: '◆';
+    color: var(--highlight);
+    font-size: 1.5rem;
+  }
+
+  /* TABLA PREMIUM */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 2rem 0;
+    animation: slideInUp 0.8s ease-out;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  th {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #0f172a;
+    padding: 1.2rem;
+    text-align: left;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+  }
+
+  td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+  }
+
+  tr:hover td {
+    background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.05), transparent);
+    color: var(--text-primary);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* EQUATION BOX */
+  .equation {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(34, 211, 238, 0.1));
+    border: 2px solid var(--accent);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--accent-light);
+    text-align: center;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+    animation: slideInUp 0.8s ease-out;
+    position: relative;
+  }
+
+  .equation::before {
+    content: '∑';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    opacity: 0.3;
+  }
+
+  .equation:hover {
+    box-shadow: 0 15px 40px rgba(6, 182, 212, 0.3);
+    border-color: var(--highlight);
+    transform: scale(1.02);
+  }
+
+  /* STRUCTURE BOX */
+  .structure-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 211, 238, 0.1));
+    border: 2px solid var(--success);
+    border-radius: 12px;
+    padding: 1.8rem;
+    margin: 2rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+    line-height: 1.9;
+    transition: all 0.3s ease;
+    animation: slideInUp 0.8s ease-out;
+  }
+
+  .structure-box:hover {
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.2);
+    transform: translateX(5px);
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #0f172a;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    main {
+      padding: 2rem 1rem;
     }
 
-    /* MODO OSCURO */
-    body.dark-mode {
-        --bg: #0f172a;
-        --surface: #1e293b;
-        --text-main: #f3f4f6;
-        --text-soft: #94a3b8;
-        --border: #334155;
-        --primary-soft: rgba(16, 185, 129, 0.2);
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    header {
+      padding: 1rem 0.8rem;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
-
-    body {
-        background-color: var(--bg);
-        color: var(--text-main);
-        font-family: 'Inter', sans-serif;
-        line-height: 1.7;
-        min-height: 100vh;
-        padding: 20px;
+    .header-content {
+      gap: 0.5rem;
     }
 
-    /* --- NAVEGACIÓN --- */
-    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 12px 20px; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 700; }
-    .back-btn:hover { color: var(--primary); }
-    .controls { display: flex; gap: 5px; }
-    .btn-lang { border: none; background: transparent; padding: 6px 14px; border-radius: 8px; font-weight: 600; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
-    .btn-lang:hover { background: var(--bg); color: var(--primary); }
-    .btn-lang.active { background: var(--primary); color: white; }
-
-    /* --- CONTENIDO --- */
-    .container { max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
-    header { text-align: center; margin-bottom: 50px; }
-    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; color: var(--primary); }
-    
-    h1 { font-family: var(--font-head); font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
-    h1 span { color: var(--primary); }
-    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
-
-    h2 { 
-        font-family: var(--font-head); font-size: 1.8rem; margin: 50px 0 25px; 
-        color: var(--primary); display: flex; align-items: center; gap: 10px;
+    .nav {
+      display: none;
+      position: absolute;
+      top: 70px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0;
+      gap: 0;
+      animation: slideDown 0.3s ease;
     }
 
-    /* GRID DE TEORÍA */
-    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-    
-    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1); border-color: var(--primary); }
-    
-    .icon-box { width: 45px; height: 45px; border-radius: 12px; display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 15px; background: var(--primary-soft); color: var(--primary); }
-    
-    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 8px; }
-    .card p { font-size: 0.95rem; color: var(--text-soft); }
-    
-    /* CAJA DE FÓRMULA (Mecanismo) */
-    .mech-box { background: var(--primary-soft); border-radius: 12px; padding: 20px; margin-top: 15px; font-size: 0.95rem; }
-    .mech-box strong { color: var(--primary); }
-    .math-formula { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-main); margin-top: 5px; }
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 600px;
+      }
+    }
 
-    /* EJERCICIOS */
-    .gym-header { background: var(--surface); padding: 10px 25px; border-radius: 50px; font-weight: 700; color: var(--text-soft); margin-bottom: 20px; border: 1px solid var(--border); }
-    .gym-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
-    .ex-card { background: var(--surface); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); }
-    .ex-card h3 { font-size: 1rem; color: var(--secondary); margin-bottom: 5px; }
-    .justificacion { background: var(--primary-soft); padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 0.9rem; }
-    .justificacion strong { color: var(--primary); }
-    
-    /* --- DETALLES DE IDIOMA --- */
-    [data-lang] { display: none !important; }
-    body.lang-es [data-lang="es"] { display: block !important; }
-    body.lang-ca [data-lang="ca"] { display: block !important; }
-    body.lang-en [data-lang="en"] { display: block !important; }
-    body.lang-es span[data-lang="es"] { display: inline !important; }
-    body.lang-ca span[data-lang="ca"] { display: inline !important; }
-    body.lang-en span[data-lang="en"] { display: inline !important; }
+    .nav.open {
+      display: flex;
+    }
 
+    .nav-btn {
+      width: 100%;
+      border-radius: 0;
+      padding: 1rem;
+      text-align: left;
+      border: none;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-btn[aria-selected="true"] {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(34, 211, 238, 0.2));
+    }
+
+    .nav-btn.hidden {
+      display: flex;
+    }
+
+    .menu-toggle {
+      display: block;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+    }
+
+    .card {
+      padding: 1.5rem;
+    }
+
+    table {
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.8rem;
+    }
+  }
 </style>
 </head>
-<body class="lang-es">
+<body>
+  <!-- ORBES -->
+  <div class="orbs-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
-    <nav class="nav-bar">
-        <a href="index.html" class="back-btn">
-            <span style="font-size: 1.2rem;">🏡</span> 
-            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
-        </a>
-        <div class="controls">
-            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
-            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
-            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-        </div>
-    </nav>
+  <!-- HEADER -->
+  <header>
+    <div class="header-content">
+      <a href="polimeros.html" class="logo">
+        <span class="logo-icon">🧬</span>
+        <span>Polímeros</span>
+      </a>
 
-    <div class="container">
-        
-        <header>
-            <span class="page-icon">🧪</span>
-            <h1 data-lang="es">Química de <span>Polímeros</span></h1>
-            <h1 data-lang="ca">Química de <span>Polímers</span></h1>
-            <h1 data-lang="en"><span>Polymer</span> Chemistry</h1>
-            
-            <p class="intro" data-lang="es">El estudio de las macromoléculas. Los polímeros son cadenas gigantes ($n$ monómeros) que forman los materiales modernos, desde el plástico hasta las proteínas.</p>
-            <p class="intro" data-lang="ca">L'estudi de les macromolècules. Els polímers són cadenes gegants ($n$ monòmers) que formen els materials moderns, des del plàstic fins a les proteïnes.</p>
-            <p class="intro" data-lang="en">The study of macromolecules. Polymers are giant chains ($n$ monomers) that form modern materials, from plastic to proteins.</p>
-        </header>
+      <nav class="nav" id="nav">
+        <button class="nav-btn" data-target="introduccion" aria-selected="true">🎯 Intro</button>
+        <button class="nav-btn" data-target="clasificacion">📊 Clasificación</button>
+        <button class="nav-btn" data-target="sintesis">⚗️ Síntesis</button>
+        <button class="nav-btn hidden" data-target="propiedades">🔬 Propiedades</button>
+        <button class="nav-btn hidden" data-target="plasticos">🎨 Plásticos</button>
+        <button class="nav-btn hidden" data-target="elastomeros">🧵 Elastómeros</button>
+        <button class="nav-btn hidden" data-target="fibras">🧶 Fibras</button>
+        <button class="nav-btn hidden" data-target="aplicaciones">⚙️ Apps</button>
+      </nav>
 
-        <div class="theory-grid">
-            
-            <div class="card c-cyan">
-                <div class="icon-box">🧠</div>
-                <h3 data-lang="es">Conceptos Clave</h3>
-                <h3 data-lang="ca">Conceptes Clau</h3>
-                <h3 data-lang="en">Key Concepts</h3>
-                <p data-lang="es"><strong>Monómero:</strong> Unidad simple. <strong>Grado (n):</strong> Número de repeticiones. <strong>Homopolímero:</strong> 1 tipo de monómero. <strong>Copolímero:</strong> 2+ tipos.</p>
-                <p data-lang="ca"><strong>Monòmer:</strong> Unitat simple. <strong>Grau (n):</strong> Nombre de repeticions. <strong>Homopolímer:</strong> 1 tipus. <strong>Copolímer:</strong> 2+ tipus.</p>
-                <p data-lang="en"><strong>Monomer:</strong> Simple unit. <strong>Degree (n):</strong> Number of repetitions. <strong>Homopolymer:</strong> 1 type. <strong>Copolymer:</strong> 2+ types.</p>
-                <div class="mech-box">
-                    $$\text{Peso Molecular} = n \times M_{\text{monómero}}$$
-                </div>
-            </div>
-
-            <div class="card c-amber">
-                <div class="icon-box">⚙️</div>
-                <h3 data-lang="es">Mecanismos de Síntesis</h3>
-                <h3 data-lang="ca">Mecanismes de Síntesi</h3>
-                <h3 data-lang="en">Synthesis Mechanisms</h3>
-                
-                <ul style="padding-left:20px; font-size:0.95rem;">
-                    <li><strong>Adición (Crecimiento en cadena):</strong> El monómero se añade directamente al centro activo (Ej: Polietileno, PVC).</li>
-                    <li><strong>Condensación (Crecimiento por pasos):</strong> Dos monómeros se unen liberando un subproducto pequeño (Ej: Nylon, PET).</li>
-                </ul>
-            </div>
-
-            <div class="card c-cyan">
-                <div class="icon-box">🌳</div>
-                <h3 data-lang="es">Clasificación Estructural</h3>
-                <h3 data-lang="ca">Classificació Estructural</h3>
-                <h3 data-lang="en">Structural Classification</h3>
-                
-                <ul style="padding-left:20px; font-size:0.95rem;">
-                    <li><strong>Lineal:</strong> Cadenas flexibles (Polietileno de alta densidad).</li>
-                    <li><strong>Ramificada:</strong> Cadenas con ramas (Polietileno de baja densidad).</li>
-                    <li><strong>Entrecruzada (Reticulada):</strong> Cadenas unidas por enlaces covalentes (Caucho vulcanizado).</li>
-                </ul>
-            </div>
-            
-            <div class="card c-amber">
-                <div class="icon-box">🌡️</div>
-                <h3 data-lang="es">Comportamiento Térmico</h3>
-                <h3 data-lang="ca">Comportament Tèrmic</h3>
-                <h3 data-lang="en">Thermal Behavior</h3>
-                <ul style="padding-left:20px; font-size:0.95rem;">
-                    <li><strong>Termoplásticos:</strong> Se funden y moldean ($\text{PE}$, $\text{PVC}$).</li>
-                    <li><strong>Termoestables:</strong> Endurecen permanentemente; no se pueden volver a fundir ($\text{Epoxi}$).</li>
-                </ul>
-            </div>
-
-        </div>
-
-        <h2 data-lang="es">🏋️ 35 Problemas Nivel Avanzado</h2>
-        <h2 data-lang="ca">🏋️ 35 Problemes Nivell Avançat</h2>
-        <h2 data-lang="en">🏋️ 35 Advanced Problems</h2>
-
-        <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 1: Conceptos y Clasificación</span>
-            <span class="gym-header" data-lang="ca">Nivell 1: Conceptes i Classificació</span>
-            <span class="gym-header" data-lang="en">Level 1: Concepts & Classification</span>
-            <div class="gym-grid">
-                <div class="ex-card">
-                    <h3 data-lang="es">PVC</h3><h3 data-lang="ca">PVC</h3><h3 data-lang="en">PVC</h3>
-                    <p data-lang="es">¿Monómero y mecanismo?</p><p data-lang="ca">Monòmer i mecanisme?</p><p data-lang="en">Monomer & mechanism?</p>
-                    <div class="justificacion"><strong>Cloruro de vinilo; Adición.</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Nylon 6,6</h3><h3 data-lang="ca">Niló 6,6</h3><h3 data-lang="en">Nylon 6,6</h3>
-                    <p data-lang="es">¿Mecanismo y subproducto?</p><p data-lang="ca">Mecanisme i subproducte?</p><p data-lang="en">Mechanism & byproduct?</p>
-                    <div class="justificacion"><strong>Condensación; $\text{H}_2\text{O}$ o $\text{HCl}$.</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Termoplástico</h3><h3 data-lang="ca">Termoplàstic</h3><h3 data-lang="en">Thermoplastic</h3>
-                    <p data-lang="es">¿Funde o no funde?</p><p data-lang="ca">Fon o no fon?</p><p data-lang="en">Does it melt or not?</p>
-                    <div class="justificacion"><strong>Funde repetidamente (Termoplástico).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Polietileno</h3><h3 data-lang="ca">Polietilè</h3><h3 data-lang="en">Polyethylene</h3>
-                    <p data-lang="es">¿Adición o Condensación?</p><p data-lang="ca">Addició o Condensació?</p><p data-lang="en">Addition or Condensation?</p>
-                    <div class="justificacion"><strong>Adición. Monómero: Eteno.</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Termoestable</h3><h3 data-lang="ca">Termoestable</h3><h3 data-lang="en">Thermoset</h3>
-                    <p data-lang="es">¿Estructura clave?</p><p data-lang="ca">Estructura clau?</p><p data-lang="en">Key structure?</p>
-                    <div class="justificacion"><strong>Entrecruzada (Reticulada).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Teflón (PTFE)</h3><h3 data-lang="ca">Tefló (PTFE)</h3><h3 data-lang="en">Teflon (PTFE)</h3>
-                    <p data-lang="es">¿Monómero?</p><p data-lang="ca">Monòmer?</p><p data-lang="en">Monomer?</p>
-                    <div class="justificacion"><strong>Tetrafluoroeteno ($\text{CF}_2=\text{CF}_2$).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Almidón</h3><h3 data-lang="ca">Midó</h3><h3 data-lang="en">Starch</h3>
-                    <p data-lang="es">¿Natural o Sintético?</p><p data-lang="ca">Natural o Sintètic?</p><p data-lang="en">Natural or Synthetic?</p>
-                    <div class="justificacion"><strong>Natural (Polisacárido).</strong></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 2: Propiedades y Cálculo ($\text{M}$, $\text{n}$)</span>
-            <span class="gym-header" data-lang="ca">Nivell 2: Propietats i Càlcul ($\text{M}$, $\text{n}$)</span>
-            <span class="gym-header" data-lang="en">Level 2: Properties & Calculation ($\text{M}$, $\text{n}$)</span>
-            <div class="gym-grid">
-                <div class="ex-card">
-                    <h3 data-lang="es">Peso Molecular</h3><h3 data-lang="ca">Pes Molecular</h3><h3 data-lang="en">Mol. Weight</h3>
-                    <p data-lang="es">Si $M_{\text{monómero}} = 100 \text{ g/mol}$ y $n = 500$, ¿$M_{\text{polímero}}$?</p>
-                    <div class="justificacion"><strong>$500 \times 100 = 50.000 \text{ g/mol}$.</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Entrecruzamiento</h3><h3 data-lang="ca">Entrecreuament</h3><h3 data-lang="en">Cross-linking</h3>
-                    <p data-lang="es">¿Cómo afecta a la solubilidad?</p>
-                    <div class="justificacion"><strong>La anula (solo se hincha).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">LDPE vs HDPE</h3><h3 data-lang="ca">BDPE vs ADPE</h3><h3 data-lang="en">LDPE vs HDPE</h3>
-                    <p data-lang="es">¿Cuál es más ramificado?</p>
-                    <div class="justificacion"><strong>LDPE (Baja densidad).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Grado Polimerización</h3><h3 data-lang="ca">Grau Polimerització</h3><h3 data-lang="en">Polym. Degree</h3>
-                    <p data-lang="es">Si $M_{\text{polímero}} = 30000 \text{ g/mol}$ y $M_{\text{monómero}} = 50 \text{ g/mol}$, ¿$n$?</p>
-                    <div class="justificacion"><strong>$30000 / 50 = 600$.</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Elastómeros</h3><h3 data-lang="ca">Elastòmers</h3><h3 data-lang="en">Elastomers</h3>
-                    <p data-lang="es">¿Propiedad clave?</p>
-                    <div class="justificacion"><strong>Alta elasticidad (ej: caucho).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Condensación</h3><h3 data-lang="ca">Condensació</h3><h3 data-lang="en">Condensation</h3>
-                    <p data-lang="es">¿Polietileno tereftalato (PET)?</p>
-                    <div class="justificacion"><strong>Condensación (Dióxido de carbono).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Isomería en polímeros</h3><h3 data-lang="ca">Isomeria en polímers</h3><h3 data-lang="en">Polymer Isomerism</h3>
-                    <p data-lang="es">¿Ejemplo de isomería espacial?</p>
-                    <div class="justificacion"><strong>Tacticidad (Isotáctica, Atáctica, Sindiotáctica).</strong></div>
-                </div>
-                <div class="ex-card">
-                    <h3 data-lang="es">Homopolímero</h3><h3 data-lang="ca">Homopolímer</h3><h3 data-lang="en">Homopolymer</h3>
-                    <p data-lang="es">¿Polipropileno?</p>
-                    <div class="justificacion"><strong>Sí. Solo monómero propileno.</strong></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 3: Síntesis y Retos</span>
-            <span class="gym-header" data-lang="ca">Nivell 3: Síntesi i Reptes</span>
-            <span class="gym-header" data-lang="en">Level 3: Synthesis & Challenges</span>
-            <div class="gym-grid">
-                <details><summary>Monómero del Poliéster PET</summary><div class="answer">Ácido tereftálico + Etilenglicol</div></details>
-                <details><summary>¿Por qué el PE es químicamente inerte?</summary><div class="answer">Solo tiene enlaces $\sigma$ (saturados).</div></details>
-                <details><summary>Monómero del Polimetilmetacrilato (Plexiglas)</summary><div class="answer">Metacrilato de metilo</div></details>
-                <details><summary>¿Qué es la dispersidad ($\text{M}_w / \text{M}_n$)?</summary><div class="answer">Mide la heterogeneidad del peso molecular</div></details>
-                <details><summary>Termoestable a base de melamina</summary><div class="answer">Resina de melamina-formaldehído</div></details>
-                <details><summary>Monómero del Caucho Natural</summary><div class="answer">Isopreno</div></details>
-                <details><summary>Fase de Terminación (Adición)</summary><div class="answer">Combinación o desproporción de radicales</div></details>
-                <details><summary>Tipo de polimerización del caucho vulcanizado</summary><div class="answer">Reacción de reticulación (cross-linking)</div></details>
-                <details><summary>Material que forma la lana de oveja</summary><div class="answer">Proteína (Poliamida natural)</div></details>
-                <details><summary>¿El Nylon 6,6 puede fundirse sin degradarse?</summary><div class="answer">Sí, es termoplástico</div></details>
-                <details><summary>Monómero del poliestireno (PS)</summary><div class="answer">Estireno</div></details>
-                <details><summary>¿Qué es la tacticidad?</summary><div class="answer">La disposición estéreo-espacial de los grupos laterales</div></details>
-                <details><summary>El nylon es un ejemplo de poliamida</summary><div class="answer">Correcto</div></details>
-                <details><summary>¿Qué significa $\text{M}_w$?</summary><div class="answer">Peso molecular promedio en peso</div></details>
-                <details><summary>Termoestable común en pinturas</summary><div class="answer">Resina alquídica o epoxi</div></details>
-            </div>
-        </div>
-
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
     </div>
+  </header>
 
-    <script>
-        // 1. IDIOMA
-        function setLang(lang, btn) {
-            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
-            const btns = btn.parentElement.querySelectorAll('.btn-lang');
-            btns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            localStorage.setItem('prefLang', lang);
+  <!-- MAIN -->
+  <main>
+    <!-- INTRODUCCIÓN -->
+    <section id="introduccion" class="active">
+      <h1>🧬 Polímeros: La Odisea Molecular</h1>
+
+      <p>Los polímeros son moléculas gigantes formadas por la repetición de unidades pequeñas llamadas <strong>monómeros</strong>, enlazadas covalentemente. Son la base de materiales como plásticos, caucho y fibras textiles.</p>
+
+      <div class="card">
+        <div class="card-title">¿Qué es un Polímero?</div>
+        <p>Un polímero es una macromolécula compuesta por muchas unidades monoméricas repetidas. La palabra "polímero" viene del griego: <strong>poly</strong> (muchos) y <strong>mero</strong> (partes).</p>
+        <ul>
+          <li><strong>Monómero:</strong> Molécula pequeña que se repite (ej: etileno C₂H₄)</li>
+          <li><strong>Polímero:</strong> Resultado de unir muchos monómeros (ej: polietileno -CH₂-CH₂-)ₙ</li>
+          <li><strong>Grado de polimerización (n):</strong> Número de unidades monoméricas en la cadena</li>
+        </ul>
+      </div>
+
+      <h2>Importancia de los Polímeros</h2>
+      <ul>
+        <li><strong>Industria:</strong> 300 millones de toneladas de plástico producidas anualmente</li>
+        <li><strong>Vida diaria:</strong> Ropa, botellas, bolsas, muebles, electrónica</li>
+        <li><strong>Naturaleza:</strong> Celulosa, proteínas, ADN son polímeros naturales</li>
+        <li><strong>Medicina:</strong> Implantes, prótesis, liberación controlada de fármacos</li>
+      </ul>
+
+      <h2>📖 Diferencias: Monómero vs Polímero</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Propiedad</th>
+            <th>Monómero</th>
+            <th>Polímero</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Peso molecular</td>
+            <td>Bajo (10-200 u)</td>
+            <td>Muy alto (1000-1,000,000 u)</td>
+          </tr>
+          <tr>
+            <td>Punto fusión</td>
+            <td>Bajo</td>
+            <td>Alto a medio</td>
+          </tr>
+          <tr>
+            <td>Solubilidad</td>
+            <td>Generalmente soluble</td>
+            <td>Parcialmente soluble o insoluble</td>
+          </tr>
+          <tr>
+            <td>Ejemplo</td>
+            <td>Etileno (C₂H₄)</td>
+            <td>Polietileno (C₂H₄)ₙ</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>🎓 Polímeros Naturales vs Sintéticos</h2>
+      <div class="card">
+        <div class="card-title">Comparación</div>
+        <ul>
+          <li><strong>Naturales:</strong> Celulosa, almidón, caucho natural, proteínas, ADN</li>
+          <li><strong>Sintéticos:</strong> Polietileno, nylon, poliéster, policloruro de vinilo (PVC)</li>
+          <li><strong>Semi-sintéticos:</strong> Rayón, acetato de celulosa</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CLASIFICACIÓN -->
+    <section id="clasificacion">
+      <h1>📊 Clasificación de Polímeros</h1>
+
+      <h2>1. Según el Origen</h2>
+      <div class="card">
+        <div class="card-title">Naturales</div>
+        <ul>
+          <li><strong>Celulosa:</strong> Principal componente de plantas, estructura de la pared celular</li>
+          <li><strong>Proteínas:</strong> Encimas, anticuerpos, hormonas basadas en aminoácidos</li>
+          <li><strong>Ácidos nucleicos:</strong> ADN y ARN, almacenan información genética</li>
+          <li><strong>Caucho:</strong> Extraído de Hevea brasiliensis</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sintéticos</div>
+        <ul>
+          <li><strong>Polietileno (PE):</strong> Bolsas, tuberías, recipientes</li>
+          <li><strong>Polipropileno (PP):</strong> Recipientes, tejido, auto partes</li>
+          <li><strong>Nylon:</strong> Fibras textiles, cerdas de cepillo</li>
+          <li><strong>Poliéster:</strong> Ropa, botellas, películas</li>
+        </ul>
+      </div>
+
+      <h2>2. Según la Estructura</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Estructura</th>
+            <th>Descripción</th>
+            <th>Ejemplo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Lineal</strong></td>
+            <td>Cadena simple sin ramificaciones</td>
+            <td>n-Polietileno</td>
+          </tr>
+          <tr>
+            <td><strong>Ramificada</strong></td>
+            <td>Cadena principal con ramas laterales</td>
+            <td>Polietileno de baja densidad (LDPE)</td>
+          </tr>
+          <tr>
+            <td><strong>Cíclica</strong></td>
+            <td>Cadena que forma un anillo</td>
+            <td>Ciclohexano oligómero</td>
+          </tr>
+          <tr>
+            <td><strong>Entrecruzada</strong></td>
+            <td>Cadenas conectadas por puentes covalentes</td>
+            <td>Resinas epoxi, caucho vulcanizado</td>
+          </tr>
+          <tr>
+            <td><strong>Reticular (3D)</strong></td>
+            <td>Red 3D interconectada</td>
+            <td>Fenol-formaldehído (baquelita)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>3. Según el Comportamiento Térmico</h2>
+      <div class="card">
+        <div class="card-title">Termoplásticos</div>
+        <ul>
+          <li>Se reblandecen al calentar, se endurecen al enfriar (reversible)</li>
+          <li>Sin entrecruzamiento intermolecular</li>
+          <li>Ejemplos: PE, PP, PET, nylon</li>
+          <li>Uso: Reciclables, moldables</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Termofijos</div>
+        <ul>
+          <li>Se endurecen permanentemente al calentar (irreversible)</li>
+          <li>Entrecruzamiento covalente 3D</li>
+          <li>Ejemplos: Baquelita, resinas epoxi, melanina</li>
+          <li>Uso: Resistencia térmica, rigidez</li>
+        </ul>
+      </div>
+
+      <h2>🎓 Según Propiedades Mecánicas</h2>
+      <div class="structure-box">
+        <strong>Plásticos de ingeniería:</strong> Alta resistencia, rigidez (nylon, poliestireno)<br/>
+        <strong>Elastómeros (cauchos):</strong> Elásticos, deformables (caucho natural, SBR)<br/>
+        <strong>Fibras:</strong> Resistencia al alargamiento, orientación (nylon, poliéster)
+      </div>
+    </section>
+
+    <!-- SÍNTESIS -->
+    <section id="sintesis">
+      <h1>⚗️ Síntesis de Polímeros</h1>
+
+      <h2>Polimeración por Adición</h2>
+      <p>Los monómeros se unen directamente sin perder átomos. Típico de alquenos.</p>
+
+      <div class="equation">
+        nCH₂=CH₂ → [-CH₂-CH₂-]ₙ (Polietileno)
+      </div>
+
+      <div class="card">
+        <div class="card-title">Mecanismo Radical</div>
+        <ol>
+          <li><strong>Iniciación:</strong> Generador de radicales libres (peróxido, luz UV)</li>
+          <li><strong>Propagación:</strong> El radical atacala molécula de alqueno</li>
+          <li><strong>Terminación:</strong> Dos radicales se combinan</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejemplos de Polimeración por Adición</div>
+        <ul>
+          <li><strong>Polietileno (PE):</strong> CH₂=CH₂ → (-CH₂-CH₂-)ₙ</li>
+          <li><strong>Polipropileno (PP):</strong> CH₂=CH-CH₃ → (-CH₂-CH(CH₃)-)ₙ</li>
+          <li><strong>Poliestireno (PS):</strong> Estireno (C₆H₅-CH=CH₂)</li>
+          <li><strong>PVC:</strong> CH₂=CHCl → (-CH₂-CHCl-)ₙ</li>
+        </ul>
+      </div>
+
+      <h2>Polimeración por Condensación</h2>
+      <p>Los monómeros se unen perdiendo moléculas pequeñas (agua, HCl, alcohol).</p>
+
+      <div class="equation">
+        nHO-R-OH + nCl-CO-R'-CO-Cl → [-O-R-O-CO-R'-CO-]ₙ + 2nHCl
+      </div>
+
+      <div class="card">
+        <div class="card-title">Ejemplos de Polimeración por Condensación</div>
+        <ul>
+          <li><strong>Nylon 6,6:</strong> Hexametilendiamina + ácido adípico (libera H₂O)</li>
+          <li><strong>Poliéster:</strong> Etilenglicol + ácido tereftálico</li>
+          <li><strong>Baquelita:</strong> Fenol + formaldehído</li>
+          <li><strong>Poliuretano:</strong> Diol + diisocianato</li>
+        </ul>
+      </div>
+
+      <h2>🎓 Polimerización en Cadena</h2>
+      <div class="structure-box">
+        <strong>Pasos Clave:</strong><br/>
+        1️⃣ Iniciación: Generador de radicales<br/>
+        2️⃣ Propagación: Adición rápida de monómeros<br/>
+        3️⃣ Terminación: Recombinación de radicales<br/>
+        <br/>
+        Velocidad: RÁPIDA (segundos a minutos)
+      </div>
+    </section>
+
+    <!-- PROPIEDADES -->
+    <section id="propiedades">
+      <h1>🔬 Propiedades de Polímeros</h1>
+
+      <h2>Propiedades Mecánicas</h2>
+      <div class="card">
+        <div class="card-title">Elasticidad vs Resistencia</div>
+        <ul>
+          <li><strong>Módulo de Young (E):</strong> Rigidez del material</li>
+          <li><strong>Resistencia a tensión:</strong> Máxima tensión antes de ruptura</li>
+          <li><strong>Elongación:</strong> Cambio de longitud bajo tensión</li>
+          <li><strong>Dureza:</strong> Resistencia a deformación permanente</li>
+        </ul>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Propiedad</th>
+            <th>Polietileno</th>
+            <th>Nylon</th>
+            <th>Caucho</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Densidad (g/cm³)</td>
+            <td>0.92-0.97</td>
+            <td>1.14</td>
+            <td>0.9</td>
+          </tr>
+          <tr>
+            <td>P. Fusión (°C)</td>
+            <td>110-130</td>
+            <td>260</td>
+            <td>N/A*</td>
+          </tr>
+          <tr>
+            <td>Elongación (%)</td>
+            <td>100-600</td>
+            <td>15-25</td>
+            <td>&gt;300</td>
+          </tr>
+          <tr>
+            <td>Resistencia (MPa)</td>
+            <td>8-30</td>
+            <td>70-80</td>
+            <td>0.5-1</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Propiedades Térmicas</h2>
+      <ul>
+        <li><strong>Temperatura de transición vítrea (Tg):</strong> Transición amorfo-vítreo</li>
+        <li><strong>Temperatura de fusión (Tm):</strong> Solo en polímeros cristalinos</li>
+        <li><strong>Conductividad térmica:</strong> Generalmente baja (aislantes)</li>
+        <li><strong>Coeficiente expansión térmica:</strong> Alto comparado con metales</li>
+      </ul>
+
+      <h2>Propiedades Químicas</h2>
+      <div class="card">
+        <div class="card-title">Resistencia Química</div>
+        <ul>
+          <li><strong>Solubilidad:</strong> "Igual disuelve igual" (polar disuelve polar)</li>
+          <li><strong>Resistencia a ácidos/bases:</strong> Variable según estructura</li>
+          <li><strong>Biodegradabilidad:</strong> Plásticos convencionales: NO degradables</li>
+          <li><strong>Fotodegradación:</strong> Degradación por luz UV</li>
+        </ul>
+      </div>
+
+      <h2>🎓 Grado de Cristalinidad</h2>
+      <div class="structure-box">
+        <strong>Amorfo:</strong> Estructura desordenada, transparente, flexible (PS)<br/>
+        <strong>Semicristalino:</strong> Regiones ordenadas + desordenadas (PE, PP)<br/>
+        <strong>Cristalino:</strong> Estructura altamente ordenada, opaco, rígido (nylon)<br/>
+        <br/>
+        Mayor cristalinidad = Mayor densidad, rigidez, P. fusión
+      </div>
+    </section>
+
+    <!-- PLÁSTICOS -->
+    <section id="plasticos">
+      <h1>🎨 Plásticos: Termoplásticos Comunes</h1>
+
+      <h2>Polietileno (PE)</h2>
+      <div class="badge">Más producido</div><div class="badge">Reciclable</div>
+      <ul>
+        <li><strong>Fórmula:</strong> (-CH₂-CH₂-)ₙ</li>
+        <li><strong>Tipos:</strong> LDPE (baja densidad, flexible), HDPE (alta densidad, rígido)</li>
+        <li><strong>Aplicaciones:</strong> Bolsas, tuberías, recipientes, películas</li>
+        <li><strong>P. Fusión:</strong> 110-130°C | Densidad: 0.92-0.97 g/cm³</li>
+      </ul>
+
+      <h2>Polipropileno (PP)</h2>
+      <div class="badge">Versátil</div><div class="badge">Resistente</div>
+      <ul>
+        <li><strong>Fórmula:</strong> (-CH₂-CH(CH₃)-)ₙ</li>
+        <li><strong>Ventajas:</strong> Más rígido y resistente que PE, mejor resistencia térmica</li>
+        <li><strong>Aplicaciones:</strong> Auto partes, recipientes, tejidos, sistemas de tuberías</li>
+        <li><strong>P. Fusión:</strong> 160-170°C | Densidad: 0.90-0.91 g/cm³</li>
+      </ul>
+
+      <h2>Poliestireno (PS)</h2>
+      <div class="badge">Transparente</div><div class="badge">Quebradizo</div>
+      <ul>
+        <li><strong>Fórmula:</strong> (-CH₂-CH(C₆H₅)-)ₙ</li>
+        <li><strong>Formas:</strong> PS rígido, PS expandido (poliestireno expandido, espuma)</li>
+        <li><strong>Aplicaciones:</strong> Envases, aislamiento, juguetes</li>
+        <li><strong>P. Fusión:</strong> 210-250°C | Densidad: 1.04-1.07 g/cm³</li>
+      </ul>
+
+      <h2>Policloruro de Vinilo (PVC)</h2>
+      <div class="badge">Resistente</div><div class="badge">Flexible</div>
+      <ul>
+        <li><strong>Fórmula:</strong> (-CH₂-CHCl-)ₙ</li>
+        <li><strong>Ventajas:</strong> Resistencia química, no inflamable</li>
+        <li><strong>Aplicaciones:</strong> Tuberías, cables, films, muebles</li>
+        <li><strong>P. Fusión:</strong> 160-180°C | Densidad: 1.16-1.30 g/cm³</li>
+      </ul>
+
+      <h2>🎓 Tereftalato de Polietileno (PET)</h2>
+      <div class="badge">Botellas</div>
+      <ul>
+        <li><strong>Estructura:</strong> Poliéster aromático (condensación)</li>
+        <li><strong>Propiedades:</strong> Transparencia, resistencia mecánica</li>
+        <li><strong>Aplicaciones:</strong> Botellas de bebidas, fibras textiles</li>
+        <li><strong>P. Fusión:</strong> 250-260°C | Densidad: 1.33-1.45 g/cm³</li>
+      </ul>
+    </section>
+
+    <!-- ELASTÓMEROS -->
+    <section id="elastomeros">
+      <h1>🧵 Elastómeros: Cauchos y Materiales Elásticos</h1>
+
+      <h2>¿Qué es un Elastómero?</h2>
+      <p>Un elastómero es un polímero que puede estirarse significativamente (hasta 10 veces su longitud original) y volver a su forma original sin deformación permanente.</p>
+
+      <div class="card">
+        <div class="card-title">Características</div>
+        <ul>
+          <li>Baja Tg (Temperatura de transición vítrea)</li>
+          <li>Entrecruzamiento covalente débil</li>
+          <li>Cadenas flexibles y móviles</li>
+          <li>Recuperación elástica excelente</li>
+        </ul>
+      </div>
+
+      <h2>Caucho Natural</h2>
+      <div class="badge">Biodegradable</div>
+      <ul>
+        <li><strong>Origen:</strong> Árbol Hevea brasiliensis</li>
+        <li><strong>Estructura:</strong> Poliisopreno (-CH₂-C(CH₃)=CH-CH₂-)ₙ</li>
+        <li><strong>Vulcanización:</strong> Se cruza con azufre para mejorar propiedades</li>
+        <li><strong>Aplicaciones:</strong> Llantas, cojinetes, sellos</li>
+      </ul>
+
+      <h2>Caucho Sintético (SBR)</h2>
+      <div class="badge">Copolímero</div>
+      <ul>
+        <li><strong>Composición:</strong> Estireno (S) + Butadieno (B) + Resina (R)</li>
+        <li><strong>Ventajas:</strong> Más resistente a la abrasión que caucho natural</li>
+        <li><strong>Aplicaciones:</strong> Llantas de automóviles, juguetes</li>
+        <li><strong>Costo:</strong> Menor que caucho natural</li>
+      </ul>
+
+      <h2>Neopreno</h2>
+      <div class="badge">Resistente</div>
+      <ul>
+        <li><strong>Monómero:</strong> 2-clorobutadieno</li>
+        <li><strong>Propiedades:</strong> Resistente a aceites, ozono, luz UV</li>
+        <li><strong>Aplicaciones:</strong> Trajes de buceo, juntas, mangueras</li>
+      </ul>
+
+      <h2>🎓 Poliuretano</h2>
+      <div class="structure-box">
+        <strong>Estructura:</strong> R-N-CO-O-R'<br/>
+        <strong>Síntesis:</strong> Diol + Diisocianato<br/>
+        <strong>Tipos:</strong> Rígido (espumas aislantes), Flexible (almohadillas)<br/>
+        <strong>Propiedades:</strong> Excelente amortiguación, resistencia química
+      </div>
+    </section>
+
+    <!-- FIBRAS -->
+    <section id="fibras">
+      <h1>🧶 Fibras Poliméricas</h1>
+
+      <h2>¿Qué es una Fibra Textil?</h2>
+      <p>Una fibra es un polímero con estructura altamente orientada a lo largo del eje principal, proporcionando alta resistencia a la tracción.</p>
+
+      <div class="card">
+        <div class="card-title">Requisitos para una Buena Fibra</div>
+        <ul>
+          <li>Alta resistencia mecánica (resistencia a tensión)</li>
+          <li>Elasticidad moderada (recuperación a torsión)</li>
+          <li>Baja densidad (ligereza)</li>
+          <li>Resistencia térmica y química</li>
+          <li>Capacidad de teñirse</li>
+        </ul>
+      </div>
+
+      <h2>Nylon (Poliamida)</h2>
+      <div class="badge">Sintética</div><div class="badge">Resistente</div>
+      <ul>
+        <li><strong>Descubierto:</strong> Wallace Carothers (1935), DuPont</li>
+        <li><strong>Estructura:</strong> Cadena con enlaces amida (-CO-NH-)</li>
+        <li><strong>Ventajas:</strong> Resistencia, elasticidad, durabilidad</li>
+        <li><strong>Aplicaciones:</strong> Ropa, medias, cuerdas, cepillos dentales</li>
+        <li><strong>P. Fusión:</strong> 250-260°C (Nylon 6,6)</li>
+      </ul>
+
+      <h2>Poliéster</h2>
+      <div class="badge">Textil</div><div class="badge">Permanente</div>
+      <ul>
+        <li><strong>Estructura:</strong> Cadena con enlaces éster (-CO-O-)</li>
+        <li><strong>Monómeros:</strong> Etilenglicol + Ácido tereftálico</li>
+        <li><strong>Ventajas:</strong> Resistencia al encogimiento, recuperación rápida de arrugas</li>
+        <li><strong>Aplicaciones:</strong> Ropa, telas para muebles, velas</li>
+        <li><strong>P. Fusión:</strong> 250-260°C</li>
+      </ul>
+
+      <h2>Acrílico</h2>
+      <div class="badge">Sintética</div><div class="badge">Cálida</div>
+      <ul>
+        <li><strong>Monómero:</strong> Acrilonitrilo (C₂H₃CN)</li>
+        <li><strong>Estructura:</strong> (-CH₂-CH(CN)-)ₙ</li>
+        <li><strong>Propiedades:</strong> Similar a la lana, retiene calor</li>
+        <li><strong>Aplicaciones:</strong> Suéteres, sombreros, mantas</li>
+      </ul>
+
+      <h2>🎓 Fibras Naturales vs Sintéticas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Natural (Algodón, Lana)</th>
+            <th>Sintética (Nylon, Poliéster)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Respirabilidad</td>
+            <td>Excelente</td>
+            <td>Limitada</td>
+          </tr>
+          <tr>
+            <td>Comodidad</td>
+            <td>Alta a temperatura ambiente</td>
+            <td>Puede acumular calor</td>
+          </tr>
+          <tr>
+            <td>Durabilidad</td>
+            <td>Moderada</td>
+            <td>Alta</td>
+          </tr>
+          <tr>
+            <td>Mantenimiento</td>
+            <td>Requiere planchado</td>
+            <td>Fácil cuidado, sin arrugas</td>
+          </tr>
+          <tr>
+            <td>Costo</td>
+            <td>Variable</td>
+            <td>Generalmente menor</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- APLICACIONES -->
+    <section id="aplicaciones">
+      <h1>⚙️ Aplicaciones y Futuro de Polímeros</h1>
+
+      <h2>Aplicaciones Industriales</h2>
+      <div class="card">
+        <div class="card-title">Empaques y Contenedores</div>
+        <ul>
+          <li>Bolsas de plástico, botellas, cajas</li>
+          <li>Película para alimentos (PE, PP)</li>
+          <li>Espuma para amortiguación (poliestireno)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Automoción</div>
+        <ul>
+          <li>Paneles interiores, parachoques</li>
+          <li>Llantas (caucho, SBR)</li>
+          <li>Aislamientos y juntas</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Textiles y Ropa</div>
+        <ul>
+          <li>Nylon, poliéster, acrílico</li>
+          <li>Fibras técnicas para deportes</li>
+          <li>Mezclas (algodón-poliéster)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Medicina y Farmacéutica</div>
+        <ul>
+          <li>Prótesis y implantes</li>
+          <li>Sistemas de liberación controlada de fármacos</li>
+          <li>Apósitos y vendajes</li>
+        </ul>
+      </div>
+
+      <h2>Polímeros Biodegradables</h2>
+      <div class="badge">Sostenible</div><div class="badge">Futuro</div>
+      <ul>
+        <li><strong>PLA (Ácido poliláctico):</strong> De maíz, compostable</li>
+        <li><strong>PHB (Polihidroxibutirato):</strong> Sintetizado por bacterias</li>
+        <li><strong>PCL (Policaprolactona):</strong> Biodegradable lentamente</li>
+      </ul>
+
+      <h2>🎓 Desafío: Contaminación Plástica</h2>
+      <div class="structure-box">
+        <strong>❌ Problema:</strong> 8 millones de toneladas/año en océanos<br/>
+        <strong>⏱️ Tiempo de degradación:</strong> Hasta 1000 años<br/>
+        <strong>✅ Soluciones:</strong> Reciclaje mejorado, plásticos biodegradables<br/>
+        <strong>🎯 Meta:</strong> Economía circular, reducir consumo
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Navigation
+    function setupNavigation() {
+      const navButtons = document.querySelectorAll('.nav-btn');
+      const sections = document.querySelectorAll('section');
+      const nav = document.getElementById('nav');
+      const menuToggle = document.getElementById('menuToggle');
+
+      navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('data-target');
+          
+          sections.forEach(s => s.classList.remove('active'));
+          navButtons.forEach(b => b.setAttribute('aria-selected', 'false'));
+          
+          document.getElementById(targetId).classList.add('active');
+          button.setAttribute('aria-selected', 'true');
+          
+          nav.classList.remove('open');
+        });
+      });
+
+      menuToggle.addEventListener('click', () => {
+        nav.classList.toggle('open');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav') && !e.target.closest('.menu-toggle')) {
+          nav.classList.remove('open');
         }
+      });
+    }
 
-        // 2. MODO OSCURO
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-        }
+    // Theme Toggle
+    function setupThemeToggle() {
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeEmoji(savedTheme);
+      
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeEmoji(newTheme);
+      });
+    }
 
-        // INICIALIZAR
-        const savedLang = localStorage.getItem('prefLang');
-        if(savedLang) {
-            document.body.classList.add('lang-' + savedLang);
-            const btns = document.querySelectorAll('.btn-lang');
-            btns.forEach(b => {
-                if(b.textContent.toLowerCase() === savedLang) {
-                    btns.forEach(x => x.classList.remove('active'));
-                    b.classList.add('active');
-                }
-            });
-        } else {
-            document.body.classList.add('lang-es');
-        }
+    function updateThemeEmoji(theme) {
+      document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
 
-        const savedTheme = localStorage.getItem('darkMode');
-        if(savedTheme === 'true') document.body.classList.add('dark-mode');
-    </script>
-
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      setupNavigation();
+      setupThemeToggle();
+    });
+  </script>
 </body>
 </html>
