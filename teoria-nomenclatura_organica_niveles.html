@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Química | Polímeros y Macromoléculas</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+    /* --- VARIABLES DE DISEÑO (ESTILO DOCUMENTACIÓN LIMPIA) --- */
+    :root {
+        /* MODO CLARO */
+        --bg: #ffffff;
+        --surface: #f9fafb;
+        --text-main: #1f2937;
+        --text-soft: #6b7280;
+        --border: #e5e7eb;
+        
+        /* Paleta Primaria (Énfasis en la Claridad) */
+        --primary: #10b981;      /* Verde Esmeralda */
+        --primary-soft: #ecfdf5;
+        --secondary: #f97316;    /* Naranja (Contraste Mecanismos) */
+
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --radius: 16px;
+        --font-head: 'Outfit', sans-serif;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --text-main: #f3f4f6;
+        --text-soft: #94a3b8;
+        --border: #334155;
+        --primary-soft: rgba(16, 185, 129, 0.2);
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+        line-height: 1.7;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 12px 20px; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 700; }
+    .back-btn:hover { color: var(--primary); }
+    .controls { display: flex; gap: 5px; }
+    .btn-lang { border: none; background: transparent; padding: 6px 14px; border-radius: 8px; font-weight: 600; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
+    .btn-lang:hover { background: var(--bg); color: var(--primary); }
+    .btn-lang.active { background: var(--primary); color: white; }
+
+    /* --- CONTENIDO --- */
+    .container { max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
+    header { text-align: center; margin-bottom: 50px; }
+    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; color: var(--primary); }
+    
+    h1 { font-family: var(--font-head); font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
+    h1 span { color: var(--primary); }
+    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+
+    h2 { 
+        font-family: var(--font-head); font-size: 1.8rem; margin: 50px 0 25px; 
+        color: var(--primary); display: flex; align-items: center; gap: 10px;
+    }
+
+    /* GRID DE TEORÍA */
+    .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    
+    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.1); border-color: var(--primary); }
+    
+    .icon-box { width: 45px; height: 45px; border-radius: 12px; display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 15px; background: var(--primary-soft); color: var(--primary); }
+    
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 8px; }
+    .card p { font-size: 0.95rem; color: var(--text-soft); }
+    
+    /* CAJA DE FÓRMULA (Mecanismo) */
+    .mech-box { background: var(--primary-soft); border-radius: 12px; padding: 20px; margin-top: 15px; font-size: 0.95rem; }
+    .mech-box strong { color: var(--primary); }
+    .math-formula { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-main); margin-top: 5px; }
+
+    /* EJERCICIOS */
+    .gym-header { background: var(--surface); padding: 10px 25px; border-radius: 50px; font-weight: 700; color: var(--text-soft); margin-bottom: 20px; border: 1px solid var(--border); }
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+    .ex-card { background: var(--surface); border-radius: var(--radius); padding: 20px; border: 1px solid var(--border); }
+    .ex-card h3 { font-size: 1rem; color: var(--secondary); margin-bottom: 5px; }
+    .justificacion { background: var(--primary-soft); padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 0.9rem; }
+    .justificacion strong { color: var(--primary); }
+    
+    /* --- DETALLES DE IDIOMA --- */
+    [data-lang] { display: none !important; }
+    body.lang-es [data-lang="es"] { display: block !important; }
+    body.lang-ca [data-lang="ca"] { display: block !important; }
+    body.lang-en [data-lang="en"] { display: block !important; }
+    body.lang-es span[data-lang="es"] { display: inline !important; }
+    body.lang-ca span[data-lang="ca"] { display: inline !important; }
+    body.lang-en span[data-lang="en"] { display: inline !important; }
+
+</style>
+</head>
+<body class="lang-es">
+
+    <nav class="nav-bar">
+        <a href="index.html" class="back-btn">
+            <span style="font-size: 1.2rem;">🏡</span> 
+            <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
+        </a>
+        <div class="controls">
+            <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
+            <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
+            <button class="btn-lang" onclick="setLang('en', this)">EN</button>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <header>
+            <span class="page-icon">🧪</span>
+            <h1 data-lang="es">Química de <span>Polímeros</span></h1>
+            <h1 data-lang="ca">Química de <span>Polímers</span></h1>
+            <h1 data-lang="en"><span>Polymer</span> Chemistry</h1>
+            
+            <p class="intro" data-lang="es">El estudio de las macromoléculas. Los polímeros son cadenas gigantes ($n$ monómeros) que forman los materiales modernos, desde el plástico hasta las proteínas.</p>
+            <p class="intro" data-lang="ca">L'estudi de les macromolècules. Els polímers són cadenes gegants ($n$ monòmers) que formen els materials moderns, des del plàstic fins a les proteïnes.</p>
+            <p class="intro" data-lang="en">The study of macromolecules. Polymers are giant chains ($n$ monomers) that form modern materials, from plastic to proteins.</p>
+        </header>
+
+        <div class="theory-grid">
+            
+            <div class="card c-cyan">
+                <div class="icon-box">🧠</div>
+                <h3 data-lang="es">Conceptos Clave</h3>
+                <h3 data-lang="ca">Conceptes Clau</h3>
+                <h3 data-lang="en">Key Concepts</h3>
+                <p data-lang="es"><strong>Monómero:</strong> Unidad simple. <strong>Grado (n):</strong> Número de repeticiones. <strong>Homopolímero:</strong> 1 tipo de monómero. <strong>Copolímero:</strong> 2+ tipos.</p>
+                <p data-lang="ca"><strong>Monòmer:</strong> Unitat simple. <strong>Grau (n):</strong> Nombre de repeticions. <strong>Homopolímer:</strong> 1 tipus. <strong>Copolímer:</strong> 2+ tipus.</p>
+                <p data-lang="en"><strong>Monomer:</strong> Simple unit. <strong>Degree (n):</strong> Number of repetitions. <strong>Homopolymer:</strong> 1 type. <strong>Copolymer:</strong> 2+ types.</p>
+                <div class="mech-box">
+                    $$\text{Peso Molecular} = n \times M_{\text{monómero}}$$
+                </div>
+            </div>
+
+            <div class="card c-amber">
+                <div class="icon-box">⚙️</div>
+                <h3 data-lang="es">Mecanismos de Síntesis</h3>
+                <h3 data-lang="ca">Mecanismes de Síntesi</h3>
+                <h3 data-lang="en">Synthesis Mechanisms</h3>
+                
+                <ul style="padding-left:20px; font-size:0.95rem;">
+                    <li><strong>Adición (Crecimiento en cadena):</strong> El monómero se añade directamente al centro activo (Ej: Polietileno, PVC).</li>
+                    <li><strong>Condensación (Crecimiento por pasos):</strong> Dos monómeros se unen liberando un subproducto pequeño (Ej: Nylon, PET).</li>
+                </ul>
+            </div>
+
+            <div class="card c-cyan">
+                <div class="icon-box">🌳</div>
+                <h3 data-lang="es">Clasificación Estructural</h3>
+                <h3 data-lang="ca">Classificació Estructural</h3>
+                <h3 data-lang="en">Structural Classification</h3>
+                
+                <ul style="padding-left:20px; font-size:0.95rem;">
+                    <li><strong>Lineal:</strong> Cadenas flexibles (Polietileno de alta densidad).</li>
+                    <li><strong>Ramificada:</strong> Cadenas con ramas (Polietileno de baja densidad).</li>
+                    <li><strong>Entrecruzada (Reticulada):</strong> Cadenas unidas por enlaces covalentes (Caucho vulcanizado).</li>
+                </ul>
+            </div>
+            
+            <div class="card c-amber">
+                <div class="icon-box">🌡️</div>
+                <h3 data-lang="es">Comportamiento Térmico</h3>
+                <h3 data-lang="ca">Comportament Tèrmic</h3>
+                <h3 data-lang="en">Thermal Behavior</h3>
+                <ul style="padding-left:20px; font-size:0.95rem;">
+                    <li><strong>Termoplásticos:</strong> Se funden y moldean ($\text{PE}$, $\text{PVC}$).</li>
+                    <li><strong>Termoestables:</strong> Endurecen permanentemente; no se pueden volver a fundir ($\text{Epoxi}$).</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <h2 data-lang="es">🏋️ 35 Problemas Nivel Avanzado</h2>
+        <h2 data-lang="ca">🏋️ 35 Problemes Nivell Avançat</h2>
+        <h2 data-lang="en">🏋️ 35 Advanced Problems</h2>
+
+        <div class="gym-section">
+            <span class="gym-header" data-lang="es">Nivel 1: Conceptos y Clasificación</span>
+            <span class="gym-header" data-lang="ca">Nivell 1: Conceptes i Classificació</span>
+            <span class="gym-header" data-lang="en">Level 1: Concepts & Classification</span>
+            <div class="gym-grid">
+                <div class="ex-card">
+                    <h3 data-lang="es">PVC</h3><h3 data-lang="ca">PVC</h3><h3 data-lang="en">PVC</h3>
+                    <p data-lang="es">¿Monómero y mecanismo?</p><p data-lang="ca">Monòmer i mecanisme?</p><p data-lang="en">Monomer & mechanism?</p>
+                    <div class="justificacion"><strong>Cloruro de vinilo; Adición.</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Nylon 6,6</h3><h3 data-lang="ca">Niló 6,6</h3><h3 data-lang="en">Nylon 6,6</h3>
+                    <p data-lang="es">¿Mecanismo y subproducto?</p><p data-lang="ca">Mecanisme i subproducte?</p><p data-lang="en">Mechanism & byproduct?</p>
+                    <div class="justificacion"><strong>Condensación; $\text{H}_2\text{O}$ o $\text{HCl}$.</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Termoplástico</h3><h3 data-lang="ca">Termoplàstic</h3><h3 data-lang="en">Thermoplastic</h3>
+                    <p data-lang="es">¿Funde o no funde?</p><p data-lang="ca">Fon o no fon?</p><p data-lang="en">Does it melt or not?</p>
+                    <div class="justificacion"><strong>Funde repetidamente (Termoplástico).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Polietileno</h3><h3 data-lang="ca">Polietilè</h3><h3 data-lang="en">Polyethylene</h3>
+                    <p data-lang="es">¿Adición o Condensación?</p><p data-lang="ca">Addició o Condensació?</p><p data-lang="en">Addition or Condensation?</p>
+                    <div class="justificacion"><strong>Adición. Monómero: Eteno.</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Termoestable</h3><h3 data-lang="ca">Termoestable</h3><h3 data-lang="en">Thermoset</h3>
+                    <p data-lang="es">¿Estructura clave?</p><p data-lang="ca">Estructura clau?</p><p data-lang="en">Key structure?</p>
+                    <div class="justificacion"><strong>Entrecruzada (Reticulada).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Teflón (PTFE)</h3><h3 data-lang="ca">Tefló (PTFE)</h3><h3 data-lang="en">Teflon (PTFE)</h3>
+                    <p data-lang="es">¿Monómero?</p><p data-lang="ca">Monòmer?</p><p data-lang="en">Monomer?</p>
+                    <div class="justificacion"><strong>Tetrafluoroeteno ($\text{CF}_2=\text{CF}_2$).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Almidón</h3><h3 data-lang="ca">Midó</h3><h3 data-lang="en">Starch</h3>
+                    <p data-lang="es">¿Natural o Sintético?</p><p data-lang="ca">Natural o Sintètic?</p><p data-lang="en">Natural or Synthetic?</p>
+                    <div class="justificacion"><strong>Natural (Polisacárido).</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" data-lang="es">Nivel 2: Propiedades y Cálculo ($\text{M}$, $\text{n}$)</span>
+            <span class="gym-header" data-lang="ca">Nivell 2: Propietats i Càlcul ($\text{M}$, $\text{n}$)</span>
+            <span class="gym-header" data-lang="en">Level 2: Properties & Calculation ($\text{M}$, $\text{n}$)</span>
+            <div class="gym-grid">
+                <div class="ex-card">
+                    <h3 data-lang="es">Peso Molecular</h3><h3 data-lang="ca">Pes Molecular</h3><h3 data-lang="en">Mol. Weight</h3>
+                    <p data-lang="es">Si $M_{\text{monómero}} = 100 \text{ g/mol}$ y $n = 500$, ¿$M_{\text{polímero}}$?</p>
+                    <div class="justificacion"><strong>$500 \times 100 = 50.000 \text{ g/mol}$.</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Entrecruzamiento</h3><h3 data-lang="ca">Entrecreuament</h3><h3 data-lang="en">Cross-linking</h3>
+                    <p data-lang="es">¿Cómo afecta a la solubilidad?</p>
+                    <div class="justificacion"><strong>La anula (solo se hincha).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">LDPE vs HDPE</h3><h3 data-lang="ca">BDPE vs ADPE</h3><h3 data-lang="en">LDPE vs HDPE</h3>
+                    <p data-lang="es">¿Cuál es más ramificado?</p>
+                    <div class="justificacion"><strong>LDPE (Baja densidad).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Grado Polimerización</h3><h3 data-lang="ca">Grau Polimerització</h3><h3 data-lang="en">Polym. Degree</h3>
+                    <p data-lang="es">Si $M_{\text{polímero}} = 30000 \text{ g/mol}$ y $M_{\text{monómero}} = 50 \text{ g/mol}$, ¿$n$?</p>
+                    <div class="justificacion"><strong>$30000 / 50 = 600$.</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Elastómeros</h3><h3 data-lang="ca">Elastòmers</h3><h3 data-lang="en">Elastomers</h3>
+                    <p data-lang="es">¿Propiedad clave?</p>
+                    <div class="justificacion"><strong>Alta elasticidad (ej: caucho).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Condensación</h3><h3 data-lang="ca">Condensació</h3><h3 data-lang="en">Condensation</h3>
+                    <p data-lang="es">¿Polietileno tereftalato (PET)?</p>
+                    <div class="justificacion"><strong>Condensación (Dióxido de carbono).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Isomería en polímeros</h3><h3 data-lang="ca">Isomeria en polímers</h3><h3 data-lang="en">Polymer Isomerism</h3>
+                    <p data-lang="es">¿Ejemplo de isomería espacial?</p>
+                    <div class="justificacion"><strong>Tacticidad (Isotáctica, Atáctica, Sindiotáctica).</strong></div>
+                </div>
+                <div class="ex-card">
+                    <h3 data-lang="es">Homopolímero</h3><h3 data-lang="ca">Homopolímer</h3><h3 data-lang="en">Homopolymer</h3>
+                    <p data-lang="es">¿Polipropileno?</p>
+                    <div class="justificacion"><strong>Sí. Solo monómero propileno.</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gym-section">
+            <span class="gym-header" data-lang="es">Nivel 3: Síntesis y Retos</span>
+            <span class="gym-header" data-lang="ca">Nivell 3: Síntesi i Reptes</span>
+            <span class="gym-header" data-lang="en">Level 3: Synthesis & Challenges</span>
+            <div class="gym-grid">
+                <details><summary>Monómero del Poliéster PET</summary><div class="answer">Ácido tereftálico + Etilenglicol</div></details>
+                <details><summary>¿Por qué el PE es químicamente inerte?</summary><div class="answer">Solo tiene enlaces $\sigma$ (saturados).</div></details>
+                <details><summary>Monómero del Polimetilmetacrilato (Plexiglas)</summary><div class="answer">Metacrilato de metilo</div></details>
+                <details><summary>¿Qué es la dispersidad ($\text{M}_w / \text{M}_n$)?</summary><div class="answer">Mide la heterogeneidad del peso molecular</div></details>
+                <details><summary>Termoestable a base de melamina</summary><div class="answer">Resina de melamina-formaldehído</div></details>
+                <details><summary>Monómero del Caucho Natural</summary><div class="answer">Isopreno</div></details>
+                <details><summary>Fase de Terminación (Adición)</summary><div class="answer">Combinación o desproporción de radicales</div></details>
+                <details><summary>Tipo de polimerización del caucho vulcanizado</summary><div class="answer">Reacción de reticulación (cross-linking)</div></details>
+                <details><summary>Material que forma la lana de oveja</summary><div class="answer">Proteína (Poliamida natural)</div></details>
+                <details><summary>¿El Nylon 6,6 puede fundirse sin degradarse?</summary><div class="answer">Sí, es termoplástico</div></details>
+                <details><summary>Monómero del poliestireno (PS)</summary><div class="answer">Estireno</div></details>
+                <details><summary>¿Qué es la tacticidad?</summary><div class="answer">La disposición estéreo-espacial de los grupos laterales</div></details>
+                <details><summary>El nylon es un ejemplo de poliamida</summary><div class="answer">Correcto</div></details>
+                <details><summary>¿Qué significa $\text{M}_w$?</summary><div class="answer">Peso molecular promedio en peso</div></details>
+                <details><summary>Termoestable común en pinturas</summary><div class="answer">Resina alquídica o epoxi</div></details>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. IDIOMA
+        function setLang(lang, btn) {
+            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
+            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            localStorage.setItem('prefLang', lang);
+        }
+
+        // 2. MODO OSCURO
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // INICIALIZAR
+        const savedLang = localStorage.getItem('prefLang');
+        if(savedLang) {
+            document.body.classList.add('lang-' + savedLang);
+            const btns = document.querySelectorAll('.btn-lang');
+            btns.forEach(b => {
+                if(b.textContent.toLowerCase() === savedLang) {
+                    btns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                }
+            });
+        } else {
+            document.body.classList.add('lang-es');
+        }
+
+        const savedTheme = localStorage.getItem('darkMode');
+        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+    </script>
+
+</body>
+</html>
