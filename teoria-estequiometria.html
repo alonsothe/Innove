@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Estequiometría | Teoría Completa</title>
+<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚗️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-color: #ffffff;
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    --accent: #10b981;
+    --accent-glow: rgba(16, 185, 129, 0.15);
+    --highlight: #f59e0b;
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    --card-hover: rgba(244, 244, 245, 0.8);
+    --radius: 12px;
+    --font-ui: 'Inter', sans-serif;
+    --font-chem: 'JetBrains Mono', monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-color: #09090b;
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --accent: #34d399;
+    --accent-glow: rgba(52, 211, 153, 0.1);
+    --glass-bg: rgba(24, 24, 27, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --card-hover: rgba(39, 39, 42, 0.8);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--text-secondary) 0.5px, transparent 0.5px);
+    background-size: 24px 24px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.4s ease, color 0.3s ease;
+    padding-bottom: 80px;
+    overflow-x: hidden;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--highlight);
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.2;
+    animation-delay: 7s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+  }
+
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius);
+    transition: all 0.3s ease;
+  }
+
+  .glass:hover {
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border-color: rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+  }
+
+  h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+    margin: 2.5rem 0 1.5rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+  }
+
+  h3 {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin: 1.5rem 0 0.8rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p {
+    margin-bottom: 1.2rem;
+    color: var(--text-secondary);
+    text-align: justify;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  ol, ul {
+    margin-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chem {
+    font-family: var(--font-chem);
+    font-size: 0.9em;
+    color: var(--accent);
+    background: var(--accent-glow);
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: help;
+  }
+
+  .chem:hover {
+    background: var(--accent);
+    color: var(--bg-color);
+    transform: scale(1.05);
+  }
+
+  .equation-box {
+    background: var(--accent-glow);
+    border-left: 4px solid var(--accent);
+    padding: 20px;
+    margin: 20px 0;
+    font-family: var(--font-chem);
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 0 8px 8px 0;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .equation-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+  }
+
+  .header {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    padding: 12px 16px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  @media (min-width: 768px) {
+    .header {
+      padding: 14px 24px;
+      gap: 16px;
+    }
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .logo-text div:first-child {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-weight: 800;
+  }
+
+  .logo-text div:last-child {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle:hover {
+    background: var(--accent-glow);
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 12px;
+      gap: 8px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      z-index: 99;
+      justify-content: flex-start;
+    }
+
+    .nav-menu.open {
+      max-height: 500px;
+    }
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: none;
+  }
+
+  @media (min-width: 769px) {
+    .nav-btn {
+      display: inline-block;
+    }
+
+    .nav-btn:nth-child(n+4) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu.open .nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  .nav-btn:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .nav-btn[aria-selected="true"] {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .theme-toggle {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    transform: rotate(20deg) scale(1.1);
+    background: var(--accent-glow);
+  }
+
+  section.content-section {
+    display: none;
+  }
+
+  section[data-active] {
+    display: block;
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    padding: clamp(20px, 5vw, 40px);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.05;
+    pointer-events: none;
+    animation: moveBackground 15s ease-in-out infinite;
+  }
+
+  @keyframes moveBackground {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(50px, 50px); }
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .chem-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .chem-table th {
+    text-align: left;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--glass-border);
+    padding: 12px;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--accent-glow);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table tr:hover td {
+    background: var(--accent-glow);
+    transform: scale(1.01);
+  }
+
+  .note {
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 4px solid var(--accent);
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+    transition: all 0.3s ease;
+  }
+
+  .note:hover {
+    background: rgba(16, 185, 129, 0.15);
+    border-left-width: 6px;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.1rem; }
+    h3 { font-size: 0.95rem; }
+    p { font-size: 0.9rem; }
+    .card { padding: 14px; }
+    .header { padding: 10px 12px; }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; }
+  }
+
+  @media (min-width: 769px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.3rem; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<header class="header glass container">
+  <a href="estequiometria.html" class="logo">
+    <div class="logo-icon">⚗️</div>
+    <div class="logo-text">
+      <div>Estequiometría</div>
+      <div>Cálculos Químicos</div>
+    </div>
+  </a>
+
+  <nav class="nav-menu" id="navMenu">
+    <button class="nav-btn" data-target="conceptos" aria-selected="true">📚 Conceptos</button>
+    <button class="nav-btn" data-target="masas" aria-selected="false">⚖️ Relaciones Masa</button>
+    <button class="nav-btn" data-target="moles" aria-selected="false">🔢 Moles y Mol</button>
+    <button class="nav-btn" data-target="volumen" aria-selected="false">📏 Volumen Gases</button>
+    <button class="nav-btn" data-target="limitante" aria-selected="false">⚠️ Reactivo Limitante</button>
+    <button class="nav-btn" data-target="rendimiento" aria-selected="false">📈 Rendimiento</button>
+    <button class="nav-btn" data-target="disoluciones" aria-selected="false">💧 Disoluciones</button>
+  </nav>
+
+  <button class="menu-toggle" id="menuToggle" title="Menú">☰</button>
+  <button class="theme-toggle" id="themeToggle" title="Cambiar tema">🌙</button>
+</header>
+
+<main class="container">
+
+  <section id="conceptos" class="content-section" data-active>
+    <div class="card glass">
+      <h1>📚 Conceptos Fundamentales de Estequiometría</h1>
+      <p>La <strong>estequiometría</strong> es la rama de la química que estudia las relaciones cuantitativas entre reactivos y productos en una reacción química. Se basa en la <strong>ley de conservación de la masa</strong> (Lavoisier) y en la <strong>ley de las proporciones definidas</strong> (Proust).</p>
+
+      <h2>📖 Bachillerato — Fundamentos</h2>
+      <p>La estequiometría permite calcular:</p>
+      <ul>
+        <li>Cantidades de productos formados a partir de reactivos conocidos.</li>
+        <li>Cantidades de reactivos necesarios para obtener una cantidad específica de producto.</li>
+        <li>Composición porcentual de compuestos.</li>
+      </ul>
+      <p>Todo comienza con la <strong>ecuación química balanceada</strong>, que establece la proporción molar entre especies:</p>
+      <div class="equation-box">aA + bB → cC + dD</div>
+      <p>Los coeficientes (a, b, c, d) indican la proporción de moles que reaccionan. Por ejemplo, 2H₂ + O₂ → 2H₂O significa que 2 moles de hidrógeno reaccionan con 1 mol de oxígeno para formar 2 moles de agua.</p>
+
+      <h2>🎓 Universitario — Fundamentos Rigurosos</h2>
+      <p>A nivel termodinámico y cinético, la estequiometría se fundamenta en:</p>
+      <ol>
+        <li><strong>Conservación de masa:</strong> La suma de masas de reactivos iguala la suma de masas de productos (principio de Lavoisier).</li>
+        <li><strong>Conservación de átomos:</strong> Cada tipo de átomo debe aparecer el mismo número de veces en ambos lados de la ecuación.</li>
+        <li><strong>Restricciones termoquímicas:</strong> ΔG° y ΔH° determinan si la reacción es espontánea y favorable.</li>
+        <li><strong>Cinética de reacción:</strong> Los mecanismos elementales pueden implicar pasos estequiométricos diferentes al global.</li>
+      </ol>
+
+      <h2>⚖️ Balanceo de Ecuaciones Químicas</h2>
+      <p>El balanceo es el primer paso esencial. Existen varios métodos:</p>
+      <ul>
+        <li><strong>Método de tanteo:</strong> Ajustar coeficientes mediante inspección visual (para reacciones simples).</li>
+        <li><strong>Método algebraico:</strong> Asignar variables a coeficientes y resolver un sistema de ecuaciones lineales.</li>
+        <li><strong>Método redox:</strong> Basado en cambios de estado de oxidación (para reacciones que incluyen transferencia de electrones).</li>
+        <li><strong>Método ion-electrón:</strong> Usado en reacciones iónicas complejas (especialmente en disolución acuosa).</li>
+      </ul>
+
+      <div class="note">
+        <strong>💡 Regla de oro:</strong> Una ecuación química no está balanceada hasta que el número de átomos de cada elemento sea idéntico a ambos lados. Los estados de agregación (s, l, g, aq) no afectan al balanceo numérico.
+      </div>
+    </div>
+  </section>
+
+  <section id="masas" class="content-section">
+    <div class="card glass">
+      <h1>⚖️ Relaciones de Masa en Reacciones Químicas</h1>
+
+      <h2>📊 Masa Molar y Composición Porcentual</h2>
+      <p>La <strong>masa molar (M)</strong> de una sustancia es la masa de un mol de esa sustancia, expresada en g/mol. Se calcula sumando las masas atómicas de todos los átomos en la fórmula molecular:</p>
+      <div class="equation-box">M = Σ (número de átomos × masa atómica)</div>
+      <p><strong>Ejemplo:</strong> Para H₂SO₄: M = 2(1) + 32 + 4(16) = 2 + 32 + 64 = 98 g/mol.</p>
+
+      <h2>🧮 Composición Porcentual en Masa</h2>
+      <p>Indica qué porcentaje de la masa total de un compuesto corresponde a cada elemento:</p>
+      <div class="equation-box">% elemento = (masa atómica del elemento en fórmula / masa molar total) × 100%</div>
+      <p><strong>Ejemplo:</strong> En H₂O (M = 18 g/mol), el % de H = (2/18) × 100% ≈ 11.1%, y el % de O = (16/18) × 100% ≈ 88.9%.</p>
+
+      <h2>🔄 Conversiones Masa-Masa</h2>
+      <p>Para calcular cuántos gramos de producto se obtienen a partir de un cierto número de gramos de reactivo:</p>
+      <div class="equation-box">g producto = g reactivo × (M reactivo)⁻¹ × (coef. producto / coef. reactivo) × M producto</div>
+      <p>O más sucintamente, usando proporciones molares:</p>
+      <div class="equation-box">g B = g A × (1 mol A / M_A) × (n_B / n_A) × M_B</div>
+
+      <p>donde n representa los coeficientes estequiométricos de la ecuación balanceada.</p>
+
+      <div class="note">
+        <strong>⚠️ Paso a paso:</strong> Convertir gramos de reactivo a moles → Usar la proporción molar → Convertir moles de producto a gramos. Este es el flujo fundamental de todo cálculo estequiométrico.
+      </div>
+    </div>
+  </section>
+
+  <section id="moles" class="content-section">
+    <div class="card glass">
+      <h1>🔢 Moles y el Número de Avogadro</h1>
+
+      <h2>📖 Bachillerato — Definición y Usos</h2>
+      <p>El <strong>mol</strong> es la unidad fundamental en química para contar partículas. Un mol contiene exactamente <span class="chem">6.022 × 10²³</span> entidades (átomos, moléculas, iones, etc.). Este número se denomina <strong>número de Avogadro (N<sub>A</sub>)</strong>.</p>
+      <div class="equation-box">1 mol = 6.022 × 10²³ partículas</div>
+      <p>La <strong>masa molar</strong> es la masa de un mol de sustancia, y su valor numérico en g/mol es igual a la masa molecular o atómica (en u.m.a.):</p>
+      <ul>
+        <li>H₂: M ≈ 2 g/mol</li>
+        <li>O₂: M ≈ 32 g/mol</li>
+        <li>H₂O: M ≈ 18 g/mol</li>
+        <li>NaCl: M ≈ 58.5 g/mol</li>
+      </ul>
+
+      <h2>🎓 Universitario — Fundamento Molecular</h2>
+      <p>La definición precisa del mol (desde 2019) está relacionada con la constante de Avogadro (N<sub>A</sub>), que forma parte del Sistema Internacional de Unidades (SI):</p>
+      <div class="equation-box">N<sub>A</sub> = 6.02214076 × 10²³ mol⁻¹ (valor exacto)</div>
+      <p>Esto significa que 1 mol de cualquier sustancia contiene exactamente ese número de entidades elementales. El concepto es crucial porque permite relacionar propiedades macroscópicas (masas, volúmenes) con propiedades microscópicas (número de moléculas).</p>
+
+      <h2>🔄 Conversiones Comunes</h2>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Conversión</th>
+              <th>Fórmula</th>
+              <th>Ejemplo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gramos → Moles</td>
+              <td>n = m / M</td>
+              <td>36 g H₂O ÷ 18 g/mol = 2 mol</td>
+            </tr>
+            <tr>
+              <td>Moles → Gramos</td>
+              <td>m = n × M</td>
+              <td>2 mol × 18 g/mol = 36 g</td>
+            </tr>
+            <tr>
+              <td>Moles → Partículas</td>
+              <td>N = n × N<sub>A</sub></td>
+              <td>2 mol × 6.022×10²³ = 1.204×10²⁴</td>
+            </tr>
+            <tr>
+              <td>Partículas → Moles</td>
+              <td>n = N / N<sub>A</sub></td>
+              <td>1.204×10²⁴ ÷ 6.022×10²³ = 2 mol</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>💡 Recordatorio:</strong> El mol es un puente entre el mundo macroscópico (lo que pesamos en el laboratorio) y el mundo molecular (átomos y moléculas individuales).
+      </div>
+    </div>
+  </section>
+
+  <section id="volumen" class="content-section">
+    <div class="card glass">
+      <h1>📏 Volumen de Gases en Estequiometría</h1>
+
+      <h2>📖 Ley de los Gases Ideales</h2>
+      <p>Para gases, la relación entre presión, volumen, cantidad y temperatura viene dada por la <strong>ecuación de estado de los gases ideales</strong>:</p>
+      <div class="equation-box">PV = nRT</div>
+      <p>donde:</p>
+      <ul>
+        <li>P = presión (atm, Pa, kPa, etc.)</li>
+        <li>V = volumen (L, m³, etc.)</li>
+        <li>n = cantidad de sustancia (moles)</li>
+        <li>R = constante de los gases ideales</li>
+        <li>T = temperatura absoluta (K)</li>
+      </ul>
+
+      <p>Valores comunes de R:</p>
+      <ul>
+        <li>R = 0.08206 L·atm/(mol·K)</li>
+        <li>R = 8.314 J/(mol·K)</li>
+        <li>R = 62.36 L·mmHg/(mol·K)</li>
+      </ul>
+
+      <h2>💨 Volumen Molar en Condiciones Normales</h2>
+      <p>A <strong>condiciones normales (CN)</strong>: T = 273.15 K (0 °C) y P = 1 atm, el volumen molar es:</p>
+      <div class="equation-box">V<sub>m</sub> = RT / P = (0.08206 × 273.15) / 1 ≈ 22.4 L/mol</div>
+
+      <p>A <strong>condiciones CNPT o estándar (STP)</strong>: T = 273.15 K y P = 100 kPa (≈ 0.987 atm), el volumen molar es:</p>
+      <div class="equation-box">V<sub>m</sub> ≈ 22.7 L/mol</div>
+
+      <p>A <strong>condiciones ambientales (25 °C, 1 atm)</strong>:</p>
+      <div class="equation-box">V<sub>m</sub> = (0.08206 × 298.15) / 1 ≈ 24.5 L/mol</div>
+
+      <h2>🔄 Conversiones Volumen-Moles-Masa (Gases)</h2>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Conversión</th>
+              <th>Fórmula</th>
+              <th>Condiciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Volumen → Moles</td>
+              <td>n = V / V<sub>m</sub></td>
+              <td>Si se conoce V<sub>m</sub> (22.4, 22.7, 24.5 L/mol)</td>
+            </tr>
+            <tr>
+              <td>Volumen → Moles (general)</td>
+              <td>n = PV / RT</td>
+              <td>Si se conocen P, V, T</td>
+            </tr>
+            <tr>
+              <td>Moles → Volumen</td>
+              <td>V = n × V<sub>m</sub></td>
+              <td>Si se conoce V<sub>m</sub></td>
+            </tr>
+            <tr>
+              <td>Masa → Volumen (gas)</td>
+              <td>V = (m / M) × V<sub>m</sub></td>
+              <td>A condiciones conocidas</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <strong>⚠️ Importante:</strong> El volumen de un gas depende de la presión y temperatura. Siempre especifica las condiciones (P, T) en los cálculos. A 0 °C y 1 atm, usa 22.4 L/mol; a 25 °C y 1 atm, usa 24.5 L/mol.
+      </div>
+    </div>
+  </section>
+
+  <section id="limitante" class="content-section">
+    <div class="card glass">
+      <h1>⚠️ Reactivo Limitante y Reactivo en Exceso</h1>
+
+      <h2>📖 Concepto Fundamental</h2>
+      <p>En una reacción, los reactivos no siempre están presentes en proporciones estequiométricas exactas. El <strong>reactivo limitante</strong> es aquél que se consume completamente y limita la cantidad de producto formado. El <strong>reactivo en exceso</strong> es el que queda sin reaccionar.</p>
+
+      <h2>🔍 Identificación del Reactivo Limitante</h2>
+      <p>Para la reacción aA + bB → productos:</p>
+      <ol>
+        <li>Calcula los moles de cada reactivo disponible.</li>
+        <li>Divide cada cantidad de moles entre su coeficiente estequiométrico.</li>
+        <li>El reactivo que da el <strong>menor resultado</strong> es el limitante.</li>
+      </ol>
+
+      <p><strong>Ejemplo:</strong> Reacción 2H₂ + O₂ → 2H₂O. Disponibles: 5 mol H₂ y 2 mol O₂.</p>
+      <ul>
+        <li>Para H₂: 5 mol ÷ 2 = 2.5</li>
+        <li>Para O₂: 2 mol ÷ 1 = 2</li>
+        <li>El reactivo limitante es O₂ porque 2 < 2.5.</li>
+      </ul>
+
+      <h2>📊 Cálculo con Reactivo Limitante</h2>
+      <p>Siempre debes usar el reactivo limitante para calcular la cantidad teórica de producto:</p>
+      <div class="equation-box">mol producto = mol reactivo limitante × (coef. producto / coef. reactivo limitante)</div>
+
+      <p>Después, calcula cuánto reactivo en exceso se consume y cuánto queda:</p>
+      <div class="equation-box">mol sobrante = mol inicial − mol consumido</div>
+
+      <div class="note">
+        <strong>💡 Regla práctica:</strong> El reactivo limitante es siempre el que genera la menor cantidad de producto. Úsalo siempre para cálculos de rendimiento.
+      </div>
+    </div>
+  </section>
+
+  <section id="rendimiento" class="content-section">
+    <div class="card glass">
+      <h1>📈 Rendimiento Teórico y Rendimiento Real</h1>
+
+      <h2>📖 Definiciones</h2>
+      <p>El <strong>rendimiento teórico</strong> es la cantidad máxima de producto que podría formarse si la reacción fuera 100% eficiente, calculada según la estequiometría usando el reactivo limitante. El <strong>rendimiento real</strong> es la cantidad de producto efectivamente obtenida en el experimento.</p>
+
+      <h2>🧮 Rendimiento Porcentual</h2>
+      <p>Se expresa como un porcentaje:</p>
+      <div class="equation-box">Rendimiento (%) = (cantidad real / cantidad teórica) × 100%</div>
+
+      <p>Las causas de rendimiento < 100% incluyen:</p>
+      <ul>
+        <li>Reacciones reversibles que no llegan a completarse.</li>
+        <li>Reacciones competitivas que generan productos secundarios.</li>
+        <li>Pérdidas durante manipulación (derrames, retención en equipos).</li>
+        <li>Errores experimentales en medición.</li>
+        <li>Equilibrio químico (especialmente en sistemas reversibles).</li>
+      </ul>
+
+      <h2>📊 Ejemplo Completo</h2>
+      <p><strong>Reacción:</strong> C + O₂ → CO₂</p>
+      <p><strong>Datos:</strong> Reaccionan 6 g de C. Se obtienen 18 g de CO₂ reales. ¿Rendimiento %?</p>
+      <ul>
+        <li>Masa molar C = 12 g/mol; M(CO₂) = 44 g/mol</li>
+        <li>Moles de C = 6 g ÷ 12 g/mol = 0.5 mol</li>
+        <li>Rendimiento teórico: 0.5 mol C × (1 mol CO₂ / 1 mol C) × 44 g/mol = 22 g CO₂</li>
+        <li>Rendimiento % = (18 g / 22 g) × 100% ≈ 81.8%</li>
+      </ul>
+
+      <div class="note">
+        <strong>⚠️ Nota:</strong> Un rendimiento > 100% sugiere errores experimentales o que la masa medida incluye impurezas. Revisiones de procedimiento son necesarias.
+      </div>
+    </div>
+  </section>
+
+  <section id="disoluciones" class="content-section">
+    <div class="card glass">
+      <h1>💧 Estequiometría en Disoluciones</h1>
+
+      <h2>📖 Concentración y Molaridad</h2>
+      <p>La <strong>molaridad (M)</strong> es la concentración más usada en química, definida como moles de soluto por litro de disolución:</p>
+      <div class="equation-box">M = n / V = (moles de soluto) / (litros de disolución)</div>
+
+      <p>Otras medidas de concentración:</p>
+      <ul>
+        <li><strong>Molalidad (m):</strong> moles de soluto por kg de disolvente (usado en cálculos coligativos).</li>
+        <li><strong>Normalidad (N):</strong> equivalentes de soluto por litro (usado en redox y ácido-base).</li>
+        <li><strong>Fracción molar (χ):</strong> moles del componente / moles totales.</li>
+        <li><strong>% en masa o volumen:</strong> masa o volumen de soluto / masa o volumen de disolución × 100%.</li>
+      </ul>
+
+      <h2>🧪 Diluciones</h2>
+      <p>Cuando se diluye una disolución, el número de moles de soluto permanece constante, pero el volumen y la concentración cambian:</p>
+      <div class="equation-box">M₁V₁ = M₂V₂</div>
+
+      <p>donde los subíndices 1 y 2 se refieren al estado inicial y final.</p>
+
+      <h2>🔬 Reacciones en Disolución Acuosa</h2>
+      <p>Para calcular estequiometría en disoluciones:</p>
+      <ol>
+        <li>Calcula los moles de cada reactivo a partir de su molaridad y volumen: n = M × V</li>
+        <li>Identifica el reactivo limitante.</li>
+        <li>Usa proporciones estequiométricas para hallar moles de producto.</li>
+        <li>Si se requiere concentración final, divide moles por volumen total.</li>
+      </ol>
+
+      <p><strong>Ejemplo:</strong> 50 mL de HCl 0.1 M reaccionan con 50 mL de NaOH 0.1 M. HCl + NaOH → NaCl + H₂O</p>
+      <ul>
+        <li>n(HCl) = 0.1 M × 0.050 L = 0.005 mol</li>
+        <li>n(NaOH) = 0.1 M × 0.050 L = 0.005 mol</li>
+        <li>Ambos están en proporción 1:1, luego ambos se agotan completamente (neutralización total).</li>
+        <li>n(NaCl) formado = 0.005 mol</li>
+        <li>[NaCl] final ≈ 0.005 mol / 0.100 L ≈ 0.05 M</li>
+      </ul>
+
+      <div class="note">
+        <strong>💡 Dilución estándar:</strong> La ecuación M₁V₁ = M₂V₂ es válida si la densidad de la disolución no cambia significativamente. Para disoluciones muy concentradas o cuando se requiere precisión, usa volúmenes más exactos.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function initializeApp() {
+    setupNavigation();
+    setupThemeToggle();
+    setupScrollAnimations();
+  }
+
+  function setupNavigation() {
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const sections = document.querySelectorAll('section.content-section');
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+        btn.setAttribute('aria-selected', 'true');
+        const targetId = btn.getAttribute('data-target');
+        sections.forEach(sec => sec.removeAttribute('data-active'));
+        document.getElementById(targetId).setAttribute('data-active', '');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        navMenu.classList.remove('open');
+      }
+    });
+  }
+
+  function setupThemeToggle() {
+    const themeBtn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
+
+    root.setAttribute('data-theme', savedTheme);
+    updateThemeEmoji(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeEmoji(newTheme);
+    });
+  }
+
+  function updateThemeEmoji(theme) {
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+
+  function setupScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card, .equation-box, .table-wrapper, .note').forEach(el => {
+      observer.observe(el);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  } else {
+    initializeApp();
+  }
+</script>
+
+</body>
+</html>
