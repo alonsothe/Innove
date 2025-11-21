@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es" data-scheme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Innove | Probabilidad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true,
+                tags: 'ams'
+            },
+            options: {
+                renderActions: { addMenu: [] }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* ============ VARIABLES ============ */
+        :root {
+            --nav-height: 70px;
+            --radius: 16px;
+            --font-main: 'Inter', sans-serif;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-scheme="dark"] {
+            --bg: #050505;
+            --bg-alt: #0a0a0a;
+            --text: #ffffff;
+            --text-muted: #a1a1aa;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent-eso: #10b981;  /* Verde Esmeralda */
+            --accent-bach: #8b5cf6; /* Violeta */
+            --accent-uni: #f59e0b;  /* Ámbar */
+            --nav-glass: blur(20px) saturate(180%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        [data-scheme="light"] {
+            --bg: #f8fafc;
+            --bg-alt: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --accent-eso: #059669;
+            --accent-bach: #7c3aed;
+            --accent-uni: #d97706;
+            --nav-glass: blur(20px) saturate(180%);
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        /* ============ RESET & BASE ============ */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            padding-top: var(--nav-height);
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, rgba(50,50,50,0.1) 0%, transparent 50%);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ============ UTILS ============ */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+        
+        /* ============ NAVBAR ============ */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(var(--bg), 0.8); backdrop-filter: var(--nav-glass);
+            border-bottom: 1px solid var(--border); z-index: 100;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 5%;
+        }
+        .logo { font-weight: 900; font-size: 1.5rem; color: var(--text); text-decoration: none; }
+        .nav-tabs {
+            display: flex; gap: 5px; background: var(--border); padding: 4px; border-radius: 50px;
+        }
+        .tab-btn {
+            background: none; border: none; color: var(--text-muted); padding: 8px 20px;
+            border-radius: 40px; cursor: pointer; font-weight: 600; transition: 0.3s;
+            font-family: var(--font-display);
+        }
+        .tab-btn.active { background: var(--text); color: var(--bg); shadow: var(--shadow); }
+        
+        /* ============ HERO ============ */
+        .hero { text-align: center; padding: 80px 0 40px; }
+        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; margin-bottom: 10px; }
+        .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        /* ============ GRID & CARDS ============ */
+        .section-content { display: none; animation: fadeIn 0.5s ease; }
+        .section-content.active { display: block; }
+        
+        .difficulty-header {
+            display: flex; align-items: center; gap: 15px; margin: 40px 0 20px;
+            padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        }
+        .badge {
+            padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; text-transform: uppercase;
+            font-weight: 800; letter-spacing: 1px;
+        }
+
+        .grid-layout {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;
+        }
+
+        .ex-card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 25px; transition: transform 0.2s, border-color 0.2s;
+            display: flex; flex-direction: column; position: relative;
+        }
+        .ex-card:hover { transform: translateY(-3px); border-color: var(--accent-current); }
+        
+        .ex-meta { display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
+        .ex-id { color: var(--accent-current); }
+        .ex-problem { font-size: 1.1rem; margin-bottom: 20px; line-height: 1.6; }
+
+        /* ============ SOLUTION TOGGLE ============ */
+        details { margin-top: auto; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; }
+        summary {
+            padding: 12px 15px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            color: var(--text-muted); user-select: none; transition: 0.2s;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        summary:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+        summary::after { content: "+"; font-size: 1.2em; }
+        details[open] summary::after { content: "-"; }
+        
+        .solution {
+            padding: 20px; border-top: 1px solid var(--border); font-size: 0.95rem;
+            color: var(--text-muted); line-height: 1.7;
+        }
+        .final-res {
+            display: block; margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--border);
+            color: var(--accent-current); font-weight: bold; text-align: center; font-family: var(--font-mono);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">Innove<span style="color:var(--text-muted); font-weight:300;">Prob</span></a>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="setTab('eso', '#10b981')">ESO</button>
+            <button class="tab-btn" onclick="setTab('bach', '#8b5cf6')">Bachillerato</button>
+            <button class="tab-btn" onclick="setTab('uni', '#f59e0b')">Universidad</button>
+        </div>
+        <button class="tab-btn" onclick="toggleTheme()" style="padding: 5px 15px;">◑</button>
+    </nav>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Banco de Probabilidad</h1>
+            <p>Domina el azar. Desde monedas y dados hasta distribuciones conjuntas.</p>
+        </div>
+
+        <div id="eso" class="section-content active" style="--accent-current: var(--accent-eso);">
+            
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">Fundamentos</span>
+                <h3>Regla de Laplace y Experimentos Simples</h3>
+            </div>
+
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#01</span><span>Lanzamiento de Dado</span></div>
+                    <div class="ex-problem">Lanzamos un dado de 6 caras honesto. Calcula la probabilidad de sacar un número par mayor que 2.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Espacio muestral: $\Omega = \{1, 2, 3, 4, 5, 6\}$.
+                            <br>Sucesos favorables (Par > 2): $\{4, 6\}$.
+                            <br>Regla de Laplace: $P(A) = \frac{\text{Casos favorables}}{\text{Casos totales}}$.
+                            <br>$P(A) = \frac{2}{6}$.
+                            <span class="final-res">$$ P = \frac{1}{3} $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#02</span><span>Extracción de Cartas</span></div>
+                    <div class="ex-problem">De una baraja española de 40 cartas, extraemos una carta al azar. ¿Cuál es la probabilidad de que sea una figura (Sota, Caballo, Rey) de Oros?</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Total de cartas = 40.
+                            <br>Las figuras de oros son: Sota de Oros, Caballo de Oros, Rey de Oros (3 cartas).
+                            <span class="final-res">$$ P = \frac{3}{40} = 0.075 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#03</span><span>Suceso Contrario</span></div>
+                    <div class="ex-problem">La probabilidad de que mañana llueva es de $0.35$. ¿Cuál es la probabilidad de que NO llueva?</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            El suceso contrario se calcula como $P(\bar{A}) = 1 - P(A)$.
+                            <br>$P(\text{No Lluvia}) = 1 - 0.35$.
+                            <span class="final-res">$$ P = 0.65 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#04</span><span>Dos Monedas</span></div>
+                    <div class="ex-problem">Lanzamos dos monedas al aire. Calcula la probabilidad de obtener al menos una cara.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Espacio muestral: $\Omega = \{CC, CX, XC, XX\}$. Total = 4.
+                            <br>Favorables (Al menos una C): $\{CC, CX, XC\}$ (3 casos).
+                            <span class="final-res">$$ P = \frac{3}{4} = 0.75 $$</span>
+                        </div>
+                    </details>
+                </article>
+                
+                 <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">#05</span><span>Urna con Bolas</span></div>
+                    <div class="ex-problem">Una urna tiene 5 bolas rojas, 3 azules y 2 verdes. Si saco una sin mirar, ¿Probabilidad de que NO sea roja?</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Total bolas: $5+3+2 = 10$.
+                            <br>Bolas que no son rojas (Azules + Verdes): $3+2 = 5$.
+                            <br>$P(\text{No Roja}) = \frac{5}{10}$.
+                            <span class="final-res">$$ P = \frac{1}{2} $$</span>
+                        </div>
+                    </details>
+                </article>
+            </div>
+        </div>
+
+        <div id="bach" class="section-content" style="--accent-current: var(--accent-bach);">
+            
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">Nivel Selectividad (PAU)</span>
+                <h3>Problemas Largos (Bayes y Distribuciones)</h3>
+            </div>
+
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 01</span><span>Teorema de Bayes</span></div>
+                    <div class="ex-problem">
+                        Una fábrica tiene tres máquinas A, B y C que producen el 45%, 30% y 25% del total de piezas respectivamente. Los porcentajes de producción defectuosa son del 3%, 4% y 5%.
+                        <br>a) Seleccionamos una pieza al azar, ¿probabilidad de que sea defectuosa?
+                        <br>b) Si la pieza es defectuosa, ¿cuál es la probabilidad de que la haya fabricado la máquina A?
+                    </div>
+                    <details>
+                        <summary>Ver Resolución Completa</summary>
+                        <div class="solution">
+                            Definimos sucesos: $D$ (Defectuosa).
+                            <br>$P(A)=0.45, P(D|A)=0.03$
+                            <br>$P(B)=0.30, P(D|B)=0.04$
+                            <br>$P(C)=0.25, P(D|C)=0.05$
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>a) Probabilidad Total:</strong>
+                            $$ P(D) = P(D|A)P(A) + P(D|B)P(B) + P(D|C)P(C) $$
+                            $P(D) = 0.03(0.45) + 0.04(0.30) + 0.05(0.25)$
+                            <br>$P(D) = 0.0135 + 0.012 + 0.0125 = 0.038$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>b) Teorema de Bayes:</strong>
+                            $$ P(A|D) = \frac{P(D|A)P(A)}{P(D)} $$
+                            $$ P(A|D) = \frac{0.0135}{0.038} \approx 0.355 $$
+                            <span class="final-res">$$ P(A|D) = 35.5\% $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 02</span><span>Distribución Binomial</span></div>
+                    <div class="ex-problem">
+                        Un examen tipo test consta de 10 preguntas, cada una con 4 opciones de las cuales solo una es correcta. Si un alumno responde al azar:
+                        <br>a) ¿Cuál es la probabilidad de acertar exactamente 4 preguntas?
+                        <br>b) ¿Probabilidad de aprobar (acertar 5 o más)?
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            Es una binomial $B(n, p)$.
+                            <br>$n = 10$.
+                            <br>$p = 1/4 = 0.25$ (probabilidad de acertar).
+                            <br>$q = 0.75$.
+                            <br>Fórmula: $P(X=k) = \binom{n}{k} p^k q^{n-k}$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>a) $P(X=4)$:</strong>
+                            <br>$\binom{10}{4} (0.25)^4 (0.75)^6 = 210 \cdot 0.0039 \cdot 0.1779 \approx 0.146$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>b) $P(X \geq 5)$:</strong>
+                            <br>Calculamos $1 - P(X \leq 4)$ o sumamos $P(5)+...+P(10)$.
+                            <br>Usando tablas o calculadora: $P(X \geq 5) \approx 0.078$.
+                            <span class="final-res">$$ a) 14.6\% \quad b) 7.8\% $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PAU 03</span><span>Distribución Normal</span></div>
+                    <div class="ex-problem">
+                        El peso de los estudiantes sigue una distribución Normal $N(65, 8)$ kg.
+                        <br>a) Probabilidad de pesar menos de 70 kg.
+                        <br>b) Probabilidad de pesar entre 60 y 72 kg.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            Tipificamos la variable: $Z = \frac{X - \mu}{\sigma}$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>a) $P(X < 70)$:</strong>
+                            <br>$P(Z < \frac{70-65}{8}) = P(Z < 0.625)$.
+                            <br>Mirando en la tabla Z (aprox 0.63): $0.7357$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>b) $P(60 < X < 72)$:</strong>
+                            <br>$P(\frac{60-65}{8} < Z < \frac{72-65}{8})$
+                            <br>$P(-0.625 < Z < 0.875) = P(Z < 0.88) - P(Z < -0.63)$
+                            <br>$= P(Z < 0.88) - (1 - P(Z < 0.63))$
+                            <br>$= 0.8106 - (1 - 0.7357) = 0.8106 - 0.2643$
+                            <span class="final-res">$$ a) 0.7357 \quad b) 0.5463 $$</span>
+                        </div>
+                    </details>
+                </article>
+            </div>
+
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text);">Refuerzo</span>
+                <h3>Álgebra de Sucesos (Cortos)</h3>
+            </div>
+
+            <div class="grid-layout">
+                 <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">STD 01</span><span>Leyes de Morgan</span></div>
+                    <div class="ex-problem">Dados $P(A)=0.6, P(B)=0.4$ y $P(A \cap B)=0.2$. Calcula $P(\bar{A} \cup \bar{B})$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Por leyes de Morgan: $\bar{A} \cup \bar{B} = \overline{A \cap B}$.
+                            <br>Por tanto: $P(\overline{A \cap B}) = 1 - P(A \cap B)$.
+                            <br>$1 - 0.2 = 0.8$.
+                            <span class="final-res">$$ 0.8 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">STD 02</span><span>Independencia</span></div>
+                    <div class="ex-problem">Si $A$ y $B$ son independientes, $P(A)=0.3$ y $P(B)=0.4$. Calcula $P(A \cup B)$.</div>
+                    <details>
+                        <summary>Ver Solución</summary>
+                        <div class="solution">
+                            Si son independientes: $P(A \cap B) = P(A) \cdot P(B) = 0.3 \cdot 0.4 = 0.12$.
+                            <br>$P(A \cup B) = P(A) + P(B) - P(A \cap B)$.
+                            <br>$0.3 + 0.4 - 0.12 = 0.58$.
+                            <span class="final-res">$$ 0.58 $$</span>
+                        </div>
+                    </details>
+                </article>
+            </div>
+        </div>
+
+        <div id="uni" class="section-content" style="--accent-current: var(--accent-uni);">
+            
+            <div class="difficulty-header">
+                <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Nivel Parcial</span>
+                <h3>Estadística Matemática (Calculus-Based)</h3>
+            </div>
+
+            <div class="grid-layout">
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 01</span><span>Función de Densidad (k)</span></div>
+                    <div class="ex-problem">
+                        Sea la variable aleatoria continua $X$ con función de densidad:
+                        $$ f(x) = \begin{cases} kx^2 & \text{si } 0 < x < 2 \\ 0 & \text{resto} \end{cases} $$
+                        Halla el valor de $k$ y la probabilidad $P(1 < X < 2)$.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            <strong>1. Hallar $k$:</strong>
+                            <br>La integral sobre todo el dominio debe ser 1.
+                            $$ \int_{0}^{2} kx^2 \, dx = k \left[ \frac{x^3}{3} \right]_0^2 = k(\frac{8}{3} - 0) = \frac{8k}{3} $$
+                            $\frac{8k}{3} = 1 \Rightarrow k = \frac{3}{8}$.
+                            <hr style="border:0; border-top:1px solid var(--border); margin:10px 0;">
+                            <strong>2. Probabilidad:</strong>
+                            $$ P(1 < X < 2) = \int_{1}^{2} \frac{3}{8}x^2 \, dx = \frac{3}{8} \left[ \frac{x^3}{3} \right]_1^2 $$
+                            $$ = \frac{1}{8} (2^3 - 1^3) = \frac{1}{8}(8-1) $$
+                            <span class="final-res">$$ k = 3/8, \quad P = 7/8 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 02</span><span>Esperanza y Varianza</span></div>
+                    <div class="ex-problem">
+                        Dada $f(x) = 2e^{-2x}$ para $x > 0$ (Exponencial). Calcula $E[X]$ y $Var(X)$.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            <strong>Esperanza $E[X]$:</strong>
+                            $$ \int_{0}^{\infty} x \cdot 2e^{-2x} \, dx $$
+                            Integrando por partes ($u=x, dv=2e^{-2x}dx$):
+                            <br>Resultado conocido para Exp($\lambda=2$): $E[X] = 1/\lambda = 1/2$.
+                            <br>
+                            <strong>Varianza $Var(X)$:</strong>
+                            <br>Para Exp($\lambda$): $Var(X) = 1/\lambda^2$.
+                            <br>$Var(X) = 1/2^2 = 1/4$.
+                            <span class="final-res">$$ E[X] = 0.5, \quad Var(X) = 0.25 $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 03</span><span>Transformación de V.A.</span></div>
+                    <div class="ex-problem">
+                        Si $X \sim U(0,1)$ (Uniforme), halla la densidad de la variable $Y = -2\ln(X)$.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            Teorema del cambio de variable. $y = g(x) = -2\ln(x) \Rightarrow x = e^{-y/2}$.
+                            <br>Jacobiano: $|\frac{dx}{dy}| = |-\frac{1}{2}e^{-y/2}| = \frac{1}{2}e^{-y/2}$.
+                            <br>Densidad de X es $f_X(x)=1$ en $(0,1)$.
+                            <br>$f_Y(y) = f_X(e^{-y/2}) \cdot |\frac{dx}{dy}|$.
+                            <br>Como $0<x<1$, entonces $0 < e^{-y/2} < 1 \Rightarrow y > 0$.
+                            $$ f_Y(y) = 1 \cdot \frac{1}{2}e^{-y/2} \text{ para } y > 0 $$
+                            Esto es una distribución Exponencial con $\lambda = 1/2$.
+                            <span class="final-res">$$ f_Y(y) = \frac{1}{2}e^{-y/2} $$</span>
+                        </div>
+                    </details>
+                </article>
+
+                <article class="ex-card">
+                    <div class="ex-meta"><span class="ex-id">PARCIAL 04</span><span>Distribución Conjunta</span></div>
+                    <div class="ex-problem">
+                        Sea $f(x,y) = c(x+y)$ para $0<x<1, 0<y<1$. Halla $c$ y la marginal $f_X(x)$.
+                    </div>
+                    <details>
+                        <summary>Ver Resolución</summary>
+                        <div class="solution">
+                            <strong>1. Hallar c:</strong>
+                            $$ \int_0^1 \int_0^1 c(x+y) \, dy \, dx = c \int_0^1 [xy + \frac{y^2}{2}]_0^1 dx $$
+                            $$ = c \int_0^1 (x + 1/2) dx = c [\frac{x^2}{2} + \frac{x}{2}]_0^1 = c(1/2 + 1/2) = c $$
+                            Para que sea densidad, integral = 1, por tanto $c=1$.
+                            <br><br>
+                            <strong>2. Marginal $f_X(x)$:</strong>
+                            Integrar respecto a $y$.
+                            $$ f_X(x) = \int_0^1 (x+y) \, dy = [xy + \frac{y^2}{2}]_0^1 = x + 0.5 $$
+                            <span class="final-res">$$ c=1, \quad f_X(x) = x + 0.5 $$</span>
+                        </div>
+                    </details>
+                </article>
+            </div>
+        </div>
+        
+    </main>
+
+    <script>
+        function setTab(tabId, accentColor) {
+            // Ocultar todos
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Mostrar seleccionado
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activar botón
+            const activeBtn = Array.from(document.querySelectorAll('.tab-btn'))
+                .find(b => b.getAttribute('onclick').includes(tabId));
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            // Cambiar variable CSS de acento globalmente para hover effects
+            document.documentElement.style.setProperty('--accent-current', accentColor);
+
+            // Recalcular MathJax para contenido oculto
+            if(window.MathJax) {
+                MathJax.typesetPromise([document.getElementById(tabId)]);
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-scheme');
+            html.setAttribute('data-scheme', current === 'dark' ? 'light' : 'dark');
+        }
+    </script>
+</body>
+</html>
