@@ -2,130 +2,273 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Orgánica | Nitrogenados</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
 
-<style>
-    /* --- VARIABLES DE DISEÑO (PALETA NITRÓGENO/ATMÓSFERA) --- */
-    :root {
-        /* MODO CLARO */
-        --bg: #f0f4ff; /* Azul muy pálido */
-        --surface: #ffffff;
-        --text-main: #1d4ed8;
-        --text-soft: #4f46e5;
-        --border: #bfdbfe;
-        
-        /* Paleta N */
-        --primary: #3B82F6;      /* Azul Brillante */
-        --primary-soft: #dbeafe;
-        --secondary: #6366F1;    /* Índigo */
-        --secondary-soft: #e0e7ff;
-        --tertiary: #10b981;     /* Menta (Contrastes) */
-        --tertiary-soft: #d1fae5;
-        --accent: #f59e0b;       /* Ámbar (Alerta) */
+<script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-        --shadow: 0 10px 30px -5px rgba(59, 130, 246, 0.08);
-        --shadow-hover: 0 20px 40px -5px rgba(59, 130, 246, 0.2);
-        --radius: 28px;
+<style>
+    /* --- VARIABLES DE DISEÑO PRO --- */
+    :root {
+        /* ESTRUCTURA */
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text-main: #0f172a;
+        --text-soft: #64748b;
+        --border: #e2e8f0;
+        
+        /* PALETA QUÍMICA (MÁS ELEGANTE) */
+        --primary: #3b82f6;      /* Aminas (Azul) */
+        --primary-soft: #eff6ff;
+        --secondary: #6366f1;    /* Amidas (Índigo) */
+        --secondary-soft: #eef2ff;
+        --tertiary: #10b981;     /* Nitrilos (Esmeralda) */
+        --tertiary-soft: #ecfdf5;
+        --danger: #f43f5e;       /* Nitro (Rosa/Rojo - Explosivo) */
+        --danger-soft: #fff1f2;
+
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --radius: 20px;
     }
 
     /* MODO OSCURO */
     body.dark-mode {
         --bg: #0f172a;
         --surface: #1e293b;
-        --text-main: #bfdbfe;
-        --text-soft: #93c5fd;
+        --text-main: #f1f5f9;
+        --text-soft: #94a3b8;
         --border: #334155;
-        --primary-soft: rgba(59, 130, 246, 0.2);
-        --secondary-soft: rgba(99, 102, 241, 0.2);
-        --tertiary-soft: rgba(16, 185, 129, 0.2);
+        --primary-soft: rgba(59, 130, 246, 0.1);
+        --secondary-soft: rgba(99, 102, 241, 0.1);
+        --tertiary-soft: rgba(16, 185, 129, 0.1);
+        --danger-soft: rgba(244, 63, 94, 0.1);
+        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    body { background-color: var(--bg); color: var(--text-main); font-family: 'Nunito', sans-serif; line-height: 1.6; min-height: 100vh; padding: 20px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, border 0.3s, color 0.2s, transform 0.2s; }
+    
+    body { 
+        background-color: var(--bg); 
+        color: var(--text-main); 
+        font-family: 'Nunito', sans-serif; 
+        line-height: 1.6; 
+        min-height: 100vh; 
+        padding: 20px; 
+        padding-bottom: 80px;
+    }
 
-    /* --- NAVEGACIÓN --- */
-    .nav-bar { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 40px; background: var(--surface); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .back-btn { text-decoration: none; display: flex; align-items: center; gap: 10px; color: var(--text-main); font-weight: 800; font-family: 'Outfit', sans-serif; }
-    .back-btn:hover { color: var(--primary); }
-    .controls { display: flex; gap: 5px; }
-    .btn-lang { border: none; background: transparent; padding: 5px 12px; border-radius: 20px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-size: 0.9rem; }
-    .btn-lang:hover { background: var(--bg); color: var(--primary); }
-    .btn-lang.active { background: var(--primary); color: white; }
-    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+    /* --- NAVEGACIÓN RESPONSIVE --- */
+    .nav-bar { 
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: space-between; 
+        align-items: center; 
+        max-width: 1200px; 
+        margin: 0 auto 40px; 
+        background: var(--surface); 
+        padding: 12px 24px; 
+        border-radius: 50px; 
+        box-shadow: var(--shadow); 
+        border: 1px solid var(--border); 
+        gap: 15px;
+    }
+
+    .back-btn { 
+        text-decoration: none; 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        color: var(--text-main); 
+        font-weight: 700; 
+        font-family: 'Outfit', sans-serif; 
+        font-size: 1.1rem;
+    }
+    .back-btn:hover { color: var(--primary); transform: translateX(-3px); }
+
+    .controls { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+    
+    .btn-lang { 
+        border: 1px solid transparent; 
+        background: transparent; 
+        padding: 6px 12px; 
+        border-radius: 20px; 
+        font-weight: 700; 
+        color: var(--text-soft); 
+        cursor: pointer; 
+        font-size: 0.8rem; 
+    }
+    .btn-lang:hover { color: var(--primary); background: var(--primary-soft); }
+    .btn-lang.active { background: var(--surface); color: var(--primary); border-color: var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .dark-mode .btn-lang.active { background: var(--border); color: white; }
+
+    .theme-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 0 8px; display: flex; align-items: center; }
+
+    @media (max-width: 600px) {
+        .nav-bar { justify-content: center; padding: 15px; border-radius: 30px; }
+        .controls { width: 100%; justify-content: center; margin-top: 5px; }
+    }
 
     /* --- CONTENIDO --- */
-    .container { max-width: 1100px; margin: 0 auto; padding-bottom: 100px; }
-    header { text-align: center; margin-bottom: 50px; }
-    .page-icon { font-size: 4rem; display: block; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    .container { max-width: 1200px; margin: 0 auto; }
     
-    h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; color: var(--text-main); margin-bottom: 10px; line-height: 1.1; }
-    h1 span { color: var(--primary); }
-    p.intro { font-size: 1.2rem; color: var(--text-soft); max-width: 700px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 60px; }
+    .page-icon { font-size: 3.5rem; display: block; margin-bottom: 15px; animation: float 6s infinite ease-in-out; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    
+    h1 { font-family: 'Outfit', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--text-main); margin-bottom: 15px; line-height: 1.1; font-weight: 800; }
+    h1 span { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    p.intro { font-size: 1.15rem; color: var(--text-soft); max-width: 750px; margin: 0 auto; }
 
     h2 { 
-        font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin: 60px 0 30px; 
-        color: var(--text-main); display: flex; align-items: center; gap: 10px;
-        border-bottom: 2px solid var(--border); padding-bottom: 10px;
+        font-family: 'Outfit', sans-serif; 
+        font-size: 1.8rem; 
+        margin: 70px 0 30px; 
+        color: var(--text-main); 
+        display: flex; 
+        align-items: center; 
+        gap: 12px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--border);
     }
 
     /* GRID DE TEORÍA */
     .theory-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
     
-    .card { background: var(--surface); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+    .card { 
+        background: var(--surface); 
+        border-radius: var(--radius); 
+        padding: 30px; 
+        box-shadow: var(--shadow); 
+        border: 1px solid var(--border); 
+        display: flex; flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--card-color); }
+    .card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
     
-    .icon-box { width: 60px; height: 60px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; margin-bottom: 20px; }
-    .c-blue .icon-box { background: var(--primary-soft); }
-    .c-indigo .icon-box { background: var(--secondary-soft); }
-    .c-green .icon-box { background: var(--tertiary-soft); }
-    .c-amber .icon-box { background: var(--accent-soft); }
-
-    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 10px; }
-    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 10px; }
-
-    /* ESTRUCTURA FÓRMULA */
-    .structure-box { background: var(--primary-soft); border-radius: 15px; padding: 15px; margin-top: 15px; text-align: center; }
-    .formula-big { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+    .icon-box { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 1.8rem; margin-bottom: 20px; }
     
+    /* Colores Específicos de Tarjetas */
+    .c-blue { --card-color: var(--primary); }
+    .c-blue .icon-box { background: var(--primary-soft); color: var(--primary); }
+    
+    .c-indigo { --card-color: var(--secondary); }
+    .c-indigo .icon-box { background: var(--secondary-soft); color: var(--secondary); }
+    
+    .c-green { --card-color: var(--tertiary); }
+    .c-green .icon-box { background: var(--tertiary-soft); color: var(--tertiary); }
+    
+    .c-rose { --card-color: var(--danger); }
+    .c-rose .icon-box { background: var(--danger-soft); color: var(--danger); }
+
+    .card h3 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; margin-bottom: 12px; font-weight: 700; }
+    .card p { font-size: 1rem; color: var(--text-soft); margin-bottom: 20px; flex-grow: 1; }
+
+    /* CAJA DE ESTRUCTURA */
+    .structure-box { 
+        background: var(--bg); 
+        border-radius: 12px; 
+        padding: 15px; 
+        text-align: center; 
+        border: 1px dashed var(--border);
+    }
+    .class-table { width: 100%; font-size: 0.9rem; margin-top: auto; }
+    .class-table td { padding: 6px 0; color: var(--text-soft); border-bottom: 1px solid var(--border); }
+    .class-table tr:last-child td { border-bottom: none; }
+
     /* GIMNASIO (EJERCICIOS) */
     .gym-section { margin-bottom: 50px; }
-    .gym-header { background: var(--bg); padding: 10px 20px; border-radius: 15px; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; border: 1px solid var(--border); }
-    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-    details { background: var(--surface); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
-    summary { padding: 15px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; color: var(--text-main); font-size: 0.9rem; }
-    .answer { padding: 15px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 1rem; text-align: center; border-top: 1px solid var(--border); }
+    .gym-header { 
+        background: var(--surface); 
+        padding: 8px 16px; 
+        border-radius: 12px; 
+        font-weight: 800; 
+        color: var(--text-soft); 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        font-size: 0.85rem; 
+        margin-bottom: 15px; 
+        display: inline-block; 
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+    }
 
-    /* TABLA CLASIFICACIÓN */
-    .class-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
-    .class-table td { padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .class-table strong { color: var(--primary); }
+    .gym-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+    
+    details { 
+        background: var(--surface); 
+        border-radius: 16px; 
+        border: 1px solid var(--border); 
+        overflow: hidden; 
+        cursor: pointer; 
+    }
+    details:hover { border-color: var(--text-soft); }
+    details[open] { box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-color: var(--primary); }
 
-    /* --- IDIOMAS ESTRICTO --- */
+    summary { 
+        padding: 16px; 
+        font-weight: 700; 
+        list-style: none; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        color: var(--text-main); 
+        font-size: 0.95rem; 
+        user-select: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; color: var(--primary); font-weight: 800; transition: transform 0.3s; }
+    details[open] summary::after { content: '−'; transform: rotate(180deg); color: var(--danger); }
+
+    .answer { 
+        padding: 15px; 
+        background: var(--primary-soft); 
+        color: var(--text-main); 
+        font-weight: 600; 
+        font-size: 1rem; 
+        text-align: center; 
+        border-top: 1px solid var(--border); 
+        animation: slideDown 0.3s ease-out;
+    }
+    .answer span { font-weight: 800; color: var(--primary); }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- IDIOMAS --- */
     [data-lang] { display: none !important; }
     body.lang-es [data-lang="es"] { display: block !important; }
     body.lang-ca [data-lang="ca"] { display: block !important; }
     body.lang-en [data-lang="en"] { display: block !important; }
-    body.lang-es span[data-lang="es"] { display: inline !important; }
-    body.lang-ca span[data-lang="ca"] { display: inline !important; }
-    body.lang-en span[data-lang="en"] { display: inline !important; }
-
+    body.lang-es span[data-lang="es"], body.lang-ca span[data-lang="ca"], body.lang-en span[data-lang="en"] { display: inline !important; }
+    
+    /* Ajuste de MathJax para que no rompa grid */
+    mjx-container { display: inline-grid !important; }
 </style>
 </head>
 <body class="lang-es">
 
     <nav class="nav-bar">
         <a href="index.html" class="back-btn">
-            <span style="font-size: 1.2rem;">🏡</span> 
+            <span style="font-size: 1.4rem;">🏡</span> 
             <span data-lang="es">Hub</span><span data-lang="ca">Hub</span><span data-lang="en">Hub</span>
         </a>
         <div class="controls">
             <button class="btn-lang" onclick="setLang('ca', this)">CA</button>
             <button class="btn-lang active" onclick="setLang('es', this)">ES</button>
             <button class="btn-lang" onclick="setLang('en', this)">EN</button>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Dark Mode">🌓</button>
         </div>
     </nav>
 
@@ -135,142 +278,128 @@
             <span class="page-icon">🧬</span>
             <h1 data-lang="es">Compuestos <span>Nitrogenados</span></h1>
             <h1 data-lang="ca">Compostos <span>Nitrogenats</span></h1>
-            <h1 data-lang="en"><span>Nitrogenated</span> Compounds</h1>
+            <h1 data-lang="en"><span>Nitrogen</span> Compounds</h1>
             
-            <p class="intro" data-lang="es">Estudio de las aminas, amidas, nitrilos y nitrocompuestos. La química del nitrógeno es fundamental en los aminoácidos y las proteínas.</p>
-            <p class="intro" data-lang="ca">Estudi de les amines, amides, nitrils i nitrocompostos. La química del nitrogen és fonamental en els aminoàcids i les proteïnes.</p>
-            <p class="intro" data-lang="en">Study of amines, amides, nitriles, and nitro compounds. Nitrogen chemistry is fundamental in amino acids and proteins.</p>
+            <p class="intro" data-lang="es">Estudio de las aminas, amidas, nitrilos y nitrocompuestos. La química del nitrógeno es la base de los aminoácidos y la vida.</p>
+            <p class="intro" data-lang="ca">Estudi de les amines, amides, nitrils i nitrocompostos. La química del nitrogen és la base dels aminoàcids i la vida.</p>
+            <p class="intro" data-lang="en">Study of amines, amides, nitriles, and nitro compounds. Nitrogen chemistry is the foundation of amino acids and life.</p>
         </header>
 
         <div class="theory-grid">
             
             <div class="card c-blue">
                 <div class="icon-box">🫂</div>
-                <h3 data-lang="es">1. Aminas (Derivados del Amoníaco)</h3>
-                <h3 data-lang="ca">1. Amines (Derivats de l'Amoníac)</h3>
-                <h3 data-lang="en">1. Amines (Ammonia Derivatives)</h3>
-                <p data-lang="es">El grupo funcional es $\text{-NH}_2$ (sustitución del $\text{H}$ del $\text{NH}_3$). Son **bases** fuertes. Se nombran con el sufijo **-amina**.</p>
-                <p data-lang="ca">El grup funcional és $\text{-NH}_2$. Són **bases** fortes. Es nomenen amb el sufix **-amina**.</p>
-                <p data-lang="en">The functional group is $\text{-NH}_2$. They are strong **bases**. Named with the suffix **-amine**.</p>
+                <h3 data-lang="es">1. Aminas</h3>
+                <h3 data-lang="ca">1. Amines</h3>
+                <h3 data-lang="en">1. Amines</h3>
+                <p data-lang="es">Derivados del amoníaco ($NH_3$). Grupo $\text{-NH}_2$. Son <b>bases fuertes</b>. Se nombran con sufijo **-amina**.</p>
+                <p data-lang="ca">Derivats de l'amoníac ($NH_3$). Grup $\text{-NH}_2$. Són <b>bases fortes</b>. Sufix **-amina**.</p>
+                <p data-lang="en">Ammonia derivatives. Group $\text{-NH}_2$. They are <b>strong bases</b>. Suffix **-amine**.</p>
                 
-                <table class="class-table">
-                    <tr><td>Primaria (1º)</td><td>$$ R - NH_2 $$</td></tr>
-                    <tr><td>Secundaria (2º)</td><td>$$ R_2NH $$</td></tr>
-                    <tr><td>Terciaria (3º)</td><td>$$ R_3N $$</td></tr>
-                </table>
+                <div class="structure-box">
+                    <table class="class-table">
+                        <tr><td>1º (Primaria)</td><td>$ R - NH_2 $</td></tr>
+                        <tr><td>2º (Secundaria)</td><td>$ R_2NH $</td></tr>
+                        <tr><td>3º (Terciaria)</td><td>$ R_3N $</td></tr>
+                    </table>
+                </div>
             </div>
 
             <div class="card c-indigo">
                 <div class="icon-box">🧲</div>
-                <h3 data-lang="es">2. Amidas (N-Carboxilo)</h3>
-                <h3 data-lang="ca">2. Amides (N-Carboxil)</h3>
-                <h3 data-lang="en">2. Amides (N-Carboxyl)</h3>
-                <p data-lang="es">Combinación de un **Carbonilo** ($\text{C=O}$) y un grupo Amino ($\text{N}$). Grupo funcional: $\text{-CONH}_2$. Sufijo **-amida**.</p>
-                <p data-lang="ca">Combinació d'un Carbonil ($\text{C=O}$) i un grup Amino ($\text{N}$). Grup funcional: $\text{-CONH}_2$. Sufix **-amida**.</p>
-                <p data-lang="en">Combination of a Carbonyl ($\text{C=O}$) and an Amino group ($\text{N}$). Functional group: $\text{-CONH}_2$. Suffix **-amide**.</p>
+                <h3 data-lang="es">2. Amidas</h3>
+                <h3 data-lang="ca">2. Amides</h3>
+                <h3 data-lang="en">2. Amides</h3>
+                <p data-lang="es">Unión de Carbonilo ($\text{C=O}$) y Nitrógeno. Muy estables (enlace peptídico). Sufijo **-amida**.</p>
+                <p data-lang="ca">Unió de Carbonil ($\text{C=O}$) i Nitrogen. Molt estables. Sufix **-amida**.</p>
+                <p data-lang="en">Carbonyl ($\text{C=O}$) linked to Nitrogen. Very stable. Suffix **-amide**.</p>
                 
                 <div class="structure-box">
-                    $$\text{R} - \text{CO} - \text{NH}_2 $$
+                    $$ \text{R} - \text{CO} - \text{NH}_2 $$
                 </div>
             </div>
 
             <div class="card c-green">
                 <div class="icon-box">🔌</div>
-                <h3 data-lang="es">3. Nitrilos (Cianuros)</h3>
-                <h3 data-lang="ca">3. Nitrils (Cianurs)</h3>
-                <h3 data-lang="en">3. Nitriles (Cyanides)</h3>
-                <p data-lang="es">Poseen un **triple enlace** carbono-nitrógeno ($\text{-C}\equiv\text{N}$). Se nombran con el sufijo **-nitrilo** o como cianuros.</p>
-                <p data-lang="ca">Posseeixen un **triple enllaç** carboni-nitrogen ($\text{-C}\equiv\text{N}$). Es nomenen amb el sufix **-nitril** o com a cianurs.</p>
-                <p data-lang="en">Feature a **triple bond** carbon-nitrogen ($\text{-C}\equiv\text{N}$). Named with the suffix **-nitrile** or as cyanides.</p>
+                <h3 data-lang="es">3. Nitrilos</h3>
+                <h3 data-lang="ca">3. Nitrils</h3>
+                <h3 data-lang="en">3. Nitriles</h3>
+                <p data-lang="es">Tienen un **triple enlace** C-N ($\text{-C}\equiv\text{N}$). Se llaman cianuros o sufijo **-nitrilo**.</p>
+                <p data-lang="ca">Tenen un **triple enllaç** C-N ($\text{-C}\equiv\text{N}$). Es diuen cianurs o sufix **-nitril**.</p>
+                <p data-lang="en">They have a C-N **triple bond** ($\text{-C}\equiv\text{N}$). Called cyanides or suffix **-nitrile**.</p>
                 
                 <div class="structure-box">
-                    $$\text{R} - \text{C} \equiv \text{N}$$
+                    $$ \text{R} - \text{C} \equiv \text{N} $$
                 </div>
             </div>
             
-            <div class="card c-amber">
+            <div class="card c-rose">
                 <div class="icon-box">💣</div>
                 <h3 data-lang="es">4. Nitrocompuestos</h3>
                 <h3 data-lang="ca">4. Nitrocompostos</h3>
                 <h3 data-lang="en">4. Nitro Compounds</h3>
-                <p data-lang="es">El grupo nitro ($\text{-NO}_2$) es un potente **desactivante** en el benceno y está presente en muchos explosivos (TNT).</p>
-                <p data-lang="ca">El grup nitro ($\text{-NO}_2$) és un potent **desactivant** en el benzè i està present en molts explosius (TNT).</p>
-                <p data-lang="en">The nitro group ($\text{-NO}_2$) is a powerful **deactivator** in benzene and is present in many explosives (TNT).</p>
+                <p data-lang="es">El grupo nitro ($\text{-NO}_2$) es muy polar y explosivo. Desactiva el anillo de benceno.</p>
+                <p data-lang="ca">El grup nitro ($\text{-NO}_2$) és molt polar i explosiu. Desactiva l'anell de benzè.</p>
+                <p data-lang="en">The nitro group ($\text{-NO}_2$) is very polar and explosive. Deactivates benzene rings.</p>
                 
                 <div class="structure-box">
-                    $$\text{R} - \text{NO}_2$$
+                    $$ \text{R} - \text{NO}_2 $$
                 </div>
             </div>
 
         </div>
 
-        <h2 data-lang="es">🏋️ Gimnasio Nitrogenado (35 Ejercicios)</h2>
-        <h2 data-lang="ca">🏋️ Gimnàs Nitrogenat (35 Exercicis)</h2>
-        <h2 data-lang="en">🏋️ Nitrogen Gym (35 Exercises)</h2>
+        <h2 data-lang="es">🏋️ Gimnasio (35 Ejercicios)</h2>
+        <h2 data-lang="ca">🏋️ Gimnàs (35 Exercicis)</h2>
+        <h2 data-lang="en">🏋️ Gym (35 Exercises)</h2>
 
         <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 1: Aminas (Nombres)</span>
-            <span class="gym-header" data-lang="ca">Nivell 1: Amines (Noms)</span>
-            <span class="gym-header" data-lang="en">Level 1: Amines (Names)</span>
+            <span class="gym-header" style="color:var(--primary); border-color:var(--primary-soft);">Nivel 1: Aminas</span>
             <div class="gym-grid">
-                <details><summary>Metilamina</summary><div class="answer">CH₃NH₂</div></details>
-                <details><summary>Etilamina</summary><div class="answer">CH₃CH₂NH₂</div></details>
-                <details><summary>Anilina (Fenilamina)</summary><div class="answer">C₆H₅NH₂</div></details>
-                <details><summary>N,N-dimetiletanamina</summary><div class="answer">CH₃CH₂N(CH₃)₂</div></details>
-                <details><summary>Propano-1,3-diamina</summary><div class="answer">H₂NCH₂CH₂CH₂NH₂</div></details>
-                <details><summary>Butan-2-amina</summary><div class="answer">CH₃CH(NH₂)CH₂CH₃</div></details>
-                <details><summary>N-metilpropanamina</summary><div class="answer">CH₃CH₂CH₂NHCH₃</div></details>
-                <details><summary>Trimetilamina</summary><div class="answer">N(CH₃)₃</div></details>
-                <details><summary>Ciclohexilamina</summary><div class="answer">C₆H₁₁NH₂</div></details>
-                <details><summary>Butilamina</summary><div class="answer">CH₃(CH₂)₃NH₂</div></details>
+                <details><summary>Metilamina</summary><div class="answer"><span>CH₃NH₂</span></div></details>
+                <details><summary>Etilamina</summary><div class="answer"><span>CH₃CH₂NH₂</span></div></details>
+                <details><summary>Anilina (Fenilamina)</summary><div class="answer">Anillo Benceno-$NH_2$</div></details>
+                <details><summary>N,N-dimetiletanamina</summary><div class="answer"><span>CH₃CH₂N(CH₃)₂</span></div></details>
+                <details><summary>Propano-1,3-diamina</summary><div class="answer"><span>H₂N-CH₂CH₂CH₂-NH₂</span></div></details>
+                <details><summary>Butan-2-amina</summary><div class="answer"><span>CH₃CH(NH₂)CH₂CH₃</span></div></details>
+                <details><summary>Trimetilamina</summary><div class="answer"><span>N(CH₃)₃</span></div></details>
+                <details><summary>Ciclohexilamina</summary><div class="answer">Anillo 6C + $NH_2$</div></details>
             </div>
         </div>
 
         <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 2: Amidas y Nitrilos</span>
-            <span class="gym-header" data-lang="ca">Nivell 2: Amides i Nitrils</span>
-            <span class="gym-header" data-lang="en">Level 2: Amides & Nitriles</span>
+            <span class="gym-header" style="color:var(--secondary); border-color:var(--secondary-soft);">Nivel 2: Amidas y Nitrilos</span>
             <div class="gym-grid">
-                <details><summary>Metanamida</summary><div class="answer">HCONH₂</div></details>
-                <details><summary>Etanamida</summary><div class="answer">CH₃CONH₂</div></details>
-                <details><summary>N-metilbutanamida</summary><div class="answer">CH₃(CH₂)₂CONHCH₃</div></details>
-                <details><summary>Propanamida</summary><div class="answer">CH₃CH₂CONH₂</div></details>
-                <details><summary>Butanodiamida</summary><div class="answer">H₂NOCCH₂CH₂CONH₂</div></details>
-                <details><summary>Etanonitrilo</summary><div class="answer">CH₃CN</div></details>
-                <details><summary>Propanonitrilo</summary><div class="answer">CH₃CH₂CN</div></details>
-                <details><summary>Butanonitrilo</summary><div class="answer">CH₃(CH₂)₂CN</div></details>
-                <details><summary>Bencenocarbonitrilo</summary><div class="answer">C₆H₅CN</div></details>
-                <details><summary>Propenamida</summary><div class="answer">CH₂=CHCONH₂</div></details>
+                <details><summary>Metanamida</summary><div class="answer"><span>HCONH₂</span></div></details>
+                <details><summary>Etanamida</summary><div class="answer"><span>CH₃CONH₂</span></div></details>
+                <details><summary>N-metilbutanamida</summary><div class="answer"><span>CH₃(CH₂)₂CONHCH₃</span></div></details>
+                <details><summary>Propanamida</summary><div class="answer"><span>CH₃CH₂CONH₂</span></div></details>
+                <details><summary>Butanodiamida</summary><div class="answer"><span>H₂NOC-CH₂CH₂-CONH₂</span></div></details>
+                <details><summary>Etanonitrilo</summary><div class="answer"><span>CH₃CN</span></div></details>
+                <details><summary>Propanonitrilo</summary><div class="answer"><span>CH₃CH₂CN</span></div></details>
+                <details><summary>Bencenocarbonitrilo</summary><div class="answer"><span>Ph-CN</span></div></details>
             </div>
         </div>
 
         <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 3: Nitro y Sustitución en N</span>
-            <span class="gym-header" data-lang="ca">Nivell 3: Nitro i Substitució a N</span>
-            <span class="gym-header" data-lang="en">Level 3: Nitro & N-Substitution</span>
+            <span class="gym-header" style="color:var(--danger); border-color:var(--danger-soft);">Nivel 3: Nitro y Mix</span>
             <div class="gym-grid">
-                <details><summary>Nitrometano</summary><div class="answer">CH₃NO₂</div></details>
-                <details><summary>1,3,5-trinitrobenzeno</summary><div class="answer">C₆H₃(NO₂)₃</div></details>
-                <details><summary>N,N-dimetilmetanamida</summary><div class="answer">HCON(CH₃)₂</div></details>
-                <details><summary>3-aminopropanonitrilo</summary><div class="answer">H₂NCH₂CH₂CN</div></details>
-                <details><summary>4-nitroanilina</summary><div class="answer">C₆H₄(NH₂)(NO₂)</div></details>
-                <details><summary>Tolueno-2,4-diamina</summary><div class="answer">C₆H₃(CH₃)(NH₂)₂</div></details>
-                <details><summary>Ácido 2-aminopropanoico</summary><div class="answer">Alanina (Aminoácido)</div></details>
-                <details><summary>N-etil-N-metilpentanamida</summary><div class="answer">CH₃(CH₂)₃CON(CH₃)(CH₂CH₃)</div></details>
-                <details><summary>2-aminobutano</summary><div class="answer">Butan-2-amina</div></details>
-                <details><summary>Trinitrotolueno (TNT)</summary><div class="answer">C₆H₂CH₃(NO₂)₃</div></details>
+                <details><summary>Nitrometano</summary><div class="answer"><span>CH₃NO₂</span></div></details>
+                <details><summary>1,3,5-trinitrobenzeno</summary><div class="answer"><span>C₆H₃(NO₂)₃</span></div></details>
+                <details><summary>N,N-dimetilformamida</summary><div class="answer"><span>HCON(CH₃)₂</span></div></details>
+                <details><summary>3-aminopropanonitrilo</summary><div class="answer"><span>H₂NCH₂CH₂CN</span></div></details>
+                <details><summary>4-nitroanilina</summary><div class="answer"><span>p-NO₂-Ph-NH₂</span></div></details>
+                <details><summary>Alanina (Aminoácido)</summary><div class="answer">2-aminopropanoico</div></details>
+                <details><summary>TNT</summary><div class="answer">Trinitrotolueno</div></details>
             </div>
         </div>
 
         <div class="gym-section">
-            <span class="gym-header" data-lang="es">Nivel 4: ¿Cómo se llama?</span>
-            <span class="gym-header" data-lang="ca">Nivell 4: Com es diu?</span>
-            <span class="gym-header" data-lang="en">Level 4: What is the name?</span>
+            <span class="gym-header" style="background:var(--text-main); color:var(--bg);">Nivel 4: Identifica</span>
             <div class="gym-grid">
                 <details><summary>CH₃CN</summary><div class="answer">Etanonitrilo</div></details>
                 <details><summary>HCONH₂</summary><div class="answer">Metanamida</div></details>
                 <details><summary>CH₃CH₂NH₂</summary><div class="answer">Etilamina</div></details>
-                <details><summary>H₂NOCCH₂CONH₂</summary><div class="answer">Propanodiamida</div></details>
                 <details><summary>CH₃NO₂</summary><div class="answer">Nitrometano</div></details>
             </div>
         </div>
@@ -278,12 +407,15 @@
     </div>
 
     <script>
-        // 1. IDIOMA
+        // 1. LÓGICA DE IDIOMA (ROBUSTA)
         function setLang(lang, btn) {
-            document.body.className = document.body.className.replace(/lang-\w+/, '') + ' lang-' + lang;
-            const btns = btn.parentElement.querySelectorAll('.btn-lang');
+            document.body.classList.remove('lang-es', 'lang-en', 'lang-ca');
+            document.body.classList.add('lang-' + lang);
+            
+            const btns = document.querySelectorAll('.btn-lang');
             btns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            
             localStorage.setItem('prefLang', lang);
         }
 
@@ -294,23 +426,21 @@
             localStorage.setItem('darkMode', isDark);
         }
 
-        // INICIALIZAR
-        const savedLang = localStorage.getItem('prefLang');
-        if(savedLang) {
+        // 3. INICIALIZAR
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('prefLang') || 'es';
+            const langBtn = document.querySelector(`.btn-lang[onclick*="'${savedLang}'"]`);
+            
             document.body.classList.add('lang-' + savedLang);
-            const btns = document.querySelectorAll('.btn-lang');
-            btns.forEach(b => {
-                if(b.textContent.toLowerCase() === savedLang) {
-                    btns.forEach(x => x.classList.remove('active'));
-                    b.classList.add('active');
-                }
-            });
-        } else {
-            document.body.classList.add('lang-es');
-        }
+            if(langBtn) {
+                document.querySelectorAll('.btn-lang').forEach(b => b.classList.remove('active'));
+                langBtn.classList.add('active');
+            }
 
-        const savedTheme = localStorage.getItem('darkMode');
-        if(savedTheme === 'true') document.body.classList.add('dark-mode');
+            if(localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        });
     </script>
 
 </body>
