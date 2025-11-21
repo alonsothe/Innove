@@ -2,29 +2,23 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Equilibrio Químico | Dinámica Avanzada</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Equilibrio Químico | Teoría Completa</title>
 <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-
 <style>
   :root {
-    /* --- PALETA DE COLORES (Igual a Teoría Orgánica) --- */
     --bg-color: #ffffff;
-    --text-primary: #18181b; /* Zinc 900 */
-    --text-secondary: #52525b; /* Zinc 600 */
-    
-    --accent: #3b82f6; /* Royal Blue */
+    --text-primary: #18181b;
+    --text-secondary: #52525b;
+    --accent: #3b82f6;
     --accent-glow: rgba(59, 130, 246, 0.15);
-    --highlight: #f59e0b; /* Amber (Naranja reactivo) */
-    
+    --highlight: #f59e0b;
     --glass-bg: rgba(255, 255, 255, 0.65);
     --glass-border: rgba(0, 0, 0, 0.06);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-    
     --card-hover: rgba(244, 244, 245, 0.8);
     --radius: 12px;
     --font-ui: 'Inter', sans-serif;
@@ -32,22 +26,26 @@
   }
 
   :root[data-theme="dark"] {
-    /* --- MODO OSCURO (Graphite/Black) --- */
     --bg-color: #09090b;
     --text-primary: #f4f4f5;
     --text-secondary: #a1a1aa;
-    
     --accent: #60a5fa;
     --accent-glow: rgba(96, 165, 250, 0.1);
-    
-    --glass-bg: rgba(24, 24, 27, 0.6);
+    --glass-bg: rgba(24, 24, 27, 0.75);
     --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    
-    --card-hover: rgba(39, 39, 42, 0.6);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    --card-hover: rgba(39, 39, 42, 0.8);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
 
   body {
     background-color: var(--bg-color);
@@ -60,16 +58,44 @@
     min-height: 100vh;
     transition: background-color 0.4s ease, color 0.3s ease;
     padding-bottom: 80px;
+    overflow-x: hidden;
   }
 
-  /* --- ORBES DE FONDO --- */
+  /* ORBES ANIMADOS */
   .orb {
-    position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.4;
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: float 20s ease-in-out infinite;
   }
-  .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; }
-  .orb-2 { width: 300px; height: 300px; background: var(--highlight); bottom: -50px; left: -50px; opacity: 0.2; }
 
-  /* --- EFECTO GLASS --- */
+  .orb-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent);
+    top: -100px;
+    right: -100px;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--highlight);
+    bottom: -50px;
+    left: -50px;
+    opacity: 0.2;
+    animation-delay: 7s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, -30px); }
+  }
+
+  /* GLASS EFFECT */
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
@@ -77,116 +103,427 @@
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
     border-radius: var(--radius);
+    transition: all 0.3s ease;
   }
 
-  /* --- TIPOGRAFÍA --- */
-  h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
-  h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
-  h2 { font-size: 1.8rem; margin: 3rem 0 1.5rem; border-left: 4px solid var(--accent); padding-left: 1rem; }
-  h3 { font-size: 1.3rem; margin: 1.5rem 0 0.8rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-  p { margin-bottom: 1.2rem; color: var(--text-secondary); text-align: justify; }
-  strong { color: var(--text-primary); font-weight: 600; }
+  .glass:hover {
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+  }
 
+  /* TIPOGRAFÍA */
+  h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
+    margin: 2.5rem 0 1.5rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+  }
+
+  h3 {
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    margin: 1.5rem 0 0.8rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  p {
+    margin-bottom: 1.2rem;
+    color: var(--text-secondary);
+    text-align: justify;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  ol, ul {
+    margin-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ELEMENTOS QUÍMICOS */
   .chem {
     font-family: var(--font-chem);
     font-size: 0.9em;
     color: var(--accent);
     background: var(--accent-glow);
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
     white-space: nowrap;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: help;
+  }
+
+  .chem:hover {
+    background: var(--accent);
+    color: var(--bg-color);
+    transform: scale(1.05);
   }
 
   .equation-box {
     background: var(--accent-glow);
     border-left: 4px solid var(--accent);
-    padding: 15px 20px;
+    padding: 20px;
     margin: 20px 0;
     font-family: var(--font-chem);
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
     color: var(--text-primary);
     text-align: center;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 8px 8px 0;
+    overflow-x: auto;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.8s ease-out;
   }
 
-  /* --- HEADER & NAV --- */
-  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  .equation-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+  }
 
+  /* CONTENEDOR */
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      padding: 0 20px;
+    }
+  }
+
+  /* HEADER RESPONSIVE */
   .header {
-    position: sticky; top: 20px; z-index: 100;
-    padding: 16px 24px; margin-bottom: 40px;
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+    padding: 12px 16px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
   }
 
-  .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
-  .logo-icon { font-size: 2rem; line-height: 1; }
-  .logo-text div:first-child { font-size: 1.2rem; font-weight: 800; }
-  .logo-text div:last-child { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+  @media (min-width: 768px) {
+    .header {
+      padding: 14px 24px;
+      gap: 16px;
+    }
+  }
 
-  .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 4px; scrollbar-width: none; }
+  /* LOGO */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  .logo-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+    animation: spin 3s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .logo-text div:first-child {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-weight: 800;
+  }
+
+  .logo-text div:last-child {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* MENÚ HAMBURGUESA */
+  .menu-toggle {
+    display: none;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle:hover {
+    background: var(--accent-glow);
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  /* NAVEGACIÓN */
+  .nav-menu {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 12px;
+      gap: 8px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      z-index: 99;
+      justify-content: flex-start;
+    }
+
+    .nav-menu.open {
+      max-height: 500px;
+    }
+  }
+
   .nav-btn {
-    background: transparent; border: 1px solid transparent; color: var(--text-secondary);
-    padding: 8px 16px; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
-    transition: all 0.2s ease; white-space: nowrap;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: none;
   }
-  .nav-btn:hover { background: var(--accent-glow); color: var(--accent); }
+
+  @media (min-width: 769px) {
+    .nav-btn {
+      display: inline-block;
+    }
+
+    .nav-btn:nth-child(n+4) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu.open .nav-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+  }
+
+  .nav-btn:hover {
+    background: var(--accent-glow);
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
   .nav-btn[aria-selected="true"] {
-    background: var(--text-primary); color: var(--bg-color);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background: var(--text-primary);
+    color: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
+  /* BOTÓN TEMA */
   .theme-toggle {
-    background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
-    width: 40px; height: 40px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
-    font-size: 1.2rem; transition: transform 0.2s;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
   }
-  .theme-toggle:hover { transform: rotate(15deg); }
 
-  /* --- SECCIONES --- */
-  section.content-section { display: none; animation: fadeIn 0.5s ease forwards; }
-  section[data-active] { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .theme-toggle:hover {
+    transform: rotate(20deg) scale(1.1);
+    background: var(--accent-glow);
+  }
 
-  .card { padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden; }
+  /* SECCIONES */
+  section.content-section {
+    display: none;
+  }
 
-  /* Tablas */
-  .chem-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
-  .chem-table th { text-align: left; color: var(--text-secondary); border-bottom: 2px solid var(--glass-border); padding: 12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
-  .chem-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); color: var(--text-primary); }
-  .chem-table tr:hover td { background: var(--accent-glow); }
+  section[data-active] {
+    display: block;
+    animation: fadeIn 0.6s ease forwards;
+  }
 
-  /* Notas */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TARJETAS */
+  .card {
+    padding: clamp(20px, 5vw, 40px);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity: 0.05;
+    pointer-events: none;
+    animation: moveBackground 15s ease-in-out infinite;
+  }
+
+  @keyframes moveBackground {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(50px, 50px); }
+  }
+
+  /* TABLAS */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .chem-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .chem-table th {
+    text-align: left;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--glass-border);
+    padding: 12px;
+    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--accent-glow);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .chem-table tr:hover td {
+    background: var(--accent-glow);
+    transform: scale(1.01);
+  }
+
+  /* NOTAS */
   .note {
-    background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b;
-    padding: 16px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.9rem; color: var(--text-primary);
+    background: rgba(245, 158, 11, 0.1);
+    border-left: 4px solid #f59e0b;
+    padding: 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    animation: slideInLeft 0.6s ease-out;
+    transition: all 0.3s ease;
   }
 
-  /* --- EJERCICIOS --- */
-  .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
-
-  details.ex {
-    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
-    overflow: hidden; transition: all 0.2s; cursor: pointer;
-  }
-  details.ex:hover { background: var(--card-hover); border-color: var(--accent); }
-  
-  summary {
-    padding: 16px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none;
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: 'Mostrar'; font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); background: var(--glass-border); padding: 4px 8px; border-radius: 4px; }
-  
-  details[open] summary { border-bottom: 1px solid var(--glass-border); }
-  details[open] summary::after { content: 'Ocultar'; background: var(--accent); color: white; }
-
-  .solution {
-    padding: 20px; text-align: center; background: rgba(0,0,0,0.02);
-    font-family: var(--font-chem); font-weight: 700; color: var(--accent); font-size: 1rem;
+  .note:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-left-width: 6px;
   }
 
-  .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; margin-right: 8px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid; }
-  .b-teoria { border-color: var(--accent); color: var(--accent); }
-  .b-calculo { border-color: var(--highlight); color: var(--highlight); }
+  /* RESPONSIVIDAD */
+  @media (max-width: 480px) {
+    h1 { font-size: 1.4rem; }
+    h2 { font-size: 1.1rem; }
+    h3 { font-size: 0.95rem; }
+    p { font-size: 0.9rem; }
+    .card { padding: 14px; }
+    .header { padding: 10px 12px; }
+  }
+
+  @media (min-width: 481px) and (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; }
+  }
+
+  @media (min-width: 769px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.3rem; }
+  }
 
 </style>
 </head>
@@ -196,126 +533,349 @@
 <div class="orb orb-2"></div>
 
 <header class="header glass container">
-  <a href="#" class="logo">
+  <a href="quimica.html" class="logo">
     <div class="logo-icon">⚖️</div>
     <div class="logo-text">
-      <div>Equilibrio Químico</div>
-      <div>Dinámica & Reversibilidad</div>
+      <div>Equilibrio</div>
+      <div>Químico</div>
     </div>
   </a>
-  
-  <nav class="nav-menu">
-    <button class="nav-btn" data-target="fundamentos" aria-selected="true">1. Fundamentos</button>
-    <button class="nav-btn" data-target="constantes" aria-selected="false">2. Constantes K</button>
-    <button class="nav-btn" data-target="chatelier" aria-selected="false">3. Le Châtelier</button>
-    <button class="nav-btn" data-target="ejercicios" aria-selected="false">4. Ejercicios (30)</button>
+
+  <nav class="nav-menu" id="navMenu">
+    <button class="nav-btn" data-target="fundamentos" aria-selected="true">📚 Fundamentos</button>
+    <button class="nav-btn" data-target="constantes" aria-selected="false">⚗️ Constantes K</button>
+    <button class="nav-btn" data-target="ice" aria-selected="false">📊 Tablas ICE</button>
+    <button class="nav-btn" data-target="chatelier" aria-selected="false">⚔️ Le Châtelier</button>
+    <button class="nav-btn" data-target="term" aria-selected="false">🔥 Termodinámica</button>
+    <button class="nav-btn" data-target="hetero" aria-selected="false">💧 Heterogéneos</button>
+    <button class="nav-btn" data-target="acidbase" aria-selected="false">🧪 Ácido-Base</button>
   </nav>
 
-  <button class="theme-toggle" id="themeToggle" title="Cambiar Modo">◐</button>
+  <button class="menu-toggle" id="menuToggle" title="Menú">☰</button>
+  <button class="theme-toggle" id="themeToggle" title="Cambiar tema">🌙</button>
 </header>
 
 <main class="container">
 
   <section id="fundamentos" class="content-section" data-active>
     <div class="card glass">
-      <h1>Dinámica del Equilibrio</h1>
-      <p>El equilibrio químico es un estado dinámico donde las velocidades de la reacción directa e inversa se igualan. A nivel macroscópico las concentraciones son constantes, pero a nivel molecular la reacción continúa incesantemente.</p>
-      
-      
-      <h2>1. Ley de Acción de Masas</h2>
-      <p>Para una reacción reversible general:</p>
-      <div class="equation-box">aA + bB &harr; cC + dD</div>
-      <p>En el equilibrio, la relación de concentraciones elevada a sus coeficientes estequiométricos es constante a una temperatura dada (T):</p>
-      <div class="equation-box">K<sub>c</sub> = ([C]<sup>c</sup> · [D]<sup>d</sup>) / ([A]<sup>a</sup> · [B]<sup>b</sup>)</div>
-      
+      <h1>🔬 Fundamentos del Equilibrio Químico</h1>
+      <p>El <strong>equilibrio químico</strong> es un estado dinámico en el que las velocidades de la reacción directa e inversa son iguales. Macroscópicamente las concentraciones permanecen constantes aunque a escala molecular se sigan produciendo reacciones reversibles incesantemente.</p>
+
+      <h2>📖 Bachillerato — Resumen Conceptual</h2>
+      <p>Una reacción reversible se escribe genéricamente como:</p>
+      <div class="equation-box">aA + bB ⇌ cC + dD</div>
+      <p>La <strong>ley de acción de las masas</strong> establece que, a una temperatura constante, las concentraciones en equilibrio verifican una relación constante denominada <strong>constante de equilibrio (K)</strong>:</p>
+      <div class="equation-box">K<sub>c</sub> = ([C]<sup>c</sup>[D]<sup>d</sup>) / ([A]<sup>a</sup>[B]<sup>b</sup>)</div>
+      <p><strong>Notas clave:</strong> Los sólidos puros y los líquidos puros no aparecen en la expresión de K; K depende únicamente de la temperatura; valores de K >> 1 indican reacción casi completa, mientras que K << 1 indica escasa transformación.</p>
+
+      <h2>🎓 Universitario — Fundamentos Rigurosos</h2>
+      <p>La expresión de K<sub>c</sub> se deduce formalmente de asumir actividades ideales y de la relación entre velocidades macroscópicas: en equilibrio v<sub>directa</sub> = v<sub>inversa</sub>, por lo que k<sub>f</sub>[A]<sup>a</sup>[B]<sup>b</sup> = k<sub>r</sub>[C]<sup>c</sup>[D]<sup>d</sup>, de donde K<sub>c</sub> = k<sub>f</sub>/k<sub>r</sub> (cociente de constantes de velocidad).</p>
+      <p>Para sistemas reales no ideales, se emplean actividades a<sub>i</sub> = γ<sub>i</sub>[i], donde γ<sub>i</sub> es el coeficiente de actividad que varía con la fuerza iónica I, la temperatura y la presión. La relación termodinámica fundamental es:</p>
+      <div class="equation-box">ΔG° = −RT ln K  &nbsp;  ⟹  &nbsp;  K = exp(−ΔG° / RT)</div>
+      <p>Esto implica que reacciones con ΔG° < 0 tienen K > 1 (favorecen productos), mientras que ΔG° > 0 implica K < 1 (favorecen reactivos). En el equilibrio, ΔG = 0.</p>
+
       <div class="note">
-        <strong>Importante:</strong> Los sólidos puros (s) y líquidos puros (l) NO se incluyen en la expresión de la constante de equilibrio.
+        <strong>💡 Observación importante:</strong> La constante de equilibrio es adimensional cuando se emplean actividades; cuando usamos concentraciones, sus unidades son (mol/L)<sup>Δn</sup> donde Δn es la diferencia entre el número de moles de productos e reactivos en la reacción global.
       </div>
     </div>
   </section>
 
   <section id="constantes" class="content-section">
     <div class="card glass">
-      <h1>Constantes Kp, Kc y α</h1>
+      <h1>⚗️ Constantes de Equilibrio: Kc, Kp y Relaciones</h1>
 
-      <h3>2.1 Relación Kp y Kc</h3>
-      <p>Para reacciones gaseosas, usamos presiones parciales (Kp). La relación con Kc depende de la variación de moles gaseosos (<span class="chem">&#916;n</span>):</p>
-      <div class="equation-box">K<sub>p</sub> = K<sub>c</sub> · (R · T)<sup>&#916;n</sup></div>
-      <p>Donde <span class="chem">&#916;n = n(prod. gas) - n(react. gas)</span>.</p>
+      <h2>📊 Kc y Kp</h2>
+      <p>Para sistemas gaseosos es habitual usar presiones parciales y definir K<sub>p</sub>. La relación entre K<sub>p</sub> y K<sub>c</sub> viene dada por:</p>
+      <div class="equation-box">K<sub>p</sub> = K<sub>c</sub> · (R·T)<sup>Δn</sup></div>
+      <p>donde Δn = n(productos gaseosos) − n(reactivos gaseosos), R = 0.082057 L·atm·mol<sup>−1</sup>·K<sup>−1</sup>, y T está en Kelvin. Si Δn = 0 (número igual de moles de gas en ambos lados), entonces K<sub>p</sub> = K<sub>c</sub>.</p>
 
-      <h3>2.2 Predicción con Q (Cociente de Reacción)</h3>
-      <p>Calculamos Q con las concentraciones actuales para saber hacia dónde evolucionará el sistema:</p>
-      <table class="chem-table">
-        <thead><tr><th>Condición</th><th>Dirección</th><th>Significado</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Q < Kc</strong></td><td>Derecha &rarr;</td><td>Faltan productos.</td></tr>
-          <tr><td><strong>Q = Kc</strong></td><td>Equilibrio</td><td>Sistema estable.</td></tr>
-          <tr><td><strong>Q > Kc</strong></td><td>Izquierda &larr;</td><td>Sobran productos.</td></tr>
-        </tbody>
-      </table>
+      <h2>🎯 El Cociente de Reacción Q</h2>
+      <p>En cualquier momento durante la reacción, se define el <strong>cociente de reacción Q</strong> con la misma forma que K pero usando concentraciones/presiones instantáneas (no necesariamente las de equilibrio):</p>
+      <div class="equation-box">Q = ([C]<sup>c</sup>[D]<sup>d</sup>) / ([A]<sup>a</sup>[B]<sup>b</sup>)  &nbsp;  (en cualquier instante)</div>
+      <p>Comparar Q con K predice la dirección de la reacción:</p>
 
-      <h3>2.3 Grado de Disociación (α)</h3>
-      <p>Fracción de moles iniciales que han reaccionado:</p>
-      <div class="equation-box">&#945; = x / C₀</div>
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Comparación</th>
+              <th>Consecuencia</th>
+              <th>Interpretación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Q < K</td>
+              <td>La reacción progresa hacia productos (→ derecha).</td>
+              <td>Faltan productos relativamente.</td>
+            </tr>
+            <tr>
+              <td>Q = K</td>
+              <td>Sistema en equilibrio.</td>
+              <td>No hay cambio neto.</td>
+            </tr>
+            <tr>
+              <td>Q > K</td>
+              <td>La reacción progresa hacia reactivos (← izquierda).</td>
+              <td>Hay exceso de productos.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🧮 Grado de Disociación (α) y Aproximaciones</h2>
+      <p>En problemas donde una pequeña fracción x de los moles iniciales reacciona, se define el <strong>grado de disociación</strong> como:</p>
+      <div class="equation-box">α = x / C₀  &nbsp;  ⟹  &nbsp;  % disociación = α × 100%</div>
+      <p>Frecuentemente, si K es muy pequeño (K < 1·10<sup>−4</sup>), se usa la <strong>aproximación x pequeña</strong>: si x << C₀, entonces (C₀ − x) ≈ C₀. Sin embargo, siempre debe verificarse que el error introducido es menor al 5%, comprobando ex post facto.</p>
+
+      <div class="note">
+        <strong>⚠️ Validez de aproximaciones:</strong> La aproximación (1 − α) ≈ 1 es válida si α < 0.05 aproximadamente. Para sistemas más complejos o ácidos muy débiles, se recomienda resolver la ecuación cuadrática exacta o usar métodos numéricos.
+      </div>
+    </div>
+  </section>
+
+  <section id="ice" class="content-section">
+    <div class="card glass">
+      <h1>📊 Tablas ICE (Initial, Change, Equilibrium)</h1>
+      <p>Las tablas ICE son la herramienta sistemática más utilizada para calcular concentraciones en equilibrio a partir de condiciones iniciales. Proporcionan un formato ordenado que reduce errores y facilita la visualización de todas las etapas.</p>
+
+      <h2>🔧 Estructura del Método</h2>
+      <p>Para la reacción general aA + bB ⇌ cC + dD, se construye una tabla con tres filas:</p>
+      <ol>
+        <li><strong>Initial (I):</strong> concentraciones iniciales [A]₀, [B]₀, [C]₀, [D]₀.</li>
+        <li><strong>Change (C):</strong> cambios durante la reacción expresados en función de x (incógnita).</li>
+        <li><strong>Equilibrium (E):</strong> concentraciones finales en equilibrio.</li>
+      </ol>
+
+      <h2>📋 Ejemplo Resuelto: A + B ⇌ C</h2>
+      <p>Supongamos [A]₀ = 1.0 M, [B]₀ = 1.0 M, [C]₀ = 0, y K<sub>c</sub> = 4:</p>
+
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>[A] (M)</th>
+              <th>[B] (M)</th>
+              <th>[C] (M)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Initial</strong></td>
+              <td>1.0</td>
+              <td>1.0</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td><strong>Change</strong></td>
+              <td>−x</td>
+              <td>−x</td>
+              <td>+x</td>
+            </tr>
+            <tr>
+              <td><strong>Equilibrium</strong></td>
+              <td>1.0−x</td>
+              <td>1.0−x</td>
+              <td>x</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Sustituyendo en la expresión de K<sub>c</sub>:</p>
+      <div class="equation-box">K<sub>c</sub> = [C] / ([A][B]) = x / ((1.0−x)(1.0−x)) = 4</div>
+      <p>Se obtiene x / (1.0−x)² = 4, que resulta en la ecuación cuadrática 4x² − 9x + 4 = 0, cuya solución válida (x < 1) es x ≈ 0.76 M. Así [A] ≈ 0.24 M, [B] ≈ 0.24 M, [C] ≈ 0.76 M.</p>
+
+      <div class="note">
+        <strong>💡 Consejo práctico:</strong> Al crear tablas ICE, asegúrate de que los coeficientes estequiométricos se reflejen en los cambios. Por ejemplo, si la reacción es A + 2B ⇌ 3C, entonces los cambios son −x, −2x, +3x respectivamente.
+      </div>
     </div>
   </section>
 
   <section id="chatelier" class="content-section">
     <div class="card glass">
-      <h1>Principio de Le Châtelier</h1>
-      <p>Si un sistema en equilibrio es perturbado, evolucionará para contrarrestar la perturbación.</p>
-      
+      <h1>⚔️ Principio de Le Châtelier</h1>
+      <p><strong>Si un sistema en equilibrio es perturbado, evolucionará de manera a contrarrestar la perturbación.</strong> Este es uno de los principios más importantes para predecir cómo reaccionan los sistemas químicos a cambios externos.</p>
 
-      <table class="chem-table">
-        <thead><tr><th>Perturbación</th><th>Respuesta</th><th>Cambia K?</th></tr></thead>
-        <tbody>
-          <tr><td>↑ [Reactivos]</td><td>Desplaza a la <strong>Derecha</strong></td><td>NO</td></tr>
-          <tr><td>↑ Presión (↓ V)</td><td>Hacia donde hay <strong>menos moles gas</strong></td><td>NO</td></tr>
-          <tr><td>↑ Temperatura</td><td>Endotérmica: Derecha / Exotérmica: Izquierda</td><td><strong>SÍ</strong></td></tr>
-          <tr><td>Catalizador</td><td>Aumenta velocidad, no desplaza equilibrio</td><td>NO</td></tr>
-        </tbody>
-      </table>
+      <h2>📊 Perturbaciones y Respuestas del Sistema</h2>
+
+      <div class="table-wrapper">
+        <table class="chem-table">
+          <thead>
+            <tr>
+              <th>Perturbación</th>
+              <th>Respuesta del Sistema</th>
+              <th>¿Cambia K?</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Aumentar [Reactivos]</td>
+              <td>Desplaza hacia la <strong>derecha</strong> (produce más C, D).</td>
+              <td><strong>No</strong></td>
+              <td>Concentración</td>
+            </tr>
+            <tr>
+              <td>Reducir [Productos]</td>
+              <td>Desplaza hacia la <strong>derecha</strong> (produce más C, D).</td>
+              <td><strong>No</strong></td>
+              <td>Concentración</td>
+            </tr>
+            <tr>
+              <td>Aumentar Presión (↓ V)</td>
+              <td>Hacia donde hay <strong>menos moles de gas</strong>.</td>
+              <td><strong>No</strong></td>
+              <td>Presión/Volumen</td>
+            </tr>
+            <tr>
+              <td>Reducir Presión (↑ V)</td>
+              <td>Hacia donde hay <strong>más moles de gas</strong>.</td>
+              <td><strong>No</strong></td>
+              <td>Presión/Volumen</td>
+            </tr>
+            <tr>
+              <td>Aumentar Temperatura (endotérmica)</td>
+              <td>Desplaza hacia la <strong>derecha</strong> (favorece absorción de calor).</td>
+              <td><strong>Sí ↑</strong></td>
+              <td>Temperatura</td>
+            </tr>
+            <tr>
+              <td>Aumentar Temperatura (exotérmica)</td>
+              <td>Desplaza hacia la <strong>izquierda</strong> (favorece liberación de calor).</td>
+              <td><strong>Sí ↓</strong></td>
+              <td>Temperatura</td>
+            </tr>
+            <tr>
+              <td>Añadir Catalizador</td>
+              <td>Sin cambio en posición de equilibrio; acelera el proceso.</td>
+              <td><strong>No</strong></td>
+              <td>Catálisis</td>
+            </tr>
+            <tr>
+              <td>Añadir gas inerte (V cte)</td>
+              <td>Sin cambio en presiones parciales ni equilibrio.</td>
+              <td><strong>No</strong></td>
+              <td>Composición</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🔥 Importancia de ΔH (Entalpía) en la Variación de K</h2>
+      <p><strong>Solamente la temperatura cambia K.</strong> Esto es consecuencia directa de la ecuación de Van't Hoff. Para reacciones endotérmicas (ΔH° > 0), elevar T favorece productos; para exotérmicas (ΔH° < 0), elevar T favorece reactivos.</p>
     </div>
   </section>
 
-  <section id="ejercicios" class="content-section">
+  <section id="term" class="content-section">
     <div class="card glass">
-      <h2>Batería de Ejercicios (30 Problemas)</h2>
-      <p>Selección completa de cuestiones teóricas y cálculos numéricos.</p>
+      <h1>🔥 Termodinámica del Equilibrio y Ecuación de Van't Hoff</h1>
 
-      <div class="ex-grid">
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Efecto T en exotérmica</summary><div class="solution">Si sube T en exotérmica, K baja y se desplaza a la izquierda.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> ¿Kp depende de P?</summary><div class="solution">No, Kp solo depende de la Temperatura.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Kc de CaCO₃(s) &harr; CaO(s) + CO₂(g)</summary><div class="solution">Kc = [CO₂] (sólidos no cuentan).</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Relación si &#916;n=0</summary><div class="solution">Kp = Kc.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Significado K >> 1</summary><div class="solution">Reacción muy desplazada a productos.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Efecto gas inerte (V cte)</summary><div class="solution">No afecta al equilibrio.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Unidades Kc</summary><div class="solution">(mol/L)^&#916;n.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Catalizador y rendimiento</summary><div class="solution">No cambia el rendimiento, solo la velocidad.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Retirar producto</summary><div class="solution">Desplaza a la derecha (aumenta rendimiento).</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">TEORÍA</span> Q > K</summary><div class="solution">Precipita o va a reactivos (izquierda).</div></details>
+      <h2>🌡️ Relación ΔG° ↔ K</h2>
+      <p>La relación fundamental entre energía libre estándar y constante de equilibrio es:</p>
+      <div class="equation-box">ΔG° = −R·T·ln K</div>
+      <p>Donde R = 8.314 J·mol<sup>−1</sup>·K<sup>−1</sup> y T está en Kelvin. Reorganizando:</p>
+      <div class="equation-box">K = exp(−ΔG° / RT)</div>
 
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Kc si [A]=0.1, [B]=0.2, [C]=0.5 (A+B&harr;C)</summary><div class="solution">Kc = 0.5 / (0.1 * 0.2) = 25.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Kp si Kc=5, T=300K, &#916;n=1</summary><div class="solution">Kp = 5 * (0.082 * 300) = 123.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> % disociación si &#945;=0.4</summary><div class="solution">40%.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> &#916;n en N₂ + 3H₂ &harr; 2NH₃</summary><div class="solution">&#916;n = 2 - 4 = -2.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> K inversa si K directa = 10</summary><div class="solution">K' = 1/10 = 0.1.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> K si duplico coeficientes</summary><div class="solution">K'' = K².</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> [B] si 2A&harr;B, A₀=1M, Aeq=0.6M</summary><div class="solution">Rx A=0.4M -> forma B=0.2M.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Valor R (atm)</summary><div class="solution">0.082 atm·L/mol·K.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> P total si Pa=2, Pb=3</summary><div class="solution">5 atm.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">CÁLCULO</span> Kc con &#945; (A&harr;2B)</summary><div class="solution">Kc = 4C₀&#945;² / (1-&#945;).</div></details>
+      <p><strong>Interpretación:</strong></p>
+      <ul>
+        <li>Si ΔG° < 0 ⟹ K > 1: la reacción es <strong>espontánea</strong> en condiciones estándar y favorece <strong>productos</strong>.</li>
+        <li>Si ΔG° > 0 ⟹ K < 1: la reacción es <strong>no espontánea</strong> en condiciones estándar y favorece <strong>reactivos</strong>.</li>
+        <li>Si ΔG° = 0 ⟹ K = 1: el sistema está en equilibrio a condiciones estándar.</li>
+      </ul>
 
-        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> Solubilidad si Kps=1.8e-10</summary><div class="solution">s = 1.34e-5 M.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Efecto ión común</summary><div class="solution">Disminuye la solubilidad.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> Relación &#916;Gº y K</summary><div class="solution">&#916;Gº = -RT ln K.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Ec. Van't Hoff</summary><div class="solution">ln(K2/K1) depende de &#916;H.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Presión y &#945; (&#916;n>0)</summary><div class="solution">Si sube P, baja &#945;.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> Aproximación x pequeña</summary><div class="solution">Si K < 1e-4, 1-x ≈ 1.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Equilibrio heterogéneo y P</summary><div class="solution">Solo gases afectan Le Châtelier.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Hidrólisis</summary><div class="solution">Kh = Kw / Ka.</div></details>
-        <details class="ex"><summary><span class="badge b-calculo">AVANZADO</span> pH tampón</summary><div class="solution">Henderson-Hasselbalch.</div></details>
-        <details class="ex"><summary><span class="badge b-teoria">AVANZADO</span> Kp y T</summary><div class="solution">Única variable real.</div></details>
+      <h2>📐 Relación ΔG° = ΔH° − T·ΔS°</h2>
+      <p>La energía libre depende tanto de la entalpía como de la entropía:</p>
+      <div class="equation-box">ΔG° = ΔH° − T·ΔS°</div>
+      <p>Esto explica por qué ciertos procesos endotérmicos (ΔH° > 0) pueden ser espontáneos si ΔS° es lo suficientemente positivo y T es elevada. A baja temperatura, reacciones exotérmicas con ΔS° positivo son favorecidas; a alta temperatura, reacciones con ΔS° > 0 pueden volverse espontáneas aunque sean endotérmicas.</p>
+
+      <h2>📈 Ecuación de Van't Hoff</h2>
+      <p>La ecuación de Van't Hoff en forma diferencial relaciona cambios de K con temperatura:</p>
+      <div class="equation-box">(d ln K / dT) = ΔH° / (R·T²)</div>
+
+      <p>Integrando entre dos temperaturas T₁ y T₂:</p>
+      <div class="equation-box">ln(K₂/K₁) = (ΔH° / R) · (1/T₁ − 1/T₂)</div>
+
+      <p>Esto permite estimar cómo cambia K cuando cambia la temperatura, asumiendo que ΔH° es aproximadamente constante en el intervalo. Si la reacción es endotérmica (ΔH° > 0), un aumento de T incrementa K; si es exotérmica (ΔH° < 0), un aumento de T disminuye K.</p>
+
+      <div class="note">
+        <strong>⚠️ Validez del modelo:</strong> La ecuación de Van't Hoff asume que ΔH° no varía significativamente con la temperatura, lo cual es aproximadamente cierto en intervalos moderados pero falla para grandes cambios de T. En química física avanzada, se usa la ecuación de Kirchhoff para corregir esto.
+      </div>
+    </div>
+  </section>
+
+  <section id="hetero" class="content-section">
+    <div class="card glass">
+      <h1>💧 Equilibrios Heterogéneos y Producto de Solubilidad (Ksp)</h1>
+
+      <h2>🔹 Definición de Equilibrios Heterogéneos</h2>
+      <p>Un equilibrio heterogéneo implica fases distintas (sólido-líquido, gas-líquido, etc.). La característica clave es que las concentraciones de fases sólidas puras y líquidas puras <strong>no aparecen</strong> en la expresión de K.</p>
+
+      <h2>💧 Producto de Solubilidad (Ksp)</h2>
+      <p>Para una sal poco soluble como MX₂ en equilibrio con su forma disuelta:</p>
+      <div class="equation-box">MX₂(s) ⇌ M<sup>2+</sup>(aq) + 2X<sup>−</sup>(aq)</div>
+      <p>El producto de solubilidad es:</p>
+      <div class="equation-box">K<sub>sp</sub> = [M<sup>2+</sup>][X<sup>−</sup>]²</div>
+
+      <p><strong>Relación solubilidad-Ksp:</strong> Si la solubilidad molar de MX₂ es 's', entonces:</p>
+      <div class="equation-box">[M<sup>2+</sup>] = s  &nbsp;  &nbsp;  [X<sup>−</sup>] = 2s</div>
+      <div class="equation-box">K<sub>sp</sub> = s · (2s)² = 4s³</div>
+
+      <h2>📌 Efecto del Ion Común</h2>
+      <p>Si se añade un ión común (p. ej., X<sup>−</sup> de otra fuente), la solubilidad de MX₂ <strong>disminuye</strong>. Esto es una consecuencia directa de Le Châtelier: el equilibrio se desplaza hacia la izquierda para mantener K<sub>sp</sub> constante.</p>
+
+      <p><strong>Ejemplo:</strong> Si se añade NaX (que proporciona X<sup>−</sup>), la concentración [X<sup>−</sup>] aumenta, y para que K<sub>sp</sub> permanezca constante, [M<sup>2+</sup>] debe disminuir, reduciendo así la solubilidad de MX₂.</p>
+
+      <h2>🔄 Precipitación Selectiva</h2>
+      <p>En una disolución con varios aniones, es posible precipitar selectivamente ciertos cationes variando el pH o la concentración del anión. La sal con menor K<sub>sp</sub> precipitará primero.</p>
+
+      <div class="note">
+        <strong>💡 Cálculos típicos:</strong> Si Q (cociente iónico) > K<sub>sp</sub>, se produce precipitación; si Q < K<sub>sp</sub>, la sal se disuelve; si Q = K<sub>sp</sub>, estamos en el punto de saturación.
+      </div>
+    </div>
+  </section>
+
+  <section id="acidbase" class="content-section">
+    <div class="card glass">
+      <h1>🧪 Equilibrios Ácido-Base y Sistemas Tampón</h1>
+
+      <h2>🔬 Ácidos y Bases Débiles</h2>
+      <p>Para un ácido débil HA en equilibrio con su base conjugada:</p>
+      <div class="equation-box">HA ⇌ H<sup>+</sup> + A<sup>−</sup>  &nbsp;  K<sub>a</sub> = [H<sup>+</sup>][A<sup>−</sup>] / [HA]</div>
+
+      <p>De manera análoga, para una base débil B:</p>
+      <div class="equation-box">B + H₂O ⇌ BH<sup>+</sup> + OH<sup>−</sup>  &nbsp;  K<sub>b</sub> = [BH<sup>+</sup>][OH<sup>−</sup>] / [B]</div>
+
+      <p><strong>Relación entre Ka y Kb:</strong> Para un par ácido-base conjugado, K<sub>a</sub> · K<sub>b</sub> = K<sub>w</sub> = 1.0 × 10<sup>−14</sup> a 25 °C.</p>
+
+      <h2>📊 Escala de pH y pOH</h2>
+      <p>Definimos pH y pOH como:</p>
+      <div class="equation-box">pH = −log[H<sup>+</sup>]  &nbsp;  &nbsp;  pOH = −log[OH<sup>−</sup>]</div>
+      <div class="equation-box">pH + pOH = pK<sub>w</sub> = 14  &nbsp;  (a 25 °C)</div>
+
+      <p>En una disolución neutra, [H<sup>+</sup>] = [OH<sup>−</sup>] = 10<sup>−7</sup> M, así pH = pOH = 7. En ácidos pH < 7; en bases pH > 7.</p>
+
+      <h2>🛡️ Sistemas Tampón (Buffer)</h2>
+      <p>Un tampón se forma cuando se mezcla un ácido débil con su base conjugada (o una base débil con su ácido conjugado). La ecuación de <strong>Henderson-Hasselbalch</strong> describe el pH:</p>
+      <div class="equation-box">pH = pK<sub>a</sub> + log([A<sup>−</sup>]/[HA])</div>
+
+      <p><strong>Propiedades del tampón:</strong></p>
+      <ul>
+        <li>Resiste cambios de pH cuando se añaden pequeñas cantidades de ácido o base.</li>
+        <li>Capacidad tampón máxima cuando [A<sup>−</sup>] = [HA], es decir, pH = pK<sub>a</sub>.</li>
+        <li>Rango efectivo aproximadamente pK<sub>a</sub> ± 1 unidad de pH.</li>
+      </ul>
+
+      <h2>🌊 Hidrólisis de Sales</h2>
+      <p>Las sales de ácidos débiles con bases fuertes experimentan hidrólisis, resultando en disoluciones básicas. Por ejemplo, la hidrólisis de acetato (A<sup>−</sup>) es:</p>
+      <div class="equation-box">A<sup>−</sup> + H₂O ⇌ HA + OH<sup>−</sup>  &nbsp;  K<sub>h</sub> = K<sub>w</sub> / K<sub>a</sub></div>
+
+      <p>La constante de hidrólisis K<sub>h</sub> es el cociente entre K<sub>w</sub> y la K<sub>a</sub> del ácido conjugado.</p>
+
+      <div class="note">
+        <strong>⚠️ Punto importante:</strong> La hidrólisis es importante cuando la sal proviene de un ácido muy débil (K<sub>a</sub> muy pequeño) o una base muy débil (K<sub>b</sub> muy pequeño), en cuyo caso la disolución es significativamente ácida o básica.
       </div>
     </div>
   </section>
@@ -323,29 +883,102 @@
 </main>
 
 <script>
-  // --- LÓGICA DE NAVEGACIÓN ---
-  const navBtns = document.querySelectorAll('.nav-btn');
-  const sections = document.querySelectorAll('section.content-section');
+  // ===== INICIALIZACIÓN =====
 
-  navBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
-      btn.setAttribute('aria-selected', 'true');
-      const targetId = btn.getAttribute('data-target');
-      sections.forEach(sec => sec.removeAttribute('data-active'));
-      document.getElementById(targetId).setAttribute('data-active', '');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  function initializeApp() {
+    setupNavigation();
+    setupThemeToggle();
+    setupScrollAnimations();
+  }
+
+  /**
+   * Configura navegación responsiva y menú hamburguesa
+   */
+  function setupNavigation() {
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const sections = document.querySelectorAll('section.content-section');
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+
+    // Toggle menú móvil
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
     });
-  });
 
-  // --- MODO OSCURO ---
-  const themeBtn = document.getElementById('themeToggle');
-  const root = document.documentElement;
+    // Navegación entre secciones
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        navBtns.forEach(b => b.setAttribute('aria-selected', 'false'));
+        btn.setAttribute('aria-selected', 'true');
+        const targetId = btn.getAttribute('data-target');
+        sections.forEach(sec => sec.removeAttribute('data-active'));
+        document.getElementById(targetId).setAttribute('data-active', '');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
 
-  themeBtn.addEventListener('click', () => {
-    const current = root.getAttribute('data-theme');
-    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-  });
+    // Cerrar menú al click fuera
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        navMenu.classList.remove('open');
+      }
+    });
+  }
+
+  /**
+   * Configura tema oscuro/claro con emojis dinámicos
+   */
+  function setupThemeToggle() {
+    const themeBtn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
+
+    root.setAttribute('data-theme', savedTheme);
+    updateThemeEmoji(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeEmoji(newTheme);
+    });
+  }
+
+  /**
+   * Actualiza emoji del botón de tema
+   */
+  function updateThemeEmoji(theme) {
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+
+  /**
+   * Anima elementos al hacer scroll
+   */
+  function setupScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card, .equation-box, .table-wrapper, .note').forEach(el => {
+      observer.observe(el);
+    });
+  }
+
+  // Inicializar
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  } else {
+    initializeApp();
+  }
 </script>
 
 </body>
