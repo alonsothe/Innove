@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Innove | Hardcore Calculus</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            loader: { load: ['[tex]/ams'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* ============ VARIABLES DE TEMA ============ */
+        :root {
+            /* Modo Claro (Default) */
+            --bg-body: #f8f9fa;
+            --bg-nav: rgba(255, 255, 255, 0.85);
+            --bg-card: #ffffff;
+            --bg-details: #f1f5f9;
+            
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
+            
+            --primary: #4f46e5; /* Indigo */
+            --accent-c1: #0891b2; /* Cyan oscuro */
+            --accent-c2: #7c3aed; /* Violeta */
+            --accent-c3: #e11d48; /* Rojo rosa */
+            
+            --logo-grad: linear-gradient(135deg, #4f46e5, #0891b2);
+        }
+
+        [data-theme="dark"] {
+            /* Modo Oscuro */
+            --bg-body: #0f1117;
+            --bg-nav: rgba(15, 17, 23, 0.8);
+            --bg-card: #1e212b;
+            --bg-details: #15171e;
+            
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #2d3748;
+            --shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+            
+            --primary: #818cf8;
+            --accent-c1: #22d3ee;
+            --accent-c2: #a78bfa;
+            --accent-c3: #fb7185;
+            
+            --logo-grad: linear-gradient(135deg, #818cf8, #22d3ee);
+        }
+
+        /* ============ BASE ============ */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        /* ============ NAVBAR ============ */
+        .navbar {
+            position: fixed; top: 0; width: 100%; height: 80px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; z-index: 100;
+            background: var(--bg-nav);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            display: flex; align-items: center; gap: 12px;
+            font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.5rem;
+            color: var(--text-main); text-decoration: none;
+        }
+
+        .logo-box {
+            width: 42px; height: 42px;
+            background: var(--logo-grad);
+            color: white; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        /* ============ CONTROLES & HERO ============ */
+        .theme-toggle {
+            background: var(--bg-card); border: 1px solid var(--border);
+            color: var(--text-main); padding: 8px 16px; border-radius: 20px;
+            cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px;
+            transition: 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.05); box-shadow: var(--shadow); }
+
+        .hero {
+            text-align: center; padding: 60px 20px 40px;
+            max-width: 900px; margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif; font-size: 3.5rem; line-height: 1.1;
+            font-weight: 800; letter-spacing: -1px; margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 1.1rem; color: var(--text-muted); margin-bottom: 40px;
+        }
+
+        /* ============ TABS ============ */
+        .tabs {
+            display: inline-flex; background: var(--bg-card);
+            padding: 6px; border-radius: 100px; border: 1px solid var(--border);
+            box-shadow: var(--shadow); margin-bottom: 50px;
+        }
+
+        .tab-btn {
+            padding: 12px 32px; border-radius: 100px; border: none; background: transparent;
+            font-weight: 700; color: var(--text-muted); cursor: pointer;
+            font-family: 'Outfit', sans-serif; transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--text-main); color: var(--bg-body);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Estilos específicos para modo oscuro en tabs */
+        [data-theme="dark"] .tab-btn.active { background: white; color: black; }
+
+        /* ============ CARDS GRID ============ */
+        .section { display: none; padding: 0 5% 80px; animation: fadeInUp 0.5s ease; }
+        .section.active { display: block; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 24px; padding: 28px;
+            box-shadow: var(--shadow); transition: transform 0.3s, border-color 0.3s;
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+
+        .card:hover { transform: translateY(-6px); border-color: var(--accent-color, var(--primary)); }
+
+        .card-meta {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+        }
+
+        .tag {
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 6px 12px; border-radius: 8px; background: var(--bg-details); color: var(--text-muted);
+        }
+
+        .level { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--accent-color); }
+
+        .problem {
+            font-size: 1rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1;
+        }
+
+        /* ============ DETAILS ============ */
+        details { width: 100%; margin-top: auto; }
+        
+        summary {
+            list-style: none; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 0; border-top: 1px dashed var(--border); transition: color 0.2s;
+        }
+        summary:hover { color: var(--text-main); }
+        summary::after { content: "+"; font-size: 1.2rem; }
+        details[open] summary::after { content: "−"; }
+
+        .solution {
+            background: var(--bg-details); padding: 20px; border-radius: 16px; margin-top: 10px;
+            font-size: 0.9rem; color: var(--text-muted); line-height: 1.7;
+        }
+
+        .res {
+            display: block; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+            color: var(--accent-color); font-weight: 700; font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Colores por sección */
+        #c1 { --accent-color: var(--accent-c1); }
+        #c2 { --accent-color: var(--accent-c2); }
+        #c3 { --accent-color: var(--accent-c3); }
+
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <div class="logo-box">∫</div>
+            Innove
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span> <span id="theme-text">Modo Oscuro</span>
+        </button>
+    </nav>
+
+    <div class="hero">
+        <h1>Entrenamiento <br><span style="background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Universitario</span></h1>
+        <p>Ejercicios de nivel examen final. Sin integrales. Solo análisis puro.</p>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('c1', this)">Cálculo I 🧬</button>
+            <button class="tab-btn" onclick="showTab('c2', this)">Cálculo II 🧊</button>
+            <button class="tab-btn" onclick="showTab('c3', this)">Avanzado 🚀</button>
+        </div>
+    </div>
+
+    <main id="c1" class="section active">
+        <div class="grid">
+            <article class="card">
+                <div class="card-meta"><span class="tag">Taylor</span><span class="level">Hard</span></div>
+                <div class="problem">Sea $f(x) = \ln(\cos x)$. Calcula el límite siguiente usando Taylor (orden 4): <br> $$ \lim_{x \to 0} \frac{f(x) + x^2/2}{x^4} $$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. $\cos x \approx 1 - x^2/2 + x^4/24$.<br>
+                    2. $\ln(1-u) \approx -u - u^2/2$. Sea $u = x^2/2 - x^4/24$.<br>
+                    3. $f(x) \approx -(x^2/2 - x^4/24) - (x^2/2)^2/2 = -x^2/2 + x^4/24 - x^4/8$.<br>
+                    4. Numerador: $(-x^2/2 - x^4/12) + x^2/2 = -x^4/12$.
+                    <span class="res">Límite = -1/12</span>
+                </div></details>
+            </article>
+            <article class="card">
+                <div class="card-meta"><span class="tag">Complejos</span><span class="level">Hard</span></div>
+                <div class="problem">Resuelve la ecuación $z^2 = \bar{z}^3$ y describe geométricamente las soluciones no nulas.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Módulos: $|z|^2 = |\bar{z}|^3 \to |z|^2(1-|z|)=0$. Sol: $z=0$ o $|z|=1$.<br>
+                    2. Argumentos (si $|z|=1$): $2\alpha = -3\alpha + 2k\pi \to 5\alpha = 2k\pi$.<br>
+                    3. $\alpha_k = \frac{2k\pi}{5}$ para $k=0,1,2,3,4$.<br>
+                    4. Son los vértices de un pentágono regular inscrito en la unidad.
+                    <span class="res">z=0, z = e^{i 2k\pi/5}</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Física</span><span class="level">Medium</span></div>
+                <div class="problem">Dada la ecuación de estado virial $P(12 - 0.4P + 0.02P^2) = mRT$. Halla $\frac{dT}{dP}$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Aísla T: $T(P) = \frac{1}{mR}(12P - 0.4P^2 + 0.02P^3)$.<br>
+                    2. Deriva respecto a P: $T'(P) = \frac{1}{mR}(12 - 0.8P + 0.06P^2)$.<br>
+                    3. Evalúa si se pide en un punto específico.
+                    <span class="res">T' = (12 - 0.8P + 0.06P²)/mR</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Taylor</span><span class="level">Medium</span></div>
+                <div class="problem">Halla el polinomio de Taylor de grado 2 de $f(x) = \ln(2 - \frac{1}{x})$ centrado en $a=1$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. $f(1) = \ln(1) = 0$.<br>
+                    2. Derivadas: $f'(x) = \frac{1}{2x^2-x}$, $f''(x) = \frac{1-4x}{(2x^2-x)^2}$.<br>
+                    3. Evaluar en $x=1$: $f'(1)=1$, $f''(1)=-3$.<br>
+                    4. $P_2(x) = 0 + 1(x-1) + \frac{-3}{2}(x-1)^2$.
+                    <span class="res">P(x) = (x-1) - 1.5(x-1)²</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Error</span><span class="level">Hard</span></div>
+                <div class="problem">Cota el error cometido al aproximar $f(1.2)$ usando el polinomio anterior (Resto de Lagrange).</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. $R_2(x) = \frac{f'''(c)}{3!}(1.2 - 1)^3$ con $c \in (1, 1.2)$.<br>
+                    2. Calcular $f'''(x)$ y buscar su máximo en el intervalo (generalmente en el extremo más cercano a la asíntota o 1).<br>
+                    3. Sustituir valor máximo $M$ en la fórmula.
+                    <span class="res">Error < M · 0.00133...</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Complejos</span><span class="level">Hard</span></div>
+                <div class="problem">Halla todas las raíces de $P(z) = z^5 + 3z^3 + 2z^2 + 6$ sabiendo que $z=i\sqrt{3}$ es raíz.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Si $i\sqrt{3}$ es raíz, $-i\sqrt{3}$ también (coef. reales). Factor $(z^2+3)$.<br>
+                    2. Ruffini/División: $(z^5+3z^3+2z^2+6) / (z^2+3) = z^3+2$.<br>
+                    3. Resolver $z^3 = -2$. Son las raíces cúbicas de -2.
+                    <span class="res">±i√3, ³√2·e^{i(π+2kπ)/3}</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Análisis</span><span class="level">Medium</span></div>
+                <div class="problem">Dada $f(x) = -\frac{1}{x^2} + \frac{1}{x}$, halla el punto donde su pendiente (derivada) es máxima.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Queremos maximizar $g(x) = f'(x) = \frac{2}{x^3} - \frac{1}{x^2}$.<br>
+                    2. Derivamos $g(x)$: $g'(x) = f''(x) = -\frac{6}{x^4} + \frac{2}{x^3}$.<br>
+                    3. Igualar a 0: $\frac{-6+2x}{x^4} = 0 \implies 2x=6 \implies x=3$.
+                    <span class="res">x = 3</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Geometría</span><span class="level">Easy</span></div>
+                <div class="problem">Halla la recta tangente a $f(x) = \frac{1}{2} + \ln x$ en el punto $x=2$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Punto: $y_0 = f(2) = 0.5 + \ln 2$.<br>
+                    2. Pendiente: $f'(x) = 1/x \implies m = f'(2) = 0.5$.<br>
+                    3. Ecuación: $y - (0.5+\ln 2) = 0.5(x-2)$.
+                    <span class="res">y = 0.5x - 0.5 + ln(2)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Complejos</span><span class="level">Medium</span></div>
+                <div class="problem">Calcula las raíces cúbicas de $w = -2$ en forma binómica.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Módulo $r=2$, Argumento $\pi$.<br>
+                    2. Raíces: $\sqrt[3]{2} e^{i(\pi + 2k\pi)/3}$.<br>
+                    3. $k=0 \to \sqrt[3]{2}(\frac{1}{2} + i\frac{\sqrt{3}}{2})$. $k=1 \to -\sqrt[3]{2}$. $k=2 \to$ conjugado.
+                    <span class="res">z₀, z₁, z₂ (1 real, 2 complejas)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Límites</span><span class="level">Medium</span></div>
+                <div class="problem">Calcula $\lim_{x \to 0} \frac{\ln(1+x) - x}{x^2}$ usando desarrollos de Taylor.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Taylor $\ln(1+x) \approx x - x^2/2 + O(x^3)$.<br>
+                    2. Sustituir: $\frac{(x - x^2/2) - x}{x^2}$.<br>
+                    3. Simplificar: $\frac{-x^2/2}{x^2} = -1/2$.
+                    <span class="res">Límite = -1/2</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Continuidad</span><span class="level">Medium</span></div>
+                <div class="problem">Determina $k$ para que $f(x)$ sea continua en $x=0$: $f(x) = \begin{cases} \frac{\sin(kx)}{x} & x<0 \\ x+2 & x \ge 0 \end{cases}$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Límite lateral izq: $\lim_{x\to 0} k \frac{\sin(kx)}{kx} = k \cdot 1 = k$.<br>
+                    2. Límite lateral der: $0 + 2 = 2$.<br>
+                    3. Para continuidad, igualar límites.
+                    <span class="res">k = 2</span>
+                </div></details>
+            </article>
+            <article class="card">
+                <div class="card-meta"><span class="tag">Complejos</span><span class="level">Hard</span></div>
+                <div class="problem">Determina el lugar geométrico de los puntos $z \in \mathbb{C}$ tales que: $$ \left| \frac{z-2}{z+2} \right| = 2 $$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Eleva al cuadrado: $|z-2|^2 = 4|z+2|^2$.<br>
+                    $(x-2)^2 + y^2 = 4((x+2)^2 + y^2)$.<br>
+                    Simplifica: $x^2 - 4x + 4 + y^2 = 4x^2 + 16x + 16 + 4y^2$.<br>
+                    $3x^2 + 3y^2 + 20x + 12 = 0$. Es una circunferencia (Apolonio).
+                    <span class="res">Circunferencia centro (-10/3, 0)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Continuidad</span><span class="level">Medium</span></div>
+                <div class="problem">Halla $a, b$ para que $f$ sea derivable en todo $\mathbb{R}$: $$ f(x) = \begin{cases} e^{ax} & x \le 0 \\ bx + 1 & x > 0 \end{cases} $$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Continuidad en 0: $e^0 = 0+1 \implies 1=1$ (Siempre cont).<br>
+                    Derivabilidad: $f'(0^-) = ae^{0} = a$. $f'(0^+) = b$.<br>
+                    Deben coincidir las derivadas laterales.
+                    <span class="res">a = b, para cualquier valor real.</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Análisis</span><span class="level">Insane</span></div>
+                <div class="problem">Demuestra usando la definición $\epsilon-\delta$ que la función $f(x)=x^2$ es continua en $x=2$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Queremos $|x^2 - 4| < \epsilon$.<br>
+                    $|x-2||x+2| < \epsilon$. Si acotamos $\delta \le 1$, entonces $x \in (1,3)$, así $|x+2| < 5$.<br>
+                    Tomamos $\delta = \min(1, \epsilon/5)$.
+                    <span class="res">Q.E.D.</span>
+                </div></details>
+            </article>
+        </div>
+    </main>
+
+    <main id="c2" class="section">
+        <div class="grid">
+            <article class="card">
+                <div class="card-meta"><span class="tag">Topología</span><span class="level">Hard</span></div>
+                <div class="problem">Halla el interior y la frontera del conjunto: $$ A = \{ (x,y) \in \mathbb{R}^2 : 1 \le x^2 + y^2 < 4 \} \cup \{(0,0)\} $$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    El punto aislado $(0,0)$ no tiene entorno dentro de A.<br>
+                    Interior: Corona abierta $1 < x^2+y^2 < 4$.<br>
+                    Frontera: Circunferencias $x^2+y^2=1$, $x^2+y^2=4$ y el punto $(0,0)$.
+                    <span class="res">∂A = C_1 ∪ C_2 ∪ {(0,0)}</span>
+                </div></details>
+            </article>
+            <article class="card">
+                <div class="card-meta"><span class="tag">Topología</span><span class="level">Medium</span></div>
+                <div class="problem">Determina y dibuja el dominio de la función $f(x,y) = \ln(x^2 + y^2 - 4)$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Condición del logaritmo: argumento $> 0$.<br>
+                    2. Inecuación: $x^2 + y^2 - 4 > 0 \implies x^2 + y^2 > 2^2$.<br>
+                    3. Geometría: Puntos exteriores a la circunferencia de radio 2 centrada en el origen.<br>
+                    4. La frontera ($x^2+y^2=4$) no está incluida (línea discontinua).
+                    <span class="res">Exterior del círculo radio 2</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Límites</span><span class="level">Hard</span></div>
+                <div class="problem">Estudia la existencia del límite $\lim_{(x,y)\to(0,0)} \frac{x^2 y}{x^4 + y^2}$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Trayectoria recta $y=mx$: $\lim \frac{mx^3}{x^4+m^2x^2} = \lim \frac{mx}{x^2+m^2} = 0$.<br>
+                    2. Trayectoria parábola $y=x^2$: $\lim \frac{x^2(x^2)}{x^4+(x^2)^2} = \lim \frac{x^4}{2x^4} = 1/2$.<br>
+                    3. Como $0 \neq 1/2$, el límite depende del camino.
+                    <span class="res">No existe</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Derivadas</span><span class="level">Medium</span></div>
+                <div class="problem">Calcula la derivada cruzada $\frac{\partial^2 f}{\partial y \partial x}$ (o $f_{xy}$) de $f(x,y) = x \sin(x y)$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Derivada resp. a $x$: $f_x = 1\cdot\sin(xy) + x\cdot\cos(xy)\cdot y = \sin(xy) + xy\cos(xy)$.<br>
+                    2. Derivar eso resp. a $y$: La derivada de $\sin(xy)$ es $x\cos(xy)$.<br>
+                    3. Regla producto en $xy\cos(xy)$: $x\cos(xy) + xy(-\sin(xy)\cdot x)$.<br>
+                    4. Sumar todo: $2x\cos(xy) - x^2y\sin(xy)$.
+                    <span class="res">2x cos(xy) - x²y sin(xy)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Geometría</span><span class="level">Easy</span></div>
+                <div class="problem">Halla la ecuación del plano tangente al paraboloide $z = 4 - x^2 - 2y^2$ en el punto $P(1, 1, 1)$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Funciones parciales: $f_x = -2x$, $f_y = -4y$.<br>
+                    2. Evaluar en $(1,1)$: $f_x(1,1) = -2$, $f_y(1,1) = -4$.<br>
+                    3. Fórmula: $z - z_0 = f_x(x-x_0) + f_y(y-y_0)$.<br>
+                    4. $z - 1 = -2(x-1) - 4(y-1)$.
+                    <span class="res">2x + 4y + z - 7 = 0</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Cadena</span><span class="level">Medium</span></div>
+                <div class="problem">Sea $z = e^x \cos y$, con $x = st$ y $y = \sqrt{s^2+t^2}$. Calcula $\partial z / \partial s$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Árbol: $z \to (x,y) \to s$. Fórmula: $\frac{\partial z}{\partial x}\frac{\partial x}{\partial s} + \frac{\partial z}{\partial y}\frac{\partial y}{\partial s}$.<br>
+                    2. $z_x = z$, $z_y = -e^x \sin y$.<br>
+                    3. $x_s = t$, $y_s = \frac{s}{\sqrt{s^2+t^2}}$.<br>
+                    4. Sustituir: $e^{st}\cos(\dots) \cdot t - e^{st}\sin(\dots) \cdot \frac{s}{\sqrt{s^2+t^2}}$.
+                    <span class="res">t·z - (s/y)·e^x sin(y)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Gradiente</span><span class="level">Medium</span></div>
+                <div class="problem">Dada $f(x,y) = x^2y^3$. ¿Cuál es la tasa de cambio en $P(1,1)$ en dirección del vector $\vec{v}=(3,4)$?</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Gradiente $\nabla f = (2xy^3, 3x^2y^2)$. En $(1,1)$ es $(2, 3)$.<br>
+                    2. Vector unitario $\vec{u} = \frac{(3,4)}{\sqrt{9+16}} = (0.6, 0.8)$.<br>
+                    3. Derivada direccional $D_u f = \nabla f \cdot \vec{u}$.<br>
+                    4. Producto escalar: $2(0.6) + 3(0.8) = 1.2 + 2.4$.
+                    <span class="res">3.6</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Diferencial</span><span class="level">Hard</span></div>
+                <div class="problem">Usa diferenciales para aproximar el valor de $\sqrt{(3.02)^2 + (3.99)^2}$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Función $f(x,y) = \sqrt{x^2+y^2}$. Punto base $(3,4)$ donde $f=5$.<br>
+                    2. $dx = 0.02$, $dy = -0.01$.<br>
+                    3. Gradiente en $(3,4)$: $(3/5, 4/5) = (0.6, 0.8)$.<br>
+                    4. $df = 0.6(0.02) + 0.8(-0.01) = 0.012 - 0.008 = 0.004$.
+                    <span class="res">Aprox: 5.004</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Extremos</span><span class="level">Medium</span></div>
+                <div class="problem">Clasifica los puntos críticos de $f(x,y) = x^2 - y^2 - 2x + 4y$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Gradiente nulo: $2x-2=0 \to x=1$; $-2y+4=0 \to y=2$. Punto $(1,2)$.<br>
+                    2. Hessiano: $f_{xx}=2, f_{yy}=-2, f_{xy}=0$.<br>
+                    3. Determinante $H = (2)(-2) - 0^2 = -4$.<br>
+                    4. Como $H < 0$, es un punto de silla (ni máx ni mín).
+                    <span class="res">Punto de Silla en (1,2)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Lagrange</span><span class="level">Hard</span></div>
+                <div class="problem">Minimiza $f(x,y)=x^2+y^2$ sujeto a la restricción $xy=1$ (con $x,y>0$).</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Ecuaciones: $2x = \lambda y$ y $2y = \lambda x$.<br>
+                    2. Dividiendo: $x/y = y/x \implies x^2=y^2 \implies x=y$ (pues $>0$).<br>
+                    3. Restricción: $x\cdot x = 1 \implies x=1, y=1$.<br>
+                    4. Valor mínimo $1^2+1^2$. (Es la distancia mínima al origen de la hipérbola).
+                    <span class="res">f_min = 2 en (1,1)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Implícita</span><span class="level">Medium</span></div>
+                <div class="problem">Si $x^3 + y^3 + z^3 + 6xyz = 1$, calcula $\frac{\partial z}{\partial x}$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    1. Definimos $F(x,y,z) = x^3+y^3+z^3+6xyz - 1 = 0$.<br>
+                    2. Fórmula: $\frac{\partial z}{\partial x} = -\frac{F_x}{F_z}$.<br>
+                    3. $F_x = 3x^2 + 6yz$.<br>
+                    4. $F_z = 3z^2 + 6xy$.
+                    <span class="res">-(x² + 2yz) / (z² + 2xy)</span>
+                </div></details>
+            </article>
+            <article class="card">
+                <div class="card-meta"><span class="tag">Diferenciabilidad</span><span class="level">Insane</span></div>
+                <div class="problem">Analiza la diferenciabilidad en $(0,0)$ de: $$ f(x,y) = \frac{x^3}{x^2+y^2}, \quad f(0,0)=0 $$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Continuidad: Sí (polares $r \cos^3 \theta \to 0$).<br>
+                    Parciales: $f_x(0,0)=1, f_y(0,0)=0$.<br>
+                    Límite diferenciabilidad: $\lim \frac{h^3/(h^2+k^2) - h}{\sqrt{h^2+k^2}}$.<br>
+                    Con $k=h$, da límite no nulo.
+                    <span class="res">No es diferenciable.</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Cadena</span><span class="level">Medium</span></div>
+                <div class="problem">Si $z = f(x/y)$, demuestra que $x \frac{\partial z}{\partial x} + y \frac{\partial z}{\partial y} = 0$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Sea $u = x/y$. <br>
+                    $z_x = f'(u) \cdot (1/y)$. <br>
+                    $z_y = f'(u) \cdot (-x/y^2)$. <br>
+                    Suma: $x(f'/y) + y(-xf'/y^2) = xf'/y - xf'/y = 0$.
+                    <span class="res">Verificado (Teorema Euler)</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Extremos</span><span class="level">Hard</span></div>
+                <div class="problem">Clasifica los puntos críticos de $f(x,y) = (x^2+y^2)e^{-x}$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Gradiente cero: <br>
+                    1) $2xe^{-x} - (x^2+y^2)e^{-x} = 0 \implies 2x - x^2 - y^2 = 0$.<br>
+                    2) $2ye^{-x} = 0 \implies y = 0$.<br>
+                    Sustituyendo $y=0$ en (1): $x(2-x)=0$. Puntos: $(0,0)$ y $(2,0)$.<br>
+                    Hessiano en $(0,0)$ es positivo def (Mín). En $(2,0)$ indefinido (Silla).
+                    <span class="res">(0,0) Mínimo, (2,0) Silla</span>
+                </div></details>
+            </article>
+        </div>
+    </main>
+
+    <main id="c3" class="section">
+        <div class="grid">
+            <article class="card">
+                <div class="card-meta"><span class="tag">Lagrange</span><span class="level">Hard</span></div>
+                <div class="problem">Distancia mínima entre la parábola $y=x^2$ y la recta $x-y-2=0$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Minimizar $d^2 = (x-u)^2 + (y-v)^2$ sujeto a $y=x^2$ y $u-v-2=0$.<br>
+                    Truco: La distancia mínima ocurre cuando la tangente a la parábola es paralela a la recta (m=1).<br>
+                    $y' = 2x = 1 \implies x=0.5, y=0.25$. <br>
+                    Distancia de $(0.5, 0.25)$ a $x-y-2=0$.
+                    <span class="res">d = 7√2 / 8</span>
+                </div></details>
+            </article>
+             <article class="card">
+                <div class="card-meta"><span class="tag">EDO Lineal</span><span class="level">Medium</span></div>
+                <div class="problem">Considere una EDO lineal homogénea con coeficientes constantes cuya ecuación característica tiene las raíces: $\lambda_1 = 0$ (doble), $\lambda_2 = -3$, $\lambda_{3,4} = 2 \pm 5i$. <br>Escriba la solución general $y_h(t)$.</div>
+                <details><summary>Ver Solución</summary>
+                    <div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Raíz 0 (Doble)</div>
+                                <div class="step-content">
+                                    Como $\lambda=0$ tiene multiplicidad 2, genera los términos: $C_1 e^{0t} + C_2 t e^{0t} = C_1 + C_2 t$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Raíz Real Simple</div>
+                                <div class="step-content">
+                                    Para $\lambda = -3$, el término es $C_3 e^{-3t}$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Raíces Complejas Conjugadas</div>
+                                <div class="step-content">
+                                    Para $\alpha \pm \beta i = 2 \pm 5i$, la solución es $e^{\alpha t}(A \cos(\beta t) + B \sin(\beta t))$.<br>
+                                    Aquí: $e^{2t}(C_4 \cos(5t) + C_5 \sin(5t))$.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="final-result-card">
+                            <span class="result-label">Solución General</span>
+                            <span class="result-value" style="font-size: 0.9rem">C_1 + C_2 t + C_3 e^{-3t} + e^{2t}(C_4 \cos 5t + C_5 \sin 5t)</span>
+                        </div>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Resonancia</span><span class="level">Hard</span></div>
+                <div class="problem">Dada la ecuación $y'' + 9y = 4 \cos(\omega t)$. <br>a) ¿Para qué valor de $\omega$ se produce resonancia? <br>b) Escribe la *forma* de la solución particular $y_p(t)$ en ese caso (sin calcular constantes).</div>
+                <details><summary>Ver Solución</summary>
+                    <div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Frecuencia Natural</div>
+                                <div class="step-content">
+                                    Ecuación homogénea: $r^2 + 9 = 0 \implies r = \pm 3i$.<br>
+                                    La frecuencia natural del sistema es $\omega_0 = 3$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Condición de Resonancia</div>
+                                <div class="step-content">
+                                    La resonancia ocurre cuando la frecuencia de la excitación externa coincide con la natural: $\omega = 3$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Forma de y_p(t)</div>
+                                <div class="step-content">
+                                    Normalmente sería $A\cos(3t) + B\sin(3t)$, pero como coincide con la homogénea, multiplicamos por $t$.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="final-result-card">
+                            <span class="result-label">Resultado</span>
+                            <span class="result-value">ω = 3; y_p = t(A \cos 3t + B \sin 3t)</span>
+                        </div>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Laplace</span><span class="level">Medium</span></div>
+                <div class="problem">Resuelve el PVI usando Laplace: <br> $$ \begin{cases} x''(t) + 4x(t) = \delta(t - \pi) \\ x(0)=0, x'(0)=0 \end{cases} $$</div>
+                <details><summary>Ver Solución</summary>
+                    <div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Transformar la Ecuación</div>
+                                <div class="step-content">
+                                    Aplicamos $\mathcal{L}$: $s^2 X(s) + 4X(s) = e^{-\pi s}$.<br>
+                                    (Condiciones iniciales 0 simplifican todo).
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Despejar X(s)</div>
+                                <div class="step-content">
+                                    $$ X(s) = \frac{e^{-\pi s}}{s^2 + 4} = e^{-\pi s} \cdot \frac{1}{2} \cdot \frac{2}{s^2 + 2^2} $$
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Antitransformada (Segundo Teorema Traslación)</div>
+                                <div class="step-content">
+                                    Sabemos que $\mathcal{L}^{-1}[\frac{2}{s^2+4}] = \sin(2t)$.<br>
+                                    El factor $e^{-\pi s}$ aplica un retardo $t \to (t-\pi)$ y multiplica por Heaviside $u(t-\pi)$.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="final-result-card">
+                            <span class="result-label">Solución x(t)</span>
+                            <span class="result-value">\frac{1}{2} \sin(2(t-\pi)) \cdot u(t-\pi)</span>
+                        </div>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Sistemas LTI</span><span class="level">Medium</span></div>
+                <div class="problem">Un sistema LTI tiene la ecuación característica $P(\lambda) = (\lambda + 2)(\lambda^2 - 4\lambda + 13)$. <br>¿Es el sistema asintóticamente estable? Razone la respuesta.</div>
+                <details><summary>Ver Solución</summary>
+                    <div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Analizar Raíces</div>
+                                <div class="step-content">
+                                    1. $\lambda_1 = -2$ (Real negativa).<br>
+                                    2. $\lambda^2 - 4\lambda + 13 = 0$. Resolvemos:
+                                    $$ \lambda = \frac{4 \pm \sqrt{16 - 52}}{2} = \frac{4 \pm \sqrt{-36}}{2} = 2 \pm 3i $$
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Parte Real</div>
+                                <div class="step-content">
+                                    Las raíces complejas tienen parte real $\text{Re}(\lambda) = +2 > 0$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">Conclusión</div>
+                                <div class="step-content">
+                                    Para estabilidad asintótica,todas las raíces deben tener parte real negativa. Aquí hay raíces con parte real positiva.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="final-result-card">
+                            <span class="result-label">Estabilidad</span>
+                            <span class="result-value">Inestable</span>
+                        </div>
+                    </div>
+                </details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Coef. Indeterminados</span><span class="level">Hard</span></div>
+                <div class="problem">Indica la FORMA de la solución particular $y_p$ para $y''' - y' = t + e^t$. (No calcules las constantes).</div>
+                <details><summary>Ver Solución</summary>
+                    <div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">1. Homogénea</div>
+                                <div class="step-content">
+                                    $r^3 - r = 0 \implies r(r^2-1) = 0$. Raíces: $0, 1, -1$.<br>
+                                    Sol. Homogénea base: $\{1, e^t, e^{-t}\}$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">2. Análisis término 't'</div>
+                                <div class="step-content">
+                                    El término $t$ es un polinomio grado 1 $(At+B)$.<br>
+                                    Pero la raíz $r=0$ ya está en la homogénea (constante 1). Multiplicamos por $t$: $t(At+B)$.
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <div class="step-dot"></div>
+                                <div class="step-title">3. Análisis término 'e^t'</div>
+                                <div class="step-content">
+                                    Forma normal: $Ce^t$.<br>
+                                    Pero $e^t$ ya es solución homogénea (raíz $r=1$). Multiplicamos por $t$: $Ct e^t$.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="final-result-card">
+                            <span class="result-label">Forma Final</span>
+                            <span class="result-value">y_p = t(At+B) + Cte^t</span>
+                        </div>
+                    </div>
+                </details>
+            </article>
+            <article class="card">
+                <div class="card-meta"><span class="tag">Series</span><span class="level">Insane</span></div>
+                <div class="problem">Estudia la convergencia uniforme de la serie de funciones: $$ \sum_{n=1}^{\infty} \frac{x}{n(1+nx^2)} \quad \text{en } [0,1] $$</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Busca el máximo de $f_n(x)$. Derivando, máx en $x=1/\sqrt{n}$.<br>
+                    Valor máximo $M_n = f_n(1/\sqrt{n}) = \frac{1}{2n\sqrt{n}}$.<br>
+                    Como $\sum \frac{1}{n^{3/2}}$ converge, por el test M de Weierstrass:
+                    <span class="res">Converge Uniformemente</span>
+                </div></details>
+            </article>
+
+            <article class="card">
+                <div class="card-meta"><span class="tag">Fourier</span><span class="level">Hard</span></div>
+                <div class="problem">Dada $f(x)=|x|$ en $[-\pi, \pi]$, calcula la suma de la serie $\sum \frac{1}{(2n-1)^2}$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Desarrolla Fourier de $|x|$. Es par (solo cosenos).<br>
+                    $a_0 = \pi$. $a_n = \frac{2}{\pi n^2}((-1)^n - 1)$.<br>
+                    Solo impares sobreviven: $a_{2k-1} = -4/(\pi(2k-1)^2)$.<br>
+                    Evalúa la serie en $x=0$ (donde converge a 0).
+                    <span class="res">Suma = π²/8</span>
+                </div></details>
+            </article>
+
+             <article class="card">
+                <div class="card-meta"><span class="tag">Función Implícita</span><span class="level">Hard</span></div>
+                <div class="problem">El sistema $\begin{cases} x+y+z+u=0 \\ x^2+y^2+z^2+u^2=4 \end{cases}$ define $z(x,y), u(x,y)$. Calcula $\partial z / \partial x$.</div>
+                <details><summary>Ver Solución</summary><div class="solution">
+                    Diferenciar el sistema respecto a $x$:<br>
+                    1) $1 + z_x + u_x = 0$.<br>
+                    2) $2x + 2z z_x + 2u u_x = 0 \implies x + z z_x + u u_x = 0$.<br>
+                    Resolver sistema lineal para $z_x$. Mult (1) por $u$ y restar (2).
+                    <span class="res">z_x = (u-x)/(z-u)</span>
+                </div></details>
+            </article>
+        </div>
+    </main>
+
+    <script>
+        // Lógica de Tabs
+        function showTab(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // Lógica de Temas
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (html.getAttribute('data-theme') === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                icon.innerText = '☀️';
+                text.innerText = 'Modo Claro';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                icon.innerText = '🌙';
+                text.innerText = 'Modo Oscuro';
+            }
+        }
+    </script>
+</body>
+</html>
