@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Innove | Heat Transfer Suite</title>
+  <title>Innove | Heat Transfer Exam Suite</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -28,104 +28,84 @@
 
   <style>
     /* ========================================
-        1. VARIABLES & THEME CONFIGURATION
-        ========================================
-        */
+       1. VARIABLES & THEME CONFIGURATION
+       ======================================== */
     :root {
       /* Dimensions */
       --sidebar-width: 280px;
-      --header-height: 70px;
       --card-radius: 16px;
       --modal-radius: 24px;
 
       /* Typography */
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-sans: 'Inter', sans-serif;
       --font-display: 'Space Grotesk', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
 
       /* Animations */
       --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
-      --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
-      --duration-fast: 0.2s;
       --duration-normal: 0.4s;
-      --duration-slow: 0.6s;
     }
 
-    [data-theme="dark"] {
-      /* Backgrounds */
-      --bg-app: #050505;
-      --bg-sidebar: #0a0a0a;
-      --bg-card: #111111;
-      --bg-card-hover: #161616;
-      --bg-modal: #0f0f0f;
-      --bg-input: #1a1a1a;
-
-      /* Text */
-      --text-primary: #ffffff;
-      --text-secondary: #a1a1aa;
-      --text-tertiary: #52525b;
-
-      /* Borders */
-      --border-light: rgba(255, 255, 255, 0.06);
-      --border-hover: rgba(255, 255, 255, 0.12);
-
-      /* Accents (Heat Theme) */
-      --accent-primary: #f97316;  /* Orange */
-      --accent-secondary: #ef4444; /* Red */
-      --accent-success: #10b981;
-      --accent-warning: #eab308;
-      --accent-danger: #dc2626;
-
-      /* Shadows */
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.6);
-      --glow-primary: 0 0 20px rgba(249, 115, 22, 0.15);
-    }
-
+    /* MODO CLARO (POR DEFECTO) */
     [data-theme="light"] {
-      /* Backgrounds */
-      --bg-app: #fff7ed; /* Warm white */
+      --bg-app: #fff7ed; /* Fondo crema cálido */
       --bg-sidebar: #ffffff;
       --bg-card: #ffffff;
       --bg-card-hover: #fffaf5;
       --bg-modal: #ffffff;
       --bg-input: #fcf5f0;
 
-      /* Text */
       --text-primary: #431407;
       --text-secondary: #78350f;
       --text-tertiary: #a8a29e;
 
-      /* Borders */
       --border-light: rgba(67, 20, 7, 0.08);
       --border-hover: rgba(67, 20, 7, 0.15);
 
-      /* Accents */
-      --accent-primary: #ea580c;
-      --accent-secondary: #b91c1c;
+      /* Heat Accents */
+      --accent-primary: #ea580c;   /* Naranja quemado */
+      --accent-secondary: #b91c1c; /* Rojo intenso */
       --accent-success: #059669;
       --accent-warning: #d97706;
       --accent-danger: #dc2626;
 
-      /* Shadows */
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
-      --glow-primary: 0 0 20px rgba(234, 88, 12, 0.1);
+      --shadow-sm: 0 2px 4px rgba(234, 88, 12, 0.05);
+      --shadow-md: 0 8px 24px rgba(234, 88, 12, 0.08);
+      --glow-primary: 0 0 20px rgba(234, 88, 12, 0.15);
+    }
+
+    /* MODO OSCURO */
+    [data-theme="dark"] {
+      --bg-app: #0f0a05;
+      --bg-sidebar: #14110f;
+      --bg-card: #1c1917;
+      --bg-card-hover: #292524;
+      --bg-modal: #1c1917;
+      --bg-input: #292524;
+
+      --text-primary: #fafaf9;
+      --text-secondary: #a8a29e;
+      --text-tertiary: #57534e;
+
+      --border-light: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.15);
+
+      --accent-primary: #f97316;
+      --accent-secondary: #ef4444;
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-danger: #ef4444;
+
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --glow-primary: 0 0 25px rgba(249, 115, 22, 0.2);
     }
 
     /* ========================================
-        2. RESET & UTILITIES
-        ========================================
-        */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      outline: none;
-    }
-
+       2. RESET & LAYOUT
+       ======================================== */
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+    
     body {
       font-family: var(--font-sans);
       background-color: var(--bg-app);
@@ -136,9 +116,7 @@
       transition: background-color var(--duration-normal) var(--ease-out);
     }
 
-    a { text-decoration: none; color: inherit; }
     button { border: none; background: none; cursor: pointer; font-family: inherit; }
-    ul { list-style: none; }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -146,180 +124,89 @@
     ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
-    /* Typography Utilities */
-    .h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
-    .h2 { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
-    .text-muted { color: var(--text-secondary); }
-    .font-mono { font-family: var(--font-mono); }
-
     /* ========================================
-        3. SIDEBAR NAVIGATION
-        ========================================
-        */
+       3. SIDEBAR
+       ======================================== */
     .sidebar {
       width: var(--sidebar-width);
       height: 100%;
       background: var(--bg-sidebar);
       border-right: 1px solid var(--border-light);
-      display: flex;
-      flex-direction: column;
-      padding: 24px;
+      display: flex; flex-direction: column; padding: 24px;
       z-index: 10;
-      transition: transform var(--duration-normal) var(--ease-out);
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 40px;
-      padding-left: 12px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding-left: 8px;
     }
 
     .brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
       border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      color: white;
-      font-size: 1.2rem;
+      display: grid; place-items: center;
+      font-size: 1.4rem;
       box-shadow: var(--glow-primary);
     }
 
     .brand-text {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      font-family: var(--font-display); font-size: 1.3rem; font-weight: 700;
     }
 
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex-grow: 1;
-    }
+    .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
 
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      color: var(--text-secondary);
-      font-weight: 500;
-      transition: all var(--duration-fast);
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: 12px;
+      color: var(--text-secondary); font-weight: 500;
+      transition: 0.2s;
     }
 
-    .nav-item:hover {
-      background: var(--bg-input);
-      color: var(--text-primary);
-    }
-
+    .nav-item:hover { background: var(--bg-input); color: var(--text-primary); }
+    
     .nav-item.active {
-      background: rgba(249, 115, 22, 0.1);
+      background: rgba(234, 88, 12, 0.1);
       color: var(--accent-primary);
     }
 
-    .nav-icon { width: 20px; height: 20px; opacity: 0.7; font-size: 1.2rem; display: grid; place-items: center; }
+    .nav-icon { font-size: 1.2rem; width: 24px; text-align: center; }
 
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-light);
-    }
-
-    .stats-card {
-      background: var(--bg-input);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: var(--border-hover);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent-success);
-      width: 0%;
-      transition: width 1s var(--ease-out);
-    }
+    /* Stats Footer */
+    .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-light); }
+    .stats-card { background: var(--bg-input); padding: 16px; border-radius: 12px; }
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+    .progress-bar { width: 100%; height: 6px; background: var(--border-hover); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent-primary); width: 0%; transition: width 1s; }
 
     /* ========================================
-        4. MAIN CONTENT AREA
-        ========================================
-        */
+       4. MAIN CONTENT
+       ======================================== */
     .main-content {
-      flex-grow: 1;
-      height: 100%;
-      overflow-y: auto;
-      padding: 40px 60px;
-      position: relative;
+      flex-grow: 1; height: 100%; overflow-y: auto;
+      padding: 40px 60px; position: relative;
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
-      animation: slideDown 0.6s var(--ease-out);
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 40px; animation: slideDown 0.6s var(--ease-out);
     }
 
-    .header-content h1 { margin-bottom: 8px; }
-    .header-content p { max-width: 600px; line-height: 1.6; }
+    .h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 8px; }
+    .text-muted { color: var(--text-secondary); max-width: 600px; line-height: 1.6; }
 
     .theme-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--border-light);
-      display: grid;
-      place-items: center;
-      color: var(--text-secondary);
-      transition: all var(--duration-fast);
+      width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border-light);
+      display: grid; place-items: center; color: var(--text-secondary); font-size: 1.2rem;
+      transition: 0.2s;
     }
-
-    .theme-btn:hover {
-      background: var(--bg-card-hover);
-      color: var(--text-primary);
-      border-color: var(--border-hover);
-    }
-
-    /* Filter Bar */
-    .filter-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 32px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      animation: fadeIn 0.8s var(--ease-out);
-    }
+    .theme-btn:hover { background: var(--bg-card-hover); border-color: var(--accent-primary); color: var(--accent-primary); }
 
     /* ========================================
-        5. EXERCISE GRID & CARDS
-        ========================================
-        */
+       5. GRID & CARDS
+       ======================================== */
     .exercise-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 24px;
-      padding-bottom: 60px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px; padding-bottom: 60px;
     }
 
     .exercise-card {
@@ -327,196 +214,116 @@
       border: 1px solid var(--border-light);
       border-radius: var(--card-radius);
       padding: 24px;
-      display: flex;
-      flex-direction: column;
-      transition: all var(--duration-fast);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: 0.3s; cursor: pointer;
       animation: fadeInUp 0.6s var(--ease-out) backwards;
     }
 
     .exercise-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
       border-color: var(--accent-primary);
-      box-shadow: var(--glow-primary);
-      background: var(--bg-card-hover);
+      box-shadow: var(--shadow-md);
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-
-    .card-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-diff-easy { background: rgba(16, 185, 129, 0.1); color: var(--accent-success); }
-    .badge-diff-medium { background: rgba(234, 179, 8, 0.1); color: var(--accent-warning); }
-    .badge-diff-hard { background: rgba(239, 68, 68, 0.1); color: var(--accent-danger); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     
-    .badge-topic {
-      background: var(--bg-input);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-light);
+    .badge {
+      padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
+    .badge-topic { background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border-light); }
+    
+    /* Difficulty Badges */
+    .badge-diff-easy { background: rgba(16, 185, 129, 0.15); color: var(--accent-success); }
+    .badge-diff-medium { background: rgba(245, 158, 11, 0.15); color: var(--accent-warning); }
+    .badge-diff-hard { background: rgba(239, 68, 68, 0.15); color: var(--accent-danger); }
 
     .card-id { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); }
-
-    .card-body { flex-grow: 1; margin-bottom: 20px; }
-
+    
     .problem-preview {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: var(--text-primary);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      font-size: 0.95rem; line-height: 1.6; color: var(--text-primary);
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+      flex-grow: 1; margin-bottom: 20px;
     }
 
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-light);
+    .view-btn {
+      font-size: 0.85rem; font-weight: 600; color: var(--accent-primary);
+      display: flex; align-items: center; gap: 6px; margin-top: auto;
     }
-
-    .view-sol-btn {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--accent-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .view-sol-btn::after { content: '→'; transition: transform 0.2s; }
-    .exercise-card:hover .view-sol-btn::after { transform: translateX(4px); }
+    .view-btn::after { content: '→'; transition: transform 0.2s; }
+    .exercise-card:hover .view-btn::after { transform: translateX(4px); }
 
     /* ========================================
-        6. FULL SCREEN MODAL
-        ========================================
-        */
+       6. MODAL
+       ======================================== */
     .modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: none;
-      opacity: 0;
-      transition: opacity var(--duration-normal);
+      background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(6px);
+      z-index: 1000; display: none; justify-content: center; align-items: center;
+      opacity: 0; transition: opacity 0.3s;
     }
-
-    .modal-backdrop.active { display: flex; justify-content: center; align-items: center; opacity: 1; }
+    .modal-backdrop.active { display: flex; opacity: 1; }
 
     .modal-content {
-      width: 90%; max-width: 1000px; height: 90%;
-      background: var(--bg-modal);
-      border-radius: var(--modal-radius);
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-lg);
-      display: flex; flex-direction: column;
-      transform: scale(0.95) translateY(20px);
-      transition: transform var(--duration-normal) var(--ease-out);
-      overflow: hidden;
+      width: 90%; max-width: 900px; height: 85%;
+      background: var(--bg-modal); border-radius: var(--modal-radius);
+      box-shadow: var(--shadow-md); border: 1px solid var(--border-light);
+      display: flex; flex-direction: column; transform: scale(0.95); transition: 0.3s;
     }
-
-    .modal-backdrop.active .modal-content { transform: scale(1) translateY(0); }
+    .modal-backdrop.active .modal-content { transform: scale(1); }
 
     .modal-header {
-      padding: 24px 32px;
-      border-bottom: 1px solid var(--border-light);
+      padding: 20px 30px; border-bottom: 1px solid var(--border-light);
       display: flex; justify-content: space-between; align-items: center;
-      background: var(--bg-card);
     }
-
-    .modal-title-group h2 { margin-bottom: 4px; }
-    .modal-subtitle { font-family: var(--font-mono); color: var(--text-tertiary); font-size: 0.9rem; }
-
-    .close-modal-btn {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: var(--bg-input); color: var(--text-secondary);
-      display: grid; place-items: center; font-size: 1.2rem;
-      transition: all 0.2s;
+    .modal-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+    
+    .close-btn {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--bg-input);
+      font-size: 1.2rem; color: var(--text-secondary); transition: 0.2s;
+      display: grid; place-items: center;
     }
-
-    .close-modal-btn:hover { background: var(--accent-danger); color: white; transform: rotate(90deg); }
+    .close-btn:hover { background: var(--accent-danger); color: white; transform: rotate(90deg); }
 
     .modal-body {
-      flex-grow: 1; overflow-y: auto; padding: 40px;
+      padding: 40px; overflow-y: auto;
       display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
     }
 
-    .problem-section { padding-right: 40px; border-right: 1px solid var(--border-light); }
-    .solution-section { padding-left: 10px; }
-
     .section-label {
-      font-family: var(--font-mono); font-size: 0.75rem;
-      text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--accent-primary); margin-bottom: 16px; display: block;
+      font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--accent-primary); margin-bottom: 12px; display: block;
     }
 
-    .problem-text { font-size: 1.25rem; line-height: 1.7; margin-bottom: 32px; }
+    .problem-full { font-size: 1.1rem; line-height: 1.7; margin-bottom: 30px; padding-right: 20px; border-right: 1px solid var(--border-light); }
 
     .step-card {
-      background: var(--bg-input);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-left: 3px solid var(--accent-secondary);
-      animation: slideInRight 0.5s var(--ease-out) backwards;
+      background: var(--bg-input); border-radius: 12px; padding: 16px 20px;
+      margin-bottom: 16px; border-left: 3px solid var(--accent-primary);
+      animation: slideIn 0.4s backwards;
     }
+    .step-num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 6px; display: block;}
 
-    .step-number {
-      font-family: var(--font-mono); font-size: 0.8rem;
-      color: var(--text-secondary); margin-bottom: 8px; display: block;
+    .final-ans {
+      margin-top: 30px; padding: 20px; text-align: center;
+      background: rgba(234, 88, 12, 0.1); border: 1px solid var(--accent-primary); border-radius: 12px;
     }
+    .ans-label { color: var(--accent-primary); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 8px; display: block; }
 
-    .final-answer {
-      margin-top: 40px; padding: 24px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid var(--accent-success);
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .final-label {
-      color: var(--accent-success); font-weight: 700;
-      text-transform: uppercase; font-size: 0.8rem;
-      margin-bottom: 12px; display: block;
-    }
-
-    /* ========================================
-        7. ANIMATIONS
-        ========================================
-        */
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* Animations */
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
     /* Responsive */
-    @media (max-width: 1024px) {
+    @media (max-width: 900px) {
       .sidebar { width: 80px; padding: 16px; }
       .brand-text, .nav-text, .stats-card { display: none; }
       .brand { justify-content: center; padding: 0; }
       .nav-item { justify-content: center; padding: 16px; }
       .main-content { padding: 20px; }
       .modal-body { grid-template-columns: 1fr; }
-      .problem-section { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 30px; margin-bottom: 30px; padding-right: 0; }
-      .solution-section { padding-left: 0; }
+      .problem-full { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; }
     }
   </style>
 </head>
@@ -525,13 +332,13 @@
 
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-logo">Q</div>
+      <div class="brand-logo">🔥</div>
       <span class="brand-text">Innove</span>
     </div>
 
     <nav class="nav-menu">
       <button class="nav-item active" onclick="filterExercises('all')">
-        <span class="nav-icon">🔥</span>
+        <span class="nav-icon">📑</span>
         <span class="nav-text">Todo</span>
       </button>
       <button class="nav-item" onclick="filterExercises('cond')">
@@ -539,19 +346,19 @@
         <span class="nav-text">Conducción</span>
       </button>
       <button class="nav-item" onclick="filterExercises('conv')">
-        <span class="nav-icon">💨</span>
+        <span class="nav-icon">🌬️</span>
         <span class="nav-text">Convección</span>
       </button>
       <button class="nav-item" onclick="filterExercises('rad')">
         <span class="nav-icon">☢️</span>
-        <span class="nav-text">Radiación/HX</span>
+        <span class="nav-text">Radiación</span>
       </button>
     </nav>
 
     <div class="sidebar-footer">
       <div class="stats-card">
         <div class="stat-row">
-          <span>Progreso</span>
+          <span>Completado</span>
           <span id="progress-text">0/15</span>
         </div>
         <div class="progress-bar">
@@ -563,13 +370,11 @@
 
   <main class="main-content">
     <header class="header">
-      <div class="header-content">
+      <div>
         <h1 class="h1">Transferencia de Calor</h1>
-        <p class="text-muted">Banco de ejercicios de examen. Conducción, convección, radiación e intercambiadores de calor.</p>
+        <p class="text-muted">Banco de ejercicios de examen. Incluye conducción estacionaria/transitoria, convección y radiación térmica.</p>
       </div>
-      <div class="header-actions">
-        <button class="theme-btn" onclick="toggleTheme()">☀</button>
-      </div>
+      <button class="theme-btn" onclick="toggleTheme()" title="Cambiar Tema">🌗</button>
     </header>
 
     <div class="exercise-grid" id="grid">
@@ -579,357 +384,275 @@
   <div class="modal-backdrop" id="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title-group">
-          <h2 class="h2" id="modal-title">Título</h2>
-          <span class="modal-subtitle" id="modal-id">ID</span>
+        <div>
+          <h2 class="modal-title" id="m-title">Título</h2>
+          <span class="card-id" id="m-id">ID</span>
         </div>
-        <button class="close-modal-btn" onclick="closeModal()">×</button>
+        <button class="close-btn" onclick="closeModal()">×</button>
       </div>
       <div class="modal-body">
-        <div class="problem-section">
-          <span class="section-label">Enunciado</span>
-          <div class="problem-text" id="modal-problem"></div>
+        <div>
+          <span class="section-label">Enunciado del Problema</span>
+          <div class="problem-full" id="m-problem"></div>
         </div>
-        <div class="solution-section" id="modal-steps">
+        <div>
           <span class="section-label">Solución Paso a Paso</span>
-          </div>
+          <div id="m-steps"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
     const exercises = [
-      // ============================================================
-      // CONDUCCIÓN (5 EJERCICIOS)
-      // ============================================================
+      // ================= CONDUCCIÓN =================
       {
-        id: "COND-01",
-        category: "cond",
-        topic: "Pared Compuesta",
-        difficulty: "Medium",
-        problem: "Un horno tiene una pared de ladrillo ($k_1=1.2 \\, W/mK$, $L_1=0.2m$) y una capa de aislante ($k_2=0.05 \\, W/mK$). Si $T_{int}=1000^\\circ C$, $T_{ext}=30^\\circ C$ y la pérdida máxima permitida es $500 \\, W/m^2$, calcula el espesor mínimo de aislante ($L_2$).",
+        id: "COND-01", category: "cond", difficulty: "Medium", topic: "Pared Compuesta",
+        problem: "Un horno tiene una pared de ladrillo ($k_1=1.2$) de 20cm y aislante ($k_2=0.05$). Si $T_{int}=1000^\\circ C$ y $T_{ext}=30^\\circ C$, y la pérdida máxima es $500 W/m^2$, calcula el espesor mínimo de aislante.",
         steps: [
-          "Circuito térmico en serie: $R_{total} = R_{ladrillo} + R_{aislante}$.",
-          "$R_{lad} = \\frac{L_1}{k_1} = \\frac{0.2}{1.2} \\approx 0.167 \\, m^2K/W$.",
-          "Sabemos que $q'' = \\frac{\\Delta T}{R_{total}} \\Rightarrow R_{total} = \\frac{1000-30}{500} = 1.94 \\, m^2K/W$.",
-          "$R_{aisl} = R_{total} - R_{lad} = 1.94 - 0.167 = 1.773 \\, m^2K/W$.",
-          "Espesor aislante: $L_2 = R_{aisl} \\cdot k_2 = 1.773 \\cdot 0.05$."
+          "Resistencia ladrillo: $R_1 = L_1/k_1 = 0.2/1.2 = 0.167$.",
+          "Resistencia total necesaria: $R_{tot} = \\Delta T / q'' = (1000-30)/500 = 1.94$.",
+          "Resistencia aislante: $R_2 = R_{tot} - R_1 = 1.94 - 0.167 = 1.773$.",
+          "Espesor aislante: $L_2 = R_2 \\cdot k_2 = 1.773 \\cdot 0.05 = 0.0886 m$."
         ],
-        solution: "$$ L_2 \\approx 0.089 \\, m \\quad (8.9 \\, cm) $$"
+        solution: "$$ L_2 \\approx 8.9 \\text{ cm} $$"
       },
       {
-        id: "COND-02",
-        category: "cond",
-        topic: "Radio Crítico",
-        difficulty: "Medium",
-        problem: "Un cable eléctrico de 2mm de diámetro se recubre con plástico ($k=0.15 \\, W/mK$) expuesto a aire con $h=20 \\, W/m^2K$. Determina si añadir aislamiento mejora la refrigeración.",
+        id: "COND-02", category: "cond", difficulty: "Medium", topic: "Radio Crítico",
+        problem: "Un cable de 2mm de diámetro se aísla con plástico ($k=0.15$). $h_{ext}=20$. ¿Aumenta o disminuye la transferencia de calor al añadir aislante?",
         steps: [
-          "Radio crítico de aislamiento: $r_{cr} = \\frac{k_{aisl}}{h_{ext}}$.",
-          "$r_{cr} = \\frac{0.15}{20} = 0.0075 \\, m = 7.5 \\, mm$.",
-          "Radio del cable $r_{cable} = 1 \\, mm$.",
-          "Como $r_{cable} < r_{cr}$, añadir aislamiento aumenta el área superficial más rápido que la resistencia conductiva, mejorando la transferencia de calor hasta alcanzar los 7.5mm."
+          "Radio crítico: $r_{cr} = k/h = 0.15/20 = 0.0075 m = 7.5mm$.",
+          "Radio del cable: $r = 1mm$.",
+          "Como $r < r_{cr}$, añadir aislante AUMENTA la transferencia de calor hasta llegar a 7.5mm de radio total."
         ],
-        solution: "$$ \\text{Sí, mejora hasta } r=7.5mm $$"
+        solution: "$$ \\text{Aumenta (refrigera mejor)} $$"
       },
       {
-        id: "COND-03",
-        category: "cond",
-        topic: "Generación Interna",
-        difficulty: "Hard",
-        problem: "Una pared plana de espesor $2L=4cm$ y $k=20 W/mK$ genera calor volumétrico $\\dot{q}=10^6 W/m^3$. Superficies a $T_s = 100^\\circ C$. Halla la temperatura máxima en el centro.",
+        id: "COND-03", category: "cond", difficulty: "Hard", topic: "Generación de Calor",
+        problem: "Pared plana de espesor $2L=4cm$, $k=20$, con generación $\\dot{q}=10^6 W/m^3$. Superficies a $100^\\circ C$. Halla $T_{max}$.",
         steps: [
-          "Ecuación de difusión 1D con generación: $\\frac{d^2T}{dx^2} + \\frac{\\dot{q}}{k} = 0$.",
-          "Solución perfil parabólico: $T(x) = \\frac{\\dot{q}L^2}{2k}(1 - \\frac{x^2}{L^2}) + T_s$.",
-          "Máxima en $x=0$. $L=0.02m$.",
-          "$T_{max} = T(0) = \\frac{10^6 (0.02)^2}{2(20)} + 100$.",
-          "$T_{max} = \\frac{400}{40} + 100 = 10 + 100$."
+          "Ecuación: $T(x) = \\frac{\\dot{q}L^2}{2k}(1 - x^2/L^2) + T_s$.",
+          "Máxima en el centro ($x=0$).",
+          "$T_{max} = \\frac{10^6 (0.02)^2}{2(20)} + 100$.",
+          "$T_{max} = 400/40 + 100 = 10 + 100$."
         ],
-        solution: "$$ T_{max} = 110^\\circ C $$"
+        solution: "$$ 110^\\circ C $$"
       },
       {
-        id: "COND-04",
-        category: "cond",
-        topic: "Transitorio (Lumped)",
-        difficulty: "Medium",
-        problem: "Una bola de acero ($k=50, \\rho=7800, c=450$) de 1cm de diámetro a $300^\\circ C$ se enfría en aire a $25^\\circ C$ ($h=100$). Verifica el método de capacitancia global y calcula el tiempo para llegar a $100^\\circ C$.",
+        id: "COND-04", category: "cond", difficulty: "Hard", topic: "Transitorio (Biot)",
+        problem: "Esfera de acero ($k=50$) de 1cm se enfría en aire ($h=100$). Verifica si se puede usar el método de capacitancia global (Lumped capacitance).",
         steps: [
-          "Longitud característica $L_c = V/A = r/3 = 0.005/3 \\approx 0.00167 m$.",
-          "Número de Biot: $Bi = \\frac{h L_c}{k} = \\frac{100 \\cdot 0.00167}{50} \\approx 0.0033$.",
-          "Como $Bi < 0.1$, el método de capacitancia global es válido.",
-          "Constante de tiempo $\\tau = \\frac{\\rho V c}{h A} = \\frac{\\rho (L_c) c}{h} = \\frac{7800 \\cdot 0.00167 \\cdot 450}{100} = 58.6 \\, s$.",
-          "$\\frac{T-T_\\infty}{T_i - T_\\infty} = e^{-t/\\tau} \\Rightarrow \\frac{100-25}{300-25} = e^{-t/58.6}$.",
-          "$0.2727 = e^{-t/58.6} \\Rightarrow t = -58.6 \\ln(0.2727)$."
+          "Longitud característica $L_c = V/A = r/3 = 0.005/3 = 0.00167 m$.",
+          "Número de Biot: $Bi = h L_c / k$.",
+          "$Bi = (100 \\cdot 0.00167) / 50 = 0.0033$.",
+          "Como $Bi < 0.1$, el método es válido (temperatura uniforme)."
         ],
-        solution: "$$ t \\approx 76.1 \\, s $$"
+        solution: "$$ \\text{Sí, } Bi = 0.0033 $$"
       },
       {
-        id: "COND-05",
-        category: "cond",
-        topic: "Sólido Semi-infinito",
-        difficulty: "Hard",
-        problem: "El suelo ($k=0.5, \\alpha=0.15 \\times 10^{-6} m^2/s$) está a $20^\\circ C$. De repente la superficie baja a $-10^\\circ C$. ¿A qué profundidad se congela ($0^\\circ C$) tras 12 horas?",
+        id: "COND-05", category: "cond", difficulty: "Hard", topic: "Sólido Semi-infinito",
+        problem: "Suelo a $20^\\circ C$. Superficie baja a $-10^\\circ C$. ¿Profundidad de congelación tras 12h? ($\\alpha = 0.15\\times 10^{-6}$).",
         steps: [
-          "Modelo sólido semi-infinito con T constante en superficie.",
-          "$\\frac{T(x,t) - T_s}{T_i - T_s} = \\text{erf}\\left( \\frac{x}{2\\sqrt{\\alpha t}} \\right)$.",
-          "$\\frac{0 - (-10)}{20 - (-10)} = \\frac{10}{30} = 0.333 = \\text{erf}(\\eta)$.",
-          "De tablas, $\\text{erf}(0.37) \\approx 0.333 \\Rightarrow \\eta = 0.37$.",
-          "$x = 2\\eta \\sqrt{\\alpha t}$. Tiempo $t = 12 \\times 3600 = 43200 s$.",
-          "$x = 2(0.37) \\sqrt{0.15\\times 10^{-6} \\cdot 43200} = 0.74 \\sqrt{0.00648}$."
+          "Solución: $\\frac{T-T_s}{T_i-T_s} = \\text{erf}(x / 2\\sqrt{\\alpha t})$.",
+          "$\\frac{0 - (-10)}{20 - (-10)} = 0.333 = \\text{erf}(\\eta)$. Tabla: $\\eta \\approx 0.37$.",
+          "$x = 2 \\eta \\sqrt{\\alpha t}$. $t=43200s$.",
+          "$x = 2(0.37)\\sqrt{0.00648} \\approx 0.06 m$."
         ],
-        solution: "$$ x \\approx 0.06 \\, m \\quad (6 \\, cm) $$"
+        solution: "$$ 6 \\text{ cm} $$"
       },
-      
-      // ============================================================
-      // CONVECCIÓN (5 EJERCICIOS)
-      // ============================================================
+      // ================= CONVECCIÓN =================
       {
-        id: "CONV-01",
-        category: "conv",
-        topic: "Placa Plana (Laminar)",
-        difficulty: "Medium",
-        problem: "Aire a $25^\\circ C$ fluye a $5 m/s$ sobre una placa a $75^\\circ C$. Calcula el coeficiente $h$ promedio a 0.5m del borde. ($\\nu = 1.6\\times 10^{-5} m^2/s, k=0.026$)",
+        id: "CONV-01", category: "conv", difficulty: "Medium", topic: "Placa Plana",
+        problem: "Aire a 5m/s sobre placa plana. Calcula Reynolds a $x=0.5m$. ($\\nu = 1.5\\times 10^{-5}$). ¿Flujo laminar o turbulento?",
         steps: [
-          "Reynolds: $Re_x = \\frac{V x}{\\nu} = \\frac{5 \\cdot 0.5}{1.6\\times 10^{-5}} = 1.56\\times 10^5$.",
-          "Como $Re < 5\\times 10^5$, el flujo es laminar.",
-          "Correlación Nusselt local: $Nu_x = 0.332 Re^{1/2} Pr^{1/3}$. (Asumir Pr aprox 0.7)",
-          "Nusselt promedio $\\overline{Nu}_L = 2 Nu_{x=L} = 0.664 Re_L^{1/2} Pr^{1/3}$.",
-          "$\\overline{Nu} = 0.664 \\sqrt{156000} (0.7)^{1/3} \\approx 233$.",
-          "$\\overline{h} = \\frac{\\overline{Nu} k}{L} = \\frac{233 \\cdot 0.026}{0.5}$."
+          "$Re_x = V x / \\nu$.",
+          "$Re = (5 \\cdot 0.5) / (1.5\\times 10^{-5})$.",
+          "$Re = 2.5 / 0.000015 \\approx 1.66 \\times 10^5$.",
+          "Transición en $5\\times 10^5$. Es Laminar."
         ],
-        solution: "$$ \\overline{h} \\approx 12.1 \\, W/m^2K $$"
+        solution: "$$ Re \\approx 1.66\\times 10^5 \\text{ (Laminar)} $$"
       },
       {
-        id: "CONV-02",
-        category: "conv",
-        topic: "Flujo en Tubería",
-        difficulty: "Hard",
-        problem: "Agua fluye por un tubo ($D=0.02m$) a $0.5 kg/s$. Calcula $h$ usando Dittus-Boelter ($n=0.4$). Propiedades a temp media: $\\mu=8\\times 10^{-4}, k=0.6, Pr=5$.",
+        id: "CONV-02", category: "conv", difficulty: "Hard", topic: "Dittus-Boelter",
+        problem: "Agua en tubería, flujo turbulento calentándose ($n=0.4$). $Re=40000, Pr=5, k=0.6, D=0.02$. Halla $h$.",
         steps: [
-          "Velocidad o Reynolds directo: $Re_D = \\frac{4 \\dot{m}}{\\pi D \\mu}$.",
-          "$Re_D = \\frac{4(0.5)}{\\pi(0.02)(8\\times 10^{-4})} = \\frac{2}{5.02\\times 10^{-5}} \\approx 39800$.",
-          "Flujo turbulento ($Re > 10000$). Usamos Dittus-Boelter.",
-          "$Nu_D = 0.023 Re^{0.8} Pr^{0.4}$.",
-          "$Nu_D = 0.023 (39800)^{0.8} (5)^{0.4} \\approx 0.023(4800)(1.9) \\approx 210$.",
-          "$h = \\frac{Nu k}{D} = \\frac{210 \\cdot 0.6}{0.02}$."
+          "$Nu = 0.023 Re^{0.8} Pr^{0.4}$.",
+          "$Nu = 0.023 (40000)^{0.8} (5)^{0.4} \\approx 0.023(4800)(1.9) \\approx 210$.",
+          "$h = Nu \\cdot k / D = 210 \\cdot 0.6 / 0.02$."
         ],
         solution: "$$ h \\approx 6300 \\, W/m^2K $$"
       },
       {
-        id: "CONV-03",
-        category: "conv",
-        topic: "Cilindro Cruzado",
-        difficulty: "Medium",
-        problem: "Viento a $10 m/s$ incide sobre un cable de alta tensión ($D=2cm$). Estima el número de Nusselt usando la correlación $Nu = C Re^m Pr^{1/3}$. (Para este Re, $C=0.193, m=0.618$). Aire: $\\nu=1.5\\times 10^{-5}$.",
+        id: "CONV-03", category: "conv", difficulty: "Medium", topic: "Cilindro Cruzado",
+        problem: "Viento sobre cable ($D=2cm$). $Re=13333$. Estima Nu usando $C=0.193, m=0.618$.",
         steps: [
-          "Reynolds: $Re = \\frac{VD}{\\nu} = \\frac{10 \\cdot 0.02}{1.5\\times 10^{-5}} = 13333$.",
-          "Aplicamos correlación de Hilpert: $Nu = 0.193 (13333)^{0.618} (0.7)^{1/3}$.",
-          "$13333^{0.618} \\approx 355$.",
-          "$Nu = 0.193 (355) (0.89) \\approx 61$."
+          "$Nu = C Re^m Pr^{1/3}$. Aire $Pr \\approx 0.7$.",
+          "$Nu = 0.193 (13333)^{0.618} (0.7)^{0.33}$.",
+          "$Nu \\approx 0.193 (355) (0.89) \\approx 61$."
         ],
         solution: "$$ Nu \\approx 61 $$"
       },
       {
-        id: "CONV-04",
-        category: "conv",
-        topic: "Convección Natural",
-        difficulty: "Hard",
-        problem: "Una placa vertical de 1m de altura a $50^\\circ C$ en aire a $20^\\circ C$. Calcula el número de Rayleigh.",
+        id: "CONV-04", category: "conv", difficulty: "Hard", topic: "Convección Natural",
+        problem: "Placa vertical caliente. ¿Qué parámetro adimensional determina si es laminar/turbulento?",
         steps: [
-          "Temperatura de película $T_f = (50+20)/2 = 35^\\circ C = 308 K$.",
-          "$\\beta = 1/T_f = 1/308 K^{-1}$.",
-          "$Ra_L = \\frac{g \\beta (T_s - T_\\infty) L^3}{\\nu \\alpha}$.",
-          "Propiedades aire 308K (aprox): $\\nu=1.6\\times 10^{-5}, \\alpha=2.3\\times 10^{-5}$.",
-          "$Ra = \\frac{9.8 (1/308) (30) (1)^3}{(1.6\\times 10^{-5})(2.3\\times 10^{-5})} = \\frac{0.95}{3.68\\times 10^{-10}}$."
+          "En convección natural, el parámetro es el Número de Rayleigh (Ra).",
+          "$Ra = Gr \\cdot Pr$.",
+          "Criterio: $Ra < 10^9$ es laminar, $Ra > 10^9$ es turbulento."
         ],
-        solution: "$$ Ra \\approx 2.58 \\times 10^9 $$"
+        solution: "$$ \\text{Número de Rayleigh (Ra)} $$"
       },
       {
-        id: "CONV-05",
-        category: "conv",
-        topic: "Aleta de Enfriamiento",
-        difficulty: "Hard",
-        problem: "Una aleta de aluminio ($k=200$) de sección rectangular infinita (muy larga) tiene base a $100^\\circ C$ y ambiente a $25^\\circ C$ ($h=10$). Perímetro $P$, Área $A_c$. Calcula temperatura a $x=5cm$.",
+        id: "CONV-05", category: "conv", difficulty: "Hard", topic: "Eficiencia Aleta",
+        problem: "Aleta de aluminio ($k=200$) muy larga. $h=10$, espesor $t=2mm$. Calcula el parámetro $m$.",
         steps: [
-          "Modelo aleta infinita: $\\frac{T(x)-T_\\infty}{T_b-T_\\infty} = e^{-mx}$.",
-          "Parámetro $m = \\sqrt{\\frac{hP}{kA_c}}$. Asumimos aleta delgada espesor $t=2mm$, ancho $w=10cm$.",
-          "$P \\approx 2w = 0.2m, A_c = wt = 0.0002m^2$.",
-          "$m = \\sqrt{\\frac{10 \\cdot 0.2}{200 \\cdot 0.0002}} = \\sqrt{\\frac{2}{0.04}} = \\sqrt{50} \\approx 7.07 m^{-1}$.",
-          "$T(0.05) = 25 + (100-25) e^{-7.07 \\cdot 0.05} = 25 + 75 e^{-0.35}$."
+          "$m = \\sqrt{hP / kA_c}$. Para aleta rectangular ancha, $P \\approx 2w, A_c = wt$.",
+          "$m = \\sqrt{2h / kt} = \\sqrt{20 / (200 \\cdot 0.002)}$.",
+          "$m = \\sqrt{20 / 0.4} = \\sqrt{50} \\approx 7.07$."
         ],
-        solution: "$$ T \\approx 77.8^\\circ C $$"
+        solution: "$$ m \\approx 7.07 \\, m^{-1} $$"
       },
-
-      // ============================================================
-      // RADIACIÓN & INTERCAMBIADORES (5 EJERCICIOS)
-      // ============================================================
+      // ================= RADIACIÓN =================
       {
-        id: "RAD-01",
-        category: "rad",
-        topic: "Cuerpo Negro",
-        difficulty: "Easy",
-        problem: "Una esfera de 10cm de diámetro actúa como cuerpo negro a $800K$. Calcula la potencia emisiva total.",
+        id: "RAD-01", category: "rad", difficulty: "Easy", topic: "Stefan-Boltzmann",
+        problem: "Cuerpo negro esférico ($D=0.1m$) a 800K. Calcula potencia emitida.",
         steps: [
-          "Ley de Stefan-Boltzmann: $E = \\sigma T^4$.",
-          "Potencia $Q = A \\sigma T^4$. Área esfera $A = 4\\pi r^2 = \\pi D^2 = \\pi (0.1)^2 = 0.0314 m^2$.",
-          "$\\sigma = 5.67 \\times 10^{-8} W/m^2K^4$.",
-          "$Q = 0.0314 \\cdot 5.67\\times 10^{-8} \\cdot (800)^4$.",
-          "$800^4 = 4.096 \\times 10^{11}$.",
-          "$Q = 0.0314 \\cdot 5.67 \\cdot 4096 \\approx 729 W$."
+          "Área $A = \\pi D^2 = 0.0314 m^2$.",
+          "$Q = A \\sigma T^4$. $\\sigma = 5.67\\times 10^{-8}$.",
+          "$Q = 0.0314 \\cdot 5.67\\times 10^{-8} \\cdot 4.096\\times 10^{11}$."
         ],
         solution: "$$ Q \\approx 729 \\, W $$"
       },
       {
-        id: "RAD-02",
-        category: "rad",
-        topic: "Factor de Forma",
-        difficulty: "Medium",
-        problem: "Dos discos paralelos coaxiales de diámetro D separados una distancia L=D. Halla $F_{12}$ usando gráficas o fórmulas (aprox).",
+        id: "RAD-02", category: "rad", difficulty: "Medium", topic: "Factor de Visión",
+        problem: "Esfera pequeña ($A_1$) dentro de una esfera grande hueca ($A_2$). ¿Cuánto vale $F_{22}$?",
         steps: [
-          "Para discos paralelos con $R_1 = R_2 = R$ y $L = 2R$.",
-          "Parámetros: $R/L = 0.5$.",
-          "Fórmula compleja o lectura de gráfica: $S = 1 + \\frac{1+R_2^2}{R_1^2}$.",
-          "Valor típico para discos iguales separados por su diámetro: $F_{12} \\approx 0.17$."
+          "Regla de la suma: $F_{11} + F_{12} = 1$. Esfera convexa: $F_{11}=0 \\Rightarrow F_{12}=1$.",
+          "Reciprocidad: $A_1 F_{12} = A_2 F_{21} \\Rightarrow F_{21} = A_1/A_2$.",
+          "Suma para sup 2: $F_{21} + F_{22} = 1$.",
+          "$F_{22} = 1 - A_1/A_2$."
         ],
-        solution: "$$ F_{12} \\approx 0.17 $$"
+        solution: "$$ 1 - (D_1/D_2)^2 $$"
       },
       {
-        id: "RAD-03",
-        category: "rad",
-        topic: "Escudo de Radiación",
-        difficulty: "Hard",
-        problem: "Dos placas infinitas ($\\, \\epsilon=0.8$) a $T_1=1000K$ y $T_2=500K$. Se coloca un escudo ($\\, \\epsilon_s=0.1$) entre ellas. Calcula la reducción de flujo de calor.",
+        id: "RAD-03", category: "rad", difficulty: "Hard", topic: "Escudo Radiación",
+        problem: "Dos placas paralelas infinitas negras. Se inserta un escudo ($\\, \\epsilon=1$) entre ellas. ¿Cuánto se reduce el calor?",
         steps: [
-          "Sin escudo: $q_{12} = \\frac{\\sigma(T_1^4 - T_2^4)}{\\frac{1}{\\epsilon} + \\frac{1}{\\epsilon} - 1} = \\frac{\\sigma(T^4)}{2/0.8 - 1} = \\frac{\\sigma \\Delta T^4}{1.5}$.",
-          "Con escudo: Se forman dos resistencias en serie. Resistencia total $\\approx$ Suma de resistencias.",
-          "Resistencia adicional del escudo (muy alta por bajo $\\epsilon$): $\\frac{1-\\epsilon_s}{\\epsilon_s} \\times 2$ lados.",
-          "Cálculo aproximado: $q_{escudo} = \\frac{\\sigma(T_1^4 - T_2^4)}{R_{eq}}$.",
-          "La relación es aprox $\\frac{1}{N+1}$ si las emisividades fueran iguales, pero aquí el escudo tiene $\\epsilon$ muy bajo, reduciendo drásticamente el flujo."
+          "Original: $Q_0 = \\sigma(T_1^4 - T_2^4)$.",
+          "Con escudo (negro): Se forman 2 resistencias espaciales idénticas.",
+          "El flujo se reduce exactamente a la mitad porque añadimos una resistencia igual en serie."
         ],
-        solution: "$$ \\text{Reducción } > 90\\% $$"
+        solution: "$$ 50\\% $$"
       },
       {
-        id: "HX-01",
-        category: "rad",
-        topic: "Intercambiador LMTD",
-        difficulty: "Medium",
-        problem: "Intercambiador contraflujo. Aceite entra a 100 y sale a 60. Agua entra a 30 y sale a 50. Calcula la LMTD.",
+        id: "RAD-04", category: "rad", difficulty: "Medium", topic: "Intercambiador LMTD",
+        problem: "Contraflujo. Entradas: $100, 30$. Salidas: $60, 50$. Halla LMTD.",
         steps: [
-          "Diferencias de temperatura en extremos:",
-          "$\\Delta T_1 = T_{h,in} - T_{c,out} = 100 - 50 = 50$.",
-          "$\\Delta T_2 = T_{h,out} - T_{c,in} = 60 - 30 = 30$.",
-          "LMTD $\\Delta T_{lm} = \\frac{\\Delta T_1 - \\Delta T_2}{\\ln(\\Delta T_1 / \\Delta T_2)}$.",
-          "$\\Delta T_{lm} = \\frac{50 - 30}{\\ln(50/30)} = \\frac{20}{\\ln(1.66)} = \\frac{20}{0.51}$."
+          "$\\Delta T_1 = 100 - 50 = 50$.",
+          "$\\Delta T_2 = 60 - 30 = 30$.",
+          "$LMTD = (50 - 30) / \\ln(50/30) = 20 / 0.51$."
         ],
-        solution: "$$ \\Delta T_{lm} \\approx 39.2^\\circ C $$"
+        solution: "$$ 39.2^\\circ C $$"
       },
       {
-        id: "HX-02",
-        category: "rad",
-        topic: "Método NTU",
-        difficulty: "Hard",
-        problem: "Se tiene $C_{min} = 1000 W/K$ y $C_{max} = 2000 W/K$. $UA = 1500 W/K$. Calcula la efectividad $\\varepsilon$ para contraflujo.",
+        id: "RAD-05", category: "rad", difficulty: "Hard", topic: "Efectividad NTU",
+        problem: "$C_{min}=1000, UA=1500$. $NTU = 1.5$. $C_r=0$ (Cambio de fase). Halla efectividad.",
         steps: [
-          "Relación de capacidades $C_r = C_{min} / C_{max} = 0.5$.",
-          "Número de Unidades de Transferencia $NTU = UA / C_{min} = 1500/1000 = 1.5$.",
-          "Fórmula efectividad contraflujo: $\\varepsilon = \\frac{1 - e^{-NTU(1-C_r)}}{1 - C_r e^{-NTU(1-C_r)}}$.",
-          "Exponente: $-1.5(0.5) = -0.75$. $e^{-0.75} \\approx 0.472$.",
-          "$\\varepsilon = \\frac{1 - 0.472}{1 - 0.5(0.472)} = \\frac{0.528}{0.764}$."
+          "Para $C_r = 0$ (condensador/evaporador), la fórmula es simple:",
+          "$\\varepsilon = 1 - e^{-NTU}$.",
+          "$\\varepsilon = 1 - e^{-1.5} = 1 - 0.223$."
         ],
-        solution: "$$ \\varepsilon \\approx 0.69 \\quad (69\\%) $$"
+        solution: "$$ \\varepsilon \\approx 0.777 $$"
       }
     ];
 
+    // DOM Elements
+    const grid = document.getElementById('grid');
     const modal = document.getElementById('modal');
-    let currentFilter = 'all';
 
-    function renderGrid(data) {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = data.map((ex, index) => `
-  <article class="exercise-card" style="animation-delay: ${index * 0.05}s" onclick="openModal('${ex.id}')">
-    <div class="card-header">
-      <div class="card-badges">
-        <span class="badge badge-diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
-        <span class="badge badge-topic">${ex.topic}</span>
-      </div>
-      <span class="card-id">${ex.id}</span>
-    </div>
-    <div class="card-body">
-      <div class="problem-preview">${ex.problem}</div>
-    </div>
-    <div class="card-footer">
-      <span class="view-sol-btn">Ver Solución Completa</span>
-    </div>
-  </article>
-  `).join('');
-
-      if (window.MathJax) MathJax.typesetPromise([grid]);
+    // Render Cards
+    function renderGrid(filterType) {
+      grid.innerHTML = '';
+      const filtered = filterType === 'all' ? exercises : exercises.filter(e => e.category === filterType);
+      
+      filtered.forEach((ex, i) => {
+        const card = document.createElement('article');
+        card.className = 'exercise-card';
+        card.style.animationDelay = `${i * 0.05}s`;
+        card.innerHTML = `
+          <div class="card-header">
+            <div class="card-badges">
+              <span class="badge badge-diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
+              <span class="badge badge-topic">${ex.topic}</span>
+            </div>
+            <span class="card-id">${ex.id}</span>
+          </div>
+          <div class="card-body">
+            <div class="problem-preview">${ex.problem}</div>
+          </div>
+          <div class="view-btn">Ver Solución</div>
+        `;
+        card.onclick = () => openModal(ex);
+        grid.appendChild(card);
+      });
+      
+      if(window.MathJax) MathJax.typesetPromise();
     }
 
-    function openModal(id) {
-      const ex = exercises.find(e => e.id === id);
-      if (!ex) return;
-
-      document.getElementById('modal-title').textContent = ex.topic;
-      document.getElementById('modal-id').textContent = ex.id;
-      document.getElementById('modal-problem').innerHTML = ex.problem;
-
-      const stepsContainer = document.getElementById('modal-steps');
-      stepsContainer.innerHTML = '<span class="section-label">Solución Paso a Paso</span>';
-
+    // Modal Logic
+    function openModal(ex) {
+      document.getElementById('m-title').innerText = ex.topic;
+      document.getElementById('m-id').innerText = ex.id;
+      document.getElementById('m-problem').innerHTML = ex.problem;
+      
+      const stepsContainer = document.getElementById('m-steps');
+      stepsContainer.innerHTML = '';
+      
       ex.steps.forEach((step, i) => {
         stepsContainer.innerHTML += `
-  <div class="step-card" style="animation-delay: ${i * 0.1}s">
-    <span class="step-number">PASO ${i + 1}</span>
-    <div class="step-content">${step}</div>
-  </div>
-  `;
+          <div class="step-card" style="animation-delay: ${i*0.1}s">
+            <span class="step-num">PASO ${i+1}</span>
+            <div>${step}</div>
+          </div>
+        `;
       });
 
       stepsContainer.innerHTML += `
-  <div class="final-answer">
-    <span class="final-label">Resultado Final</span>
-    <div class="final-math">${ex.solution}</div>
-  </div>
-  `;
+        <div class="final-ans">
+          <span class="ans-label">Resultado Final</span>
+          <div style="font-size: 1.2rem">${ex.solution}</div>
+        </div>
+      `;
 
       modal.classList.add('active');
-      if (window.MathJax) MathJax.typesetPromise([modal]);
+      if(window.MathJax) MathJax.typesetPromise([modal]);
     }
 
-    function closeModal() {
-      modal.classList.remove('active');
-    }
-
+    function closeModal() { modal.classList.remove('active'); }
+    
     function filterExercises(cat) {
-      currentFilter = cat;
-      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       event.currentTarget.classList.add('active');
-      const filtered = cat === 'all' ? exercises : exercises.filter(e => e.category === cat);
-      renderGrid(filtered);
+      renderGrid(cat);
     }
 
     function toggleTheme() {
       const html = document.documentElement;
-      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
     }
 
-    // Update Progress
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
-    // Simulating progress for demo
+    // Click outside to close
+    modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+
+    // Init
+    renderGrid('all');
+    
+    // Fake Progress Animation
     setTimeout(() => {
-      progressFill.style.width = '20%';
-      progressText.textContent = '3/15';
-    }, 1000);
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Initial Render
-    renderGrid(exercises);
+      document.getElementById('progress-fill').style.width = '20%';
+      document.getElementById('progress-text').innerText = '3/15';
+    }, 500);
 
   </script>
 </body>
-
 </html>
