@@ -1,591 +1,935 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Transferencia de Calor — Teoría ampliada + 144 ejercicios</title>
-<meta name="color-scheme" content="light dark" />
-<!-- MathJax for LaTeX rendering -->
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-  :root{
-    --bg:#f7f9fc; --paper:#ffffff; --ink:#0f172a; --muted:#475569;
-    --brand:#b91c1c; --accent:#f87171; --accent2:#fb923c;
-    --border:#e2e8f0; --shadow:0 8px 28px rgba(15,23,42,.08);
-    --radius:16px; --maxw:80ch; --base:18px; --lh:1.85;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b1220; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9;
-      --brand:#fb7185; --accent:#fca5a5; --accent2:#fdba74; --border:#203054;
-      --shadow:0 10px 26px rgba(0,0,0,.35);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innove | Heat Transfer Suite</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true,
+        tags: 'ams'
+      },
+      options: {
+        renderActions: { addMenu: [] }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* ========================================
+        1. VARIABLES & THEME CONFIGURATION
+        ========================================
+        */
+    :root {
+      /* Dimensions */
+      --sidebar-width: 280px;
+      --header-height: 70px;
+      --card-radius: 16px;
+      --modal-radius: 24px;
+
+      /* Typography */
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Animations */
+      --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+      --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
     }
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    font-size:var(--base); line-height:var(--lh); color:var(--ink);
-    background:radial-gradient(1100px 700px at 80% -10%, #fee2e2 0%, transparent 60%),
-               radial-gradient(900px 600px at 10% 110%, #ffedd5 0%, transparent 65%), var(--bg);
-  }
-  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
-    background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
-    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
-  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
-  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
-  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 70%,white 10%),color-mix(in oklab,var(--accent) 65%,white 20%));
-    color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
-  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
-  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .btn.small{padding:6px 10px;font-weight:700}
-  main{max-width:1200px;margin:0 auto;padding:16px}
-  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
-    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 12%)}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
-  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
-  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
-  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
-  .lead{color:var(--muted)}
-  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border);
-    border-radius:12px;padding:12px 14px;margin:12px 0}
-  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
-  .toc a{display:block;text-decoration:none;border:1px solid var(--border);border-radius:12px;padding:10px 12px;
-    color:color-mix(in oklab,var(--brand) 80%, var(--ink));background:color-mix(in oklab,var(--paper) 88%, transparent)}
-  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%);
-    border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
-  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
-  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border);
-    border-radius:10px;padding:8px 10px;margin:8px 0}
-  summary{cursor:pointer;font-weight:700}
-  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--paper);border:1px solid var(--border);
-    border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
-  .topbtn.show{display:block}
-</style>
+
+    [data-theme="dark"] {
+      /* Backgrounds */
+      --bg-app: #050505;
+      --bg-sidebar: #0a0a0a;
+      --bg-card: #111111;
+      --bg-card-hover: #161616;
+      --bg-modal: #0f0f0f;
+      --bg-input: #1a1a1a;
+
+      /* Text */
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #52525b;
+
+      /* Borders */
+      --border-light: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+
+      /* Accents (Heat Theme) */
+      --accent-primary: #f97316;  /* Orange */
+      --accent-secondary: #ef4444; /* Red */
+      --accent-success: #10b981;
+      --accent-warning: #eab308;
+      --accent-danger: #dc2626;
+
+      /* Shadows */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.6);
+      --glow-primary: 0 0 20px rgba(249, 115, 22, 0.15);
+    }
+
+    [data-theme="light"] {
+      /* Backgrounds */
+      --bg-app: #fff7ed; /* Warm white */
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #fffaf5;
+      --bg-modal: #ffffff;
+      --bg-input: #fcf5f0;
+
+      /* Text */
+      --text-primary: #431407;
+      --text-secondary: #78350f;
+      --text-tertiary: #a8a29e;
+
+      /* Borders */
+      --border-light: rgba(67, 20, 7, 0.08);
+      --border-hover: rgba(67, 20, 7, 0.15);
+
+      /* Accents */
+      --accent-primary: #ea580c;
+      --accent-secondary: #b91c1c;
+      --accent-success: #059669;
+      --accent-warning: #d97706;
+      --accent-danger: #dc2626;
+
+      /* Shadows */
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
+      --glow-primary: 0 0 20px rgba(234, 88, 12, 0.1);
+    }
+
+    /* ========================================
+        2. RESET & UTILITIES
+        ========================================
+        */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-app);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      transition: background-color var(--duration-normal) var(--ease-out);
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; cursor: pointer; font-family: inherit; }
+    ul { list-style: none; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+    /* Typography Utilities */
+    .h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+    .h2 { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
+    .text-muted { color: var(--text-secondary); }
+    .font-mono { font-family: var(--font-mono); }
+
+    /* ========================================
+        3. SIDEBAR NAVIGATION
+        ========================================
+        */
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 100%;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      z-index: 10;
+      transition: transform var(--duration-normal) var(--ease-out);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+      padding-left: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: white;
+      font-size: 1.2rem;
+      box-shadow: var(--glow-primary);
+    }
+
+    .brand-text {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: all var(--duration-fast);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-input);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: rgba(249, 115, 22, 0.1);
+      color: var(--accent-primary);
+    }
+
+    .nav-icon { width: 20px; height: 20px; opacity: 0.7; font-size: 1.2rem; display: grid; place-items: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .stats-card {
+      background: var(--bg-input);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border-hover);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-success);
+      width: 0%;
+      transition: width 1s var(--ease-out);
+    }
+
+    /* ========================================
+        4. MAIN CONTENT AREA
+        ========================================
+        */
+    .main-content {
+      flex-grow: 1;
+      height: 100%;
+      overflow-y: auto;
+      padding: 40px 60px;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+      animation: slideDown 0.6s var(--ease-out);
+    }
+
+    .header-content h1 { margin-bottom: 8px; }
+    .header-content p { max-width: 600px; line-height: 1.6; }
+
+    .theme-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      display: grid;
+      place-items: center;
+      color: var(--text-secondary);
+      transition: all var(--duration-fast);
+    }
+
+    .theme-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      animation: fadeIn 0.8s var(--ease-out);
+    }
+
+    /* ========================================
+        5. EXERCISE GRID & CARDS
+        ========================================
+        */
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      padding-bottom: 60px;
+    }
+
+    .exercise-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--card-radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--duration-fast);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s var(--ease-out) backwards;
+    }
+
+    .exercise-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-primary);
+      box-shadow: var(--glow-primary);
+      background: var(--bg-card-hover);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-diff-easy { background: rgba(16, 185, 129, 0.1); color: var(--accent-success); }
+    .badge-diff-medium { background: rgba(234, 179, 8, 0.1); color: var(--accent-warning); }
+    .badge-diff-hard { background: rgba(239, 68, 68, 0.1); color: var(--accent-danger); }
+    
+    .badge-topic {
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    .card-id { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); }
+
+    .card-body { flex-grow: 1; margin-bottom: 20px; }
+
+    .problem-preview {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .view-sol-btn {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-sol-btn::after { content: '→'; transition: transform 0.2s; }
+    .exercise-card:hover .view-sol-btn::after { transform: translateX(4px); }
+
+    /* ========================================
+        6. FULL SCREEN MODAL
+        ========================================
+        */
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity var(--duration-normal);
+    }
+
+    .modal-backdrop.active { display: flex; justify-content: center; align-items: center; opacity: 1; }
+
+    .modal-content {
+      width: 90%; max-width: 1000px; height: 90%;
+      background: var(--bg-modal);
+      border-radius: var(--modal-radius);
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-lg);
+      display: flex; flex-direction: column;
+      transform: scale(0.95) translateY(20px);
+      transition: transform var(--duration-normal) var(--ease-out);
+      overflow: hidden;
+    }
+
+    .modal-backdrop.active .modal-content { transform: scale(1) translateY(0); }
+
+    .modal-header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg-card);
+    }
+
+    .modal-title-group h2 { margin-bottom: 4px; }
+    .modal-subtitle { font-family: var(--font-mono); color: var(--text-tertiary); font-size: 0.9rem; }
+
+    .close-modal-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-input); color: var(--text-secondary);
+      display: grid; place-items: center; font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+
+    .close-modal-btn:hover { background: var(--accent-danger); color: white; transform: rotate(90deg); }
+
+    .modal-body {
+      flex-grow: 1; overflow-y: auto; padding: 40px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+    }
+
+    .problem-section { padding-right: 40px; border-right: 1px solid var(--border-light); }
+    .solution-section { padding-left: 10px; }
+
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent-primary); margin-bottom: 16px; display: block;
+    }
+
+    .problem-text { font-size: 1.25rem; line-height: 1.7; margin-bottom: 32px; }
+
+    .step-card {
+      background: var(--bg-input);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 3px solid var(--accent-secondary);
+      animation: slideInRight 0.5s var(--ease-out) backwards;
+    }
+
+    .step-number {
+      font-family: var(--font-mono); font-size: 0.8rem;
+      color: var(--text-secondary); margin-bottom: 8px; display: block;
+    }
+
+    .final-answer {
+      margin-top: 40px; padding: 24px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--accent-success);
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .final-label {
+      color: var(--accent-success); font-weight: 700;
+      text-transform: uppercase; font-size: 0.8rem;
+      margin-bottom: 12px; display: block;
+    }
+
+    /* ========================================
+        7. ANIMATIONS
+        ========================================
+        */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar { width: 80px; padding: 16px; }
+      .brand-text, .nav-text, .stats-card { display: none; }
+      .brand { justify-content: center; padding: 0; }
+      .nav-item { justify-content: center; padding: 16px; }
+      .main-content { padding: 20px; }
+      .modal-body { grid-template-columns: 1fr; }
+      .problem-section { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 30px; margin-bottom: 30px; padding-right: 0; }
+      .solution-section { padding-left: 0; }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="progress" id="progress"></div>
-  <div class="topbar">
-    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <a class="brand" href="#top">
-        <div class="badge">♨️</div>
-        <div>
-          <h1 class="brand-title">Transferencia de Calor</h1>
-          <div class="lead">Teoría ampliada, fórmulas claras y 12×12 ejercicios con respuestas breves</div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">Q</div>
+      <span class="brand-text">Innove</span>
+    </div>
+
+    <nav class="nav-menu">
+      <button class="nav-item active" onclick="filterExercises('all')">
+        <span class="nav-icon">🔥</span>
+        <span class="nav-text">Todo</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('cond')">
+        <span class="nav-icon">🧱</span>
+        <span class="nav-text">Conducción</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('conv')">
+        <span class="nav-icon">💨</span>
+        <span class="nav-text">Convección</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('rad')">
+        <span class="nav-icon">☢️</span>
+        <span class="nav-text">Radiación/HX</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="stats-card">
+        <div class="stat-row">
+          <span>Progreso</span>
+          <span id="progress-text">0/15</span>
         </div>
-      </a>
-      <div class="reader">
-        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
-        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
-        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
-        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
-        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div class="header-content">
+        <h1 class="h1">Transferencia de Calor</h1>
+        <p class="text-muted">Banco de ejercicios de examen. Conducción, convección, radiación e intercambiadores de calor.</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-btn" onclick="toggleTheme()">☀</button>
+      </div>
+    </header>
+
+    <div class="exercise-grid" id="grid">
+      </div>
+  </main>
+
+  <div class="modal-backdrop" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 class="h2" id="modal-title">Título</h2>
+          <span class="modal-subtitle" id="modal-id">ID</span>
+        </div>
+        <button class="close-modal-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="problem-section">
+          <span class="section-label">Enunciado</span>
+          <div class="problem-text" id="modal-problem"></div>
+        </div>
+        <div class="solution-section" id="modal-steps">
+          <span class="section-label">Solución Paso a Paso</span>
+          </div>
       </div>
     </div>
   </div>
 
-  <main>
-    <section class="paper" id="top">
-      <h1>Guía de Transferencia de Calor</h1>
-      <p class="lead">Doce capítulos: propiedades térmicas, <strong>conducción (1D/2D/transitoria)</strong>, <strong>aletas</strong>, <strong>convección (interna/externa/natural)</strong>, <strong>radiación</strong>, <strong>intercambiadores</strong>, <strong>ebullición/condensación</strong> y <strong>combinada</strong>. Cada capítulo trae <strong>ejemplos resueltos</strong> y <strong>12 ejercicios</strong> con respuesta o pista.</p>
-      <div class="callout"><strong>Uso recomendado.</strong> Lee objetivos, revisa el cuadro de fórmulas, estudia 2–4 ejemplos y resuelve los 12 problemas (📝). Ajusta tamaño, ancho y tema desde la barra.</div>
-      <div class="toc">
-        <a href="#cap1">1. Propiedades térmicas y conceptos base</a>
-        <a href="#cap2">2. Conducción estacionaria 1D</a>
-        <a href="#cap3">3. Conducción radial y multicapas</a>
-        <a href="#cap4">4. Aletas: eficiencia y efectividad</a>
-        <a href="#cap5">5. Conducción transitoria</a>
-        <a href="#cap6">6. Convección interna (ductos)</a>
-        <a href="#cap7">7. Convección externa (placas/cilindros)</a>
-        <a href="#cap8">8. Convección natural</a>
-        <a href="#cap9">9. Radiación: fundamentos</a>
-        <a href="#cap10">10. Radiación entre superficies</a>
-        <a href="#cap11">11. Intercambiadores de calor (LMTD & ε–NTU)</a>
-        <a href="#cap12">12. Ebullición y condensación</a>
-      </div>
-    </section>
-
-    <!-- ============ CAP 1 ============ -->
-    <section class="paper" id="cap1">
-      <h2>1. Propiedades térmicas y conceptos base</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Manejar \(k\) (conductividad), \(c_p\), \(\rho\), difusividad \(\alpha=\tfrac{k}{\rho c_p}\), calor específico, calor latente, fuentes internas \(\dot q'''\) y leyes básicas.</div>
-      <div class="callout"><strong>📌 Fórmulas clave.</strong>
-        <ul>
-          <li>Ley de Fourier: \(\vec q=-k\,\nabla T\). Flujo superficial: \(q''= -k\,dT/dx\) en 1D.</li>
-          <li>Conservación de energía (diferencial, sin movimiento): \(\rho c_p\,\tfrac{\partial T}{\partial t}=k\nabla^2 T+\dot q'''\).</li>
-          <li>Números adimensionales: \(Bi=\dfrac{hL_c}{k}\), \(Fo=\dfrac{\alpha t}{L_c^2}\), \(Nu=\dfrac{hL}{k}\), \(Pr=\dfrac{\nu}{\alpha}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (3)</h4>
-        <ol>
-          <li><details><summary>Flujo de calor a través de pared homogénea</summary>\(q''=k\,(T_1-T_2)/L\).</details></li>
-          <li><details><summary>Estimación de tiempo de enfriamiento (orden de magnitud)</summary>\(t\sim L^2/\alpha\) si Bi grande → difusivo.</details></li>
-          <li><details><summary>¿Modelo concentrado?</summary>Si \(Bi<0.1\), el sólido puede tratarse isótérmico (lumped capacitance).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Calcula \(\alpha\) para Al 6061: k=167 W/mK, \(\rho=2700\), \(c_p=896\)</summary>\(\alpha\approx6.9\times10^{-5}\,\text{m}^2/\text{s}\).</details></li>
-          <li><details><summary>\(Bi\) de esfera (R=1 cm) en aire (h=20, k=200)</summary>\(L_c=V/A=R/3\Rightarrow Bi\approx0.0033\) → lumped ok.</details></li>
-          <li><details><summary>\(Nu\) define...</summary>\(Nu=hL/k\).</details></li>
-          <li><details><summary>Calor latente de fusión define...</summary>Energía por unidad de masa al cambiar de fase a T constante.</details></li>
-          <li><details><summary>\(Fo=0.2\), \(L_c=1\,\text{cm}\), \(\alpha=1e{-5}\)</summary>\(t=Fo L_c^2/\alpha=200\,\text{s}\).</details></li>
-          <li><details><summary>Signo de \(q''\)</summary>Negativo si T decrece con x; el calor fluye de mayor a menor T.</details></li>
-          <li><details><summary>\(k\) vs \(T\) para metales</summary>Suele disminuir con T (orden de magnitud).</details></li>
-          <li><details><summary>\(c_p\) mayor: aire o acero</summary>Aire por masa menor; por unidad de masa, aire \(\sim1000\) J/kgK.</details></li>
-          <li><details><summary>Unidades de \(\dot q'''\)</summary>W/m³.</details></li>
-          <li><details><summary>Define \(L_c\) en placa plana</summary>\(L_c=V/A=\tfrac{t}{2}\) para placa grande.</details></li>
-          <li><details><summary>Flujo 1D condición</summary>Gradientes sólo en una coordenada y propiedades uniformes.</details></li>
-          <li><details><summary>Conservación energía sin generación y estacionario</summary>\(\nabla^2 T=0\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 2 ============ -->
-    <section class="paper" id="cap2">
-      <h2>2. Conducción estacionaria 1D</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Resolver paredes planas con/ sin generación, resistencias térmicas y contacto; incluir convección superficial.</div>
-      <div class="callout"><strong>📌 Fórmulas.</strong>
-        <ul>
-          <li>Pared sin generación: \(q=\dfrac{T_s-T_\infty}{R_{tot}}\), con \(R_{cond}=L/(kA)\) y \(R_{conv}=1/(hA)\).</li>
-          <li>Pared con \(\dot q'''\) uniforme: \(T(x)=T_0+\tfrac{\dot q'''}{2k}(Lx-x^2)\) (ejemplo placa simétrica).</li>
-          <li>Resistencia de contacto térmico \(R_c\) (empírico); total en serie/paralelo.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (3)</h4>
-        <ol>
-          <li><details><summary>Pared compuesta con convección de ambos lados</summary>\(R_{tot}=1/(h_i A)+\sum L_i/(k_i A)+1/(h_o A)\).</details></li>
-          <li><details><summary>Placa con generación interna</summary>Máximo en el centro; \(T_{max}-T_s=\dot q''' L^2/(8k)\).</details></li>
-          <li><details><summary>Crítica del aislamiento cilíndrico</summary>Para cilindro: \(r_{crit}=k_{ais}/h\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Pared 0.1 m, k=1.2, \(h_i=h_o=10\), \(T_i=80\), \(T_o=20\)</summary>\(R_{tot}=0.1/(1.2A)+2/(10A)=0.183/A\) → \(q/A\approx327\,W/m^2\).</details></li>
-          <li><details><summary>\(T_{max}-T_s\) en placa con \(\dot q'''=1e6\), L=0.02, k=200</summary>\(=\,1e6·0.02^2/(8·200)=0.25\,K\).</details></li>
-          <li><details><summary>Agrega contacto \(R_c=1e{-4}\,\text{m}^2K/W\)</summary>\(q''=(T_i-T_o)/(R_{tot}+R_c)\).</details></li>
-          <li><details><summary>¿Conviene aislar cilindro con h=8, k_ais=0.04?</summary>\(r_{crit}=5\,\text{mm}\). Si \(r<r_{crit}\), aislar ↑ q.</details></li>
-          <li><details><summary>Temperatura intermedia en sándwich</summary>Usa división proporcional por resistencias.</details></li>
-          <li><details><summary>Pared multicapas equivalente</summary>\(k_{eq}=L_{tot}A/\sum(L_i A k_i^{-1})\).</details></li>
-          <li><details><summary>Calor perdido en 5 m² de pared anterior</summary>\(\dot Q= q'' A\).</details></li>
-          <li><details><summary>Si \(h_o\) aumenta al doble</summary>\(R_{conv,o}\) se reduce a la mitad, q'' ↑.</details></li>
-          <li><details><summary>Fuga por puente térmico</summary>Paralelo: sumar conductancias.</details></li>
-          <li><details><summary>Pregunta conceptual</summary>El perfil T en pared homogénea sin generación es lineal.</details></li>
-          <li><details><summary>Unidades de \(R\)</summary>\(\text{K/W}\) (o \(\text{m}^2\text{K/W}\) para por área).</details></li>
-          <li><details><summary>\(U\) global</summary>\(U=1/R'_{tot}\) por unidad de área.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 3 ============ -->
-    <section class="paper" id="cap3">
-      <h2>3. Conducción radial y multicapas</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Paredes cilíndricas/esféricas, aislamiento, pérdidas en tuberías y tanques.</div>
-      <div class="callout"><strong>📌 Fórmulas.</strong>
-        <ul>
-          <li>Cilindro: \(q=\dfrac{2\pi L k (T_1-T_2)}{\ln(r_2/r_1)}\), \(R=\ln(r_2/r_1)/(2\pi L k)\).</li>
-          <li>Esfera: \(q=4\pi k\dfrac{(T_1-T_2)}{(1/r_1-1/r_2)}\), \(R=(1/r_1-1/r_2)^{-1}/(4\pi k)\).</li>
-          <li>Multicapas: resistencias radiales en serie.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Tubería con aislamiento</summary>Calcula \(R_{cil}+R_{ais}+R_{conv,o}\) y \(q=(T_i-T_\infty)/R_{tot}\).</details></li>
-          <li><details><summary>Esfera hueca</summary>Aplica \(R_{esf}\) para cada capa.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Tubería: r1=0.02, r2=0.03, k=0.04, L=5, \(T_i=80\), \(T_o=20\)</summary>Calcula \(q\) radial (sin convección).</details></li>
-          <li><details><summary>Agrega convección externa h=10</summary>\(R_{conv}=1/(h·2\pi r_2 L)\).</details></li>
-          <li><details><summary>\(r_{crit}\) para k=0.06, h=12</summary>\(=5\,\text{mm}\).</details></li>
-          <li><details><summary>Temperatura en interfaz capa1–capa2</summary>Usa caída proporcional \(qR\).</details></li>
-          <li><details><summary>Aislamiento doble: ¿mejora?</summary>Depende de k y espesores; suma resistencias.</details></li>
-          <li><details><summary>Esfera con \(k\) variable</summary>Trata \(k(T)\) por promedio logarítmico (aprox.).</details></li>
-          <li><details><summary>Pérdidas por 20 m de tubería</summary>\(\dot Q=q\) (estacionario) por unidad de longitud × longitud.</details></li>
-          <li><details><summary>Contacto radial \(R_c\)</summary>Añade en serie.</details></li>
-          <li><details><summary>\(q\) aumenta al reducir r2</summary>Menor \(R\) → mayor q.</details></li>
-          <li><details><summary>Esfera maciza</summary>Área diverge a \(4\pi r^2\); perfil no lineal.</details></li>
-          <li><details><summary>Unidades de \(R_{rad}\)</summary>K/W.</details></li>
-          <li><details><summary>Optimiza espesor para \(q\) objetivo</summary>Resuelve \(q=(T_i-T_o)/R_{tot}\) para r2.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 4 ============ -->
-    <section class="paper" id="cap4">
-      <h2>4. Aletas: eficiencia y efectividad</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Diseñar aletas para maximizar transferencia con masa mínima.</div>
-      <div class="callout"><strong>📌 Fórmulas.</strong>
-        <ul>
-          <li>Parámetro \(m=\sqrt{\dfrac{hP}{kA_c}}\).</li>
-          <li>Aleta recta, punta adiabática: \(\eta_f=\tanh(mL)/(mL)\).</li>
-          <li>Efectividad: \(\varepsilon_f=\dfrac{Q_f}{hA_b\,(T_b-T_\infty)}\). Útil si \(\varepsilon_f>2\) (regla).</li>
-          <li>Superficie aleteada global: \(\eta_o=\dfrac{A_b h + \sum \eta_f A_{f} h}{h(A_b+\sum A_f)}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Aleta de placa delgada (Al)</summary>Calcula \(mL\), \(\eta_f\), \(Q_f\).</details></li>
-          <li><details><summary>Batería de tubos aleteados</summary>\(\eta_o\) para muchas aletas idénticas.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>k=200, h=30, t=1 mm, P≈2, A_c≈t·1, L=20 mm</summary>\(mL\) y \(\eta_f\).</details></li>
-          <li><details><summary>¿Cuándo no conviene aleta?</summary>\(k\) bajo o \(h\) muy alto → \(mL\) grande, \(\eta_f\) baja.</details></li>
-          <li><details><summary>Punta isoterma</summary>Usa solución con \(\cosh\) y \(\sinh\).</details></li>
-          <li><details><summary>\(\eta_o\) con 70% área aleteada y \(\eta_f=0.9\)</summary>\(\eta_o=0.1+0.9×0.9=0.91\).</details></li>
-          <li><details><summary>Incremento de masa por aletas</summary>Compara W añadida vs ganancia térmica.</details></li>
-          <li><details><summary>Aleta cónica</summary>Definir \(m(x)\) → aproximar por promedio.</details></li>
-          <li><details><summary>Selección de material</summary>Al vs Cu: Cu mejor \(k\) pero más pesado/caro.</details></li>
-          <li><details><summary>Optimización de L</summary>\(\partial Q/\partial L=0\) (conceptual).</details></li>
-          <li><details><summary>Pin fin (cilíndrica)</summary>Usa \(m=\sqrt{hP/(kA_c)}\) con \(P=\pi d\).</details></li>
-          <li><details><summary>Comparar \(Q\) con/ sin aleta</summary>Evalúa \(\varepsilon_f\).</details></li>
-          <li><details><summary>Efecto de pintura</summary>Pintura ↓ \(k\) local, ↑ \(\varepsilon\) radiativa (si radiación relevante).</details></li>
-          <li><details><summary>Radiación incluida</summary>Usa \(h_{eq}=h_{conv}+h_{rad}\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 5 ============ -->
-    <section class="paper" id="cap5">
-      <h2>5. Conducción transitoria</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Sistemas concentrados (Bi pequeño), tablas de Heisler, capas semi-infinitas y respuesta temporal.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li><strong>Lumped</strong>: \(Bi<0.1\), \(\dfrac{T-T_\infty}{T_i-T_\infty}=\exp\big(-\tfrac{hA}{\rho c_p V} t\big)=\exp(-t/\tau)\).</li>
-          <li><strong>Heisler</strong>: placas, cilindros, esferas (tablas con \(Fo\), \(Bi\)).</li>
-          <li><strong>Semi-infinito</strong>: \(\dfrac{T(x,t)-T_s}{T_i-T_s}=\operatorname{erf}\big(\tfrac{x}{2\sqrt{\alpha t}}\big)\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Enfriamiento de cilindro (lumped)</summary>Calcula \(\tau=\rho c_p V/(hA)\).</details></li>
-          <li><details><summary>Penetración térmica en sólido semi-infinito</summary>Profundidad \(\delta\sim 4\sqrt{\alpha t}\) (definición práctica).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(Bi\) de placa: t=10 mm, k=50, h=100</summary>\(L_c=t/2\Rightarrow Bi=0.01\): lumped válido.</details></li>
-          <li><details><summary>Tiempo para caer al 10% (lumped)</summary>\(t=-\tau\ln 0.1\). </details></li>
-          <li><details><summary>\(Fo=0.2\) con \(L_c=5\,mm\), \(\alpha=1e{-5}\)</summary>\(t=50\,s\).</details></li>
-          <li><details><summary>Temperatura a x=1 cm, t=10 min, semi-inf.</summary>Usa erf; calcula argumento.</details></li>
-          <li><details><summary>Condición inicial distinta</summary>Superposición si cambios por pasos.</details></li>
-          <li><details><summary>Bi=0.3: ¿Heisler o lumped?</summary>Heisler.</details></li>
-          <li><details><summary>\(h\) duplica → \(\tau\) ...</summary>Se reduce a la mitad.</details></li>
-          <li><details><summary>Intercambio de calor total en enfriamiento</summary>\(Q=\rho c_p V (T_i-T_f)\).</details></li>
-          <li><details><summary>Pared con generación transitoria</summary>Suma particular + homogénea (noción).</details></li>
-          <li><details><summary>Señal térmica periódica</summary>Profundidad de penetración \(\delta_p=\sqrt{2\alpha/\omega}\).</details></li>
-          <li><details><summary>Medición de \(\alpha\)</summary>Desde respuesta de impulso térmico.</details></li>
-          <li><details><summary>Enfriamiento criogénico</summary>Verifica Bi; \(k\) varía con T.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 6 ============ -->
-    <section class="paper" id="cap6">
-      <h2>6. Convección interna (ductos)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Coeficiente \(h\) en tuberías/canales; correlaciones laminar/turbulento y desarrollo térmico.</div>
-      <div class="callout"><strong>📌 Correlaciones comunes.</strong>
-        <ul>
-          <li>Laminar totalmente desarrollado: \(Nu=4.36\) (flujo de calor uniforme), \(Nu=3.66\) (T_s uniforme).
-          </li>
-          <li>Turbulento liso (Dittus–Boelter): \(Nu=0.023 Re^{0.8} Pr^n\), \(n=0.4\) (calentando), \(0.3\) (enfriando), \(0.6\lesssim Pr\lesssim160\).</li>
-          <li>Entrada térmica: Sieder–Tate: \(Nu=1.86 (Re Pr D/L)^{1/3}(\mu/\mu_w)^{0.14}\) (laminar).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Agua en tubo D=25 mm, V=1 m/s</summary>Calcula Re, elige régimen y \(h=Nu·k/D\).</details></li>
-          <li><details><summary>Canal rectangular</summary>Usa diámetro hidráulico \(D_h=4A/P\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Re con \(\nu=1e{-6}\), D=0.02, V=2</summary>\(Re=4e4\).</details></li>
-          <li><details><summary>\(Nu\) D–B con Re=5e4, Pr=7</summary>≈ 0.023×(5e4)^0.8×7^0.4.</details></li>
-          <li><details><summary>\(h\) si k=0.6 y D=0.02</summary>\(h=Nu k/D\).</details></li>
-          <li><details><summary>Entrada térmica L=0.5 m</summary>Evalúa Sieder–Tate.</details></li>
-          <li><details><summary>Superficie rugosa</summary>Usa correlación con rugosidad (nota conceptual).</details></li>
-          <li><details><summary>Fluidización (noción)</summary>Granular → coeficientes altos.</details></li>
-          <li><details><summary>Caída de presión</summary>Acopla con capítulo de flujo interno.</details></li>
-          <li><details><summary>Refrigerantes con Pr alto</summary>Ajusta n en D–B.</details></li>
-          <li><details><summary>Calentamiento vs enfriamiento</summary>\(n\) cambia.</details></li>
-          <li><details><summary>\(Nu\) para aire (Pr≈0.7)</summary>Calcula numéricamente.</details></li>
-          <li><details><summary>Microcanales</summary>Efectos de rarefacción (Knudsen) si D muy pequeño.</details></li>
-          <li><details><summary>Propiedades a T de film</summary>Promedia a \(T_f=(T_s+T_b)/2\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 7 ============ -->
-    <section class="paper" id="cap7">
-      <h2>7. Convección externa (placas/cilindros)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Estimar \(h\) en flujo sobre superficies externas.</div>
-      <div class="callout"><strong>📌 Correlaciones.</strong>
-        <ul>
-          <li>Placa plana laminar: \(Nu_x=0.332 Re_x^{1/2} Pr^{1/3}\); promedio hasta L: \(Nu_L=0.664 Re_L^{1/2} Pr^{1/3}\).</li>
-          <li>Mixta: \(Nu_L=0.037 Re_L^{0.8}-871\) (Pr≈0.7).</li>
-          <li>Cilindro cruzado (Churchill–Bernstein): \(Nu=0.3+\dfrac{0.62 Re^{1/2} Pr^{1/3}}{[1+(0.4/Pr)^{2/3}]^{1/4}}\Big[1+\big(\tfrac{Re}{282000}\big)^{5/8}\Big]^{4/5}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Placa L=0.5 m a 80°C en aire 20°C, U=5 m/s</summary>Calcula Re_L, decide régimen, \(Nu_L\) y \(h\).</details></li>
-          <li><details><summary>Cable cilindro Ø10 mm, aire 2 m/s</summary>Churchill–Bernstein para \(Nu\) y \(h\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Re_x en x=0.2 m con U=3, \(\nu=1.5e{-5}\)</summary>\(=4e4\).</details></li>
-          <li><details><summary>\(Nu_L\) laminar (Pr=0.7), L=0.3, U=2</summary>Evalúa fórmula.</details></li>
-          <li><details><summary>Estimación de \(h\) si k=0.026</summary>\(h=Nu k/L\).</details></li>
-          <li><details><summary>Transición a turbulento</summary>\(Re_x\sim5e5\).</details></li>
-          <li><details><summary>Cilindro Re=2e4, Pr=0.7</summary>\(Nu\) con C–B.</details></li>
-          <li><details><summary>Efecto de rugosidad</summary>Puede adelantar transición.</details></li>
-          <li><details><summary>Placa invertida</summary>Similar si U igual; gravedad afecta capa térmica en natural.</details></li>
-          <li><details><summary>Dirección del calor</summary>\(h\) depende débilmente del signo (aire).</details></li>
-          <li><details><summary>Propiedades a T film</summary>\(T_f=(T_s+T_\infty)/2\).</details></li>
-          <li><details><summary>Dos placas paralelas externas</summary>Interacción de estelas (conceptual).</details></li>
-          <li><details><summary>Coeficiente local vs promedio</summary>\(h_x>h_{prom}\) cerca del borde de ataque.</details></li>
-          <li><details><summary>Estimación de potencia de ventilador</summary>Acopla con caída de presión (flujo externo: potencia aerodinámica).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 8 ============ -->
-    <section class="paper" id="cap8">
-      <h2>8. Convección natural</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Flujos por flotabilidad (\(Ra=Gr·Pr\)).</div>
-      <div class="callout"><strong>📌 Correlaciones típicas.</strong>
-        <ul>
-          <li>Placa vertical: \(Nu_L=0.68+\dfrac{0.670 Ra_L^{1/4}}{[1+(0.492/Pr)^{9/16}]^{4/9}}\), \(10^{-1}\le Ra\le 10^9\).</li>
-          <li>Cilindro horizontal: \(Nu=0.36+\dfrac{0.518 Ra^{1/4}}{[1+(0.559/Pr)^{9/16}]^{4/9}}\).</li>
-          <li>Regímenes: lámina (\(Ra\lesssim10^9\)) vs turbulento.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Radiador vertical a 60°C en sala 20°C</summary>Calcula \(\beta\), \(\Delta T\), \(Ra_L\), luego \(Nu\) y \(h\).</details></li>
-          <li><details><summary>Cilindro caliente en aire quieto</summary>Usa correlación para \(Nu\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\beta\) para gas ideal</summary>\(\beta=1/T\) (K⁻¹).</details></li>
-          <li><details><summary>\(Ra\) con \(g\beta\Delta T L^3/(\nu\alpha)\)</summary>Evalúa con datos.</details></li>
-          <li><details><summary>\(h\) estimado</summary>\(h=Nu k/L\).</details></li>
-          <li><details><summary>Placa calentada hacia abajo</summary>Inestable → convección fuerte.</details></li>
-          <li><details><summary>Placa enfriada hacia arriba</summary>Estable → convección débil.</details></li>
-          <li><details><summary>Aire vs agua: Pr</summary>Agua Pr≫1: BL térmica delgada.</details></li>
-          <li><details><summary>Cambio de altitud</summary>\(\nu, \alpha\) y \(\beta\) cambian (conceptual).</details></li>
-          <li><details><summary>Placa muy alta</summary>Transición a turbulento si \(Ra\) grande.</details></li>
-          <li><details><summary>Rendijas verticales</summary>Convección confinada: correlaciones específicas.</details></li>
-          <li><details><summary>Microgravedad</summary>\(g\to0\) → natural desaparece.</details></li>
-          <li><details><summary>Propiedades a T film</summary>\(T_f=(T_s+T_\infty)/2\).</details></li>
-          <li><details><summary>Radiación simultánea</summary>Usa \(h_{eq}=h_{conv}+h_{rad}\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 9 ============ -->
-    <section class="paper" id="cap9">
-      <h2>9. Radiación: fundamentos</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Emisión, absorción, reflectancia, <em>cuerpo negro</em>, ley de Stefan–Boltzmann y ley de desplazamiento.</div>
-      <div class="callout"><strong>📌 Fórmulas.</strong>
-        <ul>
-          <li>Cuerpo negro: \(E_b=\sigma T^4\), \(\sigma=5.67\times10^{-8}\,\text{W/m}^2\text{K}^4\).</li>
-          <li>Superficie gris/difrusa: \(E=\varepsilon \sigma T^4\), \(\alpha=\varepsilon\) (ley de Kirchhoff).</li>
-          <li>Intercambio con entorno grande: \(q=\varepsilon\sigma A (T_s^4-T_{sur}^4)\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Placa a 500 K frente a entorno 300 K</summary>\(q''=\varepsilon\sigma (T_s^4-T_{sur}^4)\).</details></li>
-          <li><details><summary>Cambio de \(\varepsilon\)</summary>Pintura negra mate ↑ \(\varepsilon\) → ↑ radiación.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(E_b\) a 700 K</summary>\(\sigma T^4\).</details></li>
-          <li><details><summary>\(q''\) con \(\varepsilon=0.8\)</summary>Evalúa numéricamente.</details></li>
-          <li><details><summary>¿Siempre \(\alpha=\varepsilon\)?</summary>Sólo en equilibrio radiativo, superficies grises.</details></li>
-          <li><details><summary>Longitud de onda pico</summary>Wien: \(\lambda_{max} T\approx 2898\,\mu\text{m·K}\).</details></li>
-          <li><details><summary>Placa a 300 K con entorno 300 K</summary>\(q=0\) (radiación neta nula si solo radiación).</details></li>
-          <li><details><summary>Superficie pulida</summary>\(\varepsilon\) baja → menor intercambio radiativo.</details></li>
-          <li><details><summary>Verificación dimensional de \(\sigma\)</summary>W/m²K⁴.</details></li>
-          <li><details><summary>Espectro solar pico ~0.5 μm</summary>Consistente con \(T\) ≈ 5800 K.</details></li>
-          <li><details><summary>Escudo radiante</summary>Interponer pantalla reduce \(q\).</details></li>
-          <li><details><summary>Radiación vs convección</summary>Compara magnitudes para decidir relevancia.</details></li>
-          <li><details><summary>Área efectiva</summary>Proyección importa para radiación direccional (noción).</details></li>
-          <li><details><summary>\(h_{rad}\) equivalente</summary>\(4\varepsilon\sigma T_m^3\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 10 ============ -->
-    <section class="paper" id="cap10">
-      <h2>10. Radiación entre superficies</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Factores de forma, redes radiativas, superficies grises y cavidades.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Dos superficies grandes paralelas (grises, difusas): \(q''=\dfrac{\sigma(T_1^4-T_2^4)}{\dfrac{1}{\varepsilon_1}+\dfrac{1}{\varepsilon_2}-1}\).</li>
-          <li>Factor de forma: \(A_1F_{12}=A_2F_{21}\), \(\sum_j F_{1j}=1\).</li>
-          <li>Red equivalente: resistencias radiativas superficiales y espaciales.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Paralelas con \(\varepsilon_1=0.8\), \(\varepsilon_2=0.4\)</summary>Aplica fórmula de \(q''\).</details></li>
-          <li><details><summary>Recinto con pantalla intermedia</summary>Reduce \(q\) (resistencias en serie).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(F_{12}\) placa–placa paralelas</summary>≈1 (si grandes).</details></li>
-          <li><details><summary>\(F_{12}\) placa pequeña frente a grande</summary>\(F\approx A_{pequeña}/A_{grande}\).</details></li>
-          <li><details><summary>Conservación de \(F\)</summary>\(A_1F_{12}=A_2F_{21}\).</details></li>
-          <li><details><summary>Esfera concéntrica</summary>\(F_{12}=1\).</details></li>
-          <li><details><summary>Recinto cúbico</summary>Simetría → \(F\) iguales por caras opuestas.</details></li>
-          <li><details><summary>\(q''\) cambia al pulir una cara</summary>\(\varepsilon\) ↓ → \(q''\) ↓.</details></li>
-          <li><details><summary>Red radiativa: nodos</summary>Potenciales \(J=\varepsilon\sigma T^4+(1-\varepsilon)G\).</details></li>
-          <li><details><summary>Pequeña apertura</summary>Aproxima como cuerpo negro (cavidad).</details></li>
-          <li><details><summary>Múltiples pantallas</summary>Resistencias en serie suman.</details></li>
-          <li><details><summary>Choque con convección</summary>Usa \(h_{eq}\) para combinar.</details></li>
-          <li><details><summary>\(T\) efectiva de cielo</summary>\(T_{sky}<T_{amb}\) → radiación neta hacia cielo.</details></li>
-          <li><details><summary>Blindaje térmico</summary>Materiales con baja \(\varepsilon\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 11 ============ -->
-    <section class="paper" id="cap11">
-      <h2>11. Intercambiadores de calor (LMTD & \(\varepsilon\)–NTU)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Seleccionar, dimensionar y evaluar desempeño de intercambiadores.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>LMTD: \(\dot Q=U A \Delta T_{lm} F\). Flujo paralelo/contracorriente: \(\Delta T_{lm}=\dfrac{\Delta T_1-\Delta T_2}{\ln(\Delta T_1/\Delta T_2)}\). Factor \(F\le1\).</li>
-          <li>\(\varepsilon\)–NTU: \(\varepsilon=\dfrac{\dot Q}{C_{min}(T_{h,i}-T_{c,i})}\), \(NTU=\dfrac{UA}{C_{min}}\), \(C_r=\dfrac{C_{min}}{C_{max}}\).</li>
-          <li>Contracorriente: \(\varepsilon=\dfrac{1-\exp[-NTU(1+C_r)]}{1+C_r\,\exp[-NTU(1+C_r)]}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (3)</h4>
-        <ol>
-          <li><details><summary>Calcula área con LMTD y U</summary>Obtén \(\Delta T_1, \Delta T_2\), halla \(\Delta T_{lm}\) y despeja \(A\).</details></li>
-          <li><details><summary>Predice salida con \(\varepsilon\)–NTU</summary>Con \(NTU\), \(C_r\) → \(\varepsilon\) → temperaturas de salida.</details></li>
-          <li><details><summary>Resistencias en U</summary>\(1/U=1/h_i+R_{wall}+1/h_o+R_f\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Paralelo: \(T_{h,i}=100\), \(T_{h,o}=60\), \(T_{c,i}=20\), \(T_{c,o}=50\)</summary>\(\Delta T_1=50\), \(\Delta T_2=40\), \(\Delta T_{lm}\approx44.3\,K\).</details></li>
-          <li><details><summary>\(U=400\), \(\dot Q=200\,kW\), \(\Delta T_{lm}=30\)</summary>\(A=\dot Q/(U\Delta T_{lm})\approx16.7\,m^2\).</details></li>
-          <li><details><summary>\(NTU=2\), \(C_r=0.5\) contracorriente</summary>\(\varepsilon≈0.76\) (aprox.).</details></li>
-          <li><details><summary>Área mínima para \(\varepsilon=0.8\)</summary>Calcula NTU requerido y \(A=NTU C_{min}/U\).</details></li>
-          <li><details><summary>Fouling</summary>\(R_f\) ↑ → U ↓.</details></li>
-          <li><details><summary>Balance de energía</summary>\(\dot m_h c_{p,h}(T_{h,i}-T_{h,o})=\dot m_c c_{p,c}(T_{c,o}-T_{c,i})\).</details></li>
-          <li><details><summary>Config. de 1–2 pasos</summary>Usa factor \(F\).</details></li>
-          <li><details><summary>Enfriador de aceite (Pr alto)</summary>Coefs distintos por lado.</details></li>
-          <li><details><summary>Calcular \(C_{min}\)</summary>Menor \(\dot m c_p\).</details></li>
-          <li><details><summary>Intercambiador cruzado</summary>Curvas \(\varepsilon\)(NTU, \(C_r\)).</details></li>
-          <li><details><summary>Bypass en carcasa</summary>Efecto en U efectivo.</details></li>
-          <li><details><summary>Paralelo vs contracorriente</summary>Contracorriente más eficiente (mayor \(\Delta T_{lm}\)).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ CAP 12 ============ -->
-    <section class="paper" id="cap12">
-      <h2>12. Ebullición y condensación</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Comprender regímenes de ebullición y condensación de película/goteo.</div>
-      <div class="callout"><strong>📌 Ideas y fórmulas.</strong>
-        <ul>
-          <li>Ebullición: natural vs forzada, nucleada vs película; curva de ebullición con \(q''\)–\(\Delta T\); CHF (Kruzhilin/Zuber, noción).</li>
-          <li>Rohsenow (nucleada, noción): \(q''\propto \mu_l h_{fg} [g(\rho_l-\rho_v)/\sigma]^{1/2} \big(\dfrac{\Delta T}{C_{sf} h_{fg}}\big)^n Pr_l^s\).</li>
-          <li>Condensación de película (Nusselt, placa vertical): \(h\propto \big(\dfrac{k_l^3 \rho_l^2 (\rho_l-\rho_v) g h_{fg}}{\mu_l L \Delta T}\big)^{1/4}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Condensador de placa</summary>Estima \(h\) por Nusselt y \(\dot Q=hA\Delta T\).</details></li>
-          <li><details><summary>Ebullición en resistencia eléctrica</summary>Verifica que \(q''\) < CHF para seguridad.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Identifica régimen en curva de ebullición</summary>Nucleado → alta \(q''\) y pequeñas \(\Delta T\).</details></li>
-          <li><details><summary>\(h\) en condensación ↑ o ↓ con L</summary>\(h\propto L^{-1/4}\): ↓ con L.</details></li>
-          <li><details><summary>Agentes humectantes</summary>Reducen \(\sigma\): afecta nucleación.</details></li>
-          <li><details><summary>Condensación en tubo</summary>Coeficientes mayores que en placa.</details></li>
-          <li><details><summary>Presión reduce \(h_{fg}\)</summary>Facilita ebullición.</details></li>
-          <li><details><summary>CHF depende de gravedad</summary>Menor g → menor CHF.</details></li>
-          <li><details><summary>Goteo vs película</summary>Goteo mucho más eficiente (\(h\) ↑).</details></li>
-          <li><details><summary>Ensuciamiento</summary>R_f ↑ → U ↓.</details></li>
-          <li><details><summary>Seguridad térmica</summary>Margen \(q''_{op}/q''_{CHF}\).</details></li>
-          <li><details><summary>Nucleación en superficies rugosas</summary>Favorece inicio de ebullición.</details></li>
-          <li><details><summary>Refrigeración por ebullición</summary>Alta remoción de calor por \(h_{fg}\).</details></li>
-          <li><details><summary>Vapor puro vs mezcla</summary>Mezclas complican \(h\) (difusión masiva).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="paper">
-      <h2>Errores típicos y trucos</h2>
-      <ul>
-        <li>Aplicar correlaciones fuera de rango (Re/Pr/Ra) → verifica validez.</li>
-        <li>Usar propiedades a T equivocada → usa temperatura de film.</li>
-        <li>Ignorar radiación a T altas (&gt;400 K) → incluir \(h_{rad}\).</li>
-        <li>Suponer lumped con Bi&gt;0.1 → usar Heisler o solución transitoria.</li>
-        <li>En intercambiadores, olvidar fouling/ensuciamiento → ajusta U.</li>
-      </ul>
-    </section>
-  </main>
-
-  <button class="topbtn" id="topbtn">↑ Arriba</button>
-
   <script>
-    const $ = s => document.querySelector(s);
-    const bar = $('#progress');
-    function updateProgress(){
-      const h=document.documentElement; const sc=h.scrollTop||document.body.scrollTop;
-      const max=(h.scrollHeight-h.clientHeight); const p=max>0?(sc/max)*100:0; bar.style.width=p+'%';
-      $('#topbtn').classList.toggle('show', sc>600);
-    }
-    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    const exercises = [
+      // ============================================================
+      // CONDUCCIÓN (5 EJERCICIOS)
+      // ============================================================
+      {
+        id: "COND-01",
+        category: "cond",
+        topic: "Pared Compuesta",
+        difficulty: "Medium",
+        problem: "Un horno tiene una pared de ladrillo ($k_1=1.2 \\, W/mK$, $L_1=0.2m$) y una capa de aislante ($k_2=0.05 \\, W/mK$). Si $T_{int}=1000^\\circ C$, $T_{ext}=30^\\circ C$ y la pérdida máxima permitida es $500 \\, W/m^2$, calcula el espesor mínimo de aislante ($L_2$).",
+        steps: [
+          "Circuito térmico en serie: $R_{total} = R_{ladrillo} + R_{aislante}$.",
+          "$R_{lad} = \\frac{L_1}{k_1} = \\frac{0.2}{1.2} \\approx 0.167 \\, m^2K/W$.",
+          "Sabemos que $q'' = \\frac{\\Delta T}{R_{total}} \\Rightarrow R_{total} = \\frac{1000-30}{500} = 1.94 \\, m^2K/W$.",
+          "$R_{aisl} = R_{total} - R_{lad} = 1.94 - 0.167 = 1.773 \\, m^2K/W$.",
+          "Espesor aislante: $L_2 = R_{aisl} \\cdot k_2 = 1.773 \\cdot 0.05$."
+        ],
+        solution: "$$ L_2 \\approx 0.089 \\, m \\quad (8.9 \\, cm) $$"
+      },
+      {
+        id: "COND-02",
+        category: "cond",
+        topic: "Radio Crítico",
+        difficulty: "Medium",
+        problem: "Un cable eléctrico de 2mm de diámetro se recubre con plástico ($k=0.15 \\, W/mK$) expuesto a aire con $h=20 \\, W/m^2K$. Determina si añadir aislamiento mejora la refrigeración.",
+        steps: [
+          "Radio crítico de aislamiento: $r_{cr} = \\frac{k_{aisl}}{h_{ext}}$.",
+          "$r_{cr} = \\frac{0.15}{20} = 0.0075 \\, m = 7.5 \\, mm$.",
+          "Radio del cable $r_{cable} = 1 \\, mm$.",
+          "Como $r_{cable} < r_{cr}$, añadir aislamiento aumenta el área superficial más rápido que la resistencia conductiva, mejorando la transferencia de calor hasta alcanzar los 7.5mm."
+        ],
+        solution: "$$ \\text{Sí, mejora hasta } r=7.5mm $$"
+      },
+      {
+        id: "COND-03",
+        category: "cond",
+        topic: "Generación Interna",
+        difficulty: "Hard",
+        problem: "Una pared plana de espesor $2L=4cm$ y $k=20 W/mK$ genera calor volumétrico $\\dot{q}=10^6 W/m^3$. Superficies a $T_s = 100^\\circ C$. Halla la temperatura máxima en el centro.",
+        steps: [
+          "Ecuación de difusión 1D con generación: $\\frac{d^2T}{dx^2} + \\frac{\\dot{q}}{k} = 0$.",
+          "Solución perfil parabólico: $T(x) = \\frac{\\dot{q}L^2}{2k}(1 - \\frac{x^2}{L^2}) + T_s$.",
+          "Máxima en $x=0$. $L=0.02m$.",
+          "$T_{max} = T(0) = \\frac{10^6 (0.02)^2}{2(20)} + 100$.",
+          "$T_{max} = \\frac{400}{40} + 100 = 10 + 100$."
+        ],
+        solution: "$$ T_{max} = 110^\\circ C $$"
+      },
+      {
+        id: "COND-04",
+        category: "cond",
+        topic: "Transitorio (Lumped)",
+        difficulty: "Medium",
+        problem: "Una bola de acero ($k=50, \\rho=7800, c=450$) de 1cm de diámetro a $300^\\circ C$ se enfría en aire a $25^\\circ C$ ($h=100$). Verifica el método de capacitancia global y calcula el tiempo para llegar a $100^\\circ C$.",
+        steps: [
+          "Longitud característica $L_c = V/A = r/3 = 0.005/3 \\approx 0.00167 m$.",
+          "Número de Biot: $Bi = \\frac{h L_c}{k} = \\frac{100 \\cdot 0.00167}{50} \\approx 0.0033$.",
+          "Como $Bi < 0.1$, el método de capacitancia global es válido.",
+          "Constante de tiempo $\\tau = \\frac{\\rho V c}{h A} = \\frac{\\rho (L_c) c}{h} = \\frac{7800 \\cdot 0.00167 \\cdot 450}{100} = 58.6 \\, s$.",
+          "$\\frac{T-T_\\infty}{T_i - T_\\infty} = e^{-t/\\tau} \\Rightarrow \\frac{100-25}{300-25} = e^{-t/58.6}$.",
+          "$0.2727 = e^{-t/58.6} \\Rightarrow t = -58.6 \\ln(0.2727)$."
+        ],
+        solution: "$$ t \\approx 76.1 \\, s $$"
+      },
+      {
+        id: "COND-05",
+        category: "cond",
+        topic: "Sólido Semi-infinito",
+        difficulty: "Hard",
+        problem: "El suelo ($k=0.5, \\alpha=0.15 \\times 10^{-6} m^2/s$) está a $20^\\circ C$. De repente la superficie baja a $-10^\\circ C$. ¿A qué profundidad se congela ($0^\\circ C$) tras 12 horas?",
+        steps: [
+          "Modelo sólido semi-infinito con T constante en superficie.",
+          "$\\frac{T(x,t) - T_s}{T_i - T_s} = \\text{erf}\\left( \\frac{x}{2\\sqrt{\\alpha t}} \\right)$.",
+          "$\\frac{0 - (-10)}{20 - (-10)} = \\frac{10}{30} = 0.333 = \\text{erf}(\\eta)$.",
+          "De tablas, $\\text{erf}(0.37) \\approx 0.333 \\Rightarrow \\eta = 0.37$.",
+          "$x = 2\\eta \\sqrt{\\alpha t}$. Tiempo $t = 12 \\times 3600 = 43200 s$.",
+          "$x = 2(0.37) \\sqrt{0.15\\times 10^{-6} \\cdot 43200} = 0.74 \\sqrt{0.00648}$."
+        ],
+        solution: "$$ x \\approx 0.06 \\, m \\quad (6 \\, cm) $$"
+      },
+      
+      // ============================================================
+      // CONVECCIÓN (5 EJERCICIOS)
+      // ============================================================
+      {
+        id: "CONV-01",
+        category: "conv",
+        topic: "Placa Plana (Laminar)",
+        difficulty: "Medium",
+        problem: "Aire a $25^\\circ C$ fluye a $5 m/s$ sobre una placa a $75^\\circ C$. Calcula el coeficiente $h$ promedio a 0.5m del borde. ($\\nu = 1.6\\times 10^{-5} m^2/s, k=0.026$)",
+        steps: [
+          "Reynolds: $Re_x = \\frac{V x}{\\nu} = \\frac{5 \\cdot 0.5}{1.6\\times 10^{-5}} = 1.56\\times 10^5$.",
+          "Como $Re < 5\\times 10^5$, el flujo es laminar.",
+          "Correlación Nusselt local: $Nu_x = 0.332 Re^{1/2} Pr^{1/3}$. (Asumir Pr aprox 0.7)",
+          "Nusselt promedio $\\overline{Nu}_L = 2 Nu_{x=L} = 0.664 Re_L^{1/2} Pr^{1/3}$.",
+          "$\\overline{Nu} = 0.664 \\sqrt{156000} (0.7)^{1/3} \\approx 233$.",
+          "$\\overline{h} = \\frac{\\overline{Nu} k}{L} = \\frac{233 \\cdot 0.026}{0.5}$."
+        ],
+        solution: "$$ \\overline{h} \\approx 12.1 \\, W/m^2K $$"
+      },
+      {
+        id: "CONV-02",
+        category: "conv",
+        topic: "Flujo en Tubería",
+        difficulty: "Hard",
+        problem: "Agua fluye por un tubo ($D=0.02m$) a $0.5 kg/s$. Calcula $h$ usando Dittus-Boelter ($n=0.4$). Propiedades a temp media: $\\mu=8\\times 10^{-4}, k=0.6, Pr=5$.",
+        steps: [
+          "Velocidad o Reynolds directo: $Re_D = \\frac{4 \\dot{m}}{\\pi D \\mu}$.",
+          "$Re_D = \\frac{4(0.5)}{\\pi(0.02)(8\\times 10^{-4})} = \\frac{2}{5.02\\times 10^{-5}} \\approx 39800$.",
+          "Flujo turbulento ($Re > 10000$). Usamos Dittus-Boelter.",
+          "$Nu_D = 0.023 Re^{0.8} Pr^{0.4}$.",
+          "$Nu_D = 0.023 (39800)^{0.8} (5)^{0.4} \\approx 0.023(4800)(1.9) \\approx 210$.",
+          "$h = \\frac{Nu k}{D} = \\frac{210 \\cdot 0.6}{0.02}$."
+        ],
+        solution: "$$ h \\approx 6300 \\, W/m^2K $$"
+      },
+      {
+        id: "CONV-03",
+        category: "conv",
+        topic: "Cilindro Cruzado",
+        difficulty: "Medium",
+        problem: "Viento a $10 m/s$ incide sobre un cable de alta tensión ($D=2cm$). Estima el número de Nusselt usando la correlación $Nu = C Re^m Pr^{1/3}$. (Para este Re, $C=0.193, m=0.618$). Aire: $\\nu=1.5\\times 10^{-5}$.",
+        steps: [
+          "Reynolds: $Re = \\frac{VD}{\\nu} = \\frac{10 \\cdot 0.02}{1.5\\times 10^{-5}} = 13333$.",
+          "Aplicamos correlación de Hilpert: $Nu = 0.193 (13333)^{0.618} (0.7)^{1/3}$.",
+          "$13333^{0.618} \\approx 355$.",
+          "$Nu = 0.193 (355) (0.89) \\approx 61$."
+        ],
+        solution: "$$ Nu \\approx 61 $$"
+      },
+      {
+        id: "CONV-04",
+        category: "conv",
+        topic: "Convección Natural",
+        difficulty: "Hard",
+        problem: "Una placa vertical de 1m de altura a $50^\\circ C$ en aire a $20^\\circ C$. Calcula el número de Rayleigh.",
+        steps: [
+          "Temperatura de película $T_f = (50+20)/2 = 35^\\circ C = 308 K$.",
+          "$\\beta = 1/T_f = 1/308 K^{-1}$.",
+          "$Ra_L = \\frac{g \\beta (T_s - T_\\infty) L^3}{\\nu \\alpha}$.",
+          "Propiedades aire 308K (aprox): $\\nu=1.6\\times 10^{-5}, \\alpha=2.3\\times 10^{-5}$.",
+          "$Ra = \\frac{9.8 (1/308) (30) (1)^3}{(1.6\\times 10^{-5})(2.3\\times 10^{-5})} = \\frac{0.95}{3.68\\times 10^{-10}}$."
+        ],
+        solution: "$$ Ra \\approx 2.58 \\times 10^9 $$"
+      },
+      {
+        id: "CONV-05",
+        category: "conv",
+        topic: "Aleta de Enfriamiento",
+        difficulty: "Hard",
+        problem: "Una aleta de aluminio ($k=200$) de sección rectangular infinita (muy larga) tiene base a $100^\\circ C$ y ambiente a $25^\\circ C$ ($h=10$). Perímetro $P$, Área $A_c$. Calcula temperatura a $x=5cm$.",
+        steps: [
+          "Modelo aleta infinita: $\\frac{T(x)-T_\\infty}{T_b-T_\\infty} = e^{-mx}$.",
+          "Parámetro $m = \\sqrt{\\frac{hP}{kA_c}}$. Asumimos aleta delgada espesor $t=2mm$, ancho $w=10cm$.",
+          "$P \\approx 2w = 0.2m, A_c = wt = 0.0002m^2$.",
+          "$m = \\sqrt{\\frac{10 \\cdot 0.2}{200 \\cdot 0.0002}} = \\sqrt{\\frac{2}{0.04}} = \\sqrt{50} \\approx 7.07 m^{-1}$.",
+          "$T(0.05) = 25 + (100-25) e^{-7.07 \\cdot 0.05} = 25 + 75 e^{-0.35}$."
+        ],
+        solution: "$$ T \\approx 77.8^\\circ C $$"
+      },
 
-    const root=document.documentElement;
-    $('#fs-up').addEventListener('click', ()=>{
-      const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18;
-      root.style.setProperty('--base', Math.min(val+1, 22)+'px');
-    });
-    $('#fs-down').addEventListener('click', ()=>{
-      const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18;
-      root.style.setProperty('--base', Math.max(val-1, 14)+'px');
-    });
-    $('#width-up').addEventListener('click', ()=>{
-      const w=getComputedStyle(root).getPropertyValue('--maxw')||'80ch'; const num=parseFloat(w);
-      root.style.setProperty('--maxw', Math.min(num+8, 96)+'ch');
-    });
-    $('#width-down').addEventListener('click', ()=>{
-      const w=getComputedStyle(root).getPropertyValue('--maxw')||'80ch'; const num=parseFloat(w);
-      root.style.setProperty('--maxw', Math.max(num-8, 56)+'ch');
-    });
-    $('#theme-toggle').addEventListener('click', ()=>{
-      const light=getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff';
-      if(light){
-        root.style.setProperty('--bg','#0b1220'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff');
-        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#fb7185'); root.style.setProperty('--accent','#fca5a5'); root.style.setProperty('--accent2','#fdba74'); root.style.setProperty('--border','#203054');
-      }else{
-        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#0f172a');
-        root.style.setProperty('--muted','#475569'); root.style.setProperty('--brand','#b91c1c'); root.style.setProperty('--accent','#f87171'); root.style.setProperty('--accent2','#fb923c'); root.style.setProperty('--border','#e2e8f0');
+      // ============================================================
+      // RADIACIÓN & INTERCAMBIADORES (5 EJERCICIOS)
+      // ============================================================
+      {
+        id: "RAD-01",
+        category: "rad",
+        topic: "Cuerpo Negro",
+        difficulty: "Easy",
+        problem: "Una esfera de 10cm de diámetro actúa como cuerpo negro a $800K$. Calcula la potencia emisiva total.",
+        steps: [
+          "Ley de Stefan-Boltzmann: $E = \\sigma T^4$.",
+          "Potencia $Q = A \\sigma T^4$. Área esfera $A = 4\\pi r^2 = \\pi D^2 = \\pi (0.1)^2 = 0.0314 m^2$.",
+          "$\\sigma = 5.67 \\times 10^{-8} W/m^2K^4$.",
+          "$Q = 0.0314 \\cdot 5.67\\times 10^{-8} \\cdot (800)^4$.",
+          "$800^4 = 4.096 \\times 10^{11}$.",
+          "$Q = 0.0314 \\cdot 5.67 \\cdot 4096 \\approx 729 W$."
+        ],
+        solution: "$$ Q \\approx 729 \\, W $$"
+      },
+      {
+        id: "RAD-02",
+        category: "rad",
+        topic: "Factor de Forma",
+        difficulty: "Medium",
+        problem: "Dos discos paralelos coaxiales de diámetro D separados una distancia L=D. Halla $F_{12}$ usando gráficas o fórmulas (aprox).",
+        steps: [
+          "Para discos paralelos con $R_1 = R_2 = R$ y $L = 2R$.",
+          "Parámetros: $R/L = 0.5$.",
+          "Fórmula compleja o lectura de gráfica: $S = 1 + \\frac{1+R_2^2}{R_1^2}$.",
+          "Valor típico para discos iguales separados por su diámetro: $F_{12} \\approx 0.17$."
+        ],
+        solution: "$$ F_{12} \\approx 0.17 $$"
+      },
+      {
+        id: "RAD-03",
+        category: "rad",
+        topic: "Escudo de Radiación",
+        difficulty: "Hard",
+        problem: "Dos placas infinitas ($\\, \\epsilon=0.8$) a $T_1=1000K$ y $T_2=500K$. Se coloca un escudo ($\\, \\epsilon_s=0.1$) entre ellas. Calcula la reducción de flujo de calor.",
+        steps: [
+          "Sin escudo: $q_{12} = \\frac{\\sigma(T_1^4 - T_2^4)}{\\frac{1}{\\epsilon} + \\frac{1}{\\epsilon} - 1} = \\frac{\\sigma(T^4)}{2/0.8 - 1} = \\frac{\\sigma \\Delta T^4}{1.5}$.",
+          "Con escudo: Se forman dos resistencias en serie. Resistencia total $\\approx$ Suma de resistencias.",
+          "Resistencia adicional del escudo (muy alta por bajo $\\epsilon$): $\\frac{1-\\epsilon_s}{\\epsilon_s} \\times 2$ lados.",
+          "Cálculo aproximado: $q_{escudo} = \\frac{\\sigma(T_1^4 - T_2^4)}{R_{eq}}$.",
+          "La relación es aprox $\\frac{1}{N+1}$ si las emisividades fueran iguales, pero aquí el escudo tiene $\\epsilon$ muy bajo, reduciendo drásticamente el flujo."
+        ],
+        solution: "$$ \\text{Reducción } > 90\\% $$"
+      },
+      {
+        id: "HX-01",
+        category: "rad",
+        topic: "Intercambiador LMTD",
+        difficulty: "Medium",
+        problem: "Intercambiador contraflujo. Aceite entra a 100 y sale a 60. Agua entra a 30 y sale a 50. Calcula la LMTD.",
+        steps: [
+          "Diferencias de temperatura en extremos:",
+          "$\\Delta T_1 = T_{h,in} - T_{c,out} = 100 - 50 = 50$.",
+          "$\\Delta T_2 = T_{h,out} - T_{c,in} = 60 - 30 = 30$.",
+          "LMTD $\\Delta T_{lm} = \\frac{\\Delta T_1 - \\Delta T_2}{\\ln(\\Delta T_1 / \\Delta T_2)}$.",
+          "$\\Delta T_{lm} = \\frac{50 - 30}{\\ln(50/30)} = \\frac{20}{\\ln(1.66)} = \\frac{20}{0.51}$."
+        ],
+        solution: "$$ \\Delta T_{lm} \\approx 39.2^\\circ C $$"
+      },
+      {
+        id: "HX-02",
+        category: "rad",
+        topic: "Método NTU",
+        difficulty: "Hard",
+        problem: "Se tiene $C_{min} = 1000 W/K$ y $C_{max} = 2000 W/K$. $UA = 1500 W/K$. Calcula la efectividad $\\varepsilon$ para contraflujo.",
+        steps: [
+          "Relación de capacidades $C_r = C_{min} / C_{max} = 0.5$.",
+          "Número de Unidades de Transferencia $NTU = UA / C_{min} = 1500/1000 = 1.5$.",
+          "Fórmula efectividad contraflujo: $\\varepsilon = \\frac{1 - e^{-NTU(1-C_r)}}{1 - C_r e^{-NTU(1-C_r)}}$.",
+          "Exponente: $-1.5(0.5) = -0.75$. $e^{-0.75} \\approx 0.472$.",
+          "$\\varepsilon = \\frac{1 - 0.472}{1 - 0.5(0.472)} = \\frac{0.528}{0.764}$."
+        ],
+        solution: "$$ \\varepsilon \\approx 0.69 \\quad (69\\%) $$"
       }
+    ];
+
+    const modal = document.getElementById('modal');
+    let currentFilter = 'all';
+
+    function renderGrid(data) {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = data.map((ex, index) => `
+  <article class="exercise-card" style="animation-delay: ${index * 0.05}s" onclick="openModal('${ex.id}')">
+    <div class="card-header">
+      <div class="card-badges">
+        <span class="badge badge-diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
+        <span class="badge badge-topic">${ex.topic}</span>
+      </div>
+      <span class="card-id">${ex.id}</span>
+    </div>
+    <div class="card-body">
+      <div class="problem-preview">${ex.problem}</div>
+    </div>
+    <div class="card-footer">
+      <span class="view-sol-btn">Ver Solución Completa</span>
+    </div>
+  </article>
+  `).join('');
+
+      if (window.MathJax) MathJax.typesetPromise([grid]);
+    }
+
+    function openModal(id) {
+      const ex = exercises.find(e => e.id === id);
+      if (!ex) return;
+
+      document.getElementById('modal-title').textContent = ex.topic;
+      document.getElementById('modal-id').textContent = ex.id;
+      document.getElementById('modal-problem').innerHTML = ex.problem;
+
+      const stepsContainer = document.getElementById('modal-steps');
+      stepsContainer.innerHTML = '<span class="section-label">Solución Paso a Paso</span>';
+
+      ex.steps.forEach((step, i) => {
+        stepsContainer.innerHTML += `
+  <div class="step-card" style="animation-delay: ${i * 0.1}s">
+    <span class="step-number">PASO ${i + 1}</span>
+    <div class="step-content">${step}</div>
+  </div>
+  `;
+      });
+
+      stepsContainer.innerHTML += `
+  <div class="final-answer">
+    <span class="final-label">Resultado Final</span>
+    <div class="final-math">${ex.solution}</div>
+  </div>
+  `;
+
+      modal.classList.add('active');
+      if (window.MathJax) MathJax.typesetPromise([modal]);
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    function filterExercises(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      const filtered = cat === 'all' ? exercises : exercises.filter(e => e.category === cat);
+      renderGrid(filtered);
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    // Update Progress
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    // Simulating progress for demo
+    setTimeout(() => {
+      progressFill.style.width = '20%';
+      progressText.textContent = '3/15';
+    }, 1000);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
     });
-    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Initial Render
+    renderGrid(exercises);
+
   </script>
 </body>
-</html>
 
+</html>
