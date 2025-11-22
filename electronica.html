@@ -1,569 +1,464 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Electrónica — Teoría PRO + 168 ejercicios</title>
-<meta name="color-scheme" content="light dark"/>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-  :root{
-    --bg:#f6fff8; --paper:#ffffff; --ink:#0b1220; --muted:#475569;
-    --brand:#10b981; --accent:#34d399; --accent2:#22d3ee;
-    --border:#e2e8f0; --shadow:0 10px 30px rgba(15,23,42,.10);
-    --radius:16px; --maxw:86ch; --base:18px; --lh:1.85;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{ --bg:#06100d; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9; --brand:#34d399; --accent:#6ee7b7; --accent2:#22d3ee; --border:#203054; --shadow:0 12px 28px rgba(0,0,0,.38);} }
-  *{box-sizing:border-box}
-  body{ margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; font-size:var(--base); line-height:var(--lh); color:var(--ink);
-    background:radial-gradient(1200px 740px at 95% -10%, #d1fae5 0%, transparent 60%),
-               radial-gradient(1000px 680px at 0% 120%, #ccfbf1 0%, transparent 75%), var(--bg); }
-  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:80; background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .topbar{position:sticky; top:0; z-index:70; backdrop-filter:blur(10px) saturate(140%);
-    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
-  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px}
-  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
-  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 75%,white 10%),color-mix(in oklab,var(--accent) 65%,white 15%)); color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
-  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
-  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .btn.small{padding:6px 10px;font-weight:700}
-  .layout{max-width:1400px; margin:0 auto; padding:16px; display:grid; grid-template-columns: 290px 1fr; gap:16px}
-  @media (max-width: 980px){ .layout{ grid-template-columns: 1fr } .aside{ position:static } }
-  .aside{ position:sticky; top:74px; height:calc(100dvh - 88px); overflow:auto; border-right:1px dashed var(--border); padding-right:10px }
-  .navcard{background:var(--paper); border:1px solid var(--border); border-radius:14px; padding:12px; box-shadow:var(--shadow)}
-  .navcard h3{margin:.2em 0 .6em; font-size:1.0em}
-  .navcard a{display:block; padding:.28em .5em; margin:.1em 0; text-decoration:none; border-radius:10px; color:color-mix(in oklab,var(--brand) 85%, var(--ink));}
-  .navcard a:hover{background:color-mix(in oklab,var(--paper) 82%, var(--accent) 8%)}
-  main{padding:0 2px}
-  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
-    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 16%)}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
-  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.1em 0 .6em}
-  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
-  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
-  .lead{color:var(--muted)}
-  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border); border-radius:12px;padding:12px 14px;margin:12px 0}
-  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
-  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border); border-radius:10px;padding:8px 10px;margin:8px 0}
-  summary{cursor:pointer;font-weight:700}
-  code.k{display:block; white-space:pre; overflow:auto; padding:.8em; border:1px solid var(--border); border-radius:12px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
-  .tag{display:inline-block; padding:.2em .55em; border:1px solid var(--border); border-radius:999px; font-size:.78em; margin-right:.4em; color:var(--muted)}
-  .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:12px}
-  .topbtn{position:fixed;right:16px;bottom:20px;z-index:60;background:var(--paper);border:1px solid var(--border); border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
-  .topbtn.show{display:block}
-  .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, monospace; border:1px solid var(--border); padding:.1em .4em; border-radius:6px; background:color-mix(in oklab,var(--paper) 90%, transparent)}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innove | Electronics Engineering Suite</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true
+            },
+            options: { renderActions: { addMenu: [] } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* =========================================
+           1. DISEÑO VISUAL & VARIABLES
+           ========================================= */
+        :root {
+            --primary: #2563eb;       /* Royal Blue */
+            --primary-glow: rgba(37, 99, 235, 0.3);
+            --accent: #06b6d4;        /* Cyan */
+            --bg-body: #f0f4f8;       /* Gris azulado muy claro */
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.6);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --radius: 20px;
+        }
+
+        /* MODO OSCURO (Activado con clase .dark) */
+        body.dark {
+            --bg-body: #0f172a;
+            --bg-glass: rgba(30, 41, 59, 0.7);
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.05);
+            --primary: #60a5fa;
+            --primary-glow: rgba(96, 165, 250, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+            transition: background 0.3s ease;
+            padding-bottom: 60px;
+        }
+
+        /* =========================================
+           2. HEADER & NAVEGACIÓN
+           ========================================= */
+        .navbar {
+            position: sticky; top: 20px; z-index: 100;
+            width: 90%; max-width: 1200px; margin: 0 auto 40px auto;
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 15px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            font-weight: 800; font-size: 1.5rem; letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .nav-tabs {
+            display: flex; gap: 5px; background: rgba(0,0,0,0.05);
+            padding: 5px; border-radius: 50px;
+        }
+
+        .tab-btn {
+            background: transparent; border: none; padding: 10px 20px;
+            border-radius: 40px; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-card); color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .theme-toggle {
+            background: var(--bg-card); border: 1px solid var(--border);
+            width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; font-size: 1.2rem; display: grid; place-items: center;
+            transition: transform 0.2s;
+        }
+        .theme-toggle:hover { transform: rotate(15deg); }
+
+        /* =========================================
+           3. GRID DE EJERCICIOS
+           ========================================= */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .section-title {
+            margin-bottom: 30px; font-size: 2rem; font-weight: 800;
+            text-align: center; letter-spacing: -0.03em;
+        }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 25px;
+            position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            display: flex; flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -5px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            padding: 6px 12px; border-radius: 8px; letter-spacing: 0.5px;
+        }
+        .bg-analog { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .bg-digital { background: rgba(6, 182, 212, 0.1); color: var(--accent); }
+
+        .problem-text {
+            font-size: 1rem; line-height: 1.6; color: var(--text-main);
+            margin-bottom: 20px; flex-grow: 1;
+        }
+
+        /* =========================================
+           4. SOLUCIÓN DESPLEGABLE (PREMIUM)
+           ========================================= */
+        details { margin-top: auto; }
+        
+        summary {
+            list-style: none; cursor: pointer;
+            padding: 12px 0; font-weight: 600; font-size: 0.9rem;
+            color: var(--text-muted); display: flex; align-items: center; gap: 8px;
+            transition: color 0.2s;
+        }
+        
+        summary:hover { color: var(--primary); }
+        summary::before { content: "Add"; font-family: "Material Icons"; content: "+"; font-size: 1.2rem; }
+        details[open] summary::before { content: "-"; }
+
+        .solution-box {
+            background: var(--bg-body); border-radius: 12px; padding: 20px;
+            margin-top: 10px; border: 1px solid var(--border);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .step {
+            display: flex; gap: 15px; margin-bottom: 15px;
+        }
+        
+        .step-num {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--primary); color: white;
+            font-size: 0.75rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 2px;
+        }
+
+        .step-content { font-size: 0.9rem; line-height: 1.5; color: var(--text-main); }
+
+        .final-res {
+            margin-top: 15px; padding: 12px; text-align: center;
+            background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(6,182,212,0.1));
+            border-radius: 8px; border: 1px solid var(--primary-glow);
+            color: var(--primary); font-family: 'JetBrains Mono', monospace; font-weight: 700;
+        }
+
+        /* MathJax Fix */
+        mjx-container { font-size: 1.05em !important; }
+
+    </style>
 </head>
+
 <body>
-  <div class="progress" id="progress"></div>
-  <div class="topbar">
-    <div class="wrap">
-      <a class="brand" href="#top">
-        <div class="badge">🔌</div>
-        <div>
-          <h1 class="brand-title">Electrónica</h1>
-          <div class="lead">Teoría clara, diseño práctico y 14×12 ejercicios con respuestas</div>
-        </div>
-      </a>
-      <div class="reader">
-        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
-        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
-        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
-        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
-        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
-      </div>
-    </div>
-  </div>
 
-  <div class="layout">
-    <aside class="aside">
-      <div class="navcard">
-        <h3>Índice</h3>
-        <nav id="sidenav">
-          <a href="#cap1">1. Semiconductores y diodos</a>
-          <a href="#cap2">2. Rectificación y acondicionamiento</a>
-          <a href="#cap3">3. BJT: polarización DC</a>
-          <a href="#cap4">4. BJT: pequeña señal y ganancias</a>
-          <a href="#cap5">5. MOSFET: operación y polarización</a>
-          <a href="#cap6">6. Amplificadores CE/CS y seguidores</a>
-          <a href="#cap7">7. Respuesta en frecuencia y efecto Miller</a>
-          <a href="#cap8">8. Realimentación, estabilidad y compensación</a>
-          <a href="#cap9">9. Operacionales no ideales y filtros activos</a>
-          <a href="#cap10">10. Fuentes de alimentación (lineales y conmutadas)</a>
-          <a href="#cap11">11. Electrónica de potencia (rectificadores, buck/boost)</a>
-          <a href="#cap12">12. Ruido, instrumentación y sensores</a>
-          <a href="#cap13">13. Digital CMOS: puertas, temporización y FSM</a>
-          <a href="#cap14">14. Conversión de datos (ADC/DAC) e interfaces</a>
-        </nav>
-      </div>
-    </aside>
+    <nav class="navbar">
+        <div class="logo">
+            <span>⚡</span> Innove
+        </div>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="filter('all')">Todo</button>
+            <button class="tab-btn" onclick="filter('analog')">Analógica</button>
+            <button class="tab-btn" onclick="filter('digital')">Digital</button>
+        </div>
+        <button class="theme-toggle" onclick="document.body.classList.toggle('dark')">◑</button>
+    </nav>
 
-    <main>
-      <section class="paper" id="top">
-        <h2>Manual PRO de Electrónica</h2>
-        <p class="lead">Pensado para que se <strong>entiendan los circuitos</strong> y puedas diseñar de verdad: empezamos por diodos/BJT/MOSFET, seguimos con <em>amplificadores</em>, <em>realimentación</em> y <em>op-amps</em>, y terminamos con <em>potencia</em>, <em>ruido</em>, <em>digital CMOS</em> y <em>ADC/DAC</em>. Cada capítulo incluye <span class="tag">teoría</span> <span class="tag">fórmulas</span> <span class="tag">procedimientos</span> <span class="tag">ejemplos</span> y <span class="tag">12 ejercicios</span> con respuesta/pista.</p>
-        <div class="callout"><strong>Convenciones.</strong> Señal incremental con tilde (~); pequeña señal en minúscula (\(i, v\)), DC en mayúscula (\(I, V\)). Para AC: fasor \(\underline X\).</div>
-      </section>
-
-      <!-- 1 -->
-      <section class="paper" id="cap1">
-        <h2>1) Semiconductores y diodos</h2>
-        <div class="callout"><strong>Modelos</strong>
-          <ul>
-            <li>Diodo ideal: conduce si \(v_D>0\), bloquea si \(<0\).</li>
-            <li>Exponencial: \(i=I_S (e^{v_D/(nV_T)}-1)\), \(V_T\approx 25.9\,\text{mV}\) a 300 K.</li>
-            <li>Lineal a trozos: \(v_D\approx V_\gamma\) en conducción (0.6–0.8 V Si) + resistencia dinámica \(r_d\).</li>
-          </ul>
-        </div>
-        <div class="examples">
-          <h3>Ejemplos</h3>
-          <details><summary>Punto de operación con modelo exponencial</summary>Resuelve \(I_R=(V_{S}-v_D)/R\) = \(I_S(e^{v_D/nV_T}-1)\).</details>
-          <details><summary>Pequeña señal</summary>\(r_d=\frac{nV_T}{I_D}\). Para \(I_D=1\,mA\), \(r_d\approx 26\,Ω\).</details>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Recta de carga con R=1 kΩ, Vs=5 V</summary>Encuentra \(I_D, v_D\) con \(V_\gamma=0.7\,V\).</details></li>
-            <li><details><summary>\(r_d\) a 0.5 mA</summary>≈ 52 Ω.</details></li>
-            <li><details><summary>Zener 5.1 V con Rs=220 Ω y Vi=12 V</summary>Corriente en zener (supón carga infinita).</details></li>
-            <li><details><summary>Clipper con dos diodos y ±0.7 V</summary>Traza \(v_o(v_i)\).</details></li>
-            <li><details><summary>Clamper</summary>Calcula el nivel DC añadido.</details></li>
-            <li><details><summary>Temperatura ↑</summary>\(V_T\) ↑, \(I_S\) ↑ → curva se desplaza.</details></li>
-            <li><details><summary>Diodo ideal vs real</summary>Discute error al usar \(V_\gamma\).</details></li>
-            <li><details><summary>LED 2 V con 10 mA, 5 V de fuente</summary>R serie.</details></li>
-            <li><details><summary>Recta de carga dinámica</summary>Intersección con curva incremental.</details></li>
-            <li><details><summary>Polarización inversa</summary>Corriente ≈ \(I_S\) (pequeña).</details></li>
-            <li><details><summary>Duplicador de tensión</summary>Explica funcionamiento.</details></li>
-            <li><details><summary>Pérdida en diodo</summary>\(P\approx V_f I\).</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 2 -->
-      <section class="paper" id="cap2">
-        <h2>2) Rectificación y acondicionamiento</h2>
-        <div class="callout"><strong>Topologías</strong> Media onda, onda completa (puente), filtros RC/LC, reguladores Zener/lineales.</div>
-        <div class="examples"><h3>Fórmulas</h3>
-          <ul>
-            <li>Ondulación con filtro C (carga resistiva): \(\Delta V\approx \frac{I}{f C}\) (doble para onda completa \(2f\)).</li>
-            <li>Regulador Zener: \(I_Z = (V_{in}-V_Z)/R - I_L\) (asegura \(I_Z\) dentro de especificación).</li>
-          </ul>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Puente con 230→12 VAC y C=1000 µF, I=200 mA</summary>Estimación de rizado.</details></li>
-            <li><details><summary>R serie para Zener 5V a 50 mA máx</summary>Con Vi=12 V, margen de carga 0–100 mA.</details></li>
-            <li><details><summary>Caída en puente</summary>≈ 2×Vf.</details></li>
-            <li><details><summary>Tiempo de descarga del C</summary>\(\Delta V = I\,\Delta t/C\).</details></li>
-            <li><details><summary>Regulador lineal 9→5 V</summary>Potencia disipada.</details></li>
-            <li><details><summary>Snubber RC</summary>Función y dimensionado básico.</details></li>
-            <li><details><summary>Rectificador con carga pulsante</summary>Corriente pico en diodos.</details></li>
-            <li><details><summary>Filtro LC en entrada</summary>Reduce rizado de corriente.</details></li>
-            <li><details><summary>Factor de cresta</summary>Define y calcula.</details></li>
-            <li><details><summary>Protección por TVS</summary>Selecciona V.</details></li>
-            <li><details><summary>Arranque suave</summary>NTC o soft-start.</details></li>
-            <li><details><summary>Compensación térmica de diodo</summary>NTC/PTC (nota).</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 3 -->
-      <section class="paper" id="cap3">
-        <h2>3) BJT: polarización DC</h2>
-        <div class="callout"><strong>Modelos</strong> Activa: \(i_C=\beta i_B\), \(v_{BE}\approx0.7\,V\). Saturación: \(v_{CE(sat)}\approx0.2\,V\). Corte: \(i_C\approx0\).</div>
-        <div class="grid">
-          <div>
-            <h3>Polarización</h3>
-            <ul>
-              <li>Divisor en base con degeneración en emisor.</li>
-              <li>Estabilidad térmica: resistencia en emisor \(R_E\) ayuda.</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Punto Q</h3>
-            <p>Intersección entre recta de carga \(V_{CE}=V_{CC}-I_C(R_C+R_E)\) y curvas del transistor.</p>
-          </div>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Diseña polarización: Vcc=12, Ic≈2 mA, VCE≈6 V</summary>Elige RC≈3 kΩ, RE≈3 kΩ, fija base con divisor que dé \(V_B≈V_E+0.7\).</details></li>
-            <li><details><summary>Variación de β</summary>Analiza sensibilidad.</details></li>
-            <li><details><summary>Entrada/salida saturación</summary>Calcula margen.</details></li>
-            <li><details><summary>Potencia en el BJT</summary>\(P\approx V_{CE} I_C\).</details></li>
-            <li><details><summary>Driver de relé</summary>Con BJT y diodo de rueda libre.</details></li>
-            <li><details><summary>Offset térmico</summary>Compensa con termistor.</details></li>
-            <li><details><summary>Darlington</summary>Ganancia β_eq≈β₁β₂.</details></li>
-            <li><details><summary>Entrada de base requerida</summary>\(I_B=I_C/β\).</details></li>
-            <li><details><summary>Disipador</summary>Dimensión por \(R_{th}\).</details></li>
-            <li><details><summary>HFE a temperatura</summary>Cambia con T.</details></li>
-            <li><details><summary>Clase A vs conmutación</summary>Comparación.</details></li>
-            <li><details><summary>Protección E-B</summary>Resistencia serie.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 4 -->
-      <section class="paper" id="cap4">
-        <h2>4) BJT: pequeña señal y ganancias</h2>
-        <div class="callout"><strong>Modelo híbrido-π</strong> \(g_m=I_C/V_T\), \(r_\pi=β/g_m\), \(r_o\approx V_A/I_C\).</div>
-        <div class="examples"><h3>Ejemplos</h3>
-          <details><summary>CE con emisor degenerado</summary>Ganancia \(A_v \approx - \frac{g_m R_C||R_L}{1+g_m R_E} \).</details>
-          <details><summary>Impedancias</summary>\(R_{in}\approx r_\pi+(β+1)R_E\), \(R_{out}\approx R_C||r_o\).</details>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Calcula \(g_m\) a 2 mA</summary>≈ 0.077 S.</details></li>
-            <li><details><summary>\(r_\pi\) con β=100</summary>≈ 1.3 kΩ.</details></li>
-            <li><details><summary>Ganancia con RC=3 kΩ, RL=10 kΩ, RE=100 Ω</summary>Evalúa fórmula.</details></li>
-            <li><details><summary>Seguidor de emisor</summary>\(A_v≈\frac{g_m R_L}{1+g_m R_L}\).</details></li>
-            <li><details><summary>Acoplo por capacitores</summary>Alta y baja frecuencia.</details></li>
-            <li><details><summary>Efecto de \(r_o\)</summary>Reduce ganancia.</details></li>
-            <li><details><summary>Doble etapa CE+EF</summary>Ganancia y R_in alta.</details></li>
-            <li><details><summary>Punto de 3 dB inferior</summary>Por C de acoplo.</details></li>
-            <li><details><summary>Ruido de base</summary>Modelo (nota).</details></li>
-            <li><details><summary>Degeneración total (bypass)</summary>Capacitor en \(R_E\).</details></li>
-            <li><details><summary>Distorsión</summary>Evita recorte.</details></li>
-            <li><details><summary>Comparar con MOS</summary>g_m por mA mayor en BJT.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 5 -->
-      <section class="paper" id="cap5">
-        <h2>5) MOSFET: operación y polarización</h2>
-        <div class="callout"><strong>Modelo</strong> Región triodo y saturación: \(i_D=\tfrac{k}{2}(v_{GS}-V_T)^2(1+\lambda v_{DS})\).</div>
-        <div class="examples"><h3>Pequeña señal</h3>
-          <p>\(g_m=2I_D/(V_{ov})\) con \(V_{ov}=v_{GS}-V_T\), \(r_o\approx 1/(\lambda I_D)\).</p>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Calcula \(I_D\) para \(V_G\) fijo, con divisor</summary>Incluye efecto de \(R_D\), \(R_S\).</details></li>
-            <li><details><summary>Condición de saturación</summary>\(v_{DS}\ge V_{ov}\).</details></li>
-            <li><details><summary>\(g_m\) a 1 mA con \(V_{ov}=0.2 V\)</summary>\(=10\,mS\).</details></li>
-            <li><details><summary>Fuente de corriente con MOS</summary>Usa diodo-MOS y \(R_S\).</details></li>
-            <li><details><summary>Entrada de puerta</summary>R_in muy alta.</details></li>
-            <li><details><summary>Comparar con BJT</summary>Menos g_m por mA, pero alta R_in.</details></li>
-            <li><details><summary>Disipación térmica</summary>\(P=V_{DS} I_D\).</details></li>
-            <li><details><summary>Arrastre de canal (λ)</summary>Aumenta ganancia.</details></li>
-            <li><details><summary>Polarización con fuente de referencia</summary>V_ref y \(R_S\).</details></li>
-            <li><details><summary>Protección ESD</summary>Notas prácticas.</details></li>
-            <li><details><summary>Gate stopper</summary>Evita oscilaciones HF.</details></li>
-            <li><details><summary>Subumbral</summary>Transconductancia por década.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 6 -->
-      <section class="paper" id="cap6">
-        <h2>6) Amplificadores CE/CS y seguidores</h2>
-        <div class="callout"><strong>Topologías</strong> CE/CS (ganancia alta), CC/Source Follower (buffer), CB/CG (ancho de banda).</div>
-        <div class="examples"><h3>Ejemplos</h3>
-          <details><summary>CS con carga de resistencia</summary>\(A_v\approx -g_m(R_D||R_L)\).</details>
-          <details><summary>Seguidor de fuente</summary>Ganancia ~1, baja R_out.</details>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Diseña CE para \(A_v≈-10\)</summary>Ajusta \(g_m\) y \(R_C\).</details></li>
-            <li><details><summary>R_in de CE con divisor</summary>Incluye efecto de Thevenin.</details></li>
-            <li><details><summary>Etapa cascode</summary>Mejora ancho de banda.</details></li>
-            <li><details><summary>Acoplo entre etapas</summary>Capacitores de acoplo.</details></li>
-            <li><details><summary>Fuente de corriente activa</summary>Incrementa ganancia.</details></li>
-            <li><details><summary>Headroom</summary>Chequea márgenes de tensión.</details></li>
-            <li><details><summary>Seguidor de emisor/fuente</summary>R_out aproximada.</details></li>
-            <li><details><summary>Balanceado/diferencial</summary>Ventajas en CMRR.</details></li>
-            <li><details><summary>Capacitor de bypass</summary>Gana a bajas f.</details></li>
-            <li><details><summary>Clipping</summary>Evita saturación.</details></li>
-            <li><details><summary>Distorsión armónica</summary>Concepto THD.</details></li>
-            <li><details><summary>Bias térmico</summary>Estabilidad.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 7 -->
-      <section class="paper" id="cap7">
-        <h2>7) Respuesta en frecuencia y efecto Miller</h2>
-        <div class="callout"><strong>Polos y ceros</strong> Aproxima con Bode. Efecto Miller: \(C_M\to (1-A_v)C\) visto en entrada.</div>
-        <div class="examples"><h3>Fórmulas</h3>
-          <ul>
-            <li>Frec. de corte inferior por acoplos: \(\omega_L\approx\sum 1/(R_i C_i)\).</li>
-            <li>Superior por capacitancias internas y Miller.</li>
-          </ul>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Capacitor de Miller 2 pF con \(A_v=-50\)</summary>Capacidad equivalente en entrada ≈ 102 pF.</details></li>
-            <li><details><summary>f_H con R_in=10 kΩ y C_M=100 pF</summary>\(f=1/(2\pi R C)\).</details></li>
-            <li><details><summary>Cero por realimentación</summary>Identifícalo.</details></li>
-            <li><details><summary>Polos dominantes</summary>Elección.</details></li>
-            <li><details><summary>Banda de paso</summary>Ancho en dB.</details></li>
-            <li><details><summary>Medición de f_c</summary>Desde −3 dB.</details></li>
-            <li><details><summary>Compensación con C</summary>Coloca polo dominante.</details></li>
-            <li><details><summary>Etapa cascode</summary>Reduce efecto Miller.</details></li>
-            <li><details><summary>Parasitarios de PCB</summary>Aumentan C.</details></li>
-            <li><details><summary>GBW en op-amp</summary>Relación.</details></li>
-            <li><details><summary>Inyección de polo</summary>Diseño.</details></li>
-            <li><details><summary>Modelo por tramos</summary>Aproximación Bode.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 8 -->
-      <section class="paper" id="cap8">
-        <h2>8) Realimentación, estabilidad y compensación</h2>
-        <div class="callout"><strong>Conceptos</strong> \(A_{cl}=\frac{A}{1+\beta A}\). Estabilidad: margen de ganancia y margen de fase.</div>
-        <div class="examples"><h3>Ejemplos</h3>
-          <details><summary>Diagrama de Nyquist/Bode</summary>Condición de estabilidad (criterio de Nyquist).</details>
-          <details><summary>Compensación dominante</summary>Añade C para fijar polo dominante.</details>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Calcula \(A_{cl}\) con \(A=10^5\), \(β=0.01\)</summary>≈ 99.9.</details></li>
-            <li><details><summary>Margen de fase 60°</summary>Recomendado.</details></li>
-            <li><details><summary>Oscilación</summary>Cuando \(|Aβ|=1\) y fase 180°.</details></li>
-            <li><details><summary>Compensación tipo lead</summary>Aumenta fase.</details></li>
-            <li><details><summary>Compensación lag</summary>Mejora precisión DC.</details></li>
-            <li><details><summary>Red de realimentación no ideal</summary>Efecto en R_in/R_out.</details></li>
-            <li><details><summary>Ruido bajo realimentación</summary>Cómo se suma.</details></li>
-            <li><details><summary>CMRR</summary>Aumenta con realimentación diferencial.</details></li>
-            <li><details><summary>PSRR</summary>Importancia en fuentes.</details></li>
-            <li><details><summary>Osciladores RC</summary>Condición de Barkhausen.</details></li>
-            <li><details><summary>Loop crossover</summary>Frec. de cruce.</details></li>
-            <li><details><summary>Ensayo de lazo abierto</summary>Simulación SPICE.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 9 -->
-      <section class="paper" id="cap9">
-        <h2>9) Operacionales no ideales y filtros activos</h2>
-        <div class="callout"><strong>No idealidad</strong> Ganancia finita, GBW, SR, offset, bias, ruido.</div>
-        <div class="grid">
-          <div>
-            <h3>Filtros</h3>
-            <p>Topologías Sallen-Key, múltiple realimentación (MFB): pasa-bajas/altas/banda/notch. \(Q\), \(\omega_0\), ganancias.</p>
-          </div>
-          <div>
-            <h3>SPICE</h3>
-            <code class="k">* Filtro Sallen-Key Pasa-bajas 1 kHz
-V1 in 0 AC 1
-R1 in n1 1k
-R2 n1 out 1k
-C1 n1 0 159n
-C2 out 0 159n
-Eop out 0 n1 0 1e5 ; op-amp ideal (ganancia grande)
-.ac dec 100 10 100k
-.print ac vm(out) vp(out)
-.end</code>
-          </div>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>SR requerido para 10 kHz, 10 Vpp</summary>\(SR\ge 2\pi f V_{pk}\).</details></li>
-            <li><details><summary>Offset a salida</summary>\(V_{o,off}=V_{off}(1+R_f/R_g)\).</details></li>
-            <li><details><summary>GBW y ganancia</summary>\(f_{BW}=GBW/G\).</details></li>
-            <li><details><summary>Filtro MFB diseña Q=0.707</summary>Valores de R/C.</details></li>
-            <li><details><summary>PSRR y ripple</summary>Calcula ripple en salida.</details></li>
-            <li><details><summary>Ruido térmico de R</summary>\(\sqrt{4kTRB}\).</details></li>
-            <li><details><summary>CMRR requerido</summary>Para rechazo de modo común.</details></li>
-            <li><details><summary>Buffer vs seguidor no ideal</summary>R_out ≠0.</details></li>
-            <li><details><summary>Compensación de offset</summary>Trimmer.</details></li>
-            <li><details><summary>Antialias pasabajas</summary>f_c relativo a Fs.</details></li>
-            <li><details><summary>Filtro notch 50 Hz</summary>Diseño básico.</details></li>
-            <li><details><summary>Inestabilidad por carga capacitiva</summary>Serie R.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 10 -->
-      <section class="paper" id="cap10">
-        <h2>10) Fuentes de alimentación (lineales y conmutadas)</h2>
-        <div class="callout"><strong>Lineales</strong> Reguladores serie (LM78xx, LDO), disipación. <strong>Conmutadas</strong> Buck/Boost/Buck-Boost, CCM/DCM, control PWM.</div>
-        <div class="examples"><h3>Fórmulas rápidas</h3>
-          <ul>
-            <li>Buck ideal: \(V_o=D V_{in}\). Boost: \(V_o=\tfrac{V_{in}}{1-D}\).</li>
-            <li>Ondulación en inductor: \(\Delta I_L=\frac{(V_{in}-V_o)D}{L f_s}\) (buck).</li>
-          </ul>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Buck 12→5 V, 2 A, f=200 kHz, ΔIL=0.6 A</summary>Calcula L.</details></li>
-            <li><details><summary>Capacitor de salida para ΔV=50 mV</summary>Usa \(\Delta V≈\Delta I/(8fC)\).</details></li>
-            <li><details><summary>Boost 5→12 V a 1 A</summary>Corriente en L.</details></li>
-            <li><details><summary>RDS(on) pérdidas</summary>\(P=I^2 R\).</details></li>
-            <li><details><summary>EFM vs PWM</summary>Eficiencia a carga ligera.</details></li>
-            <li><details><summary>Snubber RCD</summary>Dimensiona.</details></li>
-            <li><details><summary>EMI</summary>Filtro LC de entrada.</details></li>
-            <li><details><summary>Compensación tipo II</summary>Coloca polo y cero.</details></li>
-            <li><details><summary>CCM vs DCM</summary>Diferencias.</details></li>
-            <li><details><summary>Rectificador síncrono</summary>Ventajas.</details></li>
-            <li><details><summary>Perdidas de conmutación</summary>\(P\approx \tfrac12 V I t_s f_s\).</details></li>
-            <li><details><summary>Selección del inductor</summary>Corriente de saturación.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 11 -->
-      <section class="paper" id="cap11">
-        <h2>11) Electrónica de potencia (rectificadores, buck/boost)</h2>
-        <div class="callout"><strong>Dispositivos</strong> Diodos Schottky, MOSFET/IGBT, drivers de compuerta, aislamiento, bootstrap.</div>
-        <div class="examples"><h3>Ejemplos</h3>
-          <details><summary>Media-puente</summary>Driver alto/bajo, dead-time.</details>
-          <details><summary>Medición de corriente</summary>Shunt y amplificador de lado alto.</details>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Dead-time mínimo</summary>Evita shoot-through.</details></li>
-            <li><details><summary>IGBT vs MOSFET</summary>Rango de f y pérdidas.</details></li>
-            <li><details><summary>Snubber a transformador</summary>RCD.</details></li>
-            <li><details><summary>Bootstrap</summary>Cap requerido.</details></li>
-            <li><details><summary>Gate charge</summary>Dimensiona driver.</details></li>
-            <li><details><summary>dv/dt</summary>Efectos en EMC.</details></li>
-            <li><details><summary>Layout de potencia</summary>Bucle de corriente mínimo.</details></li>
-            <li><details><summary>Sense Kelvin</summary>Mejor medición.</details></li>
-            <li><details><summary>Protecciones</summary>OCP, OVP, OTP.</details></li>
-            <li><details><summary>Safe Operating Area</summary>Lee datasheet.</details></li>
-            <li><details><summary>Estimación de T_j</summary>Usa red térmica.</details></li>
-            <li><details><summary>Rectificador síncrono</summary>Coordinación.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 12 -->
-      <section class="paper" id="cap12">
-        <h2>12) Ruido, instrumentación y sensores</h2>
-        <div class="callout"><strong>Fuentes de ruido</strong> Johnson, disparo, 1/f, ruido de op-amp. <strong>Instrumentación</strong> INA, puente de Wheatstone.</div>
-        <div class="examples"><h3>Fórmulas</h3>
-          <ul>
-            <li>Ruido térmico: \(e_n=\sqrt{4kTRB}\).</li>
-            <li>Relación señal/ruido (SNR) y ENOB.</li>
-          </ul>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Ruido de 10 kΩ a 25°C, B=20 kHz</summary>Calcula \(e_n\).</details></li>
-            <li><details><summary>Puente de Wheatstone</summary>Sensibilidad.</details></li>
-            <li><details><summary>INA con ganancia 100</summary>Offset referido a entrada.</details></li>
-            <li><details><summary>Filtro antialias</summary>Orden mínimo.</details></li>
-            <li><details><summary>Termistor NTC</summary>Linealización.</details></li>
-            <li><details><summary>RTD Pt100</summary>Excitación.</details></li>
-            <li><details><summary>Ruido 1/f</summary>Dominio a bajas f.</details></li>
-            <li><details><summary>Shield vs guard</summary>PCB.</details></li>
-            <li><details><summary>CMRR de INA</summary>Requisito para 50/60 Hz.</details></li>
-            <li><details><summary>Ruido total en banda</summary>Integración.</details></li>
-            <li><details><summary>Filtro chopper</summary>Notas.</details></li>
-            <li><details><summary>Autozero</summary>Ventajas.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 13 -->
-      <section class="paper" id="cap13">
-        <h2>13) Digital CMOS: puertas, temporización y FSM</h2>
-        <div class="callout"><strong>Puertas CMOS</strong> Niveles de ruido, fan-out, retardos. <strong>Temporización</strong>: setup/hold, reloj, metastabilidad.</div>
-        <div class="grid">
-          <div>
-            <h3>Combinacional</h3>
-            <p>Mapas de Karnaugh, simplificación, codificadores/decodificadores, multiplexores.</p>
-          </div>
-          <div>
-            <h3>Secuencial</h3>
-            <p>FF D/JK, contadores, máquinas de estados (Moore/Mealy).</p>
-          </div>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Simplifica F(A,B,C)</summary>Karnaugh 3 variables.</details></li>
-            <li><details><summary>Diseña un contador mod-10</summary>Con FF D.</details></li>
-            <li><details><summary>Margen de ruido</summary>VOH/VOL, VIH/VIL.</details></li>
-            <li><details><summary>Setup/hold</summary>Calcula slack.</details></li>
-            <li><details><summary>Glitches</summary>Hazard estático.</details></li>
-            <li><details><summary>Sincronizador de 2 FF</summary>Metastabilidad.</details></li>
-            <li><details><summary>FSM de ascensor</summary>Diagrama de estados.</details></li>
-            <li><details><summary>Fan-out máximo</summary>Carga capacitiva.</details></li>
-            <li><details><summary>Timing de propagación</summary>t_pd total.</details></li>
-            <li><details><summary>Debounce de botón</summary>Filtro RC + Schmitt.</details></li>
-            <li><details><summary>Oscilador RC</summary>Frecuencia.</details></li>
-            <li><details><summary>Codificador/decodificador</summary>Tabla de verdad.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- 14 -->
-      <section class="paper" id="cap14">
-        <h2>14) Conversión de datos (ADC/DAC) e interfaces</h2>
-        <div class="callout"><strong>ADC</strong> SAR, ΔΣ, pipeline. <strong>DAC</strong> R-2R, PWM + filtro. Interfaces: SPI/I²C, UART, LVDS.</div>
-        <div class="examples"><h3>Fórmulas</h3>
-          <ul>
-            <li>ENOB: \(ENOB\approx (SNR-1.76)/6.02\).</li>
-            <li>Frecuencia de Nyquist: \(f_s\ge 2 f_{max}\).</li>
-          </ul>
-        </div>
-        <div class="examples"><h3>📝 Ejercicios (12)</h3>
-          <ol>
-            <li><details><summary>Resolución de 12 bits a 3.3 V</summary>LSB≈0.805 mV.</details></li>
-            <li><details><summary>Filtro antialias para Fs=20 kS/s</summary>f_c≈10 kHz.</details></li>
-            <li><details><summary>SNR=70 dB → ENOB</summary>≈ 11.3 bits.</details></li>
-            <li><details><summary>Tiempo de establecimiento de DAC</summary>Definición.</details></li>
-            <li><details><summary>SPI vs I²C</summary>Comparación.</details></li>
-            <li><details><summary>Jitter de reloj</summary>Efecto en SNR.</details></li>
-            <li><details><summary>Buffer de entrada</summary>Impedancia del ADC.</details></li>
-            <li><details><summary>Multiplexación</summary>Apertura/hold.</details></li>
-            <li><details><summary>Filtro sinc en ΔΣ</summary>Concepto.</details></li>
-            <li><details><summary>DAC R-2R</summary>Errores de no linealidad.</details></li>
-            <li><details><summary>Protección ESD en pines</summary>Red RC + TVS.</details></li>
-            <li><details><summary>Referencia de precisión</summary>Ruido/deriva.</details></li>
-          </ol>
-        </div>
-      </section>
-
-      <section class="paper">
-        <h2>PCB, alimentación y EMC (bonus práctico)</h2>
-        <ul>
-          <li>Desacoplo en cada CI (100 nF + granel). Plano de masa continuo.</li>
-          <li>Separar analógico/digital; estrella de retornos de alta corriente.</li>
-          <li>Pares diferenciales: impedancia controlada, longitudes pareadas.</li>
-          <li>Minimiza bucles, usa <span class="kbd">Kelvin sense</span> en mediciones.</li>
-        </ul>
-        <div class="examples"><h4>Checklist</h4>
-          <ul>
-            <li>Corriente de retorno bajo la pista.</li>
-            <li>Vías de alivio térmico en planos.</li>
-            <li>Separación de alta dV/dt.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="paper">
-        <h2>Errores típicos y trucos</h2>
-        <ul>
-          <li>Usar modelos ideales fuera de rango → incluye resistencias/parasitarios.</li>
-          <li>Olvidar margen térmico → calcula \(\Delta T\) con \(R_{\theta}\).</li>
-          <li>Ignorar realimentación de PCB (acoplos) → añade resistencias de puerta/base.</li>
-          <li>No verificar límites: \(t\to0/\infty\), \(\omega\to0/\infty\), saturaciones.</li>
-          <li>Falta de tierra de referencia limpia → mide mal.</li>
-        </ul>
-      </section>
+    <main class="container">
+        <h1 class="section-title">Banco de Parciales UPC</h1>
+        <div class="grid" id="exercise-grid">
+            </div>
     </main>
-  </div>
 
-  <button class="topbtn" id="topbtn">↑ Arriba</button>
+    <script>
+        // DATOS DE LOS EJERCICIOS (Basados en electronica.pdf y electronica2.pdf)
+        const db = [
+            // --- ANALÓGICA (PDF 2) ---
+            {
+                id: "ANA-01", type: "analog", title: "Filtro Anti-aliasing",
+                text: "Diseña un filtro pasivo de primer orden con frecuencia de corte $f_c = 50Hz$. (i) Dibuja el esquema. (ii) Si $R=1k\\Omega$, halla $C$.",
+                steps: [
+                    "Esquema: Filtro paso bajo RC (R en serie, C a tierra).",
+                    "Fórmula: $f_c = \\frac{1}{2\\pi R C}$.",
+                    "Despejar C: $C = \\frac{1}{2\\pi (50)(1000)}$.",
+                    "Cálculo: $C = \\frac{1}{314159} \\approx 3.18 \\mu F$."
+                ],
+                res: "C = 3.18 μF"
+            },
+            {
+                id: "ANA-02", type: "analog", title: "Respuesta en Frecuencia",
+                text: "Si aplicamos una señal de entrada de $20V$ de amplitud y sufre una atenuación de $-40dB$, calcula la amplitud de salida $A_o$.",
+                steps: [
+                    "Ganancia en dB: $G_{dB} = 20 \\log(A_o / A_i)$.",
+                    "$-40 = 20 \\log(A_o / 20)$.",
+                    "$-2 = \\log(A_o / 20) \\to 10^{-2} = A_o / 20$.",
+                    "$A_o = 20 \\cdot 0.01 = 0.2V$."
+                ],
+                res: "Ao = 0.2 V"
+            },
+            {
+                id: "ANA-03", type: "analog", title: "Acondicionamiento ADC",
+                text: "Sensor de corriente: $10mV/A$, Rango 50A. ADC rango 0-5V. (i) Halla ganancia $K$. (ii) Resolución con 8 bits.",
+                steps: [
+                    "Salida máx sensor: $50A \\cdot 0.01V/A = 0.5V$.",
+                    "Ganancia necesaria: $K = 5V / 0.5V = 10$.",
+                    "Resolución V: $5V / 2^8 = 5/256 = 19.5mV$.",
+                    "Resolución I: $19.5mV / (10 \\cdot 10mV/A) = 0.195A$."
+                ],
+                res: "K=10, Res=195mA"
+            },
+            {
+                id: "ANA-04", type: "analog", title: "OpAmp con Red",
+                text: "En el circuito del examen (Problema 2), obtén la expresión de $V_x$ en función de $V_{AC}$ si hay un divisor de tensión con OpAmp seguidor.",
+                steps: [
+                    "El OpAmp está en configuración seguidor de tensión (buffer) con realimentación unitaria.",
+                    "La entrada no inversora tiene un divisor: $V^+ = V_{AC} \\frac{R_2}{R_1+R_2}$.",
+                    "Como $R_1=10M$ y $R_2=77.5k$, la atenuación es fuerte.",
+                    "$V_x = V^+ \\approx V_{AC} \\cdot 0.0077$."
+                ],
+                res: "Vx ≈ 0.0077 Vac"
+            },
+            {
+                id: "ANA-05", type: "analog", title: "Sumador Inversor",
+                text: "Se requiere $V_{01} = V_x + V_y$. El circuito usa un sumador inversor con $R_{in}=10k$ y realimentación $R$. Halla $R$.",
+                steps: [
+                    "Ecuación sumador inversor: $V_{out} = - (V_1 \\frac{R_f}{R_1} + V_2 \\frac{R_f}{R_2})$.",
+                    "Aquí hay una etapa inversora adicional para cambiar el signo.",
+                    "Para suma unitaria: $R_f = R_1 = R_2$.",
+                    "Dado que las entradas son 10k, $R$ debe ser 10k."
+                ],
+                res: "R = 10 kΩ"
+            },
+            {
+                id: "ANA-06", type: "analog", title: "Trigger Schmitt",
+                text: "Calcula la histéresis de un comparador alimentado a $\\pm 5.5V$ con $R_1=10k$ y $R_2=10k$.",
+                steps: [
+                    "Umbrales: $V_{th} = \\pm V_{sat} \\frac{R_1}{R_1+R_2}$.",
+                    "$V_{th} = \\pm 5.5 \\frac{10}{20} = \\pm 2.75V$.",
+                    "Ancho de histéresis: $2.75 - (-2.75) = 5.5V$."
+                ],
+                res: "VH = 5.5 V"
+            },
+            {
+                id: "ANA-07", type: "analog", title: "Fuente de Tensión",
+                text: "Calcula $V_y$ en el circuito dado (Divisor con 8V y resistencias 54.9k y 24.9k con seguidor).",
+                steps: [
+                    "Divisor de tensión: $V^+ = 8V \\cdot \\frac{24.9k}{54.9k + 24.9k}$.",
+                    "Suma R: $79.8k$.",
+                    "$V^+ = 8 \\cdot 0.312 = 2.496V$.",
+                    "Seguidor: $V_y = 2.5V$."
+                ],
+                res: "Vy ≈ 2.5 V"
+            },
 
-  <script>
-    const $ = s => document.querySelector(s);
-    const bar = $('#progress');
-    function updateProgress(){ const h=document.documentElement; const sc=h.scrollTop||document.body.scrollTop; const max=(h.scrollHeight-h.clientHeight); const p=max>0?(sc/max)*100:0; bar.style.width=p+'%'; $('#topbtn').classList.toggle('show', sc>600); }
-    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
-    const root=document.documentElement;
-    $('#fs-up').addEventListener('click', ()=>{ const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18; root.style.setProperty('--base', Math.min(val+1, 22)+'px'); });
-    $('#fs-down').addEventListener('click', ()=>{ const val=parseFloat(getComputedStyle(root).getPropertyValue('--base'))||18; root.style.setProperty('--base', Math.max(val-1, 14)+'px'); });
-    $('#width-up').addEventListener('click', ()=>{ const w=getComputedStyle(root).getPropertyValue('--maxw')||'86ch'; const num=parseFloat(w); root.style.setProperty('--maxw', Math.min(num+8, 110)+'ch'); });
-    $('#width-down').addEventListener('click', ()=>{ const w=getComputedStyle(root).getPropertyValue('--maxw')||'86ch'; const num=parseFloat(w); root.style.setProperty('--maxw', Math.max(num-8, 60)+'ch'); });
-    $('#theme-toggle').addEventListener('click', ()=>{ const light=getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff'; if(light){ root.style.setProperty('--bg','#06100d'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff'); root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#34d399'); root.style.setProperty('--accent','#6ee7b7'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#203054'); } else { root.style.setProperty('--bg','#f6fff8'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#0b1220'); root.style.setProperty('--muted','#475569'); root.style.setProperty('--brand','#10b981'); root.style.setProperty('--accent','#34d399'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#e2e8f0'); } });
-    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-  </script>
+            // --- DIGITAL (PDF 1) ---
+            {
+                id: "DIG-01", type: "digital", title: "Decodificador 7-Seg",
+                text: "Simplifica por Karnaugh la función para el segmento 'a' del dado electrónico. Entradas $A_2, A_1, A_0$.",
+                steps: [
+                    "Tabla de verdad según PDF: 'a' es 0 en (000, 010, 100) y 1 en (001, 011, 101).",
+                    "Observamos: 'a' sigue a $A_0$.",
+                    "Mapa K: Agrupamos los 1s donde $A_0$ es alto.",
+                    "Función simplificada: $a = A_0$."
+                ],
+                res: "a = A0"
+            },
+            {
+                id: "DIG-02", type: "digital", title: "Multiplexor 4x1",
+                text: "Implementa la función $g$ usando un MUX 4x1. Selectores $S_1=A_1, S_0=A_0$.",
+                steps: [
+                    "Analizamos tabla para $g$ con entradas $A_2$ fija o variable.",
+                    "Si $A_1 A_0 = 00$, $g=1$ (Steady/Up). Entrada $D_0=1$.",
+                    "Si $A_1 A_0 = 01$, $g$ depende de $A_2$.",
+                    "Configuración típica MUX: Asignar valores fijos o variable $A_2$ a las entradas de datos."
+                ],
+                res: "D0=1, D1=A2..."
+            },
+            {
+                id: "DIG-03", type: "digital", title: "Lógica NAND",
+                text: "Convierte $C = A_1 + \\overline{A_0}$ usando solo puertas NAND.",
+                steps: [
+                    "Doble negación: $\\overline{\\overline{A_1 + \\overline{A_0}}}$.",
+                    "DeMorgan: $\\overline{ \\overline{A_1} \\cdot \\overline{\\overline{A_0}} }$.",
+                    "Simplificando: $\\overline{ \\overline{A_1} \\cdot A_0 }$.",
+                    "Esto es una NAND donde una entrada ($A_1$) está invertida."
+                ],
+                res: "NAND(NOT(A1), A0)"
+            },
+            {
+                id: "DIG-04", type: "digital", title: "Contador Módulo 6",
+                text: "Diseña el contador para el dado (secuencia 0 a 5). ¿Cuántos Flip-Flops T hacen falta?",
+                steps: [
+                    "Estados necesarios: 6 (0,1,2,3,4,5).",
+                    "Bits necesarios: $2^n \\ge 6 \\to n=3$.",
+                    "Necesitamos 3 Flip-Flops.",
+                    "El reset debe activarse cuando la cuenta llegue a 6 (110 binario) para reiniciar a 0."
+                ],
+                res: "3 Flip-Flops"
+            },
+            {
+                id: "DIG-05", type: "digital", title: "Display Joker",
+                text: "En el estado 'Joker' ($A_2 A_1 A_0 = 101$), ¿qué segmentos se iluminan para mostrar una 'J'?",
+                steps: [
+                    "Para una 'J' en 7 segmentos se suelen encender: b, c, d, e.",
+                    "Según tabla PDF: a=0, b=1, c=1, d=1, e=1, f=0, g=0.",
+                    "Verificar lógica positiva o negativa del display."
+                ],
+                res: "b, c, d, e (ON)"
+            },
+            {
+                id: "DIG-06", type: "digital", title: "Frecuencia FF T",
+                text: "Si un Flip-Flop T tiene la entrada T=1 fija y un reloj de 1kHz, ¿cuál es la frecuencia de salida Q?",
+                steps: [
+                    "T=1 modo 'Toggle' (conmutación).",
+                    "La salida cambia de estado en cada flanco de bajada.",
+                    "Se necesita un ciclo completo de reloj para cambiar de 0 a 1, y otro para 1 a 0? No, cambia en cada flanco.",
+                    "El periodo de salida es el doble del de entrada. Frecuencia mitad."
+                ],
+                res: "f = 500 Hz"
+            },
+            {
+                id: "DIG-07", type: "digital", title: "Reset Síncrono",
+                text: "Diferencia entre Reset Síncrono y Asíncrono en el diseño del contador del dado.",
+                steps: [
+                    "Asíncrono: El reset ocurre inmediatamente al activarse la señal (Clear).",
+                    "Síncrono: El reset espera al siguiente flanco de reloj activo.",
+                    "Para evitar 'glitches' (estados transitorios espurios como el 6 momentáneo), se prefiere diseño síncrono."
+                ],
+                res: "Síncrono es más seguro"
+            },
+            {
+                id: "DIG-08", type: "digital", title: "Máquina de Estados",
+                text: "Dibuja el diagrama de estados para el dado. Transiciones por pulsador.",
+                steps: [
+                    "Estados: S0, S1, S2, S3, S4, S5.",
+                    "Transición: Si Pulsador=1, S(i) -> S(i+1). Si Pulsador=0, S(i) -> S(i).",
+                    "De S5 pasa a S0 si Pulsador=1.",
+                    "Es una máquina de Moore (salida depende solo del estado)."
+                ],
+                res: "Ciclo 0->1->2->3->4->5->0"
+            }
+        ];
+
+        // RENDERIZADO
+        const grid = document.getElementById('exercise-grid');
+
+        function render(filterType) {
+            grid.innerHTML = '';
+            const filtered = filterType === 'all' ? db : db.filter(e => e.type === filterType);
+            
+            filtered.forEach(ex => {
+                const badgeClass = ex.type === 'analog' ? 'bg-analog' : 'bg-digital';
+                const badgeText = ex.type === 'analog' ? '⚡ Analógica' : '🧩 Digital';
+                
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="badge ${badgeClass}">${badgeText}</span>
+                        <span class="card-id">${ex.id}</span>
+                    </div>
+                    <h3 style="margin-bottom: 10px; font-size: 1.1rem;">${ex.title}</h3>
+                    <div class="problem-text">${ex.text}</div>
+                    <details>
+                        <summary>Ver Solución Paso a Paso</summary>
+                        <div class="solution-box">
+                            ${ex.steps.map((step, i) => `
+                                <div class="step">
+                                    <div class="step-num">${i+1}</div>
+                                    <div class="step-content">${step}</div>
+                                </div>
+                            `).join('')}
+                            <div class="final-res">${ex.res}</div>
+                        </div>
+                    </details>
+                `;
+                grid.appendChild(card);
+            });
+            
+            // Renderizar Matemáticas
+            if(window.MathJax) MathJax.typesetPromise();
+        }
+
+        // FILTROS
+        function filter(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            render(type);
+        }
+
+        // INICIO
+        render('all');
+
+    </script>
 </body>
 </html>
-
