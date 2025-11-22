@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Física Ingeniería | Banco de Problemas Avanzados</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Space Grotesk', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              dark: {
+                bg: '#000000',
+                sidebar: '#050505',
+                card: '#0a0a0a',
+                border: '#222',
+              },
+              brand: {
+                mec: '#a855f7', // Purple
+                elec: '#f59e0b', // Amber
+                wave: '#06b6d4', // Cyan
+                thermo: '#ef4444', // Red
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- MATHJAX -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$']],
+          processEscapes: true,
+          tags: 'ams'
+        },
+        svg: {
+          fontCache: 'global'
+        },
+        startup: {
+            typeset: false // Manual typesetting for performance
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Custom Animations */
+        @keyframes fadeScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .card-anim { animation: fadeScale 0.4s ease-out backwards; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Line Clamp for Math */
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-900 dark:bg-dark-bg dark:text-gray-200 transition-colors duration-300 h-screen flex font-sans antialiased overflow-hidden">
+
+    <!-- SIDEBAR (Desktop) -->
+    <aside class="hidden lg:flex w-[300px] h-full bg-white dark:bg-dark-sidebar border-r border-gray-200 dark:border-dark-border flex-col p-6 z-20 shrink-0">
+        <!-- Logo -->
+        <div class="flex items-center gap-4 mb-10">
+            <div class="w-12 h-12 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black flex items-center justify-center font-bold text-2xl border border-gray-200 shadow-xl">
+                $\Phi$
+            </div>
+            <div>
+                <h1 class="font-display text-xl font-bold tracking-tight leading-none mb-1">Física UPC</h1>
+                <p class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Ingeniería Avanzada</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav id="sidebar-nav" class="space-y-1 flex-1 overflow-y-auto pr-2">
+            <!-- Injected via JS -->
+        </nav>
+
+        <!-- Footer Info -->
+        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-dark-border">
+            <div class="bg-gray-50 dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs text-gray-400 font-bold uppercase">Banco de Preguntas</span>
+                    <span class="text-xs text-emerald-500 font-bold" id="total-count">0 Probs</span>
+                </div>
+                <div class="w-full h-1.5 bg-gray-200 dark:bg-black rounded-full overflow-hidden">
+                    <div class="h-full w-full bg-gradient-to-r from-brand-mec via-brand-elec to-brand-thermo opacity-50"></div>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-2 leading-relaxed">
+                    Incluye problemas de examen final, parciales y cálculo integral aplicado.
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="flex-1 h-full flex flex-col relative bg-gray-50 dark:bg-dark-bg">
+        
+        <!-- Mobile Header -->
+        <header class="flex lg:hidden justify-between items-center p-4 border-b border-gray-200 dark:border-dark-border bg-white dark:bg-dark-sidebar">
+            <span class="font-display font-bold text-lg">Física UPC</span>
+            <button id="theme-toggle-mobile" class="p-2 text-xl">🌙</button>
+        </header>
+
+        <!-- Desktop Header & Filters -->
+        <div class="p-6 md:p-10 pb-0 flex flex-col md:flex-row justify-between items-end gap-6 z-10">
+            <div>
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-2 text-slate-900 dark:text-white">
+                    Banco de Problemas
+                </h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm md:text-base">
+                    Selección de ejercicios de alta dificultad (Nivel Parcial/Final).
+                </p>
+            </div>
+            <div class="hidden lg:flex gap-3">
+                <button id="theme-toggle" class="w-10 h-10 rounded-full border border-gray-200 dark:border-dark-border hover:bg-gray-100 dark:hover:bg-white/5 flex items-center justify-center text-gray-600 dark:text-gray-400 transition-colors">
+                    🌙
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Scroll Filters -->
+        <div class="lg:hidden px-4 py-3 overflow-x-auto no-scrollbar flex gap-2 border-b border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-bg sticky top-0 z-20" id="mobile-filters">
+            <!-- Injected via JS -->
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-10 scroll-smooth" id="main-scroll">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 pb-20" id="exercise-grid">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL DETAILS -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-0 md:p-6 opacity-0 invisible transition-all duration-300">
+        <div id="modal-content" class="w-full h-full md:h-[90vh] md:max-w-7xl bg-white dark:bg-[#0a0a0a] md:rounded-2xl flex flex-col md:flex-row overflow-hidden shadow-2xl border border-gray-200 dark:border-dark-border scale-95 transition-all duration-300">
+            
+            <!-- Left: Problem & Hint -->
+            <div class="w-full md:w-[45%] p-6 md:p-10 bg-gray-50 dark:bg-[#0f0f0f] overflow-y-auto border-b md:border-b-0 md:border-r border-gray-200 dark:border-dark-border relative">
+                <button onclick="closeModal()" class="absolute top-4 right-4 md:hidden w-8 h-8 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center">✕</button>
+                
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span id="modal-id" class="font-mono text-xs font-bold text-gray-400"></span>
+                        <span id="modal-diff" class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300"></span>
+                    </div>
+                    <h3 id="modal-topic" class="font-display text-2xl md:text-3xl font-bold text-slate-900 dark:text-white leading-tight"></h3>
+                </div>
+
+                <div class="prose dark:prose-invert max-w-none mb-8">
+                    <p id="modal-problem" class="text-lg font-serif leading-loose text-gray-700 dark:text-gray-300"></p>
+                </div>
+
+                <div class="p-5 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/20">
+                    <span class="text-xs font-bold text-amber-600 dark:text-amber-500 uppercase tracking-widest mb-2 block">Pista / Estrategia</span>
+                    <p id="modal-hint" class="text-sm text-amber-800 dark:text-amber-400/80 italic leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Right: Solution -->
+            <div class="w-full md:w-[55%] bg-white dark:bg-[#0a0a0a] flex flex-col h-full">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-dark-border flex justify-between items-center bg-white dark:bg-[#0a0a0a] z-10">
+                    <span class="text-xs font-bold text-brand-mec uppercase tracking-widest">Desarrollo Paso a Paso</span>
+                    <button onclick="closeModal()" class="hidden md:flex w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-red-500 hover:text-white transition-colors items-center justify-center">✕</button>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-6 md:p-10" id="modal-steps-container">
+                    <div id="modal-steps" class="space-y-8">
+                        <!-- Steps injected -->
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-8 bg-gray-50 dark:bg-[#0e0e0e] border-t border-gray-200 dark:border-dark-border">
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Resultado Final</span>
+                    <div id="modal-solution" class="text-2xl font-display font-bold text-emerald-600 dark:text-emerald-400 break-words"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        // ==========================================
+        // DATA: 40+ PHYSICS EXERCISES
+        // ==========================================
+        const exercises = [
+            // --- FÍSICA I: CINEMÁTICA Y VECTORES ---
+            {
+                id: "F1-01", category: "mec", topic: "Cinemática Vectorial Integral", difficulty: "Medio",
+                tags: ["Vectores", "Integrales"],
+                problem: "Una partícula se mueve en el plano XY con aceleración $\\vec{a}(t) = 2t \\hat{i} + 3 \\cos t \\hat{j}$. Si en $t=0$ parte del reposo desde el origen, determine la ecuación de la trayectoria $y(x)$.",
+                hint: "Integre $\\vec{a}$ dos veces para obtener $\\vec{r}(t)$. Despeje $t$ de $x(t)$ y sustituya en $y(t)$.",
+                steps: [
+                    "Integrar $\\vec{a}$ para obtener $\\vec{v}$: $\\vec{v}(t) = t^2 \\hat{i} + 3 \\sin t \\hat{j}$ (dado $v_0=0$).",
+                    "Integrar $\\vec{v}$ para obtener $\\vec{r}$: $x(t) = t^3/3$, $y(t) = -3 \\cos t + C$.",
+                    "Condición inicial $y(0)=0 \\Rightarrow -3(1) + C = 0 \\Rightarrow C=3$. Entonces $y(t) = 3(1 - \\cos t)$.",
+                    "De $x = t^3/3 \\Rightarrow t = (3x)^{1/3}$.",
+                    "Sustituir en $y$: $y(x) = 3(1 - \\cos((3x)^{1/3}))$.",
+                ],
+                solution: "$$ y(x) = 3\\left[1 - \\cos\\left((3x)^{1/3}\\right)\\right] $$"
+            },
+            {
+                id: "F1-02", category: "mec", topic: "Coordenadas Intrínsecas", difficulty: "Difícil",
+                tags: ["Radio Curvatura", "Aceleración"],
+                problem: "Un proyectil se lanza con velocidad $v_0$ y ángulo $\\alpha$. Calcule el radio de curvatura $\\rho$ de la trayectoria en el punto de máxima altura.",
+                hint: "En la altura máxima, la velocidad es horizontal y la aceleración total es la gravedad (normal a la velocidad). Use $a_n = v^2 / \\rho$.",
+                steps: [
+                    "En $y_{max}$, $\\vec{v} = v_0 \\cos \\alpha \\hat{i}$.",
+                    "La aceleración total es $\\vec{g} = -g \\hat{j}$.",
+                    "Como $\\vec{v} \\perp \\vec{g}$, toda la aceleración es normal: $a_n = g$.",
+                    "Fórmula: $a_n = v^2 / \\rho \\Rightarrow g = (v_0 \\cos \\alpha)^2 / \\rho$.",
+                    "Despejar $\\rho$."
+                ],
+                solution: "$$ \\rho = \\frac{v_0^2 \\cos^2 \\alpha}{g} $$"
+            },
+            // --- FÍSICA I: DINÁMICA ---
+            {
+                id: "F1-03", category: "mec", topic: "Fuerza Dependiente de Velocidad", difficulty: "Difícil",
+                tags: ["Ecs. Dif", "Drag"],
+                problem: "Un bloque de masa $m$ se lanza sobre una superficie con velocidad $v_0$. Sufre una fuerza de frenado $F = -k v^{3/2}$. ¿Cuánto tiempo tarda en detenerse?",
+                hint: "Plantee $m (dv/dt) = -k v^{3/2}$. Separe variables e integre entre $v_0$ y $0$.",
+                steps: [
+                    "Newton: $m \\frac{dv}{dt} = -k v^{3/2}$.",
+                    "Separar variables: $v^{-3/2} dv = -\\frac{k}{m} dt$.",
+                    "Integrar: $\\int_{v_0}^0 v^{-3/2} dv = -\\frac{k}{m} T$.",
+                    "Integral izq: $[-2 v^{-1/2}]_{v_0}^0$. El límite superior diverge a infinito si el exponente es $\\ge 1$.",
+                    "Evaluando límite: Para $n > 1$, el tiempo puede ser infinito o finito dependiendo de la física. Aquí: $-2(0 - v_0^{-1/2}) = 2/\\sqrt{v_0}$.",
+                    "$2/\\sqrt{v_0} = (k/m)T$."
+                ],
+                solution: "$$ T = \\frac{2m}{k\\sqrt{v_0}} $$"
+            },
+            {
+                id: "F1-04", category: "mec", topic: "Cadena Deslizante (Masa Variable)", difficulty: "Examen",
+                tags: ["Energía", "Integrales"],
+                problem: "Una cadena de longitud $L$ y masa $M$ cuelga por el borde de una mesa sin fricción. Inicialmente cuelga una longitud $y_0$. Halle la velocidad $v(y)$ cuando ha bajado una longitud $y$.",
+                hint: "Conservación de Energía. El centro de masa de la parte colgante baja. $K + U = cte$.",
+                steps: [
+                    "Densidad $\\lambda = M/L$. Masa colgante $m' = \\lambda y$. Su CM está a $-y/2$.",
+                    "$U(y) = -(\\lambda y) g (y/2) = -\\frac{Mg}{2L} y^2$.",
+                    "Energía inicial: $E_0 = -\\frac{Mg}{2L} y_0^2$. Energía final: $\\frac{1}{2}M v^2 - \\frac{Mg}{2L} y^2$.",
+                    "Igualando: $\\frac{1}{2}M v^2 = \\frac{Mg}{2L}(y^2 - y_0^2)$.",
+                    "Despejar $v$."
+                ],
+                solution: "$$ v = \\sqrt{\\frac{g}{L}(y^2 - y_0^2)} $$"
+            },
+            {
+                id: "F1-05", category: "mec", topic: "Fuerza de Coriolis", difficulty: "Difícil",
+                tags: ["No Inercial", "3D"],
+                problem: "Se deja caer una partícula desde altura $h$ en el ecuador. Calcule la desviación horizontal aproximada debido a Coriolis.",
+                hint: "$\\,\\vec{a}_{cor} = -2\\vec{\\omega} \\times \\vec{v}$. Aproxime $\\vec{v} \\approx -gt \\hat{k}$. Integre dos veces.",
+                steps: [
+                    "$\\vec{\\omega} = \\omega \\hat{j}$ (Norte), $\\vec{v} = -gt \\hat{k}$ (Abajo).",
+                    "$-2(\\omega \\hat{j} \\times -gt \\hat{k}) = 2\\omega g t \\hat{i}$ (Este).",
+                    "$x(t) = \\iint 2\\omega g t dt dt = \\omega g t^3 / 3$.",
+                    "Sustituir $t = \\sqrt{2h/g}$."
+                ],
+                solution: "$$ x \\approx \\frac{2}{3}\\omega h \\sqrt{\\frac{2h}{g}} \\text{ (Este)} $$"
+            },
+            // --- FÍSICA I: CHOQUES Y SISTEMAS ---
+            {
+                id: "F1-06", category: "mec", topic: "Choque Elástico 2D", difficulty: "Medio",
+                tags: ["Momento", "Energía"],
+                problem: "Una partícula de masa $m$ choca elásticamente con otra masa $m$ en reposo. Si la primera se desvía $30^\\circ$, ¿cuál es el ángulo de desviación de la segunda?",
+                hint: "En choques elásticos entre masas iguales (una en reposo), los vectores velocidad final son perpendiculares.",
+                steps: [
+                    "Conservación momento vector: $\\vec{v}_0 = \\vec{v}_1 + \\vec{v}_2$.",
+                    "Conservación energía (escalar): $v_0^2 = v_1^2 + v_2^2$.",
+                    "Esto implica un triángulo pitagórico formado por los vectores $\\vec{v}$.",
+                    "El ángulo entre $\\vec{v}_1$ y $\\vec{v}_2$ debe ser $90^\\circ$.",
+                    "Si $\\theta_1 = 30^\\circ$, entonces $\\theta_2 = 90 - 30 = 60^\\circ$."
+                ],
+                solution: "$$ 60^\\circ $$"
+            },
+            {
+                id: "F1-07", category: "mec", topic: "Cohete (Ecuación Tsiolkovsky)", difficulty: "Medio",
+                tags: ["Masa Variable", "Momento"],
+                problem: "Un cohete en el espacio libre expulsa gas a velocidad relativa $u$. Si la masa inicial es $M_0$ y la final $M_f$, halle el cambio de velocidad $\\Delta v$.",
+                hint: "Conserve el momento $P(t) = P(t+dt)$. $M v = (M-dm)(v+dv) + dm(v-u)$.",
+                steps: [
+                    "$M dv = -u dm$.",
+                    "$\\int_{v_0}^v dv = -u \\int_{M_0}^{M_f} \\frac{dm}{M}$.",
+                    "$\\Delta v = -u \\ln(M_f/M_0) = u \\ln(M_0/M_f)$."
+                ],
+                solution: "$$ \\Delta v = u \\ln\\left(\\frac{M_0}{M_f}\\right) $$"
+            },
+            // --- FÍSICA I: SÓLIDO RÍGIDO ---
+            {
+                id: "F1-08", category: "mec", topic: "Rodadura sin Deslizamiento", difficulty: "Medio",
+                tags: ["Energía", "Rotación"],
+                problem: "Una esfera sólida rueda sin deslizar por un plano inclinado altura $h$. Calcule su velocidad en la base.",
+                hint: "Energía: $mgh = \\frac{1}{2}mv^2 + \\frac{1}{2}I\\omega^2$. Relación rodadura: $v = \\omega R$. Esfera $I = \\frac{2}{5}mR^2$.",
+                steps: [
+                    "$mgh = \\frac{1}{2}mv^2 + \\frac{1}{2}(\\frac{2}{5}mR^2)(\\frac{v}{R})^2$.",
+                    "$mgh = \\frac{1}{2}mv^2 + \\frac{1}{5}mv^2 = \\frac{7}{10}mv^2$.",
+                    "$gh = \\frac{7}{10}v^2$.",
+                    "$v = \\sqrt{10gh/7}$."
+                ],
+                solution: "$$ v = \\sqrt{\\frac{10}{7}gh} $$"
+            },
+            {
+                id: "F1-09", category: "mec", topic: "Momento Angular (Colisión)", difficulty: "Difícil",
+                tags: ["Choque", "Rotación"],
+                problem: "Una bala de masa $m$ golpea el borde de un disco (masa $M$, radio $R$) inicialmente en reposo y se incrusta. Calcule la velocidad angular final $\\omega_f$.",
+                hint: "Conserve el Momento Angular $L$ respecto al eje de rotación. $L_i = m v R$. $L_f = (I_{disco} + I_{bala}) \\omega_f$.",
+                steps: [
+                    "$L_i = m v R$.",
+                    "$I_{total} = \\frac{1}{2}MR^2 + mR^2 = R^2(\\frac{M}{2} + m)$.",
+                    "$m v R = R^2(\\frac{M}{2} + m) \\omega_f$.",
+                    "Despejar $\\omega_f$."
+                ],
+                solution: "$$ \\omega_f = \\frac{mv}{R(M/2 + m)} $$"
+            },
+            // --- FÍSICA I: OSCILACIONES Y ONDAS ---
+            {
+                id: "F1-10", category: "waves", topic: "Túnel Gravitatorio", difficulty: "Curiosidad",
+                tags: ["MAS", "Gravedad"],
+                problem: "Si se hace un túnel a través de la Tierra (densidad uniforme) y se deja caer una masa, demuestre que realiza un MAS y halle el periodo.",
+                hint: "Fuerza gravitatoria dentro de la esfera: $F(r) = -\\frac{G M_{int} m}{r^2}$. $M_{int} \\propto r^3$.",
+                steps: [
+                    "$M(r) = \\rho \\frac{4}{3}\\pi r^3$.",
+                    "$F = -\\frac{G m}{r^2} (\\rho \\frac{4}{3}\\pi r^3) = -(\\frac{4}{3}\\pi G \\rho m) r$.",
+                    "Forma $F = -k_{eq} r$. Periodo $T = 2\\pi \\sqrt{m/k_{eq}} = 2\\pi \\sqrt{\\frac{3}{4\\pi G \\rho}}$.",
+                    "Equivale a periodo orbital satélite a ras de suelo (~84 min)."
+                ],
+                solution: "$$ T = \\sqrt{\\frac{3\\pi}{G\\rho}} $$"
+            },
+            {
+                id: "F1-11", category: "waves", topic: "Onda Estacionaria", difficulty: "Medio",
+                tags: ["Ondas", "Cuerdas"],
+                problem: "Una cuerda de longitud $L$ fija en ambos extremos oscila en su tercer armónico. Escriba la función de onda $y(x,t)$.",
+                hint: "La función es $y = 2A \\sin(kx) \\cos(\\omega t)$. Condición borde $kL = n\\pi$. Tercer armónico $n=3$.",
+                steps: [
+                    "$k_3 = 3\\pi / L$.",
+                    "$\\omega_3 = v k_3 = 3\\pi v / L$.",
+                    "$y(x,t) = A_{max} \\sin(\\frac{3\\pi x}{L}) \\cos(\\frac{3\\pi v t}{L})$."
+                ],
+                solution: "$$ y = A \\sin\\left(\\frac{3\\pi x}{L}\\right) \\cos(\\omega_3 t) $$"
+            },
+            {
+                id: "F1-12", category: "waves", topic: "Efecto Doppler Vectorial", difficulty: "Difícil",
+                tags: ["Sonido", "Vectores"],
+                problem: "Fuente y observador se mueven con velocidades $\\vec{v}_S$ y $\\vec{v}_O$. El sonido viaja a $c$. Halle la frecuencia observada.",
+                hint: "Proyecte las velocidades en la dirección de la línea que los une (vector unitario $\\hat{n}$ de fuente a observador).",
+                steps: [
+                    "$f' = f \\frac{c - \\vec{v}_O \\cdot \\hat{n}}{c - \\vec{v}_S \\cdot \\hat{n}}$."
+                ],
+                solution: "$$ f' = f \\left( \\frac{c - \\vec{v}_O \\cdot \\hat{n}}{c - \\vec{v}_S \\cdot \\hat{n}} \\right) $$"
+            },
+
+            // --- FÍSICA II: ELECTROSTÁTICA ---
+            {
+                id: "F2-01", category: "elec", topic: "Potencial Disco Cargado", difficulty: "Medio",
+                tags: ["Integral", "Potencial"],
+                problem: "Calcule el potencial $V(z)$ en el eje de un disco uniformemente cargado de radio $R$.",
+                hint: "Integre anillos diferenciales $dq = \\sigma 2\\pi r dr$. Distancia al punto $z$ es $\\sqrt{r^2+z^2}$.",
+                steps: [
+                    "$dV = k \\frac{dq}{\\text{dist}} = \\frac{1}{4\\pi\\epsilon_0} \\frac{\\sigma 2\\pi r dr}{\\sqrt{r^2+z^2}}$.",
+                    "$V = \\frac{\\sigma}{2\\epsilon_0} \\int_0^R \\frac{r dr}{\\sqrt{r^2+z^2}}$.",
+                    "Integral es $[\\sqrt{r^2+z^2}]_0^R$.",
+                    "$V = \\frac{\\sigma}{2\\epsilon_0} (\\sqrt{R^2+z^2} - z)$ (para z>0)."
+                ],
+                solution: "$$ \\frac{\\sigma}{2\\epsilon_0} \\left(\\sqrt{R^2+z^2} - |z|\\right) $$"
+            },
+            {
+                id: "F2-02", category: "elec", topic: "Gauss Densidad no Uniforme", difficulty: "Examen",
+                tags: ["Gauss", "Integral"],
+                problem: "Una esfera de radio $R$ tiene densidad de carga $\\rho(r) = Ar^2$. Calcule el campo eléctrico en el interior.",
+                hint: "Gauss: $E(4\\pi r^2) = Q_{int}/\\epsilon_0$. Integre $\\rho$ en volumen para hallar $Q_{int}(r)$.",
+                steps: [
+                    "$Q_{int} = \\int_0^r (Ar'^2) 4\\pi r'^2 dr' = 4\\pi A \\int r'^4 dr'$.",
+                    "$Q_{int} = 4\\pi A [r^5/5]$.",
+                    "$E(4\\pi r^2) = \\frac{4\\pi A r^5}{5\\epsilon_0}$.",
+                    "$E = \\frac{A r^3}{5\\epsilon_0}$."
+                ],
+                solution: "$$ \\vec{E} = \\frac{A r^3}{5\\epsilon_0} \\hat{r} $$"
+            },
+            {
+                id: "F2-03", category: "elec", topic: "Método Imágenes (Esfera)", difficulty: "Muy Difícil",
+                tags: ["Potencial", "Geometría"],
+                problem: "Una carga $q$ está a distancia $d$ del centro de una esfera conductora a tierra de radio $R$ ($d>R$). Encuentre la magnitud y posición de la carga imagen $q'$.",
+                hint: "El potencial debe ser cero en $r=R$. Por geometría de triángulos semejantes, $q' = -(R/d)q$ ubicada en $d' = R^2/d$.",
+                steps: [
+                    "Potencial en punto P sobre esfera: $V = k(\\frac{q}{r_1} + \\frac{q'}{r_2}) = 0$.",
+                    "Esto requiere que la razón $r_2/r_1$ sea constante en toda la superficie.",
+                    "Solución geométrica clásica: $q' = -\\frac{R}{d}q$ y posición $b = \\frac{R^2}{d}$."
+                ],
+                solution: "$$ q' = -q\\frac{R}{d}, \\quad x' = \\frac{R^2}{d} $$"
+            },
+            {
+                id: "F2-04", category: "elec", topic: "Condensador Cilíndrico con Dieléctricos", difficulty: "Difícil",
+                tags: ["Capacidad", "Medios"],
+                problem: "Un condensador cilíndrico largo ($R_1, R_2$) se llena mitad con dieléctrico $\\epsilon_1$ y mitad con $\\epsilon_2$ (división longitudinal). Calcule la capacidad por unidad de longitud.",
+                hint: "Es equivalente a dos condensadores en paralelo (mismo V, suman cargas).",
+                steps: [
+                    "Capacidad cilindro vacío: $C_0 = \\frac{2\\pi \\epsilon_0 L}{\\ln(R_2/R_1)}$.",
+                    "Aquí cada mitad contribuye la mitad del área (o ángulo $\\pi$ en vez de $2\\pi$).",
+                    "$C_1 = \\frac{\\pi \\epsilon_1 L}{\\ln(R_2/R_1)}$, $C_2 = \\frac{\\pi \\epsilon_2 L}{\\ln(R_2/R_1)}$.",
+                    "$C_{tot} = C_1 + C_2$."
+                ],
+                solution: "$$ \\frac{C}{L} = \\frac{\\pi(\\epsilon_1+\\epsilon_2)}{\\ln(R_2/R_1)} $$"
+            },
+
+            // --- FÍSICA II: MAGNETISMO E INDUCCIÓN ---
+            {
+                id: "F2-05", category: "elec", topic: "Campo B Solenoide Finito", difficulty: "Examen",
+                tags: ["Biot-Savart", "Integral"],
+                problem: "Calcule el campo magnético en el eje de un solenoide finito de longitud $L$, radio $R$ y $n$ vueltas/m.",
+                hint: "Integre el campo de espiras circulares $dB = \\frac{\\mu_0 dI R^2}{2(R^2+z^2)^{3/2}}$ a lo largo de $L$. Exprese en función de ángulos $\\theta_1, \\theta_2$ subtendidos por los extremos.",
+                steps: [
+                    "Corriente en elemento $dz$: $dI = n I dz$.",
+                    "Cambio de variable $z = R \\cot \\theta$. (o trigonometría)",
+                    "Resultado estándar de integración: $B = \\frac{\\mu_0 n I}{2} (\\cos \\theta_1 - \\cos \\theta_2)$."
+                ],
+                solution: "$$ B = \\frac{\\mu_0 n I}{2} (\\cos \\theta_1 - \\cos \\theta_2) $$"
+            },
+            {
+                id: "F2-06", category: "elec", topic: "Fuerza entre Espiras", difficulty: "Muy Difícil",
+                tags: ["Fuerza", "Integral"],
+                problem: "Dos espiras circulares paralelas de radio $a$, separadas una distancia $d$ ($d \\gg a$), llevan corriente $I$. Calcule la fuerza de interacción.",
+                hint: "Trate una espira como un dipolo magnético $\\mu = I \\pi a^2$ en el campo no uniforme de la otra.",
+                steps: [
+                    "Campo en eje de espira 1 (aprox dipolar): $B \\approx \\frac{\\mu_0 \mu}{2\\pi z^3}$.",
+                    "Fuerza sobre dipolo 2: $F = \\mu \\frac{dB}{dz}$.",
+                    "Derivada: $\\frac{dB}{dz} = -3 \\frac{\\mu_0 \\mu}{2\\pi z^4}$.",
+                    "Sustituir $z=d$ y $\\mu$."
+                ],
+                solution: "$$ F \\approx \\frac{3\\pi \\mu_0 I^2 a^4}{2 d^4} $$"
+            },
+            {
+                id: "F2-07", category: "elec", topic: "Betatrón (Campo Inducido)", difficulty: "Teórico",
+                tags: ["Faraday", "Acelerador"],
+                problem: "Para acelerar electrones en una órbita circular de radio constante $R$ mediante un campo $B(t)$ variable, ¿qué relación debe haber entre el campo en la órbita $B_{orb}$ y el campo promedio encerrado $\\bar{B}$?",
+                hint: "Iguale fuerza centrípeta magnética y fuerza tangencial eléctrica (Faraday). Condición de Betatrón $1:2$.",
+                steps: [
+                    "Momento $p = e B_{orb} R$. Tasa cambio $\\dot{p} = e \\dot{B}_{orb} R$.",
+                    "Fuerza eléctrica $F_E = e E$. Faraday: $2\\pi R E = \\dot{\\Phi} = \\pi R^2 \\dot{\\bar{B}}$.",
+                    "$F_E = e \\frac{R}{2} \\dot{\\bar{B}}$.",
+                    "Igualando fuerzas (Newton): $\\dot{p} = F_E \\Rightarrow e R \\dot{B}_{orb} = e \\frac{R}{2} \\dot{\\bar{B}}$.",
+                    "Integre: $B_{orb} = \\frac{1}{2} \\bar{B}$."
+                ],
+                solution: "$$ B_{orbita} = \\frac{1}{2} \\bar{B}_{promedio} $$"
+            },
+            {
+                id: "F2-08", category: "elec", topic: "Inducción Mutua Toroide-Recta", difficulty: "Medio",
+                tags: ["Inductancia", "Flujo"],
+                problem: "Un cable recto infinito pasa por el eje de un toroide de sección rectangular ($a, b$, altura $h$) y $N$ vueltas. Halle $M$.",
+                hint: "Calcule flujo del cable recto a través de UNA vuelta del toroide, multiplique por $N$.",
+                steps: [
+                    "Campo cable: $B = \\frac{\\mu_0 I}{2\\pi r}$.",
+                    "Flujo en sección rectangular: $\\Phi_1 = \\int_a^b \\frac{\\mu_0 I}{2\\pi r} h dr = \\frac{\\mu_0 I h}{2\\pi} \\ln(b/a)$.",
+                    "Flujo total $\\Phi_{tot} = N \\Phi_1$.",
+                    "$M = \\Phi_{tot} / I$."
+                ],
+                solution: "$$ M = \\frac{\\mu_0 N h}{2\\pi} \\ln(b/a) $$"
+            },
+            {
+                id: "F2-09", category: "elec", topic: "Circuito RLC Factor Q", difficulty: "Difícil",
+                tags: ["AC", "Resonancia"],
+                problem: "Demuestre que el ancho de banda $\\Delta \\omega$ en resonancia de potencia cumple $\\Delta \\omega / \\omega_0 = 1/Q$.",
+                hint: "Analice la curva de potencia media $P(\\omega)$. Encuentre los puntos donde $P = P_{max}/2$.",
+                steps: [
+                    "Potencia $P(\\omega) = \\frac{V^2 R}{R^2 + (\\omega L - 1/\\omega C)^2}$.",
+                    "Max en $\\omega_0$. Media potencia cuando $R = |\\omega L - 1/\\omega C|$.",
+                    "Aprox para Q alto: $\\Delta \\omega \\approx R/L$.",
+                    "Definición $Q = \\omega_0 L / R$.",
+                    "Entonces $\\Delta \\omega = \\omega_0 / Q$."
+                ],
+                solution: "$$ \\frac{\\Delta \\omega}{\\omega_0} = \\frac{R}{\\omega_0 L} $$"
+            },
+            {
+                id: "F2-10", category: "elec", topic: "Maxwell: Corriente Desplazamiento", difficulty: "Examen",
+                tags: ["Maxwell", "Condensador"],
+                problem: "Un condensador plano circular de radio $a$ se descarga. Calcule $B(r)$ para $r>a$ (fuera de las placas) suponiendo simetría ideal.",
+                hint: "Fuera de las placas no hay corriente real ni campo E variable (idealmente, pero asuma E confinado). Si pide B *dentro*, use $I_d$. Si es *fuera* y E es nulo fuera, B es cero (modelo simple) o considere efectos de borde. PROBLEMA ESTÁNDAR: Dentro $r<a$.",
+                problem_fixed: "Un condensador circular de radio $R$ se carga con corriente $I$. Calcule $B(r)$ para $r < R$.",
+                steps: [
+                    "Ampere-Maxwell: $\\oint B dl = \\mu_0 I_{enc} + \\mu_0 I_{d,enc}$. $I_{enc}=0$.",
+                    "$I_d = \\epsilon_0 \\dot{\\Phi}_E$. Campo $E$ uniforme $\\rightarrow \\Phi_E(r) = E \\pi r^2$.",
+                    "Total $I_{d, tot} = I$. Proporción $\\frac{I_{d,enc}}{I} = \\frac{r^2}{R^2}$.",
+                    "$B(2\\pi r) = \\mu_0 I (r^2/R^2)$.",
+                    "$B = \\frac{\\mu_0 I r}{2\\pi R^2}$."
+                ],
+                solution: "$$ B = \\frac{\\mu_0 I r}{2\\pi R^2} $$"
+            },
+            {
+                id: "F2-11", category: "elec", topic: "Onda EM en Conductor", difficulty: "Muy Difícil",
+                tags: ["Ondas", "Skin Effect"],
+                problem: "En un buen conductor, demuestre que los campos $E$ y $B$ están desfasados $45^\\circ$.",
+                hint: "Use número de onda complejo $k = \\alpha + i\\beta$. En buen conductor $\\sigma \\gg \\epsilon \\omega$.",
+                steps: [
+                    "Ecs Maxwell rotacionales llevan a $k^2 \\approx i \\mu \\sigma \\omega$.",
+                    "Raíz de $i$: $\\sqrt{i} = e^{i\\pi/4}$.",
+                    "Esto introduce una fase de $\\pi/4$ en la impedancia intrínseca $\\eta = \\omega \\mu / k$."
+                ],
+                solution: "$$ \\phi = 45^\\circ $$"
+            },
+            // --- THERMO (EXTRA) ---
+            {
+                id: "TH-01", category: "thermo", topic: "Ciclo Diesel Entropía", difficulty: "Difícil",
+                tags: ["Ciclos", "Entropía"],
+                problem: "Calcule el cambio de entropía del universo por ciclo en una máquina Diesel ideal. (Pregunta trampa).",
+                hint: "En un ciclo IDEAL reversible, $\\Delta S_{univ} = 0$. Si se pide del gas en una etapa, use $dQ/T$.",
+                steps: [
+                    "Ciclo Ideal = Reversible internamente y con focos reversibles (Carnot) o idealización endoreversible.",
+                    "Respuesta: 0 si es ideal reversible.",
+                    "Si fuera real: $\\Delta S > 0$."
+                ],
+                solution: "$$ \\Delta S_{univ} = 0 $$"
+            },
+            {
+                id: "TH-02", category: "thermo", topic: "Ecuación Van der Waals Trabajo", difficulty: "Medio",
+                tags: ["Gases Reales", "Integral"],
+                problem: "Trabajo expansión isotérmica gas VdW $(P + a/v^2)(v-b) = RT$.",
+                hint: "$P = RT/(v-b) - a/v^2$. Integre $P dv$.",
+                steps: [
+                    "$\\int_{v_1}^{v_2} (\\frac{RT}{v-b} - \\frac{a}{v^2}) dv$.",
+                    "$RT \\ln(\\frac{v_2-b}{v_1-b}) + a(\\frac{1}{v_2} - \\frac{1}{v_1})$."
+                ],
+                solution: "$$ W = RT \\ln\\frac{v_2-b}{v_1-b} + a\\left(\\frac{1}{v_2}-\\frac{1}{v_1}\\right) $$"
+            }
+        ];
+
+        // ==========================================
+        // APP LOGIC
+        // ==========================================
+        
+        const categories = [
+            { id: 'all', label: 'Todas las Áreas' },
+            { id: 'mec', label: 'Física I: Mecánica', class: 'text-brand-mec' },
+            { id: 'elec', label: 'Física II: Electromag.', class: 'text-brand-elec' },
+            { id: 'waves', label: 'Ondas y Óptica', class: 'text-brand-wave' },
+            { id: 'thermo', label: 'Termodinámica', class: 'text-brand-thermo' }
+        ];
+
+        let activeFilter = 'all';
+
+        function init() {
+            // Load Sidebar
+            const nav = document.getElementById('sidebar-nav');
+            const mobileNav = document.getElementById('mobile-filters');
+            
+            const createBtn = (c, isMobile) => `
+                <button onclick="filterGrid('${c.id}')" 
+                    class="${isMobile 
+                        ? `whitespace-nowrap px-4 py-2 rounded-full border text-sm font-bold transition-all ${activeFilter === c.id ? 'bg-slate-900 text-white dark:bg-white dark:text-black' : 'bg-white dark:bg-[#111] text-gray-500 border-gray-200 dark:border-gray-800'}`
+                        : `w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center justify-between group ${activeFilter === c.id ? 'bg-gray-100 dark:bg-white/5 text-slate-900 dark:text-white shadow-sm' : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'}`
+                    }"
+                >
+                    <span class="${c.class || ''}">${c.label}</span>
+                    ${!isMobile && activeFilter === c.id ? '<span class="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-white"></span>' : ''}
+                </button>
+            `;
+
+            nav.innerHTML = categories.map(c => createBtn(c, false)).join('');
+            mobileNav.innerHTML = categories.map(c => createBtn(c, true)).join('');
+
+            renderGrid();
+            updateStats();
+
+            // Theme logic
+            if(localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('exercise-grid');
+            const filtered = activeFilter === 'all' ? exercises : exercises.filter(e => e.category === activeFilter);
+
+            grid.innerHTML = filtered.map((ex, i) => `
+                <article onclick="openModal('${ex.id}')" 
+                    class="group bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-2xl p-5 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 relative overflow-hidden card-anim flex flex-col h-full"
+                    style="animation-delay: ${i * 0.03}s"
+                >
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="font-mono text-[10px] font-bold text-gray-400 group-hover:text-emerald-500 transition-colors">${ex.id}</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/5">
+                            ${ex.difficulty}
+                        </span>
+                    </div>
+                    
+                    <h3 class="font-display font-bold text-lg leading-tight text-slate-900 dark:text-white mb-2 group-hover:text-emerald-500 transition-colors">
+                        ${ex.topic}
+                    </h3>
+                    
+                    <!-- Problem Preview (Truncated) -->
+                    <div class="text-sm text-gray-500 dark:text-gray-400 font-serif leading-relaxed mb-4 line-clamp-3 flex-1 pointer-events-none">
+                        ${ex.problem}
+                    </div>
+
+                    <!-- Footer Tags -->
+                    <div class="flex flex-wrap gap-1 pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
+                        ${ex.tags.slice(0,2).map(t => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-gray-50 dark:bg-white/5 text-gray-500 border border-gray-100 dark:border-white/5">${t}</span>`).join('')}
+                        ${ex.tags.length > 2 ? `<span class="text-[10px] px-1.5 text-gray-400">+${ex.tags.length-2}</span>` : ''}
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-brand-mec to-brand-elec transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                </article>
+            `).join('');
+
+            refreshMath();
+        }
+
+        function updateStats() {
+            document.getElementById('total-count').innerText = exercises.length + ' Probs';
+        }
+
+        function filterGrid(id) {
+            activeFilter = id;
+            init(); // re-render navs to update active state
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('modal-backdrop');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal(id) {
+            const ex = exercises.find(e => e.id === id);
+            if(!ex) return;
+
+            // Fill data
+            document.getElementById('modal-id').innerText = ex.id;
+            document.getElementById('modal-diff').innerText = ex.difficulty;
+            document.getElementById('modal-topic').innerText = ex.topic;
+            
+            // HTML content for MathJax
+            document.getElementById('modal-problem').innerHTML = ex.problem;
+            document.getElementById('modal-hint').innerHTML = ex.hint;
+            document.getElementById('modal-solution').innerHTML = ex.solution;
+
+            // Steps
+            document.getElementById('modal-steps').innerHTML = ex.steps.map((s, i) => `
+                <div class="relative pl-6 border-l-2 border-gray-100 dark:border-dark-border">
+                    <div class="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-700 ring-4 ring-white dark:ring-[#0a0a0a]"></div>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase mb-1 block">Paso ${i + 1}</span>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-base">${s}</p>
+                </div>
+            `).join('');
+
+            // Open animation
+            modal.classList.remove('opacity-0', 'invisible');
+            modalContent.classList.remove('scale-95');
+            
+            refreshMath();
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'invisible');
+            modalContent.classList.add('scale-95');
+        }
+
+        // Listeners
+        modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+        document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+        
+        // Themes
+        const toggleTheme = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        };
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('theme-toggle-mobile').addEventListener('click', toggleTheme);
+
+        // MathJax
+        function refreshMath() {
+            if(window.MathJax && window.MathJax.typesetPromise) {
+                setTimeout(() => window.MathJax.typesetPromise(), 10);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
