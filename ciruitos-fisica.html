@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innove | Circuit Analysis Pro (35 Problems)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    :root {
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --sidebar-w: 280px;
+    }
+
+    /* THEMES */
+    [data-theme="light"] {
+      --bg-body: #f3f4f6; --bg-card: #ffffff; --text-main: #111827; --text-sub: #4b5563;
+      --accent: #2563eb; --accent-soft: #dbeafe; --border: #e5e7eb;
+      --circuit-stroke: #000; --circuit-fill: #fff;
+    }
+    [data-theme="dark"] {
+      --bg-body: #0f172a; --bg-card: #1e293b; --text-main: #f8fafc; --text-sub: #94a3b8;
+      --accent: #38bdf8; --accent-soft: #0c4a6e; --border: #334155;
+      --circuit-stroke: #e2e8f0; --circuit-fill: #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-main); background: var(--bg-body); color: var(--text-main); height: 100vh; display: flex; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w); background: var(--bg-card); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; padding: 20px; z-index: 10;
+    }
+    .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+    .nav-btn {
+      padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; border: none;
+      background: transparent; color: var(--text-sub); text-align: left; font-weight: 600; width: 100%;
+      transition: 0.2s; display: flex; justify-content: space-between;
+    }
+    .nav-btn:hover { background: var(--bg-body); color: var(--text-main); }
+    .nav-btn.active { background: var(--accent-soft); color: var(--accent); }
+    .count-badge { font-size: 0.75rem; background: var(--bg-body); padding: 2px 6px; border-radius: 4px; }
+
+    /* MAIN */
+    .main { flex: 1; padding: 30px 40px; overflow-y: auto; position: relative; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .theme-btn { background: var(--bg-card); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+
+    /* GRID */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; cursor: pointer; transition: transform 0.2s, border 0.2s;
+      display: flex; flex-direction: column; height: 100%;
+    }
+    .card:hover { transform: translateY(-3px); border-color: var(--accent); }
+    
+    .circuit-preview {
+      height: 120px; background: var(--bg-body); border-radius: 8px; margin-bottom: 15px;
+      display: flex; align-items: center; justify-content: center; padding: 10px;
+    }
+    .circuit-preview svg { width: 100%; height: 100%; stroke: var(--circuit-stroke); fill: none; stroke-width: 2; }
+
+    .card-meta { display: flex; gap: 8px; margin-bottom: 10px; }
+    .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+    .badge-hard { background: #fee2e2; color: #ef4444; }
+    .badge-med { background: #fef3c7; color: #d97706; }
+    .badge-topic { background: var(--accent-soft); color: var(--accent); }
+
+    .card-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; flex: 1; }
+    .card-id { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-sub); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center; z-index: 100;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg-card); width: 90%; max-width: 900px; max-height: 90vh;
+      border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+    .modal-header { padding: 20px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 30px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    
+    .circuit-full { background: var(--bg-body); border-radius: 12px; height: 250px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); margin-bottom: 20px; }
+    .circuit-full svg { width: 90%; height: 90%; stroke: var(--circuit-stroke); fill: none; stroke-width: 2; }
+    
+    .solution-step { background: var(--bg-body); padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid var(--accent); }
+    .ans-box { margin-top: 20px; padding: 15px; text-align: center; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--text-main); font-weight: bold; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .modal-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">⚡ Innove <span style="font-size:0.6em; opacity:0.7">UPC ED.</span></div>
+    <button class="nav-btn active" onclick="filter('all')">Todo <span class="count-badge">35</span></button>
+    <button class="nav-btn" onclick="filter('dc')">DC Avanzado <span class="count-badge">8</span></button>
+    <button class="nav-btn" onclick="filter('ac')">Fasores AC <span class="count-badge">9</span></button>
+    <button class="nav-btn" onclick="filter('trans')">Transitorios <span class="count-badge">8</span></button>
+    <button class="nav-btn" onclick="filter('power')">Potencia & Trifásica <span class="count-badge">5</span></button>
+    <button class="nav-btn" onclick="filter('freq')">Frecuencia & Laplace <span class="count-badge">5</span></button>
+  </aside>
+
+  <main class="main">
+    <header class="header">
+      <div>
+        <h1 style="font-weight: 800; letter-spacing: -0.03em;">Banco de Circuitos</h1>
+        <p style="color: var(--text-sub);">35 Problemas Nivel Ingeniería (Mallas, Nodos, RLC, Laplace, Trifásica)</p>
+      </div>
+      <button class="theme-btn" onclick="toggleTheme()">🌗</button>
+    </header>
+
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="m-title" style="font-family: var(--font-mono);">ID: 01</h3>
+        <button onclick="closeModal()" style="border:none; background:none; font-size:1.5rem; cursor:pointer; color:var(--text-sub)">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="left-col">
+          <div class="circuit-full" id="m-svg"></div>
+          <div id="m-problem" style="line-height: 1.6; font-size: 1.05rem;"></div>
+        </div>
+        <div class="right-col">
+          <h4 style="margin-bottom: 15px; color: var(--accent); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Solución & Análisis</h4>
+          <div id="m-steps"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- SVG TEMPLATES (The visual engine) ---
+    const SVGS = {
+      mesh2: `<path d="M50 50 H150 V150 H50 Z M150 50 H250 V150 H150" /><circle cx="50" cy="100" r="10" /><text x="90" y="40">R1</text><text x="190" y="40">R2</text><text x="140" y="100">R3</text>`,
+      mesh3: `<path d="M50 50 H150 V150 H50 Z M150 50 H250 V150 H150 M100 150 V200 H200 V150" /><circle cx="50" cy="100" r="10" />`,
+      bridge: `<path d="M150 20 L230 100 L150 180 L70 100 Z M20 100 H70 M230 100 H280 M150 20 V180" /><text x="100" y="60">Z1</text><text x="190" y="60">Z2</text><text x="160" y="100">Z5</text>`,
+      opamp: `<path d="M100 50 L200 100 L100 150 V50" /><line x1="50" y1="80" x2="100" y2="80"/><line x1="50" y1="120" x2="100" y2="120"/><line x1="200" y1="100" x2="250" y2="100"/><path d="M150 50 V20 M100 80 V20 H220 V100" stroke-dasharray="4"/>`,
+      rlc_series: `<rect x="50" y="50" width="200" height="100" /><circle cx="50" cy="100" r="10" /><path d="M80 45 L100 55 L120 45" /><path d="M150 45 Q160 35 170 45 Q180 55 190 45" />`,
+      rlc_parallel: `<line x1="50" y1="50" x2="250" y2="50"/><line x1="50" y1="150" x2="250" y2="150"/><line x1="50" y1="50" x2="50" y2="150"/><line x1="110" y1="50" x2="110" y2="150"/><line x1="170" y1="50" x2="170" y2="150"/><line x1="230" y1="50" x2="230" y2="150"/>`,
+      thevenin: `<rect x="80" y="60" width="100" height="80" fill="none" stroke-dasharray="5"/><line x1="40" y1="100" x2="80" y2="100"/><line x1="180" y1="100" x2="220" y2="100"/><circle cx="220" cy="100" r="3" fill="red"/><text x="100" y="100">Red Lineal</text>`,
+      transformer: `<rect x="80" y="50" width="40" height="100" rx="5"/><rect x="140" y="50" width="40" height="100" rx="5"/><line x1="40" y1="80" x2="80" y2="80"/><line x1="180" y1="80" x2="220" y2="80"/><text x="115" y="100">M</text>`
+    };
+
+    // --- DATABASE (35 PROBLEMS) ---
+    const data = [
+      // DC (1-8)
+      { id: 1, type: 'mesh2', cat: 'dc', title: 'Supermalla con Fuente Dependiente', prob: 'Halla $i_x$ en un circuito de 2 mallas donde existe una fuente de corriente dependiente $2v_x$ compartida entre mallas. $R_1=10, R_2=5$.', sol: '$$i_x = 1.2 A$$', steps: ['Plantear LVK exterior.', 'Ecuación de restricción: $i_2 - i_1 = 2v_x$.', 'Sustituir $v_x$ por ley de Ohm.'] },
+      { id: 2, type: 'bridge', cat: 'dc', title: 'Puente de Wheatstone Desequilibrado', prob: 'Calcula la tensión de Thevenin $V_{th}$ entre los terminales centrales del puente. $V_s=24V$, resistencias $1k, 2k, 3k, 4k$.', sol: '$$V_{th} = 1.2 V$$', steps: ['Divisor de tensión rama izquierda.', 'Divisor rama derecha.', 'Resta de potenciales.'] },
+      { id: 3, type: 'mesh3', cat: 'dc', title: 'Análisis Nodal con Supernodo', prob: 'Calcula $V_1$ y $V_2$. Hay una fuente de tensión flotante de 10V entre los nodos 1 y 2. $I_s=2A$ entra al nodo 1.', sol: '$$V_1=14V, V_2=4V$$', steps: ['Ec. Restricción: $V_1 - V_2 = 10$.', 'LCK en el supernodo (suma de corrientes salientes).'] },
+      { id: 4, type: 'opamp', cat: 'dc', title: 'Amplificador Operacional Ideal', prob: 'Halla $V_{out}$ si $V_{in}=2V$. Configuración inversora con $R_f=10k, R_{in}=2k$.', sol: '$$V_{out} = -10V$$', steps: ['Cortocircuito virtual $V_- = V_+ = 0$.', 'KCL en nodo inversor: $(2-0)/2k + (V_{out}-0)/10k = 0$.'] },
+      { id: 5, type: 'opamp', cat: 'dc', title: 'OpAmp Diferencial', prob: 'Calcula $V_o$ para un amplificador diferencial con $R_1=R_3=10k$ y $R_2=R_4=50k$. Entradas $V_1=5V, V_2=3V$.', sol: '$$V_o = 10V$$', steps: ['Formula: $V_o = \\frac{R_2}{R_1}(V_2 - V_1)$.', '$V_o = 5(3 - (-variable))$.'] },
+      { id: 6, type: 'thevenin', cat: 'dc', title: 'Thevenin con Fuentes Dependientes', prob: 'Halla $R_{th}$ visto desde a-b. El circuito solo tiene una fuente dependiente $3i_x$ y resistencias.', sol: '$$R_{th} = 5 \\Omega$$', steps: ['No hay fuentes indep -> $V_{th}=0$.', 'Inyectar fuente de prueba $V_p=1V$.', 'Calcular $I_p$ y hacer $R = 1/I_p$.'] },
+      { id: 7, type: 'mesh3', cat: 'dc', title: 'Potencia Máxima DC', prob: '¿Qué valor de $R_L$ extrae máxima potencia de un circuito con $V_{th}=20V, R_{th}=8\\Omega$?', sol: '$$R_L = 8\\Omega, P=12.5W$$', steps: ['Condición $R_L = R_{th}$.', '$P_{max} = V_{th}^2 / 4R_{th}$.'] },
+      { id: 8, type: 'mesh2', cat: 'dc', title: 'Transformación Estrella-Delta', prob: 'Simplifica una red Pi ($\pi$) de resistencias $10, 10, 10$ a T y halla resistencia equivalente.', sol: '$$R_a=R_b=R_c=3.33\\Omega$$', steps: ['Formula $R_Y = (R_a R_b) / \sum R_\Delta$.'] },
+
+      // AC (9-17)
+      { id: 9, type: 'mesh2', cat: 'ac', title: 'Mallas con Fasores', prob: 'Halla $I$ en circuito serie $R=3, L=j4$. Fuente $V=10\\angle 0^\\circ$.', sol: '$$I = 2\\angle -53.1^\\circ A$$', steps: ['$Z = 3+j4 = 5\\angle 53.1$.', '$I = V/Z$.'] },
+      { id: 10, type: 'rlc_parallel', cat: 'ac', title: 'Nodal AC', prob: 'Halla tensión de nodo $V_x$. Fuente corriente $2\\angle 90^\\circ$ en paralelo con $R=2$ y $C=-j2$.', sol: '$$V_x = 2.82\\angle 45^\\circ V$$', steps: ['$Y_{eq} = 1/2 + 1/(-j2) = 0.5 + j0.5$.', '$V = I/Y$.'] },
+      { id: 11, type: 'bridge', cat: 'ac', title: 'Puente de Impedancia AC', prob: 'Condición de equilibrio para puente Maxwell ($L_x, R_x$). Ramas opuestas: ($R_1, C_1$ paralelo) y ($R_2, R_3$).', sol: '$$L_x = R_2 R_3 C_1$$', steps: ['$Z_1 Z_x = Z_2 Z_3$.', 'Igualar partes reales e imaginarias.'] },
+      { id: 12, type: 'transformer', cat: 'ac', title: 'Transformador Ideal', prob: 'Relación $1:5$. Carga secundario $50\\angle 0^\\circ \\Omega$. Impedancia reflejada al primario.', sol: '$$Z_{ref} = 2\\Omega$$', steps: ['$Z_p = Z_s / n^2$.', '$n=5$.'] },
+      { id: 13, type: 'transformer', cat: 'ac', title: 'Acoplamiento Magnético', prob: 'Halla $V_2$ circuito abierto. $I_1 = 10\\angle 0$, $\\omega=100$, $M=0.1H$.', sol: '$$V_2 = j100 V$$', steps: ['$V_2 = j\\omega M I_1$.', 'Considerar convención de puntos.'] },
+      { id: 14, type: 'thevenin', cat: 'ac', title: 'Thevenin en AC', prob: 'Equivalente visto desde carga $Z_L$. $V_s=100$, $Z_1=10+j10$.', sol: '$$Z_{th}=10+j10$$', steps: ['Pasivar fuente -> $Z_{th} = Z_1$.', '$V_{th} = V_{oc}$.'] },
+      { id: 15, type: 'mesh2', cat: 'ac', title: 'Superposición AC/DC', prob: 'Fuente $v(t) = 10 + 10\\cos(t)$. Halla potencia en $R=1$ tras un condensador.', sol: '$$P = 50 W$$', steps: ['Analizar DC: C abierto -> I=0.', 'Analizar AC: Calcular rms.', 'Sumar potencias.'] },
+      { id: 16, type: 'opamp', cat: 'ac', title: 'Integrador OpAmp AC', prob: 'Ganancia a $\\omega=1k$. $R=1k, C=1\\mu F$. Configuración inversora.', sol: '$$|A_v| = 1$$', steps: ['$Z_f = 1/j\\omega C = -j1000$.', 'Gain $=-Z_f/R = -(-j1) = j1$.'] },
+      { id: 17, type: 'mesh3', cat: 'ac', title: 'Diagrama Fasorial', prob: 'Dibuja e interpreta fasores para circuito RLC serie en resonancia.', sol: '$$V_L = -V_C$$', steps: ['Corriente en fase con $V_s$.', '$V_L$ adelanta 90, $V_C$ atrasa 90.'] },
+
+      // TRANSIENTS (18-25)
+      { id: 18, type: 'rlc_series', cat: 'trans', title: 'Circuito RC Primer Orden', prob: 'Interruptor cierra en t=0. $V=10, R=1k, C=1mF$. Halla $v_c(t)$.', sol: '$$10(1 - e^{-t})$$', steps: ['$\\tau = RC = 1s$.', '$v(t) = v_f + (v_i - v_f)e^{-t/\\tau}$.'] },
+      { id: 19, type: 'rlc_series', cat: 'trans', title: 'Circuito RL Descarga', prob: '$I_0 = 5A$. Se abre interruptor sobre $R=2\\Omega, L=4H$.', sol: '$$i(t) = 5e^{-0.5t}$$', steps: ['$\\tau = L/R = 2s$.', 'Respuesta natural.'] },
+      { id: 20, type: 'rlc_series', cat: 'trans', title: 'RLC Serie Sobreamortiguado', prob: '$R=10, L=1, C=0.1$. Halla $\\alpha, \\omega_0$.', sol: '$$\\alpha=5, \\omega_0=3.16$$', steps: ['$\\alpha = R/2L$.', '$\\alpha > \\omega_0$ implica sobreamortiguado.'] },
+      { id: 21, type: 'rlc_parallel', cat: 'trans', title: 'RLC Paralelo Subamortiguado', prob: 'Respuesta natural $v(t)$. $\\alpha=1, \\omega_d=10$. Cond inicial $v(0)=10$.', sol: '$$10e^{-t}\\cos(10t)$$', steps: ['Forma: $e^{-\\alpha t}(A\\cos + B\\sin)$.', 'Evaluar condiciones iniciales.'] },
+      { id: 22, type: 'rlc_series', cat: 'trans', title: 'Respuesta al Escalón RLC', prob: 'Valor final de $v_c$ en RLC serie con entrada 12V.', sol: '$$v_c(\\infty) = 12V$$', steps: ['En estado estacionario, C es circuito abierto.', 'No circula corriente, no cae tensión en R ni L.'] },
+      { id: 23, type: 'mesh2', cat: 'trans', title: 'Condiciones Iniciales', prob: 'Halla $i_L(0^+)$ y $v_c(0^+)$ si hubo cambio en $t=0$.', sol: '$$Continuidad$$', steps: ['$i_L(0^-) = i_L(0^+)$.', '$v_c(0^-) = v_c(0^+)$.'] },
+      { id: 24, type: 'rlc_series', cat: 'trans', title: 'Singularidad (Impulso)', prob: 'Derivada de escalón $u(t)$. Aplicación en carga de condensador instantánea.', sol: '$$\\delta(t)$$', steps: ['Modelado matemático ideal.'] },
+      { id: 25, type: 'rlc_series', cat: 'trans', title: 'Energía Almacenada', prob: 'Energía en t=0. $C=2F, V=5V$. $L=1H, I=2A$.', sol: '$$W = 25J + 2J = 27J$$', steps: ['$W_c = 0.5 C V^2$.', '$W_l = 0.5 L I^2$.'] },
+
+      // POWER & 3-PHASE (26-30)
+      { id: 26, type: 'mesh3', cat: 'power', title: 'Corrección Factor de Potencia', prob: 'Carga $P=100kW, fp=0.8$ atraso. Llevar a 0.95.', sol: '$$Q_c = 42 kVAR$$', steps: ['$Q_{old} = P \\tan(\\arccos 0.8)$.', '$Q_{new} = P \\tan(\\arccos 0.95)$.', '$Q_c = Q_{old} - Q_{new}$.'] },
+      { id: 27, type: 'mesh2', cat: 'power', title: 'Potencia Compleja', prob: '$V=100\\angle 0, I=10\\angle -30$. Halla S, P, Q.', sol: '$$S=1000\\angle 30$$', steps: ['$S = V I^*$.', '$P = 1000\\cos(30)$.', '$Q = 1000\\sin(30)$.'] },
+      { id: 28, type: 'mesh3', cat: 'power', title: 'Trifásica Estrella-Estrella', prob: '$V_{an}=120\\angle 0$. Carga balanceada $Z=10+j10$. Halla $I_a$.', sol: '$$I_a = 8.48\\angle -45^\\circ$$', steps: ['Circuito monofásico equivalente.', '$I_a = V_{an} / Z$.'] },
+      { id: 29, type: 'mesh3', cat: 'power', title: 'Carga Delta Desequilibrada', prob: 'Tensiones línea 200V. Cargas $Z_{ab}=10, Z_{bc}=20, Z_{ca}=20$. Halla corrientes de fase.', sol: '$$I_{ab}=20A...$$', steps: ['$I_{ab} = V_{ab}/Z_{ab}$.', 'Fasores de tensión desplazados 120 grados.'] },
+      { id: 30, type: 'thevenin', cat: 'power', title: 'Método Dos Vatímetros', prob: '$W_1=1000W, W_2=500W$. Halla potencia total y reactiva.', sol: '$$P=1500W, Q=866VAR$$', steps: ['$P_T = W_1 + W_2$.', '$Q_T = \\sqrt{3}(W_1 - W_2)$.'] },
+
+      // FREQ & LAPLACE (31-35)
+      { id: 31, type: 'rlc_series', cat: 'freq', title: 'Transformada de Laplace', prob: 'Impedancia de condensador y bobina en dominio s.', sol: '$$1/sC, sL$$', steps: ['Definición de transformada para derivadas e integrales.'] },
+      { id: 32, type: 'opamp', cat: 'freq', title: 'Función de Transferencia', prob: 'Halla $H(s) = V_o/V_in$ para filtro RC paso bajo.', sol: '$$H(s) = \\frac{1}{1+RCs}$$', steps: ['Divisor de tensión con impedancias complejas.'] },
+      { id: 33, type: 'rlc_series', cat: 'freq', title: 'Polos y Ceros', prob: '$H(s) = (s+2)/(s^2+3s+2)$. Determina estabilidad.', sol: '$$Estable$$', steps: ['Polos en $s=-1, s=-2$.', 'Parte real negativa -> estable.'] },
+      { id: 34, type: 'rlc_parallel', cat: 'freq', title: 'Resonancia RLC Paralelo', prob: 'Halla frecuencia de resonancia $\\omega_0$ si $L=1mH, C=1\\mu F$.', sol: '$$31.6 krad/s$$', steps: ['$\\omega_0 = 1/\\sqrt{LC}$.'] },
+      { id: 35, type: 'rlc_series', cat: 'freq', title: 'Diagrama de Bode', prob: 'Pendiente asintótica de $H(s) = s / (s+10)$ en bajas frecuencias.', sol: '$$+20 dB/dec$$', steps: ['Cero en el origen aporta +20dB/dec.', 'Polo en 10 aplana la curva.'] }
+    ];
+
+    // --- APP LOGIC ---
+    const grid = document.getElementById('grid');
+    const modal = document.getElementById('modal');
+    let activeFilter = 'all';
+
+    function render(filterKey) {
+      grid.innerHTML = '';
+      const filtered = filterKey === 'all' ? data : data.filter(d => d.cat === filterKey);
+      
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => openModal(item.id);
+        
+        const svgCode = `<svg viewBox="0 0 300 200">${SVGS[item.type]}</svg>`;
+        
+        let badgeClass = 'badge-med';
+        if(item.id % 3 === 0) badgeClass = 'badge-hard'; // Simular dificultad visualmente
+
+        card.innerHTML = `
+          <div class="card-meta">
+            <span class="badge badge-topic">${item.cat.toUpperCase()}</span>
+            <span class="badge ${badgeClass}">Nivel UPC</span>
+          </div>
+          <div class="circuit-preview">${svgCode}</div>
+          <div class="card-title">${item.title}</div>
+          <div class="card-id">Ejercicio #${item.id.toString().padStart(2, '0')}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(id) {
+      const item = data.find(d => d.id === id);
+      document.getElementById('m-title').innerText = `${item.title} (ID: ${item.id})`;
+      document.getElementById('m-svg').innerHTML = `<svg viewBox="0 0 300 200">${SVGS[item.type]}</svg>`;
+      document.getElementById('m-problem').innerHTML = `<strong>Enunciado:</strong><br>${processMath(item.prob)}`;
+      
+      const stepsHtml = item.steps.map((s, i) => `<div class="solution-step"><strong>Paso ${i+1}:</strong> ${processMath(s)}</div>`).join('');
+      const solHtml = `<div class="ans-box">Rpta: ${processMath(item.sol)}</div>`;
+      
+      document.getElementById('m-steps').innerHTML = stepsHtml + solHtml;
+      
+      modal.classList.add('active');
+      if(window.MathJax) MathJax.typesetPromise();
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    function filter(key) {
+      activeFilter = key;
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      render(key);
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const cur = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    }
+
+    // Helper to ensure MathJax works with dynamic content string
+    function processMath(str) {
+      return str; // MathJax typesetPromise handles the parsing of $$ $$ 
+    }
+
+    // Init
+    render('all');
+    
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+      if(e.target === modal) closeModal();
+    });
+
+  </script>
+</body>
+</html>
