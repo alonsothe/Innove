@@ -1,601 +1,541 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mecánica de Fluidos — Teoría clara + 144 ejercicios</title>
-<meta name="color-scheme" content="light dark">
-<!-- MathJax for LaTeX rendering -->
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-  :root{
-    --bg:#f7f9fc; --paper:#ffffff; --ink:#0f172a; --muted:#475569;
-    --brand:#1e3a8a; --accent:#38bdf8; --accent2:#22d3ee;
-    --border:#e2e8f0; --shadow:0 8px 28px rgba(15,23,42,.08);
-    --radius:16px; --maxw:74ch; --base:18px; --lh:1.85;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#0b1220; --paper:#0e1628; --ink:#e6ecff; --muted:#aab7d9;
-      --brand:#60a5fa; --accent:#7dd3fc; --accent2:#22d3ee; --border:#203054;
-      --shadow:0 10px 26px rgba(0,0,0,.35);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco de Máquinas de Fluidos UPC - Nivel Avanzado</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true,
+        tags: 'ams'
+      },
+      options: {
+        renderActions: { addMenu: [] }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* ========================================
+       ESTILOS (Mismos que el anterior)
+       ======================================== */
+    :root {
+      --sidebar-width: 280px;
+      --header-height: 70px;
+      --card-radius: 16px;
+      --modal-radius: 24px;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+      --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+      --duration-fast: 0.2s;
+      --duration-normal: 0.4s;
+      --duration-slow: 0.6s;
     }
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    font-size:var(--base); line-height:var(--lh); color:var(--ink);
-    background:radial-gradient(1100px 700px at 80% -10%, #dbeafe 0%, transparent 60%),
-               radial-gradient(900px 600px at 10% 110%, #cffafe 0%, transparent 65%), var(--bg);
-  }
-  .progress{position:fixed; inset:0 0 auto 0; height:4px; width:0; z-index:70;
-    background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .topbar{position:sticky; top:0; z-index:60; backdrop-filter:blur(10px) saturate(140%);
-    background:color-mix(in oklab, var(--paper) 86%, transparent); border-bottom:1px solid var(--border); box-shadow:var(--shadow)}
-  .wrap{max-width:1200px; margin:0 auto; padding:10px 16px}
-  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:900}
-  .badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(135deg,color-mix(in oklab,var(--brand) 70%,white 10%),color-mix(in oklab,var(--accent) 65%,white 20%));
-    color:#fff; box-shadow:0 6px 16px color-mix(in oklab,var(--brand) 30%, transparent); font-size:22px}
-  .brand-title{font-size:clamp(20px,3.6vw,28px);margin:0}
-  .reader{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .btn{border:1px solid var(--border);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:12px;font-weight:800;cursor:pointer}
-  .btn.small{padding:6px 10px;font-weight:700}
-  main{max-width:1200px;margin:0 auto;padding:16px}
-  .paper{max-width:var(--maxw);margin:10px auto 30px;padding:20px clamp(16px,3vw,26px);
-    background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-  h1,h2,h3{color:color-mix(in oklab,var(--ink),var(--brand) 12%)}
-  h1{font-size:clamp(28px,5vw,40px);line-height:1.2;margin:.4em 0 .2em}
-  h2{font-size:clamp(22px,4vw,28px);line-height:1.28;margin:1.2em 0 .6em}
-  h3{font-size:clamp(18px,3vw,22px);line-height:1.35;margin:1em 0 .4em}
-  p{margin:.7em 0} ul,ol{margin:.6em 0 .8em 1.2em} li{margin:.25em 0}
-  .lead{color:var(--muted)}
-  .callout{background:color-mix(in oklab,var(--paper) 85%, var(--brand) 6%);border:1px solid var(--border);
-    border-radius:12px;padding:12px 14px;margin:12px 0}
-  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
-  .toc a{display:block;text-decoration:none;border:1px solid var(--border);border-radius:12px;padding:10px 12px;
-    color:color-mix(in oklab,var(--brand) 80%, var(--ink));background:color-mix(in oklab,var(--paper) 88%, transparent)}
-  .examples{background:color-mix(in oklab,var(--paper) 88%, var(--accent) 4%);
-    border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:12px 0}
-  .examples h4{margin:.2em 0 .6em; font-size:1.05em}
-  details{background:color-mix(in oklab,var(--paper) 94%, transparent);border:1px dashed var(--border);
-    border-radius:10px;padding:8px 10px;margin:8px 0}
-  summary{cursor:pointer;font-weight:700}
-  .topbtn{position:fixed;right:16px;bottom:20px;z-index:55;background:var(--paper);border:1px solid var(--border);
-    border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow);display:none}
-  .topbtn.show{display:block}
-</style>
+
+    [data-theme="dark"] {
+      --bg-app: #050505;
+      --bg-sidebar: #0a0a0a;
+      --bg-card: #111111;
+      --bg-card-hover: #161616;
+      --bg-modal: #0f0f0f;
+      --bg-input: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #52525b;
+      --border-light: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.12);
+      --accent-primary: #2563eb; /* Azul UPC */
+      --accent-secondary: #ef4444; /* Rojo UPC */
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-danger: #dc2626;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.6);
+      --glow-primary: 0 0 20px rgba(37, 99, 235, 0.15);
+    }
+
+    [data-theme="light"] {
+      --bg-app: #f8fafc;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f5f9;
+      --bg-modal: #ffffff;
+      --bg-input: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
+      --border-light: rgba(0, 0, 0, 0.06);
+      --border-hover: rgba(0, 0, 0, 0.1);
+      --accent-primary: #dc2626; /* Rojo UPC */
+      --accent-secondary: #1d4ed8; /* Azul */
+      --accent-success: #059669;
+      --accent-warning: #d97706;
+      --accent-danger: #dc2626;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
+      --glow-primary: 0 0 20px rgba(220, 38, 38, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+    body { font-family: var(--font-sans); background-color: var(--bg-app); color: var(--text-primary); height: 100vh; overflow: hidden; display: flex; transition: background-color var(--duration-normal) var(--ease-out); }
+    a { text-decoration: none; color: inherit; }
+    button { border: none; background: none; cursor: pointer; font-family: inherit; }
+    ul { list-style: none; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+    .h1 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+    .h2 { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
+    .h3 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+    .text-sm { font-size: 0.875rem; }
+    .text-xs { font-size: 0.75rem; }
+    .font-mono { font-family: var(--font-mono); }
+    .text-muted { color: var(--text-secondary); }
+
+    .sidebar { width: var(--sidebar-width); height: 100%; background: var(--bg-sidebar); border-right: 1px solid var(--border-light); display: flex; flex-direction: column; padding: 24px; z-index: 10; transition: transform var(--duration-normal) var(--ease-out); }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; padding-left: 12px; }
+    .brand-logo { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border-radius: 10px; display: grid; place-items: center; font-weight: 700; color: white; font-size: 1.2rem; box-shadow: var(--glow-primary); }
+    .brand-text { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .nav-menu { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; color: var(--text-secondary); font-weight: 500; transition: all var(--duration-fast); }
+    .nav-item:hover { background: var(--bg-input); color: var(--text-primary); }
+    .nav-item.active { background: rgba(220, 38, 38, 0.1); color: var(--accent-primary); }
+    .nav-icon { width: 20px; height: 20px; opacity: 0.7; }
+    .sidebar-footer { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border-light); }
+    .stats-card { background: var(--bg-input); padding: 16px; border-radius: 12px; margin-bottom: 16px; }
+    .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+    .progress-bar { width: 100%; height: 4px; background: var(--border-hover); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent-success); width: 0%; transition: width 1s var(--ease-out); }
+
+    .main-content { flex-grow: 1; height: 100%; overflow-y: auto; padding: 40px 60px; position: relative; }
+    .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; animation: slideDown 0.6s var(--ease-out); }
+    .header-content h1 { margin-bottom: 8px; }
+    .header-content p { max-width: 600px; line-height: 1.6; }
+    .header-actions { display: flex; gap: 16px; }
+    .theme-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border-light); display: grid; place-items: center; color: var(--text-secondary); transition: all var(--duration-fast); }
+    .theme-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-hover); }
+    .filter-bar { display: flex; gap: 12px; margin-bottom: 32px; overflow-x: auto; padding-bottom: 4px; animation: fadeIn 0.8s var(--ease-out); }
+    .filter-chip { padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border-light); background: var(--bg-card); color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; white-space: nowrap; transition: all var(--duration-fast); }
+    .filter-chip:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+    .filter-chip.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+
+    .exercise-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; padding-bottom: 60px; }
+    .exercise-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 24px; display: flex; flex-direction: column; transition: all var(--duration-fast); cursor: pointer; position: relative; overflow: hidden; animation: fadeInUp 0.6s var(--ease-out) backwards; }
+    .exercise-card:hover { transform: translateY(-4px); border-color: var(--border-hover); box-shadow: var(--shadow-md); background: var(--bg-card-hover); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .card-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge-diff-easy { background: rgba(16, 185, 129, 0.1); color: var(--accent-success); }
+    .badge-diff-medium { background: rgba(245, 158, 11, 0.1); color: var(--accent-warning); }
+    .badge-diff-hard { background: rgba(239, 68, 68, 0.1); color: var(--accent-danger); }
+    .badge-topic { background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border-light); }
+    .card-id { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); }
+    .card-body { flex-grow: 1; margin-bottom: 20px; }
+    .problem-preview { font-size: 1rem; line-height: 1.6; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--border-light); }
+    .view-sol-btn { font-size: 0.875rem; font-weight: 600; color: var(--accent-primary); display: flex; align-items: center; gap: 6px; }
+    .view-sol-btn::after { content: '→'; transition: transform 0.2s; }
+    .exercise-card:hover .view-sol-btn::after { transform: translateX(4px); }
+
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; display: none; opacity: 0; transition: opacity var(--duration-normal); }
+    .modal-backdrop.active { display: flex; justify-content: center; align-items: center; opacity: 1; }
+    .modal-content { width: 90%; max-width: 1000px; height: 90%; background: var(--bg-modal); border-radius: var(--modal-radius); border: 1px solid var(--border-light); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; transform: scale(0.95) translateY(20px); transition: transform var(--duration-normal) var(--ease-out); overflow: hidden; }
+    .modal-backdrop.active .modal-content { transform: scale(1) translateY(0); }
+    .modal-header { padding: 24px 32px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); }
+    .modal-title-group h2 { margin-bottom: 4px; }
+    .modal-subtitle { font-family: var(--font-mono); color: var(--text-tertiary); font-size: 0.9rem; }
+    .close-modal-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-input); color: var(--text-secondary); display: grid; place-items: center; font-size: 1.2rem; transition: all 0.2s; }
+    .close-modal-btn:hover { background: var(--accent-danger); color: white; transform: rotate(90deg); }
+    .modal-body { flex-grow: 1; overflow-y: auto; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .problem-section { padding-right: 40px; border-right: 1px solid var(--border-light); }
+    .solution-section { padding-left: 10px; }
+    .section-label { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-primary); margin-bottom: 16px; display: block; }
+    .problem-text { font-size: 1.25rem; line-height: 1.7; margin-bottom: 32px; }
+    .step-card { background: var(--bg-input); border-radius: 12px; padding: 20px; margin-bottom: 20px; border-left: 3px solid var(--accent-secondary); animation: slideInRight 0.5s var(--ease-out) backwards; }
+    .step-number { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+    .final-answer { margin-top: 40px; padding: 24px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-success); border-radius: 12px; text-align: center; }
+    .final-label { color: var(--accent-success); font-weight: 700; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 12px; display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+    @media (max-width: 1024px) {
+      .sidebar { width: 80px; padding: 16px; }
+      .brand-text, .nav-text, .stats-card { display: none; }
+      .brand { justify-content: center; padding: 0; }
+      .nav-item { justify-content: center; padding: 16px; }
+      .main-content { padding: 20px; }
+      .modal-body { grid-template-columns: 1fr; }
+      .problem-section { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 30px; margin-bottom: 30px; padding-right: 0; }
+      .solution-section { padding-left: 0; }
+    }
+  </style>
 </head>
+
 <body>
-  <div class="progress" id="progress"></div>
-  <div class="topbar">
-    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <a class="brand" href="#top">
-        <div class="badge">💧</div>
-        <div>
-          <h1 class="brand-title">Mecánica de Fluidos</h1>
-          <div class="lead">Teoría mejorada, fórmulas entendibles y 144 ejercicios graduados</div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">Φ</div>
+      <span class="brand-text">UPC Ingeniería</span>
+    </div>
+
+    <nav class="nav-menu">
+      <button class="nav-item active" onclick="filterExercises('all')">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Banco de Fluidos</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('integral')">
+        <span class="nav-icon">∫</span>
+        <span class="nav-text">Integral/Diferencial</span>
+      </button>
+      <button class="nav-item" onclick="filterExercises('turbomaquinas')">
+        <span class="nav-icon">🌀</span>
+        <span class="nav-text">Turbomáquinas</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="stats-card">
+        <div class="stat-row">
+          <span>Nivel: Ingeniería</span>
+          <span>UPC</span>
         </div>
-      </a>
-      <div class="reader">
-        <button class="btn small" id="fs-down" title="Reducir tamaño de letra">A−</button>
-        <button class="btn small" id="fs-up"   title="Aumentar tamaño de letra">A+</button>
-        <button class="btn small" id="width-down" title="Reducir ancho de lectura">⇤</button>
-        <button class="btn small" id="width-up"   title="Aumentar ancho de lectura">⇥</button>
-        <button class="btn" id="theme-toggle" title="Tema claro/oscuro">☀️/🌙</button>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div class="header-content">
+        <h1 class="h1">Mecánica de Fluidos Avanzada</h1>
+        <p class="text-muted">Ejercicios tipo Parcial y Final para Ingeniería. Incluye Análisis Diferencial, Navier-Stokes, Capa Límite y Turbomáquinas.</p>
+      </div>
+      <div class="header-actions">
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="filter-bar" id="topic-filters">
+      </div>
+
+    <div class="exercise-grid" id="grid">
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">
+        Cargando ejercicios de nivel avanzado...
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 class="h2" id="modal-title">Título del Problema</h2>
+          <span class="modal-subtitle" id="modal-id">ID: C1-001</span>
+        </div>
+        <button class="close-modal-btn" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="problem-section">
+          <span class="section-label">Enunciado del Problema (Nivel Parcial)</span>
+          <div class="problem-text" id="modal-problem">
+            </div>
+          <div class="tags" id="modal-tags">
+            </div>
+        </div>
+        <div class="solution-section" id="modal-steps">
+          <span class="section-label">Desarrollo Matemático</span>
+          </div>
       </div>
     </div>
   </div>
 
-  <main>
-    <section class="paper" id="top">
-      <h1>Guía de Mecánica de Fluidos</h1>
-      <p class="lead">Doce capítulos con <strong>teoría clara</strong>, <strong>recuadros de fórmulas</strong> con el <em>cómo</em> y <em>cuándo</em> usarlas, <strong>ejemplos resueltos paso a paso</strong> y <strong>12 ejercicios por capítulo</strong> con respuesta breve.</p>
-      <div class="callout"><strong>Cómo usarla.</strong> Lee objetivos, revisa el recuadro de fórmulas, estudia 2–4 ejemplos y completa los 12 ejercicios (📝). Usa los controles de la barra para ajustar lectura y tema.</div>
-      <div class="toc">
-        <a href="#cap1">1. Propiedades de los fluidos</a>
-        <a href="#cap2">2. Estática de fluidos</a>
-        <a href="#cap3">3. Cinemática de fluidos</a>
-        <a href="#cap4">4. Conservación (forma integral)</a>
-        <a href="#cap5">5. Ecuaciones diferenciales (NS/Euler)</a>
-        <a href="#cap6">6. Flujo interno viscoso (conductos)</a>
-        <a href="#cap7">7. Pérdidas, redes y bombas</a>
-        <a href="#cap8">8. Capa límite y flujo externo</a>
-        <a href="#cap9">9. Chorro, boquillas y reactores</a>
-        <a href="#cap10">10. Flujo compresible</a>
-        <a href="#cap11">11. Medición y experimentación</a>
-        <a href="#cap12">12. Similitud y modelado (Buckingham \(\pi\))</a>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 1 ========= -->
-    <section class="paper" id="cap1">
-      <h2>1. Propiedades de los fluidos</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Dominar densidad \(\rho\), presión \(p\), viscosidad \(\mu\), compresibilidad, tensión superficial \(\sigma\), número de Reynolds y otros adimensionales.</div>
-      <div class="callout"><strong>📌 Fórmulas y notas.</strong>
-        <ul>
-          <li>Viscosidad dinámica: ley de Newton para fluidos newtonianos \(\tau=\mu\,\dot\gamma\) (cizalla vs tasa de deformación).</li>
-          <li>Relación \(\nu=\mu/\rho\) (viscosidad cinemática).</li>
-          <li>Compresibilidad isentrópica \(\beta=-(1/V)\,\partial V/\partial p\), módulo volumétrico \(K=1/\beta\).</li>
-          <li>Tensión capilar: salto de presión \(\Delta p=\sigma\big(\tfrac{1}{R_1}+\tfrac{1}{R_2}\big)\).</li>
-          <li>Números: \(Re=\dfrac{\rho V L}{\mu}\), \(Fr=\dfrac{V}{\sqrt{gL}}\), \(We=\dfrac{\rho V^2 L}{\sigma}\), \(Ma=\dfrac{V}{a}\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Clasifica régimen en tubería (agua, D=2 cm, V=1 m/s)</summary>\(Re=\rho V D/\mu\approx 2\times10^4\) → turbulento.</details></li>
-          <li><details><summary>Menisco capilar en tubo de radio r</summary>Altura \(h=\dfrac{2\sigma\cos\theta}{\rho g r}\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(\nu\) de aceite si \(\mu=0.1\) Pa·s y \(\rho=900\)</summary>\(\nu=1.11\times10^{-4}\) m²/s.</details></li>
-          <li><details><summary>\(Re\) en placa plana (U=5, x=0.5, \(\nu=1.5e{-5}\))</summary>\(Re_x\approx1.67\times10^5\).</details></li>
-          <li><details><summary>\(We\) para gota (V=2, L=2 mm)</summary>Depende de \(\sigma\); para agua, \(We\approx 8\).</details></li>
-          <li><details><summary>Compresibilidad del agua (K≈2.2 GPa): ΔV/V por 1 MPa</summary>≈ 4.5×10⁻⁴.</details></li>
-          <li><details><summary>Salto de presión en burbuja (R)</summary>\(\Delta p=2\sigma/R\).</details></li>
-          <li><details><summary>\(Fr\) en canal (V=3, L=1 m)</summary>≈ 0.96.</details></li>
-          <li><details><summary>\(Ma\) a 340 m/s en aire</summary>≈1.</details></li>
-          <li><details><summary>\(\rho\) del aceite dado \(\nu\) y \(\mu\)</summary>\(\rho=\mu/\nu\).</details></li>
-          <li><details><summary>No newtoniano: ejemplo</summary>Sangre, lodos (\(\tau\) no lineal).</details></li>
-          <li><details><summary>Relación \(\mu\)–T para líquidos</summary>\(\mu\) ↓ al ↑T.</details></li>
-          <li><details><summary>\(\sigma\) afecta atomización</summary>\(We\) alto favorece ruptura.</details></li>
-          <li><details><summary>Fluido ideal</summary>\(\mu=0\), incompresible.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 2 ========= -->
-    <section class="paper" id="cap2">
-      <h2>2. Estática de fluidos</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Calcular presiones hidrostáticas, fuerzas sobre superficies planas/curvas y flotación/estabilidad.</div>
-      <div class="callout"><strong>📌 Fórmulas.</strong>
-        <ul>
-          <li>Hidrostática: \(p=p_0+\rho g h\).</li>
-          <li>Fuerza sobre placa plana sumergida: \(F=\bar p\,A=\rho g h_c A\), centro de presión \(y_{cp}=\bar y+I_G/(\bar y A)\).</li>
-          <li>Empuje de Arquímedes: \(E=\rho g V_{des}\). Estabilidad: metacentro \(GM=BM-BG\), \(BM=I/V\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Puerta rectangular vertical</summary>Calcula \(F=\rho g h_cA\) y \(y_{cp}\) con el segundo momento.</details></li>
-          <li><details><summary>Flotador cilíndrico</summary>\(V_{des}=W/(\rho g)\), evalúa \(GM\) para estabilidad.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Presión a 10 m de profundidad</summary>≈ 196 kPa por encima de \(p_0\).</details></li>
-          <li><details><summary>Centro de presión de placa de 2×1 m con borde superior en superficie</summary>\(y_{cp}=2/3\) m.</details></li>
-          <li><details><summary>Fuerza sobre compuerta triangular</summary>Usa \(h_c\) del centroide.</details></li>
-          <li><details><summary>Empuje sobre esfera parcialmente sumergida</summary>Usa volumen sumergido.</details></li>
-          <li><details><summary>Flotación estable</summary>\(GM>0\).</details></li>
-          <li><details><summary>Presión manométrica vs absoluta</summary>\(p_{abs}=p_{atm}+p_{man}\).</details></li>
-          <li><details><summary>Manómetro en U con dos fluidos</summary>Equilibra columnas por densidades.</details></li>
-          <li><details><summary>Esfuerzo en pared curva</summary>Proyecciones horizontal/vertical.</details></li>
-          <li><details><summary>Burbuja sube: variación de \(R\)</summary>Presión ↓ → \(R\) ↑.</details></li>
-          <li><details><summary>Capilaridad en tubos finos</summary>\(h\propto1/r\).</details></li>
-          <li><details><summary>Presión en gas compresible a T cte</summary>\(p\) exponencial con \(z\) (atmósfera isoterma).</details></li>
-          <li><details><summary>Equivalencia columna de Hg–agua</summary>\(\Delta h_{Hg}=\Delta h_{agua}\,\rho_{agua}/\rho_{Hg}\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 3 ========= -->
-    <section class="paper" id="cap3">
-      <h2>3. Cinemática de fluidos</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Describir campos de velocidad/presión, trayectorias, líneas de corriente, vorticidad y tasa de deformación.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Derivada material: \(\dfrac{D}{Dt}=\dfrac{\partial}{\partial t}+\vec v\cdot\nabla\).</li>
-          <li>Vorticidad: \(\vec\omega=\nabla\times\vec v\). Flujo irrotacional si \(\vec\omega=0\).</li>
-          <li>Tasa de deformación: tensor simétrico \(\mathbf D=\tfrac12(\nabla\vec v+(\nabla\vec v)^T)\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Campo \(v_x=ay, v_y=0\)</summary>\(\nabla\cdot\vec v=a\ne0\) (compresible), \(\omega_z=-a\).</details></li>
-          <li><details><summary>Líneas de corriente en 2D</summary>\(\dfrac{dy}{dx}=v_y/v_x\) con \(t\) fijo.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(D\phi/Dt\) para \(\phi=x^2\), \(\vec v=(U,0,0)\)</summary>\(2Ux\).</details></li>
-          <li><details><summary>Irrotacionalidad de \(\vec v=\nabla\Phi\)</summary>Siempre \(\omega=0\).</details></li>
-          <li><details><summary>Campo incompresible</summary>\(\nabla\cdot\vec v=0\).</details></li>
-          <li><details><summary>Función corriente \(\psi\) 2D</summary>\(v_x=\partial\psi/\partial y\), \(v_y=-\partial\psi/\partial x\).</details></li>
-          <li><details><summary>Trayectoria vs línea de corriente</summary>Iguales sólo en régimen estacionario.</details></li>
-          <li><details><summary>Deformación volumétrica</summary>\(\nabla\cdot\vec v\).</details></li>
-          <li><details><summary>Campo sólido en rotación</summary>\(\vec v=\vec\Omega\times\vec r\), \(\omega=2\Omega\).</details></li>
-          <li><details><summary>Flujo potencial</summary>\(\vec v=\nabla\Phi\), \(\nabla^2\Phi=0\) si incompresible.</details></li>
-          <li><details><summary>Tensor \(\mathbf D\) para cizalla simple</summary>\(D_{xy}=D_{yx}=\tfrac12\dot\gamma\).</details></li>
-          <li><details><summary>Estancamiento en placa</summary>\(\vec v=\alpha(x,-y)\).</details></li>
-          <li><details><summary>Campo de fuente 2D</summary>\(\vec v\propto (x,y)/r^2\).</details></li>
-          <li><details><summary>Vórtice lineal</summary>\(v_\theta=\Omega r\), \(\omega_z=2\Omega\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 4 ========= -->
-    <section class="paper" id="cap4">
-      <h2>4. Conservación (forma integral)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Usar el teorema del transporte de Reynolds (TTR) para masa, cantidad de movimiento y energía en volúmenes de control.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>TTR: \(\dfrac{d}{dt}\int_{VC} B\,\rho\,dV+\int_{SC} B\,\rho\,\vec v\cdot\vec n\,dA=\dot B_{gen}+\sum \dot B_{in}-\sum \dot B_{out}\).</li>
-          <li>Continuidad (integral): \(\dfrac{d}{dt}\int\rho\,dV+\int\rho\,\vec v\cdot\vec n\,dA=0\).</li>
-          <li>Momento lineal: \(\sum \vec F = \dfrac{d}{dt}\int \rho\vec v\,dV+\int \rho\vec v(\vec v\cdot\vec n)\,dA\).</li>
-          <li>Energía mecánica: potencias de fuerzas de presión/viscosas y gravedad.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Empuje de un chorro sobre placa</summary>\(F=\dot m (V_{in}-V_{out})\).</details></li>
-          <li><details><summary>Caudal en bifurcación</summary>Conservación de masa: \(Q_0=Q_1+Q_2\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Tobera: variación de momento</summary>Calcula fuerza neta.</details></li>
-          <li><details><summary>Reacción en codo 90°</summary>Usa ecuación de momento con presiones.</details></li>
-          <li><details><summary>Estanque en régimen estacionario</summary>Masa dentro constante → entradas=salidas.</details></li>
-          <li><details><summary>Trabajo de bomba</summary>Potencia \(P=\rho g Q H\).</details></li>
-          <li><details><summary>Pérdidas de energía</summary>\(h_f\) aparece como término de disipación.</details></li>
-          <li><details><summary>Velocidad de chorro a la atmósfera</summary>Torricelli \(\sqrt{2gH}\).</details></li>
-          <li><details><summary>Boquilla con contracción</summary>Coeficientes de descarga.</details></li>
-          <li><details><summary>VC móvil</summary>Incluye término de transporte relativo.</details></li>
-          <li><details><summary>Empuje de hélice</summary>Balance de momento.</details></li>
-          <li><details><summary>Empuje en tobera desviadora</summary>Proyecta componentes.</details></li>
-          <li><details><summary>Balance de energía en intercambiador ideal</summary>Sin pérdida mecánica → \(\Delta p\) despreciable.</details></li>
-          <li><details><summary>Colector de polvo (simplificado)</summary>Masas de entrada/salida.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 5 ========= -->
-    <section class="paper" id="cap5">
-      <h2>5. Ecuaciones diferenciales (NS/Euler)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Usar continuidad y Navier–Stokes para flujos incompresibles; simplificaciones y escalado.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Continuidad: \(\dfrac{\partial \rho}{\partial t}+\nabla\cdot(\rho\vec v)=0\); incompresible \(\nabla\cdot\vec v=0\).</li>
-          <li>NS: \(\rho\dfrac{D\vec v}{Dt}=-\nabla p+\mu\nabla^2\vec v+\rho\vec g\).</li>
-          <li>Euler (inviscido): \(\rho\dfrac{D\vec v}{Dt}=-\nabla p+\rho\vec g\). Bernoulli en línea de corriente.</li>
-          <li>Escalado: adimensionalizar → \(Re, Fr, We, Ma\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Poiseuille 2D entre placas</summary>Perfil parabólico de \(u(y)\); \(Q\propto -\tfrac{dp}{dx}\).</details></li>
-          <li><details><summary>Bernoulli entre dos puntos de la misma línea de corriente</summary>\(p+\tfrac12\rho V^2+\rho gz=cte\) si sin pérdidas/añadidos.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Verifica unidades en NS</summary>Todas en N/m³.</details></li>
-          <li><details><summary>\(\nabla\cdot\vec v=0\) para campo dado</summary>Calcula divergencia.</details></li>
-          <li><details><summary>Estático: \(Dv/Dt=0\)</summary>Reduce a equilibrio hidrostático.</details></li>
-          <li><details><summary>Flujo totalmente desarrollado</summary>\(\partial u/\partial x=0\).</details></li>
-          <li><details><summary>Termino convectivo</summary>\((\vec v\cdot\nabla)\vec v\).</details></li>
-          <li><details><summary>Gradiente de presión impuesto</summary>Perfil parabólico.</details></li>
-          <li><details><summary>Vorticidad en NS</summary>Ecuación para \(\vec\omega\).</details></li>
-          <li><details><summary>Euler + Bernoulli</summary>Integración a lo largo de línea.</details></li>
-          <li><details><summary>Adimensionalizar NS</summary>Emergen \(Re, Fr\).</details></li>
-          <li><details><summary>Flujo potencial alrededor de cilindro (sin circulación)</summary>Arrastre nulo ideal (paradoja de d’Alembert).</details></li>
-          <li><details><summary>Criterio de Boussinesq (turbulencia)</summary>Hipótesis de viscosidad turbulenta.</details></li>
-          <li><details><summary>Balance de energía mecánica</summary>Deriva ecuación de cabezas.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 6 ========= -->
-    <section class="paper" id="cap6">
-      <h2>6. Flujo interno viscoso (conductos)</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Perfiles laminares/turbulentos, caída de presión y transición.</div>
-      <div class="callout"><strong>📌 Fórmulas.</strong>
-        <ul>
-          <li>Poiseuille (tubo \(D\)): \(\Delta p=32\mu L V/D^2\), \(u(r)=2V\big(1-(r/R)^2\big)\).</li>
-          <li>Factor de fricción de Darcy: \(h_f=f\,\dfrac{L}{D}\dfrac{V^2}{2g}\). Laminar: \(f=64/Re\).</li>
-          <li>Colebrook (turbulento): \(\dfrac{1}{\sqrt f}=-2\log_{10}\Big(\dfrac{\varepsilon/D}{3.7}+\dfrac{2.51}{Re\sqrt f}\Big)\). Swamee–Jain aprox.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Caída de presión en agua, \(D=0.05\) m, \(L=50\) m, \(V=1\) m/s</summary>Calcula \(Re\), elige régimen y \(\Delta p=\rho g h_f\).</details></li>
-          <li><details><summary>Entrada hidrodinámica</summary>\(L_e\approx 0.05 Re\, D\) (laminar, orden de magnitud).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Perfil laminar: velocidad máxima</summary>\(u_{max}=2V\).</details></li>
-          <li><details><summary>Pérdidas en serie de tramos</summary>Sumar \(h_f\) por tramo.</details></li>
-          <li><details><summary>Rugosidad relativa</summary>\(\varepsilon/D\).</details></li>
-          <li><details><summary>Re crítico aproximado</summary>≈ 2300.</details></li>
-          <li><details><summary>\(f\) en Re=10⁵, \(\varepsilon/D=0.001\)</summary>Usa Swamee–Jain.</details></li>
-          <li><details><summary>Conducto no circular</summary>Usa diámetro hidráulico \(D_h=4A/P\).</details></li>
-          <li><details><summary>Calcular \(Q\) con \(\Delta p\) dado (laminar)</summary>Invierte Poiseuille.</details></li>
-          <li><details><summary>Relación \(h_f\)–\(\Delta p\)</summary>\(\Delta p=\rho g h_f\).</details></li>
-          <li><details><summary>Potencia de bombeo</summary>\(P=\Delta p\,Q\).</details></li>
-          <li><details><summary>Tcapa límite en tubo</summary>Transición hacia turbulento aguas abajo.</details></li>
-          <li><details><summary>Comparar Hazen–Williams vs Darcy</summary>H–W empírico para agua.</details></li>
-          <li><details><summary>Deriva de \(f=64/Re\)</summary>Desde solución de Poiseuille.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 7 ========= -->
-    <section class="paper" id="cap7">
-      <h2>7. Pérdidas, redes y bombas</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Pérdidas mayores/menores, redes de tuberías, selección de bombas y cavitación.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Pérdidas menores: \(h_m=K\,V^2/(2g)\). Total: \(h_{tot}=h_f+\sum h_m\).</li>
-          <li>Curvas bomba/sistema: intersección da el punto de operación.</li>
-          <li>Leyes de afinidad (rotación N): \(Q\propto N\), \(H\propto N^2\), \(P\propto N^3\).</li>
-          <li>NPSH: evitar cavitación (\(NPSH_{disp} > NPSH_{req}\)).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Dimensiona bomba para H=20 m, Q=0.02 m³/s</summary>Potencia hidráulica \(\approx 3.9\) kW (sin eficiencias).</details></li>
-          <li><details><summary>Red simple en T</summary>Usa ecuaciones de energía y continuidad; método de Hardy–Cross (idea).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Codo 90° con \(K=0.9\), V=2 m/s</summary>\(h_m=0.18\) m.</details></li>
-          <li><details><summary>Dos bombas en serie</summary>Sumar cabezas.</details></li>
-          <li><details><summary>Dos bombas en paralelo</summary>Sumar caudales a misma cabeza.</details></li>
-          <li><details><summary>NPSH disponible en succión</summary>Calcula con presión estática – vapor – pérdidas.</details></li>
-          <li><details><summary>Eficiencia global</summary>\(\eta=\dfrac{\rho g Q H}{P_{eje}}\).</details></li>
-          <li><details><summary>Ajuste por leyes de afinidad</summary>Nuevo \(Q,H,P\) al cambiar N.</details></li>
-          <li><details><summary>Válvula parcialmente cerrada</summary>Aumenta K, reduce Q.</details></li>
-          <li><details><summary>Intersección curva bomba–sistema</summary>Gráfica conceptual.</details></li>
-          <li><details><summary>Golpe de ariete (noción)</summary>Sobresalto de presión por cierre rápido.</details></li>
-          <li><details><summary>Red en lazo</summary>Hardy–Cross iterativo.</details></li>
-          <li><details><summary>Bypass</summary>Control de caudal y protección.</details></li>
-          <li><details><summary>Selección de tubería por pérdida máxima</summary>Itera con \(f(Re,\varepsilon)\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 8 ========= -->
-    <section class="paper" id="cap8">
-      <h2>8. Capa límite y flujo externo</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Desarrollar BL laminar/turbulenta, arrastre/sustentación y separación.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Placa plana laminar: \(\delta\approx 5x/\sqrt{Re_x}\), \(C_{f,\,prom}\approx 1.328/\sqrt{Re_L}\).</li>
-          <li>Local laminar: \(C_{f,x}=0.664/\sqrt{Re_x}\).</li>
-          <li>Turbulenta (empírico): \(C_{f,\,prom}\approx 0.074/Re_L^{1/5}\) (sin tramo laminar).</li>
-          <li>Coeficientes: \(C_D=F_D/(\tfrac12\rho U^2 A)\), \(C_L=F_L/(\tfrac12\rho U^2 A)\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Arrastre de placa L=1 m, U=10 m/s aire</summary>Calcula \(Re_L\), estima \(C_f\) y fuerza.</details></li>
-          <li><details><summary>Separación por gradiente adverso</summary>Espesor \(\delta\) ↑, \(\tau_w\to0\) → separación.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(Re_x\) de transición ~</summary>≈ 5×10⁵ (orden de magnitud).</details></li>
-          <li><details><summary>BL vs capa de mezcla</summary>Definiciones.</details></li>
-          <li><details><summary>Arrastre de forma vs fricción</summary>Domina en cuerpos romos vs lisos.</details></li>
-          <li><details><summary>Coef. de presión</summary>\(C_p=(p-p_\infty)/(\tfrac12\rho U^2)\).</details></li>
-          <li><details><summary>Perfil de velocidad logarítmico</summary>Ley del muro (turbulento).</details></li>
-          <li><details><summary>Control de separación</summary>Alabes, soplado/succión.</details></li>
-          <li><details><summary>Vórtices de Kármán</summary>Frecuencia Strouhal.</details></li>
-          <li><details><summary>Arrastre de esfera</summary>Usa curva \(C_D(Re)\).</details></li>
-          <li><details><summary>Ala: \(C_L\) vs ángulo</summary>Lineal a bajo ángulo.</details></li>
-          <li><details><summary>Coeficiente de sustentación máximo</summary>Antes del stall.</details></li>
-          <li><details><summary>Placa con tramo laminar y turbulento</summary>Promedia resistencias.</details></li>
-          <li><details><summary>Espesor de desplazamiento</summary>\(\delta^*=\int_0^\infty (1-u/U)\,dy\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 9 ========= -->
-    <section class="paper" id="cap9">
-      <h2>9. Chorro, boquillas y reactores</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Análisis de chorros libres, boquillas/venturis y mezclas/depósitos (balances).</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Conservación de momento en chorro libre: \(F=\dot m\Delta V\).</li>
-          <li>Boquilla ideal: \(V=\sqrt{2gH}\) (líquidos). Coeficientes de contracción/descarga.</li>
-          <li>Tanques mezcladores: \(\dfrac{d(\rho V C)}{dt}=\sum \dot m_i C_i-\dot m_o C\).</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Reacción de tobera en codo</summary>Balance de momento con áreas y presiones.</details></li>
-          <li><details><summary>Venturi para caudal</summary>\(Q=C_d A_2\sqrt{\tfrac{2\Delta p}{\rho(1-\beta^4)}}\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Chorro sobre paleta fija</summary>Fuerza = \(\dot m V\).</details></li>
-          <li><details><summary>Chorro sobre paleta móvil</summary>Considera velocidad relativa.</details></li>
-          <li><details><summary>Coeficiente de descarga \(C_d\)</summary>Producto de contracción y velocidad.</details></li>
-          <li><details><summary>Orificio delgado</summary>Torricelli con \(C_d\).</details></li>
-          <li><details><summary>Tiempo de vaciado de tanque</summary>Integra con \(Q\propto \sqrt{H}\).</details></li>
-          <li><details><summary>Mezclador continuo</summary>Estado estacionario: balance algebraico.</details></li>
-          <li><details><summary>Separador ciclónico (noción)</summary>Balance de momento angular.</details></li>
-          <li><details><summary>Impacto de chorro en cuchara Pelton</summary>\(F\approx 2\dot m V\).</details></li>
-          <li><details><summary>Bombeo con eyectores</summary>Energía del chorro induce succión.</details></li>
-          <li><details><summary>Coeficiente de contracción</summary>\(C_c\).</details></li>
-          <li><details><summary>Coeficiente de velocidad</summary>\(C_v\).</details></li>
-          <li><details><summary>Reactor CSTR hidráulico</summary>Tiempo de residencia \(\tau=V/Q\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 10 ========= -->
-    <section class="paper" id="cap10">
-      <h2>10. Flujo compresible</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Rel. isentrópicas, ondas de choque 1D, boquillas Laval, líneas de Fanno/Rayleigh.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Isentrópico (gas ideal, \(\gamma\)): \(\dfrac{T_0}{T}=1+\tfrac{\gamma-1}{2}M^2\), \(\dfrac{p_0}{p}=\Big(1+\tfrac{\gamma-1}{2}M^2\Big)^{\gamma/(\gamma-1)}\).</li>
-          <li>Área–Mach (boquilla): \(\dfrac{A}{A^*}=\dfrac{1}{M}\Big[\dfrac{2}{\gamma+1}(1+\tfrac{\gamma-1}{2}M^2)\Big]^{\frac{\gamma+1}{2(\gamma-1)}}\).</li>
-          <li>Choque normal: saltos de \(p, T, M\) (tablas/relaciones).</li>
-          <li>Fanno: ducto adiabático con fricción; Rayleigh: ducto con adición de calor.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Boquilla convergente-divergente</summary>Choque interno si presión de salida no coincide con diseño.</details></li>
-          <li><details><summary>Máquina sónica</summary>Estrangulamiento a \(M=1\) en el cuello.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>\(p_0/p\) para \(M=2\), \(\gamma=1.4\)</summary>Usa fórmula isentrópica.</details></li>
-          <li><details><summary>\(A/A^*\) para \(M=2\)</summary>Evalúa relación área–Mach.</details></li>
-          <li><details><summary>Relación T₀/T para \(M=3\)</summary>\(1+0.2\cdot9=2.8\).</details></li>
-          <li><details><summary>Choque normal: salto de presión</summary>Usa tablas/expresiones.</details></li>
-          <li><details><summary>Boquilla mal adaptada</summary>Ondas de expansión/choques fuera.</details></li>
-          <li><details><summary>Flujo chocado vs isentrópico</summary>Pérdida de \(p_0\).</details></li>
-          <li><details><summary>Longitud de Fanno hasta sónico</summary>Desde \(M, f\) y \(D\).</details></li>
-          <li><details><summary>Rayleigh: \(T_0\) máximo</summary>En \(M≈1\).</details></li>
-          <li><details><summary>Velocidad del sonido</summary>\(a=\sqrt{\gamma R T}\).</details></li>
-          <li><details><summary>Estrangulamiento de caudal</summary>Depende de \(p_{back}\).</details></li>
-          <li><details><summary>Difusor supersónico</summary>Requiere choque.</details></li>
-          <li><details><summary>Número de Mach crítico en perfil</summary>Donde localmente \(M=1\).</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 11 ========= -->
-    <section class="paper" id="cap11">
-      <h2>11. Medición y experimentación</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Caudal, velocidad y presión; instrumentación clásica y moderna.</div>
-      <div class="callout"><strong>📌 Herramientas.</strong>
-        <ul>
-          <li>Manometría (U, Bourdon), tubos Pitot/Prandtl.</li>
-          <li>Elementos primarios: orificio, Venturi, tobera.</li>
-          <li>Anemometría térmica, LDA/PIV (ópticas).</li>
-          <li>Tratamiento de datos: media, incertidumbre combinada.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Velocidad con Pitot</summary>\(V=\sqrt{2\Delta p/\rho}\).</details></li>
-          <li><details><summary>Caudal con orificio</summary>\(Q=C_d A \sqrt{2\Delta p/\rho}\).</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Conversión Pa↔mmHg</summary>\(1\,atm≈101325\,Pa≈760\,mmHg\).</details></li>
-          <li><details><summary>Corrección de densidad en Pitot</summary>Usa \(\rho\) del fluido real.</details></li>
-          <li><details><summary>Coeficiente de descarga típico</summary>Orificio \(C_d≈0.6\).</details></li>
-          <li><details><summary>Repetibilidad vs exactitud</summary>Definiciones metrológicas.</details></li>
-          <li><details><summary>Curva de calibración</summary>Regresión lineal.</details></li>
-          <li><details><summary>Tiempo de respuesta</summary>Sensor 1er orden.</details></li>
-          <li><details><summary>Promediado temporal/turbu</summary>Decomposición de Reynolds.</details></li>
-          <li><details><summary>Filtro pasa-bajo</summary>Reduce ruido, pero distorsiona picos.</details></li>
-          <li><details><summary>Instrumentación PIV</summary>Semillas, lámina láser, correlación cruzada.</details></li>
-          <li><details><summary>Sonda de presión estática</summary>Diseño de tomas.</details></li>
-          <li><details><summary>Corrección de temperatura en caudal másico</summary>\(\dot m=\rho Q\).</details></li>
-          <li><details><summary>Estimación de error</summary>Propagación tipo A/B.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ========= CAPÍTULO 12 ========= -->
-    <section class="paper" id="cap12">
-      <h2>12. Similitud y modelado (Buckingham \(\pi\))</h2>
-      <div class="callout"><strong>🧠 Objetivos.</strong> Construir grupos adimensionales, asegurar similitud geométrica/cinemática/dinámica y escalar resultados.</div>
-      <div class="callout"><strong>📌 Relaciones.</strong>
-        <ul>
-          <li>Buckingham \(\pi\): con \(n\) variables y \(k\) dimensiones fundamentales → \(n-k\) grupos \(\pi\).</li>
-          <li>Similitud completa: \(Re, Fr, We, Ma,\ldots\) iguales entre modelo y prototipo según fenómenos dominantes.</li>
-          <li>Escalado: \(Q\sim L^3/T\), fuerzas \(\sim \rho L^2 V^2\), etc.</li>
-        </ul>
-      </div>
-      <div class="examples"><h4>🔍 Ejemplos (2)</h4>
-        <ol>
-          <li><details><summary>Arrastre de esfera</summary>\(C_D=f(Re)\): un solo grupo si \(\rho,\mu,V,D\).</details></li>
-          <li><details><summary>Vertedero (Fr dominando)</summary>Igualar \(Fr\) para preservar oleaje.</details></li>
-        </ol>
-      </div>
-      <div class="examples"><h4>📝 Ejercicios (12)</h4>
-        <ol>
-          <li><details><summary>Cuenta \(\pi\) para \(F,\rho,V,L,\mu\)</summary>Dos grupos: \(C_D\) y \(Re\).</details></li>
-          <li><details><summary>Modelo 1:10 de barco</summary>Iguala \(Fr\); deduce velocidad del modelo.</details></li>
-          <li><details><summary>Sustentación ala</summary>\(C_L=f(Re,Ma)\).</details></li>
-          <li><details><summary>Chorro libre</summary>\(We\) relevante para atomización.</details></li>
-          <li><details><summary>Goteo capilar</summary>\(Bo=\rho g L^2/\sigma\).</details></li>
-          <li><details><summary>Mapa de regímenes</summary>Define qué números importan.</details></li>
-          <li><details><summary>Ensayo de túnel de viento</summary>Igualar \(Re\) (y \(Ma\) si compresible).</details></li>
-          <li><details><summary>Escalado de potencia de agitación</summary>\(N_p=P/(\rho N^3 D^5)=f(Re,Fr,\ldots)\).</details></li>
-          <li><details><summary>Vertedero triangular</summary>\(Q\propto H^{5/2}\) (dimensional).</details></li>
-          <li><details><summary>Tiempo de vaciado en escala</summary>\(t\sim L/\sqrt{gL}\) si Fr domina.</details></li>
-          <li><details><summary>Jets en atmósfera</summary>\(Re,Fr,Sc\).</details></li>
-          <li><details><summary>Reducción de variables</summary>Aplica matriz de dimensiones.</details></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="paper">
-      <h2>Errores típicos y trucos útiles</h2>
-      <ul>
-        <li>Aplicar Bernoulli sin comprobar <em>misma línea de corriente</em> y sin pérdidas → añade \(h_f\) y términos de bombas/turbinas.</li>
-        <li>Olvidar elegir referencia para \(z\) y \(p\) → define niveles y presiones manométricas vs absolutas.</li>
-        <li>Usar fórmulas de \(f\) fuera de su rango (laminar/turbulento) → verifica \(Re\) y \(\varepsilon/D\).</li>
-        <li>No cerrar balances en VC con <em>signos</em> consistentes → orienta \(\vec n\) y define entradas/salidas.</li>
-        <li>Intentar igualar todos los números adimensionales a la vez → prioriza los dominantes.</li>
-      </ul>
-    </section>
-  </main>
-
-  <button class="topbtn" id="topbtn">↑ Arriba</button>
-
   <script>
-    const $ = s => document.querySelector(s);
-    // Progress bar + top button
-    const bar = $('#progress');
-    function updateProgress(){
-      const h = document.documentElement;
-      const sc = h.scrollTop || document.body.scrollTop;
-      const max = (h.scrollHeight - h.clientHeight);
-      const p = max>0 ? (sc/max)*100 : 0;
-      bar.style.width = p + '%';
-      $('#topbtn').classList.toggle('show', sc>600);
-    }
-    addEventListener('scroll', updateProgress, {passive:true}); updateProgress();
+    const exercises = [
+      // ============================================================
+      // TEOREMA DE TRANSPORTE DE REYNOLDS & CONSERVACIÓN DE MOMENTO
+      // ============================================================
+      {
+        id: "FLU-ADV-001",
+        category: "integral",
+        topic: "RTT - Perfil no Uniforme",
+        difficulty: "Hard",
+        problem: "Un codo reductor de $90^\\circ$ se encuentra en un plano horizontal. A la entrada (sección 1, radio $R_1$) el flujo es uniforme con velocidad $U_1$. En la salida (sección 2, radio $R_2$), el perfil de velocidad es parabólico: $u(r) = U_{max} (1 - (r/R_2)^2)$. Calcule la fuerza de anclaje requerida en el eje X asumiendo fluido incompresible y presión manométrica $P_1$ en la entrada y descarga libre $P_2=0$.",
+        steps: [
+          "",
+          "**Paso 1: Continuidad (Integral).** Hallar $U_{max}$ en función de $U_1$. <br> $Q = \\int_0^{R_2} u(r) 2\\pi r dr = U_1 \\pi R_1^2$. <br> Integrando: $U_{max} = 2 U_1 (R_1/R_2)^2$.",
+          "**Paso 2: Momento Lineal en X.** <br> $\\sum F_x = \\int_{SC} u (\\rho \\vec{V} \\cdot d\\vec{A})$. <br> $P_1 A_1 - F_{Rx} = \\dot{M}_{sal,x} - \\dot{M}_{ent,x}$.",
+          "**Paso 3: Flujo de Momento Salida.** Como la salida es en Y, la componente X es 0. $\\dot{M}_{sal,x} = 0$.",
+          "**Paso 4: Flujo de Momento Entrada.** <br> $\\dot{M}_{ent,x} = \\int_{A_1} U_1 (-\\rho U_1) dA = -\\rho U_1^2 A_1$.",
+          "**Paso 5: Despeje.** <br> $F_{Rx} = P_1 A_1 + \\rho U_1^2 A_1$."
+        ],
+        solution: "$$ F_{Rx} = (P_1 + \\rho U_1^2)\\pi R_1^2 $$"
+      },
+      {
+        id: "FLU-ADV-002",
+        category: "integral",
+        topic: "Hidrostática Avanzada (Integración)",
+        difficulty: "Hard",
+        problem: "Una compuerta tiene la forma de la curva $y = H(x/b)^3$ con ancho $w$ constante perpendicular al papel. El fluido tiene densidad $\\rho$ y llega hasta la altura $H$. Calcule la fuerza horizontal y vertical mediante integración directa.",
+        steps: [
+          "",
+          "**Fuerza Horizontal:** Proyección vertical. <br> $dF_H = P dA_v = (\\rho g (H-y)) (w dy)$. <br> $F_H = \\rho g w \\int_0^H (H-y) dy = \\frac{1}{2}\\rho g w H^2$.",
+          "**Fuerza Vertical:** Peso del volumen sobre la curva. <br> $dF_V = P dA_h = (\\rho g (H-y)) (w dx)$.",
+          "Sustituir $y$: $F_V = \\rho g w \\int_0^b (H - H(x/b)^3) dx$.",
+          "Integrando: $F_V = \\rho g w H [x - \\frac{x^4}{4b^3}]_0^b = \\rho g w H (b - b/4) = \\frac{3}{4}\\rho g w H b$."
+        ],
+        solution: "$$ F_H = \\frac{1}{2}\\gamma w H^2, \\quad F_V = \frac{3}{4}\\gamma w H b $$"
+      },
+      
+      // ============================================================
+      // ANÁLISIS DIFERENCIAL (NAVIER-STOKES)
+      // ============================================================
+      {
+        id: "FLU-ADV-003",
+        category: "integral",
+        topic: "Navier-Stokes (Couette Cilindrico)",
+        difficulty: "Hard",
+        problem: "Un fluido viscoso ($\\mu$) está contenido entre dos cilindros concéntricos infinitos de radios $R_1$ y $R_2$ ($R_2 > R_1$). El cilindro interior gira a $\\omega_1$ y el exterior está fijo. Hallar la distribución de velocidad $v_\\theta(r)$ resolviendo N-S en coordenadas cilíndricas.",
+        steps: [
+          "**Simplificación N-S:** Flujo estacionario, laminar, $v_r=v_z=0$, simetría axial ($\\partial/\\partial \\theta = 0$).",
+          "Ecuación $\\theta$: $\\frac{d}{dr}\\left( \\frac{1}{r} \\frac{d}{dr}(r v_\\theta) \\right) = 0$.",
+          "**Integración 1:** $\\frac{1}{r} \\frac{d}{dr}(r v_\\theta) = C_1 \\implies \\frac{d}{dr}(r v_\\theta) = C_1 r$.",
+          "**Integración 2:** $r v_\\theta = C_1 \\frac{r^2}{2} + C_2 \\implies v_theta(r) = A r + \\frac{B}{r}$.",
+          "**Condiciones de Frontera:** <br> 1) $r=R_1, v_\\theta = \\omega_1 R_1$. <br> 2) $r=R_2, v_\\theta = 0$.",
+          "Resolver sistema para A y B."
+        ],
+        solution: "$$ v_\\theta(r) = \\frac{\\omega_1 R_1^2}{R_2^2 - R_1^2} \\left( \\frac{R_2^2}{r} - r \\right) $$"
+      },
+      {
+        id: "FLU-ADV-004",
+        category: "integral",
+        topic: "Capa Límite (Solución Blasius)",
+        difficulty: "Hard",
+        problem: "Para la solución de Blasius sobre placa plana, demuestre que la velocidad vertical $v$ dentro de la capa límite no es cero y encuentre su expresión en función de la función de corriente $\\psi(x,y) = \\sqrt{\\nu U x} f(\\eta)$.",
+        steps: [
+          "Definición: $u = \\frac{\\partial \\psi}{\\partial y}$, $v = -\\frac{\\partial \\psi}{\\partial x}$.",
+          "Derivada parcial respecto a $x$: <br> $\\psi = \\sqrt{\\nu U} x^{1/2} f(\\eta)$, donde $\\eta = y \\sqrt{U/\\nu x}$.",
+          "Regla de la cadena para $\\partial f/\\partial x = f' \\cdot \\frac{\\partial \\eta}{\\partial x}$. <br> $\\frac{\\partial \\eta}{\\partial x} = -\\frac{\\eta}{2x}$.",
+          "Sustituir y operar algebraicamente."
+        ],
+        solution: "$$ v = \\frac{1}{2} \\sqrt{\\frac{\\nu U}{x}} (\\eta f' - f) $$"
+      },
 
-    // Reader controls
-    const root = document.documentElement;
-    $('#fs-up').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
-      root.style.setProperty('--base', Math.min(val+1, 22)+'px');
-    });
-    $('#fs-down').addEventListener('click', ()=>{
-      const val = parseFloat(getComputedStyle(root).getPropertyValue('--base')) || 18;
-      root.style.setProperty('--base', Math.max(val-1, 14)+'px');
-    });
-    $('#width-up').addEventListener('click', ()=>{
-      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
-      const num = parseFloat(w);
-      root.style.setProperty('--maxw', Math.min(num+8, 92)+'ch');
-    });
-    $('#width-down').addEventListener('click', ()=>{
-      const w = getComputedStyle(root).getPropertyValue('--maxw') || '74ch';
-      const num = parseFloat(w);
-      root.style.setProperty('--maxw', Math.max(num-8, 54)+'ch');
-    });
-    $('#theme-toggle').addEventListener('click', ()=>{
-      const light = getComputedStyle(root).getPropertyValue('--paper').trim()==='#ffffff';
-      if(light){ // switch to dark palette
-        root.style.setProperty('--bg','#0b1220'); root.style.setProperty('--paper','#0e1628'); root.style.setProperty('--ink','#e6ecff');
-        root.style.setProperty('--muted','#aab7d9'); root.style.setProperty('--brand','#60a5fa'); root.style.setProperty('--accent','#7dd3fc'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#203054');
-      }else{ // back to light
-        root.style.setProperty('--bg','#f7f9fc'); root.style.setProperty('--paper','#ffffff'); root.style.setProperty('--ink','#0f172a');
-        root.style.setProperty('--muted','#475569'); root.style.setProperty('--brand','#1e3a8a'); root.style.setProperty('--accent','#38bdf8'); root.style.setProperty('--accent2','#22d3ee'); root.style.setProperty('--border','#e2e8f0');
+      // ============================================================
+      // FLUJO POTENCIAL & COMPLEJO
+      // ============================================================
+      {
+        id: "FLU-ADV-005",
+        category: "integral",
+        topic: "Flujo Potencial (Cilindro Rotatorio)",
+        difficulty: "Hard",
+        problem: "Considere la superposición de flujo uniforme $U$, un doblete y un vórtice de circulación $\\Gamma$ (Efecto Magnus). Encuentre la localización de los puntos de estancamiento sobre la superficie del cilindro ($r=R$).",
+        steps: [
+          "",
+          "Potencial complejo: $W(z) = U(z + R^2/z) + i\\Gamma/2\\pi \\ln z$.",
+          "Velocidad tangencial en superficie ($r=R$): <br> $v_\\theta = -2U \\sin\\theta + \\frac{\\Gamma}{2\\pi R}$.",
+          "Punto estancamiento: $v_\\theta = 0$.",
+          "$\\sin\\theta_{stag} = \\frac{\\Gamma}{4\\pi U R}$."
+        ],
+        solution: "$$ \\theta = \\arcsin\\left(\\frac{\\Gamma}{4\\pi U R}\\right) $$"
+      },
+
+      // ============================================================
+      // TURBOMÁQUINAS & SISTEMAS
+      // ============================================================
+      {
+        id: "FLU-ADV-006",
+        category: "turbomaquinas",
+        topic: "Triángulos de Velocidad (Bomba)",
+        difficulty: "Hard",
+        problem: "Una bomba centrífuga gira a $N=1450$ rpm. Radio entrada $r_1=10cm$, radio salida $r_2=20cm$. Ancho álabe constante $b=4cm$. Caudal $Q=0.1 m^3/s$. Entrada radial ($V_{u1}=0$). Ángulo de salida del álabe $\\beta_2 = 30^\\circ$. Calcule la altura teórica de Euler.",
+        steps: [
+          "",
+          "**Paso 1: Velocidades Periféricas ($u$).** <br> $u_2 = \\omega r_2 = \\frac{2\\pi N}{60} r_2$.",
+          "**Paso 2: Velocidad de Flujo ($V_m$).** <br> $V_{m2} = Q / (2\\pi r_2 b)$.",
+          "**Paso 3: Triángulo de Salida.** <br> $\\tan \\beta_2 = V_{m2} / (u_2 - V_{u2})$. Despejar $V_{u2}$.",
+          "**Paso 4: Ecuación Euler.** <br> $H_{th} = \\frac{u_2 V_{u2} - u_1 V_{u1}}{g}$. (Dado $V_{u1}=0$)."
+        ],
+        solution: "$$ H_{th} = u_2 (u_2 - V_{m2} \\cot \\beta_2) / g $$"
+      },
+      {
+        id: "FLU-ADV-007",
+        category: "turbomaquinas",
+        topic: "Golpe de Ariete (Allievi)",
+        difficulty: "Medium",
+        problem: "Una tubería de acero ($E=2\\cdot 10^{11} Pa$) de $D=600mm$ y espesor $e=10mm$ transporta agua ($K=2.2\\cdot 10^9 Pa$) a $2 m/s$. Se cierra una válvula en 0.5s. Longitud $L=2000m$. Determine la sobrepresión máxima.",
+        steps: [
+          "**Celeridad de onda (a):** $a = \\sqrt{\\frac{K/\\rho}{1 + (K/E)(D/e)}}$.",
+          "**Tiempo crítico:** $T_c = 2L/a$.",
+          "Comparar $t_{cierre}$ con $T_c$.",
+          "Si $t_{cierre} < T_c$ (Cierre rápido): $\\Delta P = \\rho a V$ (Joukowsky)."
+        ],
+        solution: "$$ \\Delta H = \\frac{aV}{g} $$"
+      },
+      {
+        id: "FLU-ADV-008",
+        category: "integral",
+        topic: "Vaciado de Tanque (Geometría Variable)",
+        difficulty: "Hard",
+        problem: "Un tanque cónico (vértice abajo) de altura $H$ y radio superior $R$ se vacía por un orificio de área $a_0$ en el fondo. Encuentre el tiempo de vaciado total.",
+        steps: [
+          "Relación geométrica radio-altura: $r(z) = (R/H)z$.",
+          "Área superficial: $A(z) = \\pi (R/H)^2 z^2$.",
+          "Ec. Continuidad no permanente: $-A(z) dz = a_0 \\sqrt{2gz} dt$.",
+          "Integral: $\\int_H^0 -\\pi (R/H)^2 z^{3/2} dz = \\int_0^t a_0 \\sqrt{2g} dt$."
+        ],
+        solution: "$$ t = \\frac{\\pi R^2}{a_0 \\sqrt{2g}} \\frac{2}{5} H^{1/2} $$"
+      },
+      {
+        id: "FLU-ADV-009",
+        category: "integral",
+        topic: "Fuerzas sobre cuerpos sumergidos (Empuje)",
+        difficulty: "Hard",
+        problem: "Un bloque de densidad $\\rho_b$ flota en la interfaz entre dos fluidos inmiscibles de densidades $\\rho_1$ y $\\rho_2$ ($\\rho_1 < \\rho_b < \\rho_2$). Determine la fracción del volumen sumergido en el fluido más denso.",
+        steps: [
+          "Equilibrio: $W = E_1 + E_2$.",
+          "$\\rho_b g V_{tot} = \\rho_1 g V_1 + \\rho_2 g V_2$.",
+          "$V_{tot} = V_1 + V_2$. Sustituir $V_1 = V_{tot} - V_2$.",
+          "$\\rho_b V_{tot} = \\rho_1 (V_{tot} - V_2) + \\rho_2 V_2$."
+        ],
+        solution: "$$ \\frac{V_2}{V_{tot}} = \\frac{\\rho_b - \\rho_1}{\\rho_2 - \\rho_1} $$"
+      },
+      {
+        id: "FLU-ADV-010",
+        category: "turbomaquinas",
+        topic: "Bombas en Serie/Paralelo",
+        difficulty: "Medium",
+        problem: "Dos bombas idénticas con curva $H = 50 - 5000Q^2$ se instalan en paralelo. La curva del sistema es $H_{sis} = 20 + 15000Q_{tot}^2$. Halle el caudal total entregado.",
+        steps: [
+          "Bomba equivalente paralelo: Para un mismo H, $Q_{eq} = 2Q_{ind}$.",
+          "Invertir curva bomba: $Q_{ind} = \\sqrt{(50-H)/5000}$.",
+          "$Q_{tot} = 2\\sqrt{(50-H)/5000} \\implies Q_{tot}^2 = 4(50-H)/5000$.",
+          "Curva Equiv: $H = 50 - 1250 Q_{tot}^2$.",
+          "Igualar con sistema: $50 - 1250Q^2 = 20 + 15000Q^2$."
+        ],
+        solution: "$$ Q_{tot} \\approx 43 \\text{ L/s} $$"
       }
+    ];
+
+    const modal = document.getElementById('modal');
+    let currentFilter = 'all';
+
+    function renderGrid(data) {
+      const grid = document.getElementById('grid');
+      if (!grid) return;
+
+      grid.innerHTML = data.map((ex, index) => `
+<article class="exercise-card" style="animation-delay: ${index * 0.05}s" onclick="openModal('${ex.id}')">
+  <div class="card-header">
+    <div class="card-badges">
+      <span class="badge badge-diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
+      <span class="badge badge-topic">${ex.topic}</span>
+    </div>
+    <span class="card-id">${ex.id}</span>
+  </div>
+  <div class="card-body">
+    <div class="problem-preview">${ex.problem}</div>
+  </div>
+  <div class="card-footer">
+    <span class="view-sol-btn">Ver Desarrollo Completo</span>
+  </div>
+</article>
+`).join('');
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([grid]).catch(err => console.log('MathJax error:', err));
+      }
+    }
+
+    function openModal(id) {
+      const ex = exercises.find(e => e.id === id);
+      if (!ex) return;
+
+      document.getElementById('modal-title').textContent = ex.topic;
+      document.getElementById('modal-id').textContent = ex.id;
+      document.getElementById('modal-problem').innerHTML = ex.problem;
+
+      const stepsContainer = document.getElementById('modal-steps');
+      stepsContainer.innerHTML = '<span class="section-label">Desarrollo Matemático</span>';
+
+      ex.steps.forEach((step, i) => {
+        stepsContainer.innerHTML += `
+<div class="step-card" style="animation-delay: ${i * 0.1}s">
+  <span class="step-number">PASO ${i + 1}</span>
+  <div class="step-content">${step}</div>
+</div>
+`;
+      });
+
+      stepsContainer.innerHTML += `
+<div class="final-answer">
+  <span class="final-label">Resultado Final</span>
+  <div class="final-math">${ex.solution}</div>
+</div>
+`;
+
+      modal.classList.add('active');
+      if (window.MathJax) {
+        MathJax.typesetPromise([modal]).catch(err => console.log('MathJax error:', err));
+      }
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    function filterExercises(cat) {
+      currentFilter = cat;
+
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const filtered = cat === 'all' ? exercises : exercises.filter(e => e.category === cat);
+      renderGrid(filtered);
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
     });
-    $('#topbtn').addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Ensure DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGrid(exercises);
+    });
   </script>
 </body>
-</html>
 
+</html>
