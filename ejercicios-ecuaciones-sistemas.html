@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Innove | Algebra Master</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            loader: { load: ['[tex]/ams'] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* ============ VARIABLES ============ */
+        :root {
+            --bg-body: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-details: #f1f5f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
+
+            /* Colores por Nivel */
+            --accent-eso: #f59e0b;    /* Naranja */
+            --accent-bach: #3b82f6;   /* Azul */
+            --accent-uni: #8b5cf6;    /* Violeta */
+            
+            --current-accent: var(--accent-eso); /* Por defecto */
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f1117;
+            --bg-card: #1e212b;
+            --bg-details: #15171e;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #2d3748;
+            --shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding-top: 40px;
+            padding-bottom: 60px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ============ LAYOUT ============ */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--current-accent), #db2777);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .header p { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* ============ TABS ============ */
+        .tabs {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 25px; border-radius: 50px; border: 1px solid var(--border);
+            background: var(--bg-card); color: var(--text-muted);
+            font-weight: 700; cursor: pointer; font-family: 'Outfit', sans-serif;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover { transform: translateY(-2px); }
+        
+        /* Estados Activos */
+        .tab-btn.active[data-target="eso"] { background: var(--accent-eso); color: white; border-color: var(--accent-eso); }
+        .tab-btn.active[data-target="bach"] { background: var(--accent-bach); color: white; border-color: var(--accent-bach); }
+        .tab-btn.active[data-target="uni"] { background: var(--accent-uni); color: white; border-color: var(--accent-uni); }
+
+        /* ============ CARDS ============ */
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px; }
+
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 25px;
+            box-shadow: var(--shadow); transition: 0.3s;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--current-accent); }
+
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .badge {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            padding: 5px 10px; border-radius: 8px;
+            background: rgba(128,128,128,0.1); color: var(--current-accent);
+        }
+
+        .problem { font-size: 1.05rem; margin-bottom: 20px; font-weight: 500; }
+
+        /* ============ SOLUCION PRO (TIMELINE) ============ */
+        details { margin-top: auto; }
+        summary { cursor: pointer; font-weight: 600; color: var(--text-muted); list-style: none; display: flex; align-items: center; gap: 8px; }
+        summary:hover { color: var(--current-accent); }
+        summary::before { content: "▸"; font-size: 1.2rem; transition: 0.2s; }
+        details[open] summary::before { transform: rotate(90deg); }
+
+        .solution-container {
+            background: var(--bg-details); border-radius: 16px; padding: 20px;
+            margin-top: 15px; border: 1px solid var(--border);
+        }
+
+        .step-list {
+            position: relative; padding-left: 20px; border-left: 2px solid var(--border);
+            margin-left: 8px; margin-bottom: 20px;
+        }
+        .step-item { position: relative; margin-bottom: 20px; }
+        .step-item:last-child { margin-bottom: 0; }
+        
+        .step-dot {
+            position: absolute; left: -27px; top: 2px; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--bg-card);
+            border: 2px solid var(--current-accent);
+        }
+        .step-title { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--current-accent); margin-bottom: 4px; }
+        .step-content { font-size: 0.9rem; line-height: 1.5; }
+
+        .final-result {
+            background: var(--bg-card); border: 1px solid var(--current-accent);
+            border-radius: 12px; padding: 12px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .result-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--current-accent); font-size: 1.1rem; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute; top: 20px; right: 20px;
+            background: none; border: none; font-size: 1.5rem; cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()">◑</button>
+
+    <div class="container">
+        <div class="header">
+            <h1>Álgebra Master</h1>
+            <p>30 Ejercicios: De la base a la cima 🚀</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-target="eso" onclick="setTab('eso', '#f59e0b')">ESO (10)</button>
+            <button class="tab-btn" data-target="bach" onclick="setTab('bach', '#3b82f6')">Bachillerato (10)</button>
+            <button class="tab-btn" data-target="uni" onclick="setTab('uni', '#8b5cf6')">Universidad (10)</button>
+        </div>
+
+        <div id="eso" class="section active">
+            <div class="grid">
+                <article class="card">
+                    <div class="card-header"><span class="badge">Ecuación 1º Grado</span></div>
+                    <div class="problem">Resuelve: $3(x - 2) + 5 = 2(3x + 1) - x$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Paso 1</div><div class="step-content">Expandir paréntesis: $3x - 6 + 5 = 6x + 2 - x$</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Paso 2</div><div class="step-content">Agrupar términos: $3x - 1 = 5x + 2$</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Paso 3</div><div class="step-content">Despejar x: $-3 = 2x \to x = -3/2$</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = -1.5</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Fracciones</span></div>
+                    <div class="problem">Resuelve: $\frac{x}{2} - \frac{x-1}{3} = \frac{x+1}{4}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">MCM</div><div class="step-content">Mínimo común múltiplo de 2, 3, 4 es 12.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Multiplicar</div><div class="step-content">$6x - 4(x-1) = 3(x+1)$ <br> $6x - 4x + 4 = 3x + 3$</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver</div><div class="step-content">$2x + 4 = 3x + 3 \to 1 = x$</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 1</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">2º Grado</span></div>
+                    <div class="problem">Halla las raíces de: $x^2 - 5x + 6 = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Fórmula</div><div class="step-content">$$x = \frac{-b \pm \sqrt{b^2-4ac}}{2a} = \frac{5 \pm \sqrt{25-24}}{2}$$</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Operar</div><div class="step-content">$\frac{5 \pm 1}{2}$. Dos soluciones: $(5+1)/2$ y $(5-1)/2$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 3, x = 2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">2º Grado</span></div>
+                    <div class="problem">Resuelve: $3x^2 - 27 = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Despejar</div><div class="step-content">$3x^2 = 27 \to x^2 = 9$</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Raíz</div><div class="step-content">$x = \pm \sqrt{9}$</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = ±3</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Sistema 2x2</span></div>
+                    <div class="problem">$\begin{cases} x + y = 5 \\ 2x - y = 4 \end{cases}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Sumar</div><div class="step-content">Método reducción: $(x+2x) + (y-y) = 5+4 \to 3x=9 \to x=3$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Sustituir</div><div class="step-content">$3 + y = 5 \to y = 2$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x=3, y=2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Irracional</span></div>
+                    <div class="problem">Resuelve: $\sqrt{x + 5} = 3$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Elevar</div><div class="step-content">Cuadrado a ambos lados: $x + 5 = 9$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Comprobar</div><div class="step-content">$x = 4$. Verificación: $\sqrt{4+5} = \sqrt{9} = 3$. Correcto.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 4</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Bicuadrada</span></div>
+                    <div class="problem">Resuelve: $x^4 - 10x^2 + 9 = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Cambio Variable</div><div class="step-content">$t = x^2$. Ecuación: $t^2 - 10t + 9 = 0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver t</div><div class="step-content">$(t-9)(t-1)=0 \to t=9, t=1$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Deshacer cambio</div><div class="step-content">$x^2=9 \to x=\pm 3$; $x^2=1 \to x=\pm 1$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">±3, ±1</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Problema</span></div>
+                    <div class="problem">El doble de un número más su mitad es 25. ¿Qué número es?</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Plantear</div><div class="step-content">$2x + \frac{x}{2} = 25$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Operar</div><div class="step-content">Multiplicar por 2: $4x + x = 50 \to 5x = 50$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 10</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Polinomios</span></div>
+                    <div class="problem">Resuelve sacando factor común: $x^3 - 4x = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Factorizar</div><div class="step-content">$x(x^2 - 4) = 0 \to x(x-2)(x+2) = 0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Igualar a 0</div><div class="step-content">Cada factor da una solución.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">0, 2, -2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Geometría</span></div>
+                    <div class="problem">Un rectángulo tiene base $x$ y altura $x-2$. Su perímetro es 20m. Halla $x$.</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Plantear</div><div class="step-content">$2(\text{base}) + 2(\text{altura}) = 20 \to 2x + 2(x-2) = 20$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver</div><div class="step-content">$2x + 2x - 4 = 20 \to 4x = 24 \to x=6$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">Base = 6m</span></div>
+                    </div></details>
+                </article>
+            </div>
+        </div>
+
+        <div id="bach" class="section">
+            <div class="grid">
+                <article class="card">
+                    <div class="card-header"><span class="badge">Exponencial</span></div>
+                    <div class="problem">Resuelve: $4^x - 3\cdot 2^x - 4 = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Cambio Variable</div><div class="step-content">Sea $t = 2^x$, entonces $4^x = (2^2)^x = t^2$. <br> Ec: $t^2 - 3t - 4 = 0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver t</div><div class="step-content">$(t-4)(t+1)=0 \to t=4, t=-1$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Deshacer</div><div class="step-content">$2^x = 4 \to x=2$. <br> $2^x = -1$ (Sin solución real).</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Logaritmos</span></div>
+                    <div class="problem">Resuelve: $\log(x+2) + \log(x-1) = 1$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Propiedades</div><div class="step-content">Suma de logs = log del producto: $\log((x+2)(x-1)) = 1$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Exponenciar</div><div class="step-content">$(x+2)(x-1) = 10^1 \to x^2 + x - 2 = 10$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver</div><div class="step-content">$x^2 + x - 12 = 0 \to x=3, x=-4$. <br> $-4$ no válida (log negativo).</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 3</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Sistema Lineal</span></div>
+                    <div class="problem">$\begin{cases} x + y + z = 6 \\ x - y + z = 2 \\ 2x + y - z = 1 \end{cases}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Gauss</div><div class="step-content">$F_2 - F_1 \to -2y = -4 \to y=2$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Sustituir</div><div class="step-content">En $F_3$: $2x + 2 - z = 1 \to 2x - z = -1$.<br> En $F_1$: $x + 2 + z = 6 \to x + z = 4$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver</div><div class="step-content">Sumando: $3x = 3 \to x=1$. Luego $z=3$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">(1, 2, 3)</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Irracional</span></div>
+                    <div class="problem">$\sqrt{2x-1} + \sqrt{x+4} = 6$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Aislar</div><div class="step-content">$\sqrt{2x-1} = 6 - \sqrt{x+4}$. Elevar al cuadrado.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Simplificar</div><div class="step-content">Queda término con raíz. Aislar de nuevo y elevar.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resultado</div><div class="step-content">Ec. resultante: $x^2 - 46x + 225 = 0 \to x=5, x=45$.<br>45 no cumple (da $\approx 16$).</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 5</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Inecuación</span></div>
+                    <div class="problem">Resuelve: $\frac{x-2}{x+3} \ge 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Puntos Críticos</div><div class="step-content">Numerador 0 en $x=2$. Denominador 0 en $x=-3$ (Abierto).</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Tabla Signos</div><div class="step-content">$(-\infty, -3)$: $(-) / (-) = +$ <br> $(-3, 2)$: $(-) / (+) = -$ <br> $(2, \infty)$: $(+) / (+) = +$</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">(-∞, -3) U [2, ∞)</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Grado Superior</span></div>
+                    <div class="problem">Factoriza y resuelve: $x^3 - 2x^2 - 5x + 6 = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Ruffini</div><div class="step-content">Probamos $x=1$. Resto 0. Polinomio restante: $x^2 - x - 6$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">2º Grado</div><div class="step-content">Resolver $x^2 - x - 6 = 0 \to (x-3)(x+2)$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">1, 3, -2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">No Lineal</span></div>
+                    <div class="problem">$\begin{cases} x^2 + y^2 = 25 \\ x - y = 1 \end{cases}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Despejar</div><div class="step-content">$x = y+1$. Sustituir en la primera: $(y+1)^2 + y^2 = 25$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Ecuación y</div><div class="step-content">$2y^2 + 2y - 24 = 0 \to y^2 + y - 12 = 0$.<br> $y=3, y=-4$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Parejas</div><div class="step-content">Si $y=3 \to x=4$. Si $y=-4 \to x=-3$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">(4,3), (-3,-4)</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Matrices</span></div>
+                    <div class="problem">Dada $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, $B=\begin{pmatrix}2&0\\0&2\end{pmatrix}$. Halla $X$ si $AX = B$.</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Inversa</div><div class="step-content">$A^{-1} = \begin{pmatrix}1&-1\\0&1\end{pmatrix}$. $X = A^{-1}B$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Producto</div><div class="step-content">$\begin{pmatrix}1&-1\\0&1\end{pmatrix} \begin{pmatrix}2&0\\0&2\end{pmatrix} = \begin{pmatrix}2&-2\\0&2\end{pmatrix}$</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">X = [[2,-2],[0,2]]</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Parámetros</span></div>
+                    <div class="problem">Discute el sistema según $m$: $\begin{cases} mx + y = 1 \\ x + my = 2 \end{cases}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Determinante</div><div class="step-content">$\det(A) = m^2 - 1$. Se anula en $m=1, m=-1$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Casos</div><div class="step-content">Si $m \neq \pm 1$: Compatible Determinado.<br> Si $m=1$: Comp. Indet ($x+y=1$).<br> Si $m=-1$: Incompatible ($x-y=1, x-y=-2$).</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">Depende de m</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Valor Absoluto</span></div>
+                    <div class="problem">Resuelve: $|2x - 3| = 5$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Caso 1</div><div class="step-content">$2x - 3 = 5 \to 2x=8 \to x=4$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Caso 2</div><div class="step-content">$2x - 3 = -5 \to 2x=-2 \to x=-1$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">4, -1</span></div>
+                    </div></details>
+                </article>
+            </div>
+        </div>
+
+        <div id="uni" class="section">
+            <div class="grid">
+                <article class="card">
+                    <div class="card-header"><span class="badge">Variable Compleja</span></div>
+                    <div class="problem">Resuelve $z^4 + 16 = 0$ en $\mathbb{C}$.</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Forma Polar</div><div class="step-content">$z^4 = -16 = 16_{\pi}$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Raíces n-ésimas</div><div class="step-content">Módulo $\sqrt[4]{16}=2$. Argumentos $\frac{\pi + 2k\pi}{4}$ para $k=0,1,2,3$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Ángulos</div><div class="step-content">$\pi/4, 3\pi/4, 5\pi/4, 7\pi/4$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">2e^{i(π+2kπ)/4}</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Álgebra Lineal</span></div>
+                    <div class="problem">Halla la base del subespacio solución de $\begin{cases} x - y + 2z = 0 \\ 2x + y - z = 0 \end{cases}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Reducción</div><div class="step-content">Sumar eqs: $3x + z = 0 \to z = -3x$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Parametrizar</div><div class="step-content">Si $x=\lambda$, entonces $z=-3\lambda$.<br> Sustituir en eq 1: $\lambda - y - 6\lambda = 0 \to y = -5\lambda$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Base</span><span class="result-val">{(1, -5, -3)}</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Eigenvalues</span></div>
+                    <div class="problem">Halla los valores propios de $A = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Polinomio Característico</div><div class="step-content">$|A - \lambda I| = (4-\lambda)(3-\lambda) - 2 = 0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Ecuación</div><div class="step-content">$\lambda^2 - 7\lambda + 12 - 2 = \lambda^2 - 7\lambda + 10 = 0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Raíces</div><div class="step-content">Factoriza como $(\lambda-5)(\lambda-2)$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">λ = 5, λ = 2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Sistemas</span></div>
+                    <div class="problem">Si $\det(A)=5$, halla $x$ en el sistema $A\vec{x} = \vec{b}$ donde $\det(A_x)=10$.</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Regla de Cramer</div><div class="step-content">La regla establece que $x_i = \frac{\det(A_i)}{\det(A)}$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Cálculo</div><div class="step-content">$x = \frac{10}{5} = 2$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">x = 2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">EDO Lineal</span></div>
+                    <div class="problem">Resuelve: $y'' - 4y' + 4y = 0$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Eq. Característica</div><div class="step-content">$r^2 - 4r + 4 = 0 \to (r-2)^2 = 0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Raíz Doble</div><div class="step-content">$r=2$ con multiplicidad 2.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Base Solución</div><div class="step-content">$e^{2t}$ y $te^{2t}$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">y = C₁e²ᵗ + C₂te²ᵗ</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Espacios Vectoriales</span></div>
+                    <div class="problem">Núcleo de $f(x,y,z) = (x-y, x+z)$. Halla dim(Ker f).</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Definición</div><div class="step-content">Igualar a cero: $x-y=0$ y $x+z=0$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver</div><div class="step-content">$y=x$ y $z=-x$. Vector genérico $(x, x, -x)$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Base</div><div class="step-content">Generado por $(1, 1, -1)$. Solo 1 vector.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">Dimensión = 1</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Matrices</span></div>
+                    <div class="problem">¿Para qué $k$ NO existe inversa de $\begin{pmatrix} 1 & k \\ k & 4 \end{pmatrix}$?</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Condición</div><div class="step-content">No existe inversa si el determinante es 0.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Determinante</div><div class="step-content">$1(4) - k(k) = 4 - k^2$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Resolver</div><div class="step-content">$4 - k^2 = 0 \to k = \pm 2$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">k = 2, k = -2</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">EDO 1er Orden</span></div>
+                    <div class="problem">Resuelve: $y' = xy$</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Separar</div><div class="step-content">$\frac{dy}{y} = x dx$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Integrar</div><div class="step-content">$\ln|y| = \frac{x^2}{2} + C$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Despejar</div><div class="step-content">$y = e^{x^2/2 + C} = K e^{x^2/2}$.</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">y = K e^(x²/2)</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Teorema</span></div>
+                    <div class="problem">Un sistema $3\times3$ homogéneo tiene solución distinta de la trivial. ¿Rango?</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Teoría</div><div class="step-content">Si tiene soluciones infinitas (no triviales), es Compatible Indeterminado.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Rango</div><div class="step-content">El rango debe ser menor que el número de incógnitas (3).</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">Rango < 3</span></div>
+                    </div></details>
+                </article>
+
+                <article class="card">
+                    <div class="card-header"><span class="badge">Matrices</span></div>
+                    <div class="problem">¿Es diagonalizable $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$?</div>
+                    <details><summary>Ver Solución</summary><div class="solution-container">
+                        <div class="step-list">
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Valores Propios</div><div class="step-content">Triangular superior: $\lambda=1$ (doble).</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Multiplicidad Geométrica</div><div class="step-content">Rango de $(A - 1I) = \begin{pmatrix}0&1\\0&0\end{pmatrix}$ es 1. <br> Dimensión = $2 - 1 = 1$.</div></div>
+                            <div class="step-item"><div class="step-dot"></div><div class="step-title">Conclusión</div><div class="step-content">Mult. Geométrica (1) $\neq$ Mult. Algebraica (2).</div></div>
+                        </div>
+                        <div class="final-result"><span>Solución</span><span class="result-val">No diagonalizable</span></div>
+                    </div></details>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setTab(tabId, accentColor) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab-btn[data-target="${tabId}"]`).classList.add('active');
+            
+            // Cambiar color de acento dinámicamente
+            document.documentElement.style.setProperty('--current-accent', accentColor);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+    </script>
+
+</body>
+</html>
