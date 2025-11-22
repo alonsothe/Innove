@@ -1,1719 +1,817 @@
 
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
-
+<html lang="es" class="">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Innove | Scientific Exam Suite</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innove | Ingeniería de Materiales UPC</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- FONTS -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
-
-  <!-- MATHJAX -->
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$']],
-        processEscapes: true,
-        tags: 'ams'
-      },
-      options: {
-        renderActions: { addMenu: [] }
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Space Grotesk', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              brand: {
+                50: '#eef2ff',
+                100: '#e0e7ff',
+                500: '#6366f1', // Indigo
+                600: '#4f46e5',
+                900: '#312e81',
+              },
+              dark: {
+                bg: '#050505',
+                card: '#111111',
+                sidebar: '#0a0a0a',
+                border: 'rgba(255, 255, 255, 0.08)',
+              }
+            }
+          }
+        }
       }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <style>
-    /* 
-        ========================================
-        1. VARIABLES & THEME CONFIGURATION
-        ========================================
-        */
-    :root {
-      /* Dimensions */
-      --sidebar-width: 280px;
-      --header-height: 70px;
-      --card-radius: 16px;
-      --modal-radius: 24px;
-
-      /* Typography */
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --font-display: 'Space Grotesk', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-
-      /* Animations */
-      --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
-      --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
-      --duration-fast: 0.2s;
-      --duration-normal: 0.4s;
-      --duration-slow: 0.6s;
-    }
-
-    [data-theme="dark"] {
-      /* Backgrounds */
-      --bg-app: #050505;
-      --bg-sidebar: #0a0a0a;
-      --bg-card: #111111;
-      --bg-card-hover: #161616;
-      --bg-modal: #0f0f0f;
-      --bg-input: #1a1a1a;
-
-      /* Text */
-      --text-primary: #ffffff;
-      --text-secondary: #a1a1aa;
-      --text-tertiary: #52525b;
-
-      /* Borders */
-      --border-light: rgba(255, 255, 255, 0.06);
-      --border-hover: rgba(255, 255, 255, 0.12);
-
-      /* Accents */
-      --accent-primary: #6366f1;
-      /* Indigo */
-      --accent-secondary: #8b5cf6;
-      /* Violet */
-      --accent-success: #10b981;
-      /* Emerald */
-      --accent-warning: #f59e0b;
-      /* Amber */
-      --accent-danger: #ef4444;
-      /* Red */
-
-      /* Shadows */
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.6);
-      --glow-primary: 0 0 20px rgba(99, 102, 241, 0.15);
-    }
-
-    [data-theme="light"] {
-      /* Backgrounds */
-      --bg-app: #f8fafc;
-      --bg-sidebar: #ffffff;
-      --bg-card: #ffffff;
-      --bg-card-hover: #f1f5f9;
-      --bg-modal: #ffffff;
-      --bg-input: #f1f5f9;
-
-      /* Text */
-      --text-primary: #0f172a;
-      --text-secondary: #64748b;
-      --text-tertiary: #94a3b8;
-
-      /* Borders */
-      --border-light: rgba(0, 0, 0, 0.06);
-      --border-hover: rgba(0, 0, 0, 0.1);
-
-      /* Accents */
-      --accent-primary: #4f46e5;
-      --accent-secondary: #7c3aed;
-      --accent-success: #059669;
-      --accent-warning: #d97706;
-      --accent-danger: #dc2626;
-
-      /* Shadows */
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.12);
-      --glow-primary: 0 0 20px rgba(79, 70, 229, 0.1);
-    }
-
-    /* 
-        ========================================
-        2. RESET & UTILITIES
-        ========================================
-        */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      outline: none;
-    }
-
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--bg-app);
-      color: var(--text-primary);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      transition: background-color var(--duration-normal) var(--ease-out);
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-hover);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--text-tertiary);
-    }
-
-    /* Typography Utilities */
-    .h1 {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-    }
-
-    .h2 {
-      font-family: var(--font-display);
-      font-size: 1.75rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-
-    .h3 {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .text-sm {
-      font-size: 0.875rem;
-    }
-
-    .text-xs {
-      font-size: 0.75rem;
-    }
-
-    .font-mono {
-      font-family: var(--font-mono);
-    }
-
-    .text-muted {
-      color: var(--text-secondary);
-    }
-
-    /* 
-        ========================================
-        3. SIDEBAR NAVIGATION
-        ========================================
-        */
-    .sidebar {
-      width: var(--sidebar-width);
-      height: 100%;
-      background: var(--bg-sidebar);
-      border-right: 1px solid var(--border-light);
-      display: flex;
-      flex-direction: column;
-      padding: 24px;
-      z-index: 10;
-      transition: transform var(--duration-normal) var(--ease-out);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 40px;
-      padding-left: 12px;
-    }
-
-    .brand-logo {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      color: white;
-      font-size: 1.2rem;
-      box-shadow: var(--glow-primary);
-    }
-
-    .brand-text {
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex-grow: 1;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      color: var(--text-secondary);
-      font-weight: 500;
-      transition: all var(--duration-fast);
-    }
-
-    .nav-item:hover {
-      background: var(--bg-input);
-      color: var(--text-primary);
-    }
-
-    .nav-item.active {
-      background: rgba(99, 102, 241, 0.1);
-      color: var(--accent-primary);
-    }
-
-    .nav-icon {
-      width: 20px;
-      height: 20px;
-      opacity: 0.7;
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-light);
-    }
-
-    .stats-card {
-      background: var(--bg-input);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: var(--border-hover);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent-success);
-      width: 0%;
-      transition: width 1s var(--ease-out);
-    }
-
-    /* 
-        ========================================
-        4. MAIN CONTENT AREA
-        ========================================
-        */
-    .main-content {
-      flex-grow: 1;
-      height: 100%;
-      overflow-y: auto;
-      padding: 40px 60px;
-      position: relative;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
-      animation: slideDown 0.6s var(--ease-out);
-    }
-
-    .header-content h1 {
-      margin-bottom: 8px;
-    }
-
-    .header-content p {
-      max-width: 600px;
-      line-height: 1.6;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 16px;
-    }
-
-    .theme-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--border-light);
-      display: grid;
-      place-items: center;
-      color: var(--text-secondary);
-      transition: all var(--duration-fast);
-    }
-
-    .theme-btn:hover {
-      background: var(--bg-card-hover);
-      color: var(--text-primary);
-      border-color: var(--border-hover);
-    }
-
-    /* Filter Bar */
-    .filter-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 32px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      animation: fadeIn 0.8s var(--ease-out);
-    }
-
-    .filter-chip {
-      padding: 8px 16px;
-      border-radius: 100px;
-      border: 1px solid var(--border-light);
-      background: var(--bg-card);
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      white-space: nowrap;
-      transition: all var(--duration-fast);
-    }
-
-    .filter-chip:hover {
-      border-color: var(--accent-primary);
-      color: var(--text-primary);
-    }
-
-    .filter-chip.active {
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-    }
-
-    /* 
-        ========================================
-        5. EXERCISE GRID & CARDS
-        ========================================
-        */
-    .exercise-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 24px;
-      padding-bottom: 60px;
-    }
-
-    .exercise-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      border-radius: var(--card-radius);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      transition: all var(--duration-fast);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      animation: fadeInUp 0.6s var(--ease-out) backwards;
-    }
-
-    .exercise-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-hover);
-      box-shadow: var(--shadow-md);
-      background: var(--bg-card-hover);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-
-    .card-badges {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .badge-diff-easy {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--accent-success);
-    }
-
-    .badge-diff-medium {
-      background: rgba(245, 158, 11, 0.1);
-      color: var(--accent-warning);
-    }
-
-    .badge-diff-hard {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--accent-danger);
-    }
-
-    .badge-topic {
-      background: var(--bg-input);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-light);
-    }
-
-    .card-id {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-tertiary);
-    }
-
-    .card-body {
-      flex-grow: 1;
-      margin-bottom: 20px;
-    }
-
-    .problem-preview {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: var(--text-primary);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-light);
-    }
-
-    .view-sol-btn {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--accent-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .view-sol-btn::after {
-      content: '→';
-      transition: transform 0.2s;
-    }
-
-    .exercise-card:hover .view-sol-btn::after {
-      transform: translateX(4px);
-    }
-
-    /* 
-        ========================================
-        6. FULL SCREEN MODAL
-        ========================================
-        */
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: none;
-      opacity: 0;
-      transition: opacity var(--duration-normal);
-    }
-
-    .modal-backdrop.active {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 1;
-    }
-
-    .modal-content {
-      width: 90%;
-      max-width: 1000px;
-      height: 90%;
-      background: var(--bg-modal);
-      border-radius: var(--modal-radius);
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      flex-direction: column;
-      transform: scale(0.95) translateY(20px);
-      transition: transform var(--duration-normal) var(--ease-out);
-      overflow: hidden;
-    }
-
-    .modal-backdrop.active .modal-content {
-      transform: scale(1) translateY(0);
-    }
-
-    .modal-header {
-      padding: 24px 32px;
-      border-bottom: 1px solid var(--border-light);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-card);
-    }
-
-    .modal-title-group h2 {
-      margin-bottom: 4px;
-    }
-
-    .modal-subtitle {
-      font-family: var(--font-mono);
-      color: var(--text-tertiary);
-      font-size: 0.9rem;
-    }
-
-    .close-modal-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--bg-input);
-      color: var(--text-secondary);
-      display: grid;
-      place-items: center;
-      font-size: 1.2rem;
-      transition: all 0.2s;
-    }
-
-    .close-modal-btn:hover {
-      background: var(--accent-danger);
-      color: white;
-      transform: rotate(90deg);
-    }
-
-    .modal-body {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 40px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-    }
-
-    .problem-section {
-      padding-right: 40px;
-      border-right: 1px solid var(--border-light);
-    }
-
-    .solution-section {
-      padding-left: 10px;
-    }
-
-    .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent-primary);
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    .problem-text {
-      font-size: 1.25rem;
-      line-height: 1.7;
-      margin-bottom: 32px;
-    }
-
-    .step-card {
-      background: var(--bg-input);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-left: 3px solid var(--accent-secondary);
-      animation: slideInRight 0.5s var(--ease-out) backwards;
-    }
-
-    .step-number {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .final-answer {
-      margin-top: 40px;
-      padding: 24px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid var(--accent-success);
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .final-label {
-      color: var(--accent-success);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      margin-bottom: 12px;
-      display: block;
-    }
-
-    /* 
-        ========================================
-        7. ANIMATIONS
-        ========================================
-        */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .sidebar {
-        width: 80px;
-        padding: 16px;
-      }
-
-      .brand-text,
-      .nav-text,
-      .stats-card {
-        display: none;
-      }
-
-      .brand {
-        justify-content: center;
-        padding: 0;
-      }
-
-      .nav-item {
-        justify-content: center;
-        padding: 16px;
-      }
-
-      .main-content {
-        padding: 20px;
-      }
-
-      .modal-body {
-        grid-template-columns: 1fr;
-      }
-
-      .problem-section {
-        border-right: none;
-        border-bottom: 1px solid var(--border-light);
-        padding-bottom: 30px;
-        margin-bottom: 30px;
-        padding-right: 0;
-      }
-
-      .solution-section {
-        padding-left: 0;
-      }
-    }
-  </style>
+    </script>
+
+    <!-- MATHJAX -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$']],
+          processEscapes: true,
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-fadeInUp { animation: fadeInUp 0.6s ease-out backwards; }
+        .animate-slideDown { animation: slideDown 0.6s ease-out; }
+        .animate-slideInRight { animation: slideInRight 0.5s ease-out backwards; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
 </head>
+<body class="bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-white transition-colors duration-300 overflow-hidden h-screen flex font-sans">
 
-<body>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-logo">Σ</div>
-      <span class="brand-text">Innove</span>
-    </div>
-
-    <nav class="nav-menu">
-      <button class="nav-item active" onclick="filterExercises('all')">
-        <span class="nav-icon">📚</span>
-        <span class="nav-text">Todo</span>
-      </button>
-      <button class="nav-item" onclick="filterExercises('c1')">
-        <span class="nav-icon">∫</span>
-        <span class="nav-text">Cálculo I</span>
-      </button>
-      <button class="nav-item" onclick="filterExercises('c2')">
-        <span class="nav-icon">∬</span>
-        <span class="nav-text">Cálculo II</span>
-      </button>
-      <button class="nav-item" onclick="filterExercises('c3')">
-        <span class="nav-icon">∭</span>
-        <span class="nav-text">Cálculo III</span>
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="stats-card">
-        <div class="stat-row">
-          <span>Progreso</span>
-          <span id="progress-text">0/50</span>
+    <!-- SIDEBAR -->
+    <aside class="w-20 lg:w-[280px] h-full bg-white dark:bg-dark-sidebar border-r border-slate-200 dark:border-dark-border flex flex-col p-4 z-10 transition-all duration-300 shrink-0">
+        <!-- Brand -->
+        <div class="flex items-center gap-3 mb-10 px-2 justify-center lg:justify-start">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/30">
+                Σ
+            </div>
+            <span class="hidden lg:block font-display text-xl font-bold tracking-tight">Innove</span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill"></div>
+
+        <!-- Navigation -->
+        <nav class="flex flex-col gap-2 flex-1" id="nav-container">
+            <!-- Generated by JS -->
+        </nav>
+
+        <!-- Footer Stats -->
+        <div class="hidden lg:block mt-auto pt-6 border-t border-slate-200 dark:border-dark-border">
+            <div class="bg-slate-100 dark:bg-white/5 p-4 rounded-xl">
+                <div class="flex justify-between mb-2 text-sm font-medium">
+                    <span class="text-slate-500 dark:text-slate-400">Progreso</span>
+                    <span class="text-brand-600 dark:text-brand-500" id="progress-text">0/0</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full w-0 bg-brand-500 rounded-full transition-all duration-500" id="progress-bar"></div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </aside>
+    </aside>
 
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-    <header class="header">
-      <div class="header-content">
-        <h1 class="h1">Banco de Parciales UPC</h1>
-        <p class="text-muted">Colección definitiva de ejercicios de alta dificultad. Diseñado para estudiantes de
-          ingeniería y ciencias.</p>
-      </div>
-      <div class="header-actions">
-        <button class="theme-btn" onclick="toggleTheme()">☀</button>
-      </div>
-    </header>
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 h-full overflow-y-auto p-5 md:p-10 relative scroll-smooth" id="main-scroll">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-end mb-10 animate-slideDown">
+            <div>
+                <h1 class="font-display text-3xl md:text-4xl font-bold mb-2 text-slate-900 dark:text-white">
+                    Materiales de Ingeniería
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+                    Banco de ejercicios nivel UPC. Propiedades, fallos y selección de materiales para ingeniería civil e industrial.
+                </p>
+            </div>
+            
+            <button 
+                id="theme-toggle"
+                class="w-12 h-12 rounded-xl border border-slate-200 dark:border-dark-border flex items-center justify-center text-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                aria-label="Toggle Theme"
+            >
+                ☀️
+            </button>
+        </header>
 
-    <div class="filter-bar" id="topic-filters">
-      <!-- Populated by JS -->
-    </div>
-
-    <div class="exercise-grid" id="grid">
-      <!-- Populated by JS -->
-    </div>
-  </main>
-
-  <!-- MODAL -->
-  <div class="modal-backdrop" id="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <h2 class="h2" id="modal-title">Título del Problema</h2>
-          <span class="modal-subtitle" id="modal-id">ID: C1-001</span>
+        <!-- Mobile Filters -->
+        <div class="flex lg:hidden gap-3 mb-8 overflow-x-auto pb-2" id="mobile-filters">
+             <!-- Generated by JS -->
         </div>
-        <button class="close-modal-btn" onclick="closeModal()">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="problem-section">
-          <span class="section-label">Enunciado</span>
-          <div class="problem-text" id="modal-problem">
-            <!-- LaTeX Problem -->
-          </div>
-          <div class="tags" id="modal-tags">
-            <!-- Tags -->
-          </div>
+
+        <!-- Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-20" id="exercise-grid">
+             <!-- Generated by JS -->
         </div>
-        <div class="solution-section" id="modal-steps">
-          <span class="section-label">Solución Paso a Paso</span>
-          <!-- Steps injected here -->
+    </main>
+
+    <!-- MODAL -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 md:p-8 transition-all duration-300 opacity-0 invisible pointer-events-none">
+        <div id="modal-content" class="w-full max-w-5xl h-[90vh] bg-white dark:bg-[#0f0f0f] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 dark:border-dark-border transition-all duration-300 scale-95 translate-y-10">
+            
+            <!-- Modal Header -->
+            <div class="px-8 py-6 border-b border-slate-200 dark:border-dark-border flex justify-between items-center bg-slate-50 dark:bg-dark-card shrink-0">
+                <div>
+                    <h2 id="modal-title" class="font-display text-2xl font-bold text-slate-900 dark:text-white mb-1">
+                        <!-- Title -->
+                    </h2>
+                    <span id="modal-id" class="font-mono text-sm text-brand-600 dark:text-brand-400">
+                        <!-- ID -->
+                    </span>
+                </div>
+                <button 
+                    onclick="closeModal()"
+                    class="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400 flex items-center justify-center hover:bg-rose-500 hover:text-white hover:rotate-90 transition-all duration-300"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                
+                <!-- Problem Section -->
+                <div class="lg:border-r border-slate-200 dark:border-dark-border lg:pr-10">
+                    <span class="text-xs font-mono font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-4 block">
+                        Enunciado
+                    </span>
+                    <div id="modal-problem" class="text-lg md:text-xl leading-relaxed text-slate-800 dark:text-slate-200 font-medium">
+                        <!-- Problem Text -->
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 rounded-xl">
+                        <p class="text-sm text-blue-800 dark:text-blue-300 flex gap-2">
+                            <span>💡</span> 
+                            <span>
+                                <strong>Tip UPC:</strong> Recuerda verificar las unidades. En ingeniería civil y materiales, a menudo trabajamos con MPa ($N/mm^2$) y GPa.
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Solution Section -->
+                <div>
+                    <span class="text-xs font-mono font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-6 block">
+                        Solución Paso a Paso
+                    </span>
+                    
+                    <div id="modal-steps" class="flex flex-col gap-4">
+                        <!-- Steps injected here -->
+                    </div>
+
+                    <div class="mt-8 p-6 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-center">
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-2 block">
+                            Resultado Final
+                        </span>
+                        <div id="modal-solution" class="text-2xl font-display font-bold text-emerald-700 dark:text-emerald-400">
+                            <!-- Solution -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <script>
-    const exercises = [
-      // ============================================================
-      // CÁLCULO I: ANÁLISIS REAL Y COMPLEJO (20 EJERCICIOS)
-      // ============================================================
-      {
-        id: "C1-001",
-        category: "c1",
-        topic: "Números Complejos",
-        difficulty: "Hard",
-        problem: "Resuelve la ecuación $z^4 + 16 = 0$ en $\\mathbb{C}$. Representa gráficamente las soluciones y calcula el área del polígono que forman.",
-        steps: [
-          "Escribimos la ecuación como $z^4 = -16$.",
-          "Pasamos a forma polar: $-16 = 16 e^{i(\\pi + 2k\\pi)}$.",
-          "Las raíces cuartas son $z_k = \\sqrt[4]{16} e^{i(\\frac{\\pi + 2k\\pi}{4})}$ para $k=0,1,2,3$.",
-          "Módulo $r=2$. Argumentos: $\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4$.",
-          "Soluciones: $z_0 = \\sqrt{2}(1+i)$, $z_1 = \\sqrt{2}(-1+i)$, $z_2 = \\sqrt{2}(-1-i)$, $z_3 = \\sqrt{2}(1-i)$.",
-          "Forman un cuadrado de lado $2\\sqrt{2}$ (distancia entre $z_0$ y $z_1$).",
-          "Área = $(2\\sqrt{2})^2 = 8$."
-        ],
-        solution: "$$ z \\in \\{ \\sqrt{2}(\\pm 1 \\pm i) \\}, \\quad \\text{Área} = 8 $$"
-      },
-      {
-        id: "C1-002",
-        category: "c1",
-        topic: "Límites (Infinitésimos)",
-        difficulty: "Hard",
-        problem: "Calcula el límite: $$\\lim_{x \\to 0} \\frac{\\ln(\\cos x) + x^2/2}{x^4}$$",
-        steps: [
-          "Evaluamos: $\\ln(1) + 0 = 0$, denom $0$. Indeterminación $0/0$.",
-          "Usamos Taylor para $\\cos x \\approx 1 - x^2/2 + x^4/24$.",
-          "$\\ln(\\cos x) \\approx \\ln(1 - (x^2/2 - x^4/24))$.",
-          "Usamos $\\ln(1-u) \\approx -u - u^2/2$. Aquí $u = x^2/2 - x^4/24$.",
-          "$\\ln(\\cos x) \\approx -(x^2/2 - x^4/24) - (x^2/2)^2/2 = -x^2/2 + x^4/24 - x^4/8 = -x^2/2 - x^4/12$.",
-          "Sustituimos en el límite: $\\frac{(-x^2/2 - x^4/12) + x^2/2}{x^4}$.",
-          "Simplificamos: $\\frac{-x^4/12}{x^4} = -1/12$."
-        ],
-        solution: "$$ -\\frac{1}{12} $$"
-      },
-      {
-        id: "C1-003",
-        category: "c1",
-        topic: "Continuidad (Parámetros)",
-        difficulty: "Medium",
-        problem: "Halla $a, b$ para que $f(x)$ sea derivable en todo $\\mathbb{R}$: $$ f(x) = \\begin{cases} \\sin(\pi x) + a & x \\le 1 \\\\ b \\ln x + x & x > 1 \\end{cases} $$",
-        steps: [
-          "Continuidad en $x=1$: $\\lim_{x\\to 1^-} (\\sin \\pi + a) = a$. $\\lim_{x\\to 1^+} (0 + 1) = 1$. $\\Rightarrow a=1$.",
-          "Derivabilidad: $f'(x) = \\pi \\cos(\\pi x)$ si $x<1$, $f'(x) = b/x + 1$ si $x>1$.",
-          "Derivadas laterales en $x=1$: $f'(1^-) = \\pi \\cos(\\pi) = -\\pi$.",
-          "$f'(1^+) = b/1 + 1 = b+1$.",
-          "Igualamos: $-\\pi = b+1 \\Rightarrow b = -\\pi - 1$."
-        ],
-        solution: "$$ a=1, \\quad b = -(\\pi + 1) $$"
-      },
-      {
-        id: "C1-004",
-        category: "c1",
-        topic: "Taylor (Error)",
-        difficulty: "Hard",
-        problem: "Aproxima $\\sqrt[3]{28}$ usando un polinomio de Taylor de orden 2 y acota el error cometido.",
-        steps: [
-          "Sea $f(x) = x^{1/3}$. Buscamos un punto cercano con raíz exacta: $a=27$.",
-          "$f(27) = 3$.",
-          "$f'(x) = \\frac{1}{3}x^{-2/3} \\Rightarrow f'(27) = \\frac{1}{3} \\frac{1}{9} = \\frac{1}{27}$.",
-          "$f''(x) = -\\frac{2}{9}x^{-5/3} \\Rightarrow f''(27) = -\\frac{2}{9} \\frac{1}{243} = -\\frac{2}{2187}$.",
-          "$P_2(x) = 3 + \\frac{1}{27}(x-27) - \\frac{1}{2187}(x-27)^2$.",
-          "Evaluamos en $x=28$: $P_2(28) = 3 + \\frac{1}{27} - \\frac{1}{2187} \\approx 3.03658$.",
-          "Error (Lagrange): $R_2 = \\frac{f'''(c)}{6}(1)^3$. $f'''(x) = \\frac{10}{27}x^{-8/3}$.",
-          "Acotamos en $(27, 28)$: $|R_2| < \\frac{10/27 \\cdot 27^{-8/3}}{6} \\approx 10^{-6}$."
-        ],
-        solution: "$$ \\approx 3.03658, \\quad |E| < 10^{-5} $$"
-      },
-      {
-        id: "C1-005",
-        category: "c1",
-        topic: "Optimización (Geometría)",
-        difficulty: "Hard",
-        problem: "Se quiere inscribir un cono de volumen máximo dentro de una esfera de radio $R$. Halla la altura del cono.",
-        steps: [
-          "Sea $r$ el radio del cono y $h$ su altura.",
-          "Sección transversal: triángulo isósceles en círculo.",
-          "Relación pitagórica: $r^2 + (h-R)^2 = R^2 \\Rightarrow r^2 = R^2 - (h-R)^2 = 2Rh - h^2$.",
-          "Volumen $V(h) = \\frac{1}{3}\\pi r^2 h = \\frac{\\pi}{3}(2Rh^2 - h^3)$.",
-          "Dominio: $h \\in [0, 2R]$.",
-          "Derivamos: $V'(h) = \\frac{\\pi}{3}(4Rh - 3h^2)$.",
-          "Puntos críticos: $h(4R - 3h) = 0 \\Rightarrow h=0$ (min) o $h = \\frac{4}{3}R$ (max).",
-          "El radio será $r = \\sqrt{2R(4R/3) - 16R^2/9} = \\frac{2\\sqrt{2}}{3}R$."
-        ],
-        solution: "$$ h = \\frac{4}{3}R, \\quad V_{max} = \\frac{32}{81}\\pi R^3 $$"
-      },
-      {
-        id: "C1-006",
-        category: "c1",
-        topic: "Derivada Implícita",
-        difficulty: "Medium",
-        problem: "Halla la recta tangente a la curva $x^3 + y^3 = 6xy$ (Folium de Descartes) en el punto $(3,3)$.",
-        steps: [
-          "Verificamos punto: $27 + 27 = 6(3)(3) = 54$. Correcto.",
-          "Derivamos implícitamente respecto a $x$: $3x^2 + 3y^2 y' = 6(y + xy')$.",
-          "Sustituimos $(3,3)$: $3(9) + 3(9)y' = 6(3 + 3y')$.",
-          "$27 + 27y' = 18 + 18y'$.",
-          "$9y' = -9 \\Rightarrow y' = -1$.",
-          "Ecuación recta: $y - 3 = -1(x - 3) \\Rightarrow y = -x + 6$."
-        ],
-        solution: "$$ x + y = 6 $$"
-      },
-      {
-        id: "C1-007",
-        category: "c1",
-        topic: "Teorema Valor Medio",
-        difficulty: "Hard",
-        problem: "Demuestra que $|\\sin b - \\sin a| \\le |b - a|$ para todo $a,b \\in \\mathbb{R}$.",
-        steps: [
-          "Sea $f(x) = \\sin x$. Es continua y derivable en todo $\\mathbb{R}$.",
-          "Por el TVM en $[a,b]$, existe $c \\in (a,b)$ tal que $\\frac{f(b)-f(a)}{b-a} = f'(c)$.",
-          "$\\frac{\\sin b - \\sin a}{b-a} = \\cos c$.",
-          "Tomamos valor absoluto: $|\\frac{\\sin b - \\sin a}{b-a}| = |\\cos c|$.",
-          "Sabemos que $|\\cos c| \\le 1$.",
-          "Por tanto, $|\\sin b - \\sin a| \\le |b - a|$."
-        ],
-        solution: "$$ \\text{Q.E.D. (Lipschitziana con } K=1) $$"
-      },
-      {
-        id: "C1-008",
-        category: "c1",
-        topic: "Límites (Exponencial)",
-        difficulty: "Medium",
-        problem: "Calcula $\\lim_{x \\to \\infty} (\\frac{x^2+1}{x^2-1})^{x^2}$.",
-        steps: [
-          "Forma $1^\\infty$. Usamos la fórmula $e^{\\lim g(f-1)}$.",
-          "$L = e^{\\lim_{x\\to\\infty} x^2 (\\frac{x^2+1}{x^2-1} - 1)}$.",
-          "Simplificamos paréntesis: $\\frac{x^2+1 - (x^2-1)}{x^2-1} = \\frac{2}{x^2-1}$.",
-          "Límite exponente: $\\lim x^2 \\frac{2}{x^2-1} = 2$.",
-          "Resultado final $e^2$."
-        ],
-        solution: "$$ e^2 $$"
-      },
-      {
-        id: "C1-009",
-        category: "c1",
-        topic: "Complejos (Geometría)",
-        difficulty: "Hard",
-        problem: "Determina el lugar geométrico de $z$ tal que $\\text{Re}(\\frac{z-1}{z+1}) = 0$.",
-        steps: [
-          "Sea $w = \\frac{z-1}{z+1}$. Si su parte real es 0, es imaginario puro.",
-          "$w + \\bar{w} = 0$.",
-          "$\\frac{z-1}{z+1} + \\frac{\\bar{z}-1}{\\bar{z}+1} = 0$.",
-          "$(z-1)(\\bar{z}+1) + (z+1)(\\bar{z}-1) = 0$.",
-          "$z\\bar{z} + z - \\bar{z} - 1 + z\\bar{z} - z + \\bar{z} - 1 = 0$.",
-          "$2|z|^2 - 2 = 0 \\Rightarrow |z|^2 = 1$.",
-          "Es la circunferencia unitaria (excluyendo $z=-1$)."
-        ],
-        solution: "$$ |z|=1, z \\neq -1 $$"
-      },
-      {
-        id: "C1-010",
-        category: "c1",
-        topic: "Funciones Hiperbólicas",
-        difficulty: "Medium",
-        problem: "Demuestra que $\\text{arctanh}(x) = \\frac{1}{2} \\ln(\\frac{1+x}{1-x})$.",
-        steps: [
-          "Sea $y = \\text{arctanh}(x) \\Rightarrow x = \\tanh y = \\frac{e^y - e^{-y}}{e^y + e^{-y}}$.",
-          "$x(e^y + e^{-y}) = e^y - e^{-y}$. Multiplicamos por $e^y$: $x(e^{2y}+1) = e^{2y}-1$.",
-          "$xe^{2y} + x = e^{2y} - 1$.",
-          "$e^{2y}(x-1) = -1-x \\Rightarrow e^{2y} = \\frac{1+x}{1-x}$.",
-          "$2y = \\ln(\\frac{1+x}{1-x}) \\Rightarrow y = \\frac{1}{2}\\ln(\\frac{1+x}{1-x})$."
-        ],
-        solution: "$$ |x|<1 $$"
-      },
-      {
-        id: "C1-011",
-        category: "c1",
-        topic: "Razón de Cambio",
-        difficulty: "Hard",
-        problem: "Una escalera de 5m se desliza por una pared. Si la base se aleja a 0.5 m/s, ¿a qué velocidad baja el extremo superior cuando la base está a 3m?",
-        steps: [
-          "Pitágoras: $x^2 + y^2 = 25$.",
-          "Derivamos respecto a $t$: $2x \\frac{dx}{dt} + 2y \\frac{dy}{dt} = 0$.",
-          "Datos: $x=3$, $dx/dt = 0.5$. Hallamos $y$: $3^2 + y^2 = 25 \\Rightarrow y=4$.",
-          "$2(3)(0.5) + 2(4) \\frac{dy}{dt} = 0$.",
-          "$3 + 8 \\frac{dy}{dt} = 0 \\Rightarrow \\frac{dy}{dt} = -3/8$ m/s."
-        ],
-        solution: "$$ -0.375 \\text{ m/s} $$"
-      },
-      {
-        id: "C1-012",
-        category: "c1",
-        topic: "Integral Definida",
-        difficulty: "Medium",
-        problem: "Calcula $\\int_0^{\\pi} |\\cos x| dx$.",
-        steps: [
-          "El coseno cambia de signo en $\\pi/2$.",
-          "Dividimos intervalo: $\\int_0^{\\pi/2} \\cos x dx + \\int_{\\pi/2}^{\\pi} -\\cos x dx$.",
-          "$[\\sin x]_0^{\\pi/2} - [\\sin x]_{\\pi/2}^{\\pi}$.",
-          "$(1 - 0) - (0 - 1) = 1 + 1 = 2$."
-        ],
-        solution: "$$ 2 $$"
-      },
-      {
-        id: "C1-013",
-        category: "c1",
-        topic: "Teorema Fundamental",
-        difficulty: "Hard",
-        problem: "Calcula $F'(x)$ si $F(x) = \\int_{x^2}^{e^x} \\sqrt{1+t^2} dt$.",
-        steps: [
-          "Usamos la regla de Leibniz generalizada.",
-          "$F'(x) = f(b(x))b'(x) - f(a(x))a'(x)$.",
-          "$f(t) = \\sqrt{1+t^2}$. $b(x)=e^x, a(x)=x^2$.",
-          "$F'(x) = \\sqrt{1+(e^x)^2} \\cdot e^x - \\sqrt{1+(x^2)^2} \\cdot 2x$.",
-          "$F'(x) = e^x\\sqrt{1+e^{2x}} - 2x\\sqrt{1+x^4}$."
-        ],
-        solution: "$$ e^x\\sqrt{1+e^{2x}} - 2x\\sqrt{1+x^4} $$"
-      },
-      {
-        id: "C1-014",
-        category: "c1",
-        topic: "Optimización (Costes)",
-        difficulty: "Medium",
-        problem: "Se quiere vallar un campo rectangular de 216 $m^2$ dividido en dos por una valla paralela a un lado. Minimiza la longitud de valla.",
-        steps: [
-          "Lados $x, y$. Área $xy = 216 \\Rightarrow y = 216/x$.",
-          "Longitud valla $L = 2x + 3y$ (3 tramos de $y$ o viceversa, asumimos 3 verticales).",
-          "$L(x) = 2x + 3(216/x) = 2x + 648/x$.",
-          "$L'(x) = 2 - 648/x^2 = 0 \\Rightarrow x^2 = 324 \\Rightarrow x=18$.",
-          "$y = 216/18 = 12$.",
-          "Longitud mínima: $2(18) + 3(12) = 36 + 36 = 72$."
-        ],
-        solution: "$$ 72 \\text{ m} $$"
-      },
-      {
-        id: "C1-015",
-        category: "c1",
-        topic: "Límites (Trigonométricos)",
-        difficulty: "Hard",
-        problem: "$\\lim_{x \\to 0} \\frac{\\tan x - \\sin x}{x^3}$.",
-        steps: [
-          "$\\tan x = \\sin x / \\cos x$.",
-          "Num: $\\sin x (\\frac{1}{\\cos x} - 1) = \\sin x \\frac{1-\\cos x}{\\cos x}$.",
-          "Equivalencias: $\\sin x \\sim x$, $1-\\cos x \\sim x^2/2$, $\\cos x \\to 1$.",
-          "Límite $\\approx \\frac{x \\cdot x^2/2}{x^3} = 1/2$."
-        ],
-        solution: "$$ 1/2 $$"
-      },
-      {
-        id: "C1-016",
-        category: "c1",
-        topic: "Derivada Inversa",
-        difficulty: "Hard",
-        problem: "Sea $f(x) = x^3 + x + 1$. Calcula $(f^{-1})'(3)$.",
-        steps: [
-          "Sabemos que $(f^{-1})'(y_0) = \\frac{1}{f'(x_0)}$ donde $f(x_0)=y_0$.",
-          "Buscamos $x_0$ tal que $x^3+x+1 = 3$. A ojo, $x_0=1$.",
-          "$f'(x) = 3x^2 + 1$.",
-          "$f'(1) = 3(1)^2 + 1 = 4$.",
-          "Entonces $(f^{-1})'(3) = 1/4$."
-        ],
-        solution: "$$ 0.25 $$"
-      },
-      {
-        id: "C1-017",
-        category: "c1",
-        topic: "Continuidad Uniforme",
-        difficulty: "Hard",
-        problem: "¿Es $f(x) = x^2$ uniformemente continua en $\\mathbb{R}$?",
-        steps: [
-          "Definición: $\\forall \\epsilon > 0, \\exists \\delta > 0$ tal que $|x-y|<\\delta \\implies |x^2-y^2|<\\epsilon$.",
-          "Tomamos $x_n = n, y_n = n + 1/n$. $|x_n-y_n| \\to 0$.",
-          "$|f(x_n)-f(y_n)| = |n^2 - (n^2 + 2 + 1/n^2)| = 2 + 1/n^2 > 2$.",
-          "La distancia de las imágenes no se hace pequeña. No es U.C."
-        ],
-        solution: "$$ \\text{No} $$"
-      },
-      {
-        id: "C1-018",
-        category: "c1",
-        topic: "Complejos (Potencias)",
-        difficulty: "Medium",
-        problem: "Calcula $i^i$ (Valor principal).",
-        steps: [
-          "Definición: $z^w = e^{w \\ln z}$.",
-          "$\\ln i = \\ln|i| + i \\arg(i) = 0 + i\\pi/2$.",
-          "$i^i = e^{i (i\\pi/2)} = e^{-\\pi/2}$.",
-          "Es un número real."
-        ],
-        solution: "$$ e^{-\\pi/2} \\approx 0.207 $$"
-      },
-      {
-        id: "C1-019",
-        category: "c1",
-        topic: "Asíntotas",
-        difficulty: "Medium",
-        problem: "Halla la asíntota oblicua de $f(x) = \\frac{x^2+3x+1}{x-1}$.",
-        steps: [
-          "Grado num = Grado den + 1 $\\implies$ Hay oblicua.",
-          "División polinómica: $(x^2+3x+1) : (x-1)$.",
-          "$x^2-x \\to 4x+1$. $4x-4 \\to 5$.",
-          "Cociente $x+4$, Resto $5$.",
-          "$f(x) = x+4 + \\frac{5}{x-1}$."
-        ],
-        solution: "$$ y = x + 4 $$"
-      },
-      {
-        id: "C1-020",
-        category: "c1",
-        topic: "Newton-Raphson",
-        difficulty: "Medium",
-        problem: "Escribe la iteración para hallar $\\sqrt{5}$.",
-        steps: [
-          "Buscamos raíz de $f(x) = x^2 - 5$.",
-          "$f'(x) = 2x$.",
-          "Fórmula: $x_{n+1} = x_n - \\frac{x_n^2-5}{2x_n}$.",
-          "Simplificando: $x_{n+1} = \\frac{1}{2}(x_n + \\frac{5}{x_n})$ (Método de Herón)."
-        ],
-        solution: "$$ x_{n+1} = 0.5(x_n + 5/x_n) $$"
-      },
+    <!-- LOGIC -->
+    <script>
+        // --- DATA ---
+        const exercises = [
+            // ==========================================
+            // 1. ESTRUCTURA Y CRISTALOGRAFÍA (STR) - 15 Ejercicios
+            // ==========================================
+            {
+                id: "STR-001", category: "structure", topic: "Densidad Teórica (FCC)", difficulty: "Medium",
+                problem: "El iridio tiene estructura FCC y un radio atómico de $0.1357 \\text{ nm}$. Calcule su densidad volumétrica teórica en $\\text{g/cm}^3$. Datos: $A_{Ir} = 192.2 \\text{ g/mol}$, $N_A = 6.022 \\times 10^{23}$.",
+                steps: ["En FCC, $n = 4$ átomos/celda.", "Relación arista-radio: $a = 2R\\sqrt{2} = 2(0.1357)\\sqrt{2} \\approx 0.3838 \\text{ nm}$.", "Volumen celda $V_c = a^3 = (3.838 \\times 10^{-8} \\text{ cm})^3 \\approx 5.654 \\times 10^{-23} \\text{ cm}^3$.", "$\\rho = \\frac{nA}{V_c N_A} = \\frac{4(192.2)}{(5.654 \\times 10^{-23})(6.022 \\times 10^{23})}$.", "$\\rho = \\frac{768.8}{34.05} \\approx 22.58 \\text{ g/cm}^3$."],
+                solution: "$$ 22.58 \\text{ g/cm}^3 $$"
+            },
+            {
+                id: "STR-002", category: "structure", topic: "Densidad Planar (111)", difficulty: "Hard",
+                problem: "Calcule la densidad planar atómica (átomos/nm$^2$) del plano $(111)$ para el Aluminio (FCC, $R=0.143$ nm).",
+                steps: ["El plano (111) FCC es el más compacto.", "Área del triángulo base en el plano: $A = 4R^2\\sqrt{3}$.", "Átomos efectivos en ese triángulo: 2.", "$\\rho_p = \\frac{2}{4R^2\\sqrt{3}} = \\frac{1}{2R^2\\sqrt{3}}$.", "$\\rho_p = \\frac{1}{2(0.143)^2(1.732)} = \\frac{1}{0.0708}$."],
+                solution: "$$ 14.12 \\text{ at/nm}^2 $$"
+            },
+            {
+                id: "STR-003", category: "structure", topic: "Densidad Lineal [110] BCC", difficulty: "Hard",
+                problem: "Calcule la densidad lineal en la dirección $[110]$ para el Hierro $\\alpha$ (BCC, $R=0.124$ nm).",
+                steps: ["Longitud del vector en la celda: $L = a\\sqrt{2}$.", "$a = 4R/\\sqrt{3} = 0.2864$ nm.", "$L = 0.405$ nm.", "Átomos en el vector [110]: Solo los vértices contribuyen radio. No hay átomo central. Longitud ocupada 2R? No, densidad lineal es 1 átomo equivalente en longitud $a\\sqrt{2}$.", "$\\rho_l = \\frac{1}{a\\sqrt{2}} = \\frac{1}{0.405} \\approx 2.47$."],
+                solution: "$$ 2.47 \\text{ at/nm} $$"
+            },
+            {
+                id: "STR-004", category: "structure", topic: "Difusión (2ª Ley Fick)", difficulty: "Hard",
+                problem: "Cementación de acero (0.1% C) a 927°C ($D = 1.28 \\times 10^{-11} \\text{m}^2/\\text{s}$). Se desea 0.6% C a 0.75 mm. Superficie 1.15% C. ¿Tiempo?",
+                steps: ["$\\frac{C_x - C_0}{C_s - C_0} = 1 - \\text{erf}(z)$.", "$\\frac{0.6 - 0.1}{1.15 - 0.1} = 0.4762$.", "$\\text{erf}(z) = 0.5238 \\Rightarrow z \\approx 0.504$.", "$z = \\frac{x}{2\\sqrt{Dt}}$. Despejar $t$.", "$t = \\frac{x^2}{4D(0.504)^2} \\approx 43200$ s."],
+                solution: "$$ 12 \\text{ horas} $$"
+            },
+            {
+                id: "STR-005", category: "structure", topic: "Difracción RX (Bragg)", difficulty: "Medium",
+                problem: "Tungsteno (BCC), $\\lambda = 0.1542$ nm. Plano (110) difracta a $2\\theta = 40.3^{\\circ}$. Calcule $a$.",
+                steps: ["$\\theta = 20.15^{\\circ}$. $d_{110} = \\frac{\\lambda}{2\\sin\\theta} = 0.2238$ nm.", "$a = d_{110}\\sqrt{1^2+1^2} = 0.2238\\sqrt{2}$."],
+                solution: "$$ 0.3165 \\text{ nm} $$"
+            },
+            {
+                id: "STR-006", category: "structure", topic: "Vacantes (Arrhenius)", difficulty: "Medium",
+                problem: "Fracción de vacantes en Cu a 1000°C. $Q_v = 0.9$ eV, $k = 8.62\\times 10^{-5}$ eV/K.",
+                steps: ["$T=1273$ K.", "$N_v/N = \\exp(-0.9 / (k \\times 1273))$.", "$\\exp(-8.20)$."],
+                solution: "$$ 2.73 \\times 10^{-4} $$"
+            },
+            {
+                id: "STR-007", category: "structure", topic: "Tamaño de Grano ASTM", difficulty: "Easy",
+                problem: "25 granos/pulg$^2$ a 100x. Calcule $n$.",
+                steps: ["$N = 2^{n-1}$.", "$25 = 2^{n-1}$.", "$n-1 = \\ln(25)/\\ln(2) = 4.64$.", "$n = 5.64$."],
+                solution: "$$ 5.6 $$"
+            },
+            {
+                id: "STR-008", category: "structure", topic: "Flujo de Difusión", difficulty: "Medium",
+                problem: "Hidrógeno en Paladio (5mm espesor). $J = 3\\times 10^{-8}$. $D=10^{-9}$. Calcule gradiente $dC/dx$.",
+                steps: ["$J = -D (dC/dx)$.", "$|dC/dx| = J/D = 30$."],
+                solution: "$$ 30 \\text{ kg}/\\text{m}^4 $$"
+            },
+            {
+                id: "STR-009", category: "structure", topic: "Factor Empaquetamiento Iónico", difficulty: "Medium",
+                problem: "Estructura CsCl. $r_{Cs}=0.170, r_{Cl}=0.181$ nm. Calcule FEA.",
+                steps: ["$a = 2(r_c+r_a)/\\sqrt{3} = 0.405$ nm.", "Vol esfera = $\\frac{4}{3}\\pi(r_c^3+r_a^3) = 0.0452$.", "Vol celda = $0.0664$.", "FEA = 0.68."],
+                solution: "$$ 0.68 $$"
+            },
+            {
+                id: "STR-010", category: "structure", topic: "Cambio Volumétrico Alotrópico", difficulty: "Hard",
+                problem: "Hierro pasa de BCC a FCC a 912°C. $R_{BCC}=0.1258, R_{FCC}=0.1292$. % Cambio Vol.",
+                steps: ["$V_{at,BCC} = a_{bcc}^3/2 = 0.0122$.", "$V_{at,FCC} = a_{fcc}^3/4 = 0.0121$.", "Contracción."],
+                solution: "$$ -0.8\\% $$"
+            },
+            {
+                id: "STR-011", category: "structure", topic: "Conversión Peso a Atómico", difficulty: "Medium",
+                problem: "Aleación 97wt% Al, 3wt% Cu. %Atómico de Cu?",
+                steps: ["Moles Al = 97/26.98 = 3.6.", "Moles Cu = 3/63.55 = 0.047.", "Total = 3.647.", "%Cu = (0.047/3.647)*100."],
+                solution: "$$ 1.3 \\text{ at}\\% $$"
+            },
+            {
+                id: "STR-012", category: "structure", topic: "Sistemas de Deslizamiento", difficulty: "Easy",
+                problem: "¿Sistemas de deslizamiento en FCC?",
+                steps: ["4 planos {111}.", "3 direcciones <110> por plano.", "Total 12."],
+                solution: "$$ 12 $$"
+            },
+            {
+                id: "STR-013", category: "structure", topic: "Vector de Burgers", difficulty: "Medium",
+                problem: "Magnitud de b en Al ($a=0.405$ nm), dirección <110>.",
+                steps: ["$b = a/2 \\sqrt{2}$.", "$0.405(0.707)$."],
+                solution: "$$ 0.286 \\text{ nm} $$"
+            },
+            {
+                id: "STR-014", category: "structure", topic: "Grado Polimerización", difficulty: "Easy",
+                problem: "Polietileno ($C_2H_4$), peso molecular 140,000 g/mol. Calcule DP.",
+                steps: ["Peso mero = 28 g/mol.", "DP = 140000/28."],
+                solution: "$$ 5000 $$"
+            },
+            {
+                id: "STR-015", category: "structure", topic: "Cristalinidad Polímero", difficulty: "Medium",
+                problem: "$\\rho_s=1.2, \\rho_a=1.1, \\rho_c=1.3$. %Cristalinidad?",
+                steps: ["%C = $\\frac{\\rho_c(\\rho_s-\\rho_a)}{\\rho_s(\\rho_c-\\rho_a)}$.", "$\\frac{1.3(0.1)}{1.2(0.2)}$."],
+                solution: "$$ 54.2\\% $$"
+            },
 
-      // ============================================================
-      // CÁLCULO II: INTEGRACIÓN Y SERIES (15 EJERCICIOS)
-      // ============================================================
-      {
-        id: "C2-001",
-        category: "c2",
-        topic: "Integral Racional",
-        difficulty: "Hard",
-        problem: "Calcula $\\int \\frac{dx}{x^4+1}$.",
-        steps: [
-          "Factorizamos $x^4+1 = (x^2+1)^2 - 2x^2 = (x^2+\\sqrt{2}x+1)(x^2-\\sqrt{2}x+1)$.",
-          "Descomposición en fracciones simples: $\\frac{Ax+B}{...} + \\frac{Cx+D}{...}$.",
-          "Es largo. Truco: sumar y restar $x^2$ en numerador multiplicado.",
-          "Solución involucra $\\ln$ y $\\arctan$."
-        ],
-        solution: "$$ \\frac{1}{4\\sqrt{2}} \\ln \\frac{x^2+\\sqrt{2}x+1}{x^2-\\sqrt{2}x+1} + \\dots $$"
-      },
-      {
-        id: "C2-002",
-        category: "c2",
-        topic: "Integral Impropia",
-        difficulty: "Hard",
-        problem: "Estudia la convergencia de $\\int_0^\\infty \\frac{\\sin x}{x} dx$ (Integral de Dirichlet).",
-        steps: [
-          "En $0$ el límite es 1, no hay problema.",
-          "En $\\infty$: Convergencia condicional.",
-          "Dirichlet: $\\int \\sin x$ acotada, $1/x$ decrece a 0 $\\implies$ Converge.",
-          "Absoluta: $\\int |\\sin x|/x$ diverge (comparando con armónica)."
-        ],
-        solution: "$$ \\text{Converge a } \\pi/2 $$"
-      },
-      {
-        id: "C2-003",
-        category: "c2",
-        topic: "Volumen (Sólido)",
-        difficulty: "Medium",
-        problem: "Volumen generado por la región entre $y=x^2$ y $y=4$ al girar alrededor de $y=4$.",
-        steps: [
-          "Radio de giro $R(x) = 4 - x^2$.",
-          "Límites intersección: $x^2=4 \\Rightarrow x=\\pm 2$.",
-          "Método discos: $V = \\pi \\int_{-2}^2 (4-x^2)^2 dx$.",
-          "Simetría: $2\\pi \\int_0^2 (16 - 8x^2 + x^4) dx$.",
-          "$2\\pi [16x - \\frac{8}{3}x^3 + \\frac{1}{5}x^5]_0^2 = \\frac{512\\pi}{15}$."
-        ],
-        solution: "$$ \\frac{512\\pi}{15} $$"
-      },
-      {
-        id: "C2-004",
-        category: "c2",
-        topic: "Series Potencias",
-        difficulty: "Hard",
-        problem: "Suma de la serie $\\sum_{n=1}^\\infty n x^n$ para $|x|<1$.",
-        steps: [
-          "Sabemos $\\sum x^n = \\frac{1}{1-x}$.",
-          "Derivamos: $\\sum n x^{n-1} = \\frac{1}{(1-x)^2}$.",
-          "Multiplicamos por $x$: $\\sum n x^n = \\frac{x}{(1-x)^2}$."
-        ],
-        solution: "$$ \\frac{x}{(1-x)^2} $$"
-      },
-      {
-        id: "C2-005",
-        category: "c2",
-        topic: "EDO Lineal",
-        difficulty: "Medium",
-        problem: "Resuelve $y' + y\\tan x = \\cos x$.",
-        steps: [
-          "Factor integrante: $\\mu(x) = e^{\\int \\tan x dx} = e^{-\\ln(\\cos x)} = \\sec x$.",
-          "Multiplicamos: $\\sec x y' + y \\sec x \\tan x = 1$.",
-          "$(y \\sec x)' = 1$.",
-          "Integramos: $y \\sec x = x + C$.",
-          "$y = (x+C)\\cos x$."
-        ],
-        solution: "$$ y = x\\cos x + C\\cos x $$"
-      },
-      {
-        id: "C2-006",
-        category: "c2",
-        topic: "Longitud de Arco",
-        difficulty: "Hard",
-        problem: "Longitud de la astroide $x^{2/3} + y^{2/3} = a^{2/3}$.",
-        steps: [
-          "Parametrización: $x = a\\cos^3 t, y = a\\sin^3 t, t \\in [0, 2\\pi]$.",
-          "$x' = -3a\\cos^2 t \\sin t, y' = 3a\\sin^2 t \\cos t$.",
-          "$(x')^2 + (y')^2 = 9a^2 \\sin^2 t \\cos^2 t (\\cos^2 t + \\sin^2 t) = 9a^2 \\sin^2 t \\cos^2 t$.",
-          "Raíz: $3a |\\sin t \\cos t| = \\frac{3a}{2} |\\sin 2t|$.",
-          "Integral: $4 \\int_0^{\\pi/2} \\frac{3a}{2} \\sin 2t dt = 6a [-\\frac{\\cos 2t}{2}]_0^{\\pi/2} = 6a$."
-        ],
-        solution: "$$ 6a $$"
-      },
-      {
-        id: "C2-007",
-        category: "c2",
-        topic: "Criterios Series",
-        difficulty: "Hard",
-        problem: "Converge $\\sum (1 - \\cos(1/n))$?",
-        steps: [
-          "Usamos comparación asintótica.",
-          "$1 - \\cos u \\sim u^2/2$ cuando $u \\to 0$.",
-          "Aquí $u=1/n$, así que $a_n \\sim \\frac{1}{2n^2}$.",
-          "Como $\\sum 1/n^2$ converge (p-serie p=2), la original converge."
-        ],
-        solution: "$$ \\text{Converge} $$"
-      },
-      {
-        id: "C2-008",
-        category: "c2",
-        topic: "Área Polar",
-        difficulty: "Medium",
-        problem: "Área de un pétalo de la rosa $r = \\cos 3\\theta$.",
-        steps: [
-          "Pétalo: $-\\pi/6 \\le \\theta \\le \\pi/6$.",
-          "Área = $\\frac{1}{2} \\int r^2 d\\theta = \\frac{1}{2} \\int_{-\\pi/6}^{\\pi/6} \\cos^2 3\\theta d\\theta$.",
-          "Identidad: $\\cos^2 u = \\frac{1+\\cos 2u}{2}$.",
-          "$\\frac{1}{4} \\int (1 + \\cos 6\\theta) d\\theta = \\frac{1}{4} [\\theta + \\frac{\\sin 6\\theta}{6}]$.",
-          "Evaluando: $\\frac{1}{4}(\\frac{\\pi}{3} + 0) = \\frac{\\pi}{12}$."
-        ],
-        solution: "$$ \\pi/12 $$"
-      },
-      {
-        id: "C2-009",
-        category: "c2",
-        topic: "EDO Exacta",
-        difficulty: "Medium",
-        problem: "$(2xy + x^2)dx + (x^2 + y^2)dy = 0$.",
-        steps: [
-          "$M_y = 2x$, $N_x = 2x$. Es exacta.",
-          "$\\frac{\\partial f}{\\partial x} = 2xy + x^2 \\Rightarrow f = x^2y + x^3/3 + g(y)$.",
-          "$\\frac{\\partial f}{\\partial y} = x^2 + g'(y) = x^2 + y^2 \\Rightarrow g'(y) = y^2 \\Rightarrow g(y) = y^3/3$.",
-          "Solución: $x^2y + x^3/3 + y^3/3 = C$."
-        ],
-        solution: "$$ 3x^2y + x^3 + y^3 = K $$"
-      },
-      {
-        id: "C2-010",
-        category: "c2",
-        topic: "Integral Trigonométrica",
-        difficulty: "Hard",
-        problem: "$\\int \\sec^3 x dx$.",
-        steps: [
-          "Integración por partes: $u=\\sec x, dv=\\sec^2 x$.",
-          "$I = \\sec x \\tan x - \\int \\sec x \\tan^2 x dx$.",
-          "$\\tan^2 = \\sec^2 - 1 \\Rightarrow I = \\sec x \\tan x - \\int (\\sec^3 x - \\sec x)$.",
-          "$I = \\sec x \\tan x - I + \\ln|\\sec + \\tan|$.",
-          "$2I = \\dots \\Rightarrow I = \\frac{1}{2}(\\sec x \\tan x + \\ln|\\sec x + \\tan x|)$."
-        ],
-        solution: "$$ \\frac{1}{2}(\\sec x \\tan x + \\ln|\\sec + \\tan|) $$"
-      },
-      {
-        id: "C2-011",
-        category: "c2",
-        topic: "Serie Alternada",
-        difficulty: "Medium",
-        problem: "Error al aproximar $\\sum_{n=1}^\\infty \\frac{(-1)^{n+1}}{n^2}$ con 10 términos.",
-        steps: [
-          "Serie alternada convergente (Leibniz).",
-          "El error es menor que el primer término despreciado.",
-          "$|E| < a_{11} = \\frac{1}{11^2} = \\frac{1}{121}$.",
-          "$1/121 \\approx 0.008$."
-        ],
-        solution: "$$ < 0.0083 $$"
-      },
-      {
-        id: "C2-012",
-        category: "c2",
-        topic: "Centroide",
-        difficulty: "Medium",
-        problem: "Centroide del semicírculo $y=\\sqrt{r^2-x^2}$.",
-        steps: [
-          "Por simetría $\\bar{x}=0$.",
-          "$\\bar{y} = \\frac{1}{A} \\int_{-r}^r \\frac{1}{2}[f(x)]^2 dx$.",
-          "$A = \\pi r^2/2$. Integral: $\\frac{1}{2} \\int (r^2-x^2) = \\frac{1}{2}[r^2x - x^3/3]_{-r}^r = \\frac{2}{3}r^3$.",
-          "$\\bar{y} = \\frac{2}{\\pi r^2} \\frac{2}{3}r^3 = \\frac{4r}{3\\pi}$."
-        ],
-        solution: "$$ (0, \\frac{4r}{3\\pi}) $$"
-      },
-      {
-        id: "C2-013",
-        category: "c2",
-        topic: "EDO Bernoulli",
-        difficulty: "Hard",
-        problem: "$y' + y = y^2$.",
-        steps: [
-          "Bernoulli $n=2$. Cambio $u = y^{1-2} = y^{-1}$.",
-          "$u' = -y^{-2}y'$. Sustituimos.",
-          "$-u' + u = 1 \\Rightarrow u' - u = -1$.",
-          "Lineal. Sol: $u = 1 + Ce^x$.",
-          "$y = 1/(1+Ce^x)$."
-        ],
-        solution: "$$ y = \\frac{1}{1+Ce^x} $$"
-      },
-      {
-        id: "C2-014",
-        category: "c2",
-        topic: "Sustitución Weierstrass",
-        difficulty: "Hard",
-        problem: "$\\int \\frac{dx}{1+\\sin x}$.",
-        steps: [
-          "Cambio universal $t = \\tan(x/2)$. $dx = \\frac{2dt}{1+t^2}, \\sin x = \\frac{2t}{1+t^2}$.",
-          "$\\int \\frac{1}{1 + \\frac{2t}{1+t^2}} \\frac{2dt}{1+t^2} = \\int \\frac{2dt}{1+t^2+2t} = \\int \\frac{2dt}{(t+1)^2}$.",
-          "$= -\\frac{2}{t+1} = -\\frac{2}{\\tan(x/2)+1}$."
-        ],
-        solution: "$$ \\frac{-2}{1+\\tan(x/2)} + C $$"
-      },
-      {
-        id: "C2-015",
-        category: "c2",
-        topic: "Series (Raabe)",
-        difficulty: "Hard",
-        problem: "Converge $\\sum \\frac{1 \\cdot 3 \\cdots (2n-1)}{2 \\cdot 4 \\cdots (2n)}$.",
-        steps: [
-          "Cociente $a_{n+1}/a_n = \\frac{2n+1}{2n+2} \\to 1$. D'Alembert falla.",
-          "Raabe: $n(1 - \\frac{a_{n+1}}{a_n}) = n(1 - \\frac{2n+1}{2n+2}) = n(\\frac{1}{2n+2}) \\to 1/2$.",
-          "Como $L=1/2 < 1$, diverge."
-        ],
-        solution: "$$ \\text{Diverge} $$"
-      },
+            // ==========================================
+            // 2. PROPIEDADES MECÁNICAS (MEC) - 15 Ejercicios
+            // ==========================================
+            {
+                id: "MEC-001", category: "properties", topic: "Tensión Verdadera", difficulty: "Medium",
+                problem: "Acero traccionado. Carga 100 kN, alargamiento 10% (sin estricción). $d_0=12$ mm. Calcule $\\sigma_T$.",
+                steps: ["$A_0 = 113.1$ mm$^2$.", "$\\sigma_{ing} = 100000/113.1 = 884$ MPa.", "$\\sigma_T = \\sigma_{ing}(1+\\epsilon) = 884(1.1)$."],
+                solution: "$$ 972 \\text{ MPa} $$"
+            },
+            {
+                id: "MEC-002", category: "properties", topic: "Endurecimiento (Hollomon)", difficulty: "Hard",
+                problem: "$\\sigma = K\\epsilon^n$. Puntos: (0.05, 150 MPa), (0.2, 250 MPa). Calcule $n$.",
+                steps: ["$\\ln(250/150) = n \\ln(0.2/0.05)$.", "$0.51 = n(1.38)$."],
+                solution: "$$ n = 0.37 $$"
+            },
+            {
+                id: "MEC-003", category: "properties", topic: "Hall-Petch", difficulty: "Medium",
+                problem: "Latón: $\\sigma_y=100$ (d=0.05), $\\sigma_y=130$ (d=0.02). Calcule para d=0.01.",
+                steps: ["$100 = \\sigma_0 + k(4.47)$.", "$130 = \\sigma_0 + k(7.07)$.", "$k=11.5$. $\\sigma_0=48.4$.", "$\\sigma = 48.4 + 11.5(10)$."],
+                solution: "$$ 164 \\text{ MPa} $$"
+            },
+            {
+                id: "MEC-004", category: "properties", topic: "Resiliencia", difficulty: "Medium",
+                problem: "Acero $E=207$ GPa, $\\sigma_y=350$ MPa. Módulo de resiliencia $U_r$.",
+                steps: ["$U_r = \\sigma_y^2 / 2E$.", "$350^2 / 414000$."],
+                solution: "$$ 0.296 \\text{ MJ/m}^3 $$"
+            },
+            {
+                id: "MEC-005", category: "properties", topic: "Palanca (Fase Líquida)", difficulty: "Medium",
+                problem: "Cu-Ni 40% Ni a 1250°C. Líquidus 32%, Sólidus 45%. %Líquido?",
+                steps: ["$W_L = (45-40)/(45-32) = 5/13$."],
+                solution: "$$ 38.5\\% $$"
+            },
+            {
+                id: "MEC-006", category: "properties", topic: "Fracción Perlita", difficulty: "Hard",
+                problem: "Acero 0.35% C enfriado. Fracción perlita bajo 727°C.",
+                steps: ["$W_{perl} = W_{\\gamma} = (0.35-0.022)/(0.76-0.022)$."],
+                solution: "$$ 44.4\\% $$"
+            },
+            {
+                id: "MEC-007", category: "properties", topic: "Flexión Cerámica (3 pt)", difficulty: "Easy",
+                problem: "Barra $b=10, d=5, L=30$ mm. Rotura 500 N.",
+                steps: ["$\\sigma = 3FL / 2bd^2$.", "$15000 / 2(10)(25) = 15000/500$."],
+                solution: "$$ 30 \\text{ MPa} $$"
+            },
+            {
+                id: "MEC-008", category: "properties", topic: "Tensión Térmica", difficulty: "Medium",
+                problem: "Latón ($E=100$ GPa, $\\alpha=20\\mu$). $\\Delta T = +20^{\\circ}$C. Tensión fija.",
+                steps: ["$\\sigma = E\\alpha\\Delta T$.", "$100000(20\\times 10^{-6})(20)$."],
+                solution: "$$ 40 \\text{ MPa} $$"
+            },
+            {
+                id: "MEC-009", category: "properties", topic: "Conductividad Aleación", difficulty: "Medium",
+                problem: "Cu puro $\\rho=1.7\\times 10^{-8}$. Impurezas Ni $+1.5\\times 10^{-8}$/at%. Aleación 2% Ni.",
+                steps: ["$\\rho_{tot} = 1.7 + 3.0 = 4.7$.", "$\\sigma = 1/4.7\\times 10^{-8}$."],
+                solution: "$$ 2.13 \\times 10^7 \\text{ S/m} $$"
+            },
+            {
+                id: "MEC-010", category: "properties", topic: "Viscoelasticidad", difficulty: "Hard",
+                problem: "Polímero $\\tau=60$s. ¿Tiempo para relajar tensión al 50%?",
+                steps: ["$0.5 = \\exp(-t/60)$.", "$t = -60 \\ln(0.5)$."],
+                solution: "$$ 41.6 \\text{ s} $$"
+            },
+            {
+                id: "MEC-011", category: "properties", topic: "Cementita Proeutectoide", difficulty: "Hard",
+                problem: "Acero 1.2% C. Fracción $Fe_3C$ proeutectoide.",
+                steps: ["$W = (1.2-0.76)/(6.7-0.76) = 0.44/5.94$."],
+                solution: "$$ 7.4\\% $$"
+            },
+            {
+                id: "MEC-012", category: "properties", topic: "Dureza Vickers", difficulty: "Easy",
+                problem: "Carga 10kg, diagonal media 0.35 mm.",
+                steps: ["$HV = 1.854 P/d^2$.", "$1.854(10)/0.1225$."],
+                solution: "$$ 151 \\text{ HV} $$"
+            },
+            {
+                id: "MEC-013", category: "properties", topic: "Recuperación Elástica", difficulty: "Medium",
+                problem: "$\\sigma=400$ MPa, $E=200$ GPa, $\\epsilon_{tot}=0.005$. Deformación plástica?",
+                steps: ["$\\epsilon_{elas} = 400/200000 = 0.002$.", "$\\epsilon_p = 0.005 - 0.002$."],
+                solution: "$$ 0.003 $$"
+            },
+            {
+                id: "MEC-014", category: "properties", topic: "Coeficiente Poisson", difficulty: "Easy",
+                problem: "$\\\\epsilon_z = 0.004, \\epsilon_x = -0.0012$.",
+                steps: ["$\\nu = -(-0.0012)/0.004$."],
+                solution: "$$ 0.3 $$"
+            },
+            {
+                id: "MEC-015", category: "properties", topic: "Energía Charpy", difficulty: "Easy",
+                problem: "Masa 20kg. Cae 1m, sube 0.2m.",
+                steps: ["$\\Delta E = mg(h_1-h_2) = 20(9.81)(0.8)$."],
+                solution: "$$ 157 \\text{ J} $$"
+            },
 
-      // ============================================================
-      // CÁLCULO III: MULTIVARIABLE Y VECTORIAL (15 EJERCICIOS)
-      // ============================================================
-      {
-        id: "C3-001",
-        category: "c3",
-        topic: "Límites Multivariable",
-        difficulty: "Hard",
-        problem: "Analiza $\\lim_{(x,y)\\to(0,0)} \\frac{x^2 y}{x^4 + y^2}$.",
-        steps: [
-          "Trayectorias rectas $y=mx$: $\\frac{x^2(mx)}{x^4+m^2x^2} = \\frac{mx}{x^2+m^2} \\to 0$.",
-          "Trayectoria parábola $y=x^2$: $\\frac{x^2(x^2)}{x^4+(x^2)^2} = \\frac{x^4}{2x^4} = 1/2$.",
-          "Límites distintos $\\Rightarrow$ No existe."
-        ],
-        solution: "$$ \\text{No existe} $$"
-      },
-      {
-        id: "C3-002",
-        category: "c3",
-        topic: "Plano Tangente",
-        difficulty: "Medium",
-        problem: "Plano tangente a la superficie $z = x^2 - y^2$ en $(2,1,3)$.",
-        steps: [
-          "$f_x = 2x \\to 4$. $f_y = -2y \\to -2$.",
-          "Ecuación: $z - z_0 = f_x(x-x_0) + f_y(y-y_0)$.",
-          "$z - 3 = 4(x-2) - 2(y-1)$.",
-          "$4x - 2y - z = 3$."
-        ],
-        solution: "$$ 4x - 2y - z = 3 $$"
-      },
-      {
-        id: "C3-003",
-        category: "c3",
-        topic: "Multiplicadores Lagrange",
-        difficulty: "Hard",
-        problem: "Distancia mínima del origen a la superficie $xyz^2 = 2$.",
-        steps: [
-          "Minimizar $f = x^2+y^2+z^2$ sujeto a $g = xyz^2 - 2 = 0$.",
-          "$\\nabla f = \\lambda \\nabla g$: $(2x, 2y, 2z) = \\lambda(yz^2, xz^2, 2xyz)$.",
-          "Multiplicando por variables: $2x^2 = \\lambda xyz^2$, $2y^2 = \\lambda xyz^2$, $2z^2 = 2\\lambda xyz^2$.",
-          "$2x^2 = 2y^2 = z^2$. $z = \\pm x\\sqrt{2}$.",
-          "Sustituyendo en restricción: $x(x)(2x^2) = 2 \\Rightarrow x^4=1$.",
-          "Punto $(1,1,\\sqrt{2})$. Distancia $\\sqrt{1+1+2} = 2$."
-        ],
-        solution: "$$ 2 $$"
-      },
-      {
-        id: "C3-004",
-        category: "c3",
-        topic: "Integral Doble (Polar)",
-        difficulty: "Medium",
-        problem: "$\\int_{-\\infty}^\\infty e^{-x^2} dx$ usando integrales dobles.",
-        steps: [
-          "Sea $I = \\int e^{-x^2}$. $I^2 = \\iint e^{-(x^2+y^2)} dA$.",
-          "Polares: $\\int_0^{2\\pi} d\\theta \\int_0^\\infty e^{-r^2} r dr$.",
-          "$2\\pi [-\\frac{1}{2}e^{-r^2}]_0^\\infty = 2\\pi (0 - (-1/2)) = \\pi$.",
-          "$I = \\sqrt{\\pi}$."
-        ],
-        solution: "$$ \\sqrt{\\pi} $$"
-      },
-      {
-        id: "C3-005",
-        category: "c3",
-        topic: "Cambio Variable Triple",
-        difficulty: "Hard",
-        problem: "Volumen del elipsoide $\\frac{x^2}{a^2} + \\frac{y^2}{b^2} + \\frac{z^2}{c^2} = 1$.",
-        steps: [
-          "Cambio: $x=au, y=bv, z=cw$. Jacobiano $abc$.",
-          "Región se convierte en esfera unitaria $u^2+v^2+w^2=1$.",
-          "$V = \\iiint abc du dv dw = abc \\cdot \\text{Vol(Esfera)}$.",
-          "$abc \\cdot \\frac{4}{3}\\pi (1)^3$."
-        ],
-        solution: "$$ \\frac{4}{3}\\pi abc $$"
-      },
-      {
-        id: "C3-006",
-        category: "c3",
-        topic: "Campos Conservativos",
-        difficulty: "Medium",
-        problem: "Halla el potencial de $\\vec{F} = (2xy, x^2 + z^2, 2yz)$.",
-        steps: [
-          "$\\phi_x = 2xy \\Rightarrow \\phi = x^2y + g(y,z)$.",
-          "$\\phi_y = x^2 + g_y = x^2 + z^2 \\Rightarrow g_y = z^2 \\Rightarrow g = yz^2 + h(z)$.",
-          "$\\phi_z = 2yz + h'(z) = 2yz \\Rightarrow h' = 0$.",
-          "$\\phi = x^2y + yz^2 + C$."
-        ],
-        solution: "$$ \\phi = x^2y + yz^2 + C $$"
-      },
-      {
-        id: "C3-007",
-        category: "c3",
-        topic: "Teorema Green",
-        difficulty: "Hard",
-        problem: "Trabajo de $\\vec{F} = (e^x - y^3, \\cos y + x^3)$ sobre círculo unitario.",
-        steps: [
-          "Green: $\\iint (Q_x - P_y) dA$.",
-          "$Q_x = 3x^2$, $P_y = -3y^2$.",
-          "$\\iint (3x^2 + 3y^2) dA = 3 \\iint r^2 dA$.",
-          "Polares: $3 \\int_0^{2\\pi} \\int_0^1 r^2 r dr d\\theta$.",
-          "$3(2\\pi) [r^4/4]_0^1 = 6\\pi (1/4) = 3\\pi/2$."
-        ],
-        solution: "$$ 3\\pi/2 $$"
-      },
-      {
-        id: "C3-008",
-        category: "c3",
-        topic: "Teorema Stokes",
-        difficulty: "Hard",
-        problem: "Circulación de $\\vec{F} = (y, z, x)$ en la intersección de $x^2+y^2=1$ y $x+z=1$.",
-        steps: [
-          "Superficie $S$: Plano $z=1-x$ dentro del cilindro. Normal $\\vec{n} = (1,0,1)/\\sqrt{2}$ (hacia arriba).",
-          "$\\text{rot } \\vec{F} = (-1, -1, -1)$.",
-          "$\\iint (-1,-1,-1) \\cdot (1,0,1) dA_{xy}$ (proyección).",
-          "$\\iint (-1-1) dA_{xy} = -2 \\text{Área}(D)$.",
-          "Área círculo unitario $\\pi$. Resultado $-2\\pi$."
-        ],
-        solution: "$$ -2\\pi $$"
-      },
-      {
-        id: "C3-009",
-        category: "c3",
-        topic: "Teorema Divergencia",
-        difficulty: "Medium",
-        problem: "Flujo de $\\vec{F} = (x, y, z)$ a través de cualquier superficie cerrada $S$.",
-        steps: [
-          "$\\text{div } \\vec{F} = 1+1+1 = 3$.",
-          "$\\iint_S \\vec{F} \\cdot d\\vec{S} = \\iiint_V 3 dV = 3 \\text{Vol}(V)$."
-        ],
-        solution: "$$ 3 \\times \\text{Volumen} $$"
-      },
-      {
-        id: "C3-010",
-        category: "c3",
-        topic: "Regla Cadena (Árbol)",
-        difficulty: "Medium",
-        problem: "Si $z = f(u,v)$, $u=x+y, v=x-y$, halla $\\frac{\\partial z}{\\partial x} \\frac{\\partial z}{\\partial y}$.",
-        steps: [
-          "$z_x = z_u u_x + z_v v_x = z_u + z_v$.",
-          "$z_y = z_u u_y + z_v v_y = z_u - z_v$.",
-          "Producto: $(z_u + z_v)(z_u - z_v) = (z_u)^2 - (z_v)^2$."
-        ],
-        solution: "$$ (\\frac{\\partial z}{\\partial u})^2 - (\\frac{\\partial z}{\\partial v})^2 $$"
-      },
-      {
-        id: "C3-011",
-        category: "c3",
-        topic: "Derivada Direccional Max",
-        difficulty: "Medium",
-        problem: "Dirección de máximo crecimiento de $f(x,y,z) = xe^{yz}$ en $(1,0,2)$.",
-        steps: [
-          "Gradiente $\\nabla f = (e^{yz}, xze^{yz}, xye^{yz})$.",
-          "En $(1,0,2)$: $(e^0, 2e^0, 0) = (1, 2, 0)$.",
-          "Dirección: vector $(1,2,0)$ normalizado."
-        ],
-        solution: "$$ \\frac{1}{\\sqrt{5}}(1, 2, 0) $$"
-      },
-      {
-        id: "C3-012",
-        category: "c3",
-        topic: "Integral de Línea",
-        difficulty: "Medium",
-        problem: "Masa de un alambre helicoidal $\\vec{r}(t) = (\\cos t, \\sin t, t)$, $0\\le t \\le 2\\pi$, densidad $\\rho(x,y,z) = z$.",
-        steps: [
-          "$ds = |\\vec{r}'(t)| dt = |(-\\sin t, \\cos t, 1)| dt = \\sqrt{2} dt$.",
-          "$\\int_0^{2\\pi} t \\sqrt{2} dt = \\sqrt{2} [t^2/2]_0^{2\\pi}$.",
-          "$\\sqrt{2} (2\\pi^2) = 2\\sqrt{2}\\pi^2$."
-        ],
-        solution: "$$ 2\\sqrt{2}\\pi^2 $$"
-      },
-      {
-        id: "C3-013",
-        category: "c3",
-        topic: "Superficie Paramétrica",
-        difficulty: "Hard",
-        problem: "Área del toro $\\vec{r}(u,v) = ((R+r\\cos v)\\cos u, (R+r\\cos v)\\sin u, r\\sin v)$.",
-        steps: [
-          "Calculamos $\\vec{r}_u$ y $\\vec{r}_v$.",
-          "Producto cruz $|\\vec{r}_u \\times \\vec{r}_v| = r(R+r\\cos v)$.",
-          "Integral: $\\int_0^{2\\pi} \\int_0^{2\\pi} r(R+r\\cos v) du dv$.",
-          "$2\\pi r [Rv + r\\sin v]_0^{2\\pi} = 2\\pi r (2\\pi R) = 4\\pi^2 Rr$."
-        ],
-        solution: "$$ 4\\pi^2 Rr $$"
-      },
-      {
-        id: "C3-014",
-        category: "c3",
-        topic: "Hessiano",
-        difficulty: "Medium",
-        problem: "Clasifica extremos de $f = x^4 + y^4 - 4xy + 1$.",
-        steps: [
-          "Puntos críticos: $4x^3-4y=0, 4y^3-4x=0 \\Rightarrow y=x^3, x^9=x$.",
-          "Soluciones: $(0,0), (1,1), (-1,-1)$.",
-          "Hessiano $H = 12x^2 \\cdot 12y^2 - (-4)^2 = 144x^2y^2 - 16$.",
-          "$(0,0): H=-16$ (Silla).",
-          "$(1,1): H=128 > 0, f_{xx}=12 > 0$ (Mínimo)."
-        ],
-        solution: "$$ (0,0) \\text{ Silla}, (\\pm 1, \\pm 1) \\text{ Mínimos} $$"
-      },
-      {
-        id: "C3-015",
-        category: "c3",
-        topic: "Flujo (Cubo)",
-        difficulty: "Hard",
-        problem: "Flujo de $\\vec{F}=(x,y,z)$ a través de las caras del cubo unitario $[0,1]^3$.",
-        steps: [
-          "Por Divergencia: $\\iiint 3 dV = 3(1) = 3$.",
-          "Cálculo directo: 6 caras.",
-          "Caras $x=1$: $\\vec{F}\\cdot\\vec{i} = 1$. Área 1. Flujo 1.",
-          "Cara $x=0$: $\\vec{F}\\cdot(-\\vec{i}) = 0$.",
-          "Igual para $y, z$. Total $1+1+1 = 3$."
-        ],
-        solution: "$$ 3 $$"
-      }
-    ];
+            // ==========================================
+            // 3. CIVIL / CONCRETO (CIV) - 15 Ejercicios
+            // ==========================================
+            {
+                id: "CIV-001", category: "concrete", topic: "Ley de Abrams", difficulty: "Medium",
+                problem: "A $a/c=0.4$, $f=45$. A $a/c=0.6$, $f=25$. Estime $f$ para 0.5.",
+                steps: ["Interpolación logarítmica.", "$f \\approx 33$ MPa."],
+                solution: "$$ 33.3 \\text{ MPa} $$"
+            },
+            {
+                id: "CIV-002", category: "concrete", topic: "Diseño Mezcla (Vol Absoluto)", difficulty: "Hard",
+                problem: "1 $m^3$. 350kg Cem (3.15), 190kg Agua, 2% Aire. 60% Grava (2.7), 40% Arena (2.6). Peso Grava?",
+                steps: ["Vol Pasta+Aire = 0.321.", "Vol Áridos = 0.679.", "Vol Grava = 0.407.", "Peso = 0.407*2700."],
+                solution: "$$ 1100 \\text{ kg} $$"
+            },
+            {
+                id: "CIV-003", category: "concrete", topic: "Ajuste Humedad Arena", difficulty: "Medium",
+                problem: "1000 kg arena seca req. Humedad 5%, Abs 1%. Peso húmedo y agua aporte?",
+                steps: ["Peso = 1050 kg.", "Agua libre = 5-1=4%.", "Aporte = 40 kg."],
+                solution: "$$ 1050 \\text{ kg, } +40 \\text{ L agua} $$"
+            },
+            {
+                id: "CIV-004", category: "concrete", topic: "Módulo Finura Comb", difficulty: "Medium",
+                problem: "60% Arena A (2.4) + 40% Arena B (3.2).",
+                steps: ["$MF = 0.6(2.4) + 0.4(3.2) = 1.44 + 1.28$."],
+                solution: "$$ 2.72 $$"
+            },
+            {
+                id: "CIV-005", category: "concrete", topic: "Porosidad Concreto", difficulty: "Hard",
+                problem: "Msat=2400, Ms=2250, Msub=1350. Porosidad?",
+                steps: ["Vol aparente = 2400-1350 = 1050.", "Vol poros = 150.", "% = 150/1050."],
+                solution: "$$ 14.3\\% $$"
+            },
+            {
+                id: "CIV-006", category: "concrete", topic: "Módulo Elástico ACI", difficulty: "Easy",
+                problem: "$f'_c = 30$ MPa. Estime $E$.",
+                steps: ["$E = 4700\\sqrt{30}$."],
+                solution: "$$ 25.7 \\text{ GPa} $$"
+            },
+            {
+                id: "CIV-007", category: "concrete", topic: "Ensayo Brasileño", difficulty: "Medium",
+                problem: "Cilindro 150x300mm. Carga 150kN.",
+                steps: ["$f_t = 2P / \\pi LD$.", "$300000 / (300\\times 150\\pi)$."],
+                solution: "$$ 2.12 \\text{ MPa} $$"
+            },
+            {
+                id: "CIV-008", category: "concrete", topic: "Vacíos Agregado", difficulty: "Medium",
+                problem: "SG=2.65, Densidad granel 1600 kg/m3.",
+                steps: ["%V = (2650-1600)/2650."],
+                solution: "$$ 39.6\\% $$"
+            },
+            {
+                id: "CIV-009", category: "concrete", topic: "Reducción Agua", difficulty: "Easy",
+                problem: "Base 200 kg agua. Aditivo reduce 15%.",
+                steps: ["200 * 0.85."],
+                solution: "$$ 170 \\text{ kg} $$"
+            },
+            {
+                id: "CIV-010", category: "concrete", topic: "Columna Compuesta", difficulty: "Hard",
+                problem: "300x300. 4 barras 25mm ($A_s=1960$). $E_s/E_c=8$. P=1000kN. Carga acero?",
+                steps: ["$P_s = P \\frac{nA_s}{A_c+nA_s}$.", "$1000 \\frac{15680}{88040+15680}$."],
+                solution: "$$ 151 \\text{ kN} $$"
+            },
+            {
+                id: "CIV-011", category: "concrete", topic: "Calor Hidratación", difficulty: "Medium",
+                problem: "350 J/g. 100 m3 concreto, 300 kg cem/m3.",
+                steps: ["Masa = 30000 kg.", "E = 30000 * 350 kJ."],
+                solution: "$$ 10.5 \\text{ GJ} $$"
+            },
+            {
+                id: "CIV-012", category: "concrete", topic: "Carbonatación", difficulty: "Medium",
+                problem: "10mm en 4 años. ¿En 25 años?",
+                steps: ["$d = K\\sqrt{t}$. $K=5$.", "$5\\sqrt{25}$."],
+                solution: "$$ 25 \\text{ mm} $$"
+            },
+            {
+                id: "CIV-013", category: "concrete", topic: "Bulking Arena", difficulty: "Medium",
+                problem: "5L seco -> 6.2L húmedo.",
+                steps: ["(6.2-5)/5."],
+                solution: "$$ 24\\% $$"
+            },
+            {
+                id: "CIV-014", category: "concrete", topic: "Densidad Asfalto", difficulty: "Medium",
+                problem: "5% huecos, 5% betún(1.0), 90% árido(2.7). Densidad real?",
+                steps: ["Masa = 50 + 2430 = 2480. Vol=1."],
+                solution: "$$ 2480 \\text{ kg/m}^3 $$"
+            },
+            {
+                id: "CIV-015", category: "concrete", topic: "Granulometría", difficulty: "Easy",
+                problem: "Retenido acum tamiz X: 30%. %Pasa?",
+                steps: ["100-30."],
+                solution: "$$ 70\\% $$"
+            },
 
-    const modal = document.getElementById('modal');
-    let currentFilter = 'all';
+            // ==========================================
+            // 4. FALLO Y CORROSIÓN (FAI) - 15 Ejercicios
+            // ==========================================
+            {
+                id: "FAI-001", category: "failure", topic: "Tenacidad K1c", difficulty: "Medium",
+                problem: "$K_{Ic}=55$, grieta $a=3$mm, $Y=1.12$. Tensión rotura?",
+                steps: ["$\\sigma = 55 / (1.12 \\sqrt{\\pi 0.003})$."],
+                solution: "$$ 506 \\text{ MPa} $$"
+            },
+            {
+                id: "FAI-002", category: "failure", topic: "Fatiga (Miner)", difficulty: "Hard",
+                problem: "Vida 1: 10^5. Vida 2: 10^4. Consumido 50k ciclos en 1. Restante en 2?",
+                steps: ["Daño 1 = 0.5.", "Restante = 0.5.", "Ciclos 2 = 0.5 * 10000."],
+                solution: "$$ 5000 \\text{ ciclos} $$"
+            },
+            {
+                id: "FAI-003", category: "failure", topic: "Ley Paris", difficulty: "Hard",
+                problem: "$A=10^{-12}, m=3, \\Delta K=40$. da/dN?",
+                steps: ["$10^{-12}(64000)$ m/ciclo."],
+                solution: "$$ 6.4 \\times 10^{-5} \\text{ mm} $$"
+            },
+            {
+                id: "FAI-004", category: "failure", topic: "Larson-Miller", difficulty: "Hard",
+                problem: "1000h a 600°C (873K). LMP?",
+                steps: ["$873(20 + 3)$."],
+                solution: "$$ 20,079 $$"
+            },
+            {
+                id: "FAI-005", category: "failure", topic: "Velocidad Corrosión", difficulty: "Medium",
+                problem: "Fe, $10 \\mu A/cm^2$. mm/año?",
+                steps: ["0.0116 * 10."],
+                solution: "$$ 0.116 \\text{ mm/año} $$"
+            },
+            {
+                id: "FAI-006", category: "failure", topic: "Límite Fatiga", difficulty: "Easy",
+                problem: "$S_{ut} = 800$ MPa. Estime $S_e$.",
+                steps: ["0.5 * 800."],
+                solution: "$$ 400 \\text{ MPa} $$"
+            },
+            {
+                id: "FAI-007", category: "failure", topic: "Griffith (Vidrio)", difficulty: "Medium",
+                problem: "$\\gamma=0.3, E=70$ GPa, $a=1\\mu m$. $\\sigma_c$?",
+                steps: ["$\\sqrt{2E\\gamma / \\pi a}$."],
+                solution: "$$ 115 \\text{ MPa} $$"
+            },
+            {
+                id: "FAI-008", category: "failure", topic: "Pilling-Bedworth", difficulty: "Medium",
+                problem: "Mg -> MgO. PBR?",
+                steps: ["$V_{ox}/V_{met} = 0.81$. No protector."],
+                solution: "$$ 0.81 $$"
+            },
+            {
+                id: "FAI-009", category: "failure", topic: "Vida Fatiga S-N", difficulty: "Medium",
+                problem: "$\\sigma = 1600 N^{-0.12}$. A 400 MPa.",
+                steps: ["$0.25 = N^{-0.12}$."],
+                solution: "$$ 102,000 \\text{ ciclos} $$"
+            },
+            {
+                id: "FAI-010", category: "failure", topic: "Pila Galvánica", difficulty: "Easy",
+                problem: "Zn (-0.76V) vs Fe (-0.44V). Potencial?",
+                steps: ["0.32 V. Zn se corroe."],
+                solution: "$$ 0.32 \\text{ V} $$"
+            },
+            {
+                id: "FAI-011", category: "failure", topic: "Weibull", difficulty: "Hard",
+                problem: "10% fallo a 200, 50% a 300. Modulo m?",
+                steps: ["Pendiente log-log."],
+                solution: "$$ m \\approx 4.6 $$"
+            },
+            {
+                id: "FAI-012", category: "failure", topic: "Choque Térmico", difficulty: "Easy",
+                problem: "Alúmina vs Sílice. ¿Mejor?",
+                steps: ["Sílice (menor expansión)."],
+                solution: "$$ \\text{Sílice} $$"
+            },
+            {
+                id: "FAI-013", category: "failure", topic: "Creep Activación", difficulty: "Medium",
+                problem: "Velocidad x10 al pasar 500K a 600K. Q?",
+                steps: ["Arrhenius ratio."],
+                solution: "$$ 57.4 \\text{ kJ/mol} $$"
+            },
+            {
+                id: "FAI-014", category: "failure", topic: "Fragilización H", difficulty: "Easy",
+                problem: "BCC vs FCC. ¿Peor?",
+                steps: ["BCC (difusión rápida)."],
+                solution: "$$ \\text{BCC} $$"
+            },
+            {
+                id: "FAI-015", category: "failure", topic: "Factor K (Geometría)", difficulty: "Medium",
+                problem: "Grieta central placa inf. $2a=10$ cm, 100 MPa.",
+                steps: ["$100\\sqrt{\\pi 0.05}$."],
+                solution: "$$ 39.6 \\text{ MPa}\\sqrt{m} $$"
+            }
+        ];
 
-    function renderGrid(data) {
-      grid.innerHTML = data.map((ex, index) => `
-  <article class="exercise-card" style="animation-delay: ${index * 0.05}s" onclick="openModal('${ex.id}')">
-    <div class="card-header">
-      <div class="card-badges">
-        <span class="badge badge-diff-${ex.difficulty.toLowerCase()}">${ex.difficulty}</span>
-        <span class="badge badge-topic">${ex.topic}</span>
-      </div>
-      <span class="card-id">${ex.id}</span>
-    </div>
-    <div class="card-body">
-      <div class="problem-preview">${ex.problem}</div>
-    </div>
-    <div class="card-footer">
-      <span class="view-sol-btn">Ver Solución Completa</span>
-    </div>
-  </article>
-  `).join('');
+        const filters = [
+            { id: 'all', label: 'Todo', icon: '📚' },
+            { id: 'structure', label: 'Estructura', icon: '💎' },
+            { id: 'properties', label: 'Propiedades', icon: '⚙️' },
+            { id: 'concrete', label: 'Civil/Concreto', icon: '🏗️' },
+            { id: 'failure', label: 'Fallo', icon: '💥' },
+        ];
 
-      if (window.MathJax) MathJax.typesetPromise([grid]);
-    }
+        // --- STATE ---
+        let currentFilter = 'all';
+        let theme = 'light';
 
-    function openModal(id) {
-      const ex = exercises.find(e => e.id === id);
-      if (!ex) return;
+        // --- DOM ELEMENTS ---
+        const navContainer = document.getElementById('nav-container');
+        const mobileFilters = document.getElementById('mobile-filters');
+        const gridContainer = document.getElementById('exercise-grid');
+        const themeBtn = document.getElementById('theme-toggle');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalContent = document.getElementById('modal-content');
 
-      document.getElementById('modal-title').textContent = ex.topic;
-      document.getElementById('modal-id').textContent = ex.id;
-      document.getElementById('modal-problem').innerHTML = ex.problem;
+        // --- INITIALIZATION ---
+        function init() {
+            renderNavigation();
+            renderGrid();
+            updateProgress();
+            
+            // Check local storage for theme preference
+            if (localStorage.getItem('theme') === 'dark') {
+                toggleTheme();
+            }
+        }
 
-      const stepsContainer = document.getElementById('modal-steps');
-      stepsContainer.innerHTML = '<span class="section-label">Solución Paso a Paso</span>';
+        // --- RENDER FUNCTIONS ---
+        function renderNavigation() {
+            // Desktop Sidebar
+            navContainer.innerHTML = filters.map(f => `
+                <button 
+                    onclick="setFilter('${f.id}')"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 group w-full text-left
+                    ${currentFilter === f.id 
+                        ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-500' 
+                        : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}"
+                >
+                    <span class="text-lg opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform">${f.icon}</span>
+                    <span class="hidden lg:block">${f.label}</span>
+                </button>
+            `).join('');
 
-      ex.steps.forEach((step, i) => {
-        stepsContainer.innerHTML += `
-  <div class="step-card" style="animation-delay: ${i * 0.1}s">
-    <span class="step-number">PASO ${i + 1}</span>
-    <div class="step-content">${step}</div>
-  </div>
-  `;
-      });
+            // Mobile Filters
+            mobileFilters.innerHTML = filters.map(f => `
+                <button
+                    onclick="setFilter('${f.id}')"
+                    class="px-4 py-2 rounded-full border text-sm font-medium whitespace-nowrap transition-all
+                    ${currentFilter === f.id
+                        ? 'bg-brand-600 border-brand-600 text-white shadow-lg shadow-brand-500/20'
+                        : 'bg-white dark:bg-dark-card border-slate-200 dark:border-dark-border text-slate-500 dark:text-slate-400'}"
+                >
+                    ${f.label}
+                </button>
+            `).join('');
+        }
 
-      stepsContainer.innerHTML += `
-  <div class="final-answer">
-    <span class="final-label">Resultado Final</span>
-    <div class="final-math">${ex.solution}</div>
-  </div>
-  `;
+        function renderGrid() {
+            const filtered = currentFilter === 'all' 
+                ? exercises 
+                : exercises.filter(ex => ex.category === currentFilter);
 
-      modal.classList.add('active');
-      if (window.MathJax) MathJax.typesetPromise([modal]);
-    }
+            gridContainer.innerHTML = filtered.map((ex, idx) => {
+                const diffColor = getDifficultyColor(ex.difficulty);
+                return `
+                <article 
+                    onclick="openModal('${ex.id}')"
+                    class="group bg-white dark:bg-dark-card border border-slate-200 dark:border-dark-border rounded-2xl p-6 flex flex-col cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-slate-300 dark:hover:border-white/20 transition-all duration-300 animate-fadeInUp"
+                    style="animation-delay: ${idx * 0.02}s"
+                >
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${diffColor}">
+                                ${ex.difficulty}
+                            </span>
+                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 dark:bg-white/5 dark:text-slate-400 border border-slate-200 dark:border-white/10">
+                                ${ex.category.toUpperCase().slice(0,4)}
+                            </span>
+                        </div>
+                        <span class="font-mono text-xs text-slate-400">${ex.id}</span>
+                    </div>
 
-    function closeModal() {
-      modal.classList.remove('active');
-    }
+                    <div class="flex-1 mb-6">
+                        <h3 class="font-display font-bold text-lg mb-2 text-slate-800 dark:text-slate-100">${ex.topic}</h3>
+                        <div class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
+                            ${ex.problem}
+                        </div>
+                    </div>
 
-    function filterExercises(cat) {
-      currentFilter = cat;
+                    <div class="pt-4 border-t border-slate-100 dark:border-white/5 flex justify-between items-center text-brand-600 dark:text-brand-400 font-semibold text-sm">
+                        <span>Ver Solución</span>
+                        <span class="group-hover:translate-x-1 transition-transform">→</span>
+                    </div>
+                </article>
+                `;
+            }).join('');
 
-      // Update sidebar active state
-      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-      event.currentTarget.classList.add('active');
+            refreshMath();
+        }
 
-      const filtered = cat === 'all' ? exercises : exercises.filter(e => e.category === cat);
-      renderGrid(filtered);
-    }
+        function getDifficultyColor(diff) {
+            switch (diff) {
+                case 'Easy': return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400';
+                case 'Medium': return 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400';
+                case 'Hard': return 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400';
+                default: return 'bg-gray-100 text-gray-700';
+            }
+        }
 
-    function toggleTheme() {
-      const html = document.documentElement;
-      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    }
+        function updateProgress() {
+            document.getElementById('progress-text').innerText = `0/${exercises.length}`;
+            // Placeholder logic for progress bar
+        }
 
-    // Close modal on backdrop click
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
+        // --- INTERACTION ---
+        function setFilter(id) {
+            currentFilter = id;
+            renderNavigation();
+            renderGrid();
+        }
 
-    // Initial Render (Empty until data injected)
-    renderGrid(exercises);
+        // --- MODAL ---
+        function openModal(id) {
+            const ex = exercises.find(e => e.id === id);
+            if(!ex) return;
 
-  </script>
+            document.getElementById('modal-title').innerText = ex.topic;
+            document.getElementById('modal-id').innerText = `ID: ${ex.id}`;
+            document.getElementById('modal-problem').innerHTML = ex.problem;
+            document.getElementById('modal-solution').innerHTML = ex.solution;
+
+            const stepsContainer = document.getElementById('modal-steps');
+            stepsContainer.innerHTML = ex.steps.map((step, i) => `
+                <div class="p-5 bg-slate-50 dark:bg-white/5 rounded-xl border-l-4 border-brand-500 animate-slideInRight" style="animation-delay: ${i * 0.1}s">
+                    <span class="text-xs font-mono text-slate-400 dark:text-slate-500 mb-2 block">PASO ${i + 1}</span>
+                    <div class="text-slate-700 dark:text-slate-300">
+                        ${step}
+                    </div>
+                </div>
+            `).join('');
+
+            modalBackdrop.classList.remove('opacity-0', 'invisible', 'pointer-events-none');
+            modalContent.classList.remove('scale-95', 'translate-y-10');
+            modalContent.classList.add('scale-100', 'translate-y-0');
+
+            refreshMath();
+        }
+
+        function closeModal() {
+            modalBackdrop.classList.add('opacity-0', 'invisible', 'pointer-events-none');
+            modalContent.classList.remove('scale-100', 'translate-y-0');
+            modalContent.classList.add('scale-95', 'translate-y-10');
+        }
+
+        // Close modal on backdrop click
+        modalBackdrop.addEventListener('click', (e) => {
+            if(e.target === modalBackdrop) closeModal();
+        });
+
+        // --- THEME ---
+        themeBtn.addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeBtn.innerText = '☀️';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeBtn.innerText = '🌙';
+            }
+        }
+
+        // --- MATHJAX ---
+        function refreshMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                setTimeout(() => {
+                     window.MathJax.typesetPromise();
+                }, 10);
+            }
+        }
+
+        // Run
+        init();
+
+    </script>
 </body>
-
 </html>
