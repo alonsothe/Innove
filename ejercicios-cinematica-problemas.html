@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinemática Innove | Grand Master</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            chtml: { scale: 1.15 }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #f4f6f9;
+            --glass-panel: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text-main: #1d1d1f;
+            --text-muted: #6e6e73;
+            --accent-color: #2d3436;
+            
+            /* Gradientes */
+            --grad-text: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            --grad-bg: radial-gradient(at 0% 0%, rgba(162, 155, 254, 0.25) 0px, transparent 50%),
+                       radial-gradient(at 100% 100%, rgba(129, 236, 236, 0.25) 0px, transparent 50%),
+                       radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.5) 0px, transparent 50%);
+
+            /* Sombras */
+            --shadow-float: 0 25px 50px -12px rgba(0,0,0,0.12);
+            --shadow-card: 0 10px 25px -5px rgba(0,0,0,0.06);
+
+            /* Radios */
+            --radius-xl: 40px;
+            --radius-pill: 100px;
+            
+            /* Dificultad */
+            --col-eso: #00b894;
+            --col-bach: #0984e3;
+            --col-uni: #e84393;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0a0a0c;
+            --glass-panel: rgba(30, 30, 35, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f5f5f7;
+            --text-muted: #a1a1a6;
+            --accent-color: #ffffff;
+            --grad-text: linear-gradient(135deg, #ffffff 0%, #a1a1a6 100%);
+            --grad-bg: radial-gradient(at 0% 0%, rgba(108, 92, 231, 0.2) 0px, transparent 50%),
+                       radial-gradient(at 100% 100%, rgba(9, 132, 227, 0.2) 0px, transparent 50%);
+            --shadow-float: 0 25px 50px -12px rgba(0,0,0,0.7);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            background-image: var(--grad-bg);
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+            transition: background 0.4s;
+        }
+
+        /* ================= SUPER HEADER (ISLA FLOTANTE) ================= */
+        .header-wrapper {
+            position: sticky; top: 20px; z-index: 100;
+            display: flex; justify-content: center;
+            padding: 0 20px;
+            margin-bottom: 60px;
+        }
+
+        .glass-island {
+            background: var(--glass-panel);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 20px 35px;
+            width: 100%; max-width: 900px;
+            box-shadow: var(--shadow-float);
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Fila Superior - GRID para alineación perfecta */
+        .top-bar {
+            width: 100%; 
+            display: grid; 
+            grid-template-columns: 48px 1fr 48px; /* Izq | Centro | Der */
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(125,125,125,0.1); border: none;
+            display: grid; place-items: center; cursor: pointer;
+            color: var(--text-main); transition: transform 0.2s, background 0.2s;
+        }
+        .icon-btn:hover { background: rgba(125,125,125,0.2); transform: scale(1.1); }
+
+        .brand-title {
+            font-size: 1.8rem; font-weight: 800; letter-spacing: -0.8px;
+            background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Fila Inferior: Navegación Píldora - GRID para anchos iguales */
+        .nav-pills {
+            background: rgba(125,125,125,0.08);
+            padding: 5px; border-radius: var(--radius-pill);
+            display: grid; /* Cambiado a GRID para exactitud matemática */
+            grid-template-columns: repeat(4, 1fr); /* 4 columnas idénticas */
+            position: relative;
+            width: 100%; max-width: 550px;
+        }
+
+        .pill-btn {
+            border: none; background: transparent;
+            padding: 12px 0; border-radius: var(--radius-pill);
+            font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem;
+            color: var(--text-muted); cursor: pointer; position: relative; z-index: 2;
+            transition: color 0.3s;
+            text-align: center;
+        }
+
+        .pill-btn.active { color: var(--bg-body); }
+
+        /* Fondo Animado de la Pestaña */
+        .pill-bg {
+            position: absolute; top: 5px; bottom: 5px; left: 5px;
+            /* El truco: Ancho del 25% menos el padding visual */
+            width: calc(25% - 2.5px); 
+            background: var(--text-main);
+            border-radius: var(--radius-pill);
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        /* ================= GRID DE TARJETAS ================= */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer; display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -10px rgba(0,0,0,0.15);
+            background: rgba(255,255,255,0.9);
+        }
+        [data-theme="dark"] .card:hover { background: rgba(40,40,45,0.95); }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .icon-circle {
+            width: 65px; height: 65px; border-radius: 26px;
+            background: rgba(125,125,125,0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; 
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: transform 0.3s;
+        }
+        .card:hover .icon-circle { transform: rotate(12deg) scale(1.1); }
+
+        .level-pill {
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+            padding: 8px 14px; border-radius: 50px;
+            background: var(--pill-color); color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; color: var(--text-main); }
+        
+        .desc { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+
+        .btn-action {
+            width: 100%; padding: 14px; border-radius: 20px;
+            border: none; background: rgba(125,125,125,0.08); color: var(--text-main);
+            font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; justify-content: space-between; padding: 14px 24px;
+            font-size: 1rem;
+        }
+        
+        .card:hover .btn-action { background: var(--pill-color); color: white; }
+
+        /* ================= MODAL ================= */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.35); backdrop-filter: blur(20px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal {
+            background: var(--glass-panel); 
+            width: 95%; max-width: 850px; 
+            height: 90vh; 
+            border-radius: 40px; border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-float);
+            transform: scale(0.9); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex; flex-direction: column; overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+        .modal-overlay.active .modal { transform: scale(1); }
+
+        .modal-header {
+            padding: 30px 40px; border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .close-btn {
+            background: rgba(125,125,125,0.1); border: none; width: 40px; height: 40px;
+            border-radius: 50%; color: var(--text-main); cursor: pointer;
+            font-size: 1.4rem; display: grid; place-items: center; transition: 0.2s;
+        }
+        .close-btn:hover { background: #ff4757; color: white; transform: rotate(90deg); }
+
+        .modal-content { padding: 40px; overflow-y: auto; font-size: 1.1rem; }
+
+        .problem-statement {
+            font-size: 1.2rem; font-weight: 500; line-height: 1.6;
+            margin-bottom: 40px; padding: 30px; border-radius: 24px;
+            background: rgba(125,125,125,0.06); border: 1px solid var(--glass-border);
+        }
+
+        .step { margin-bottom: 35px; padding-left: 25px; border-left: 5px solid var(--pill-color); }
+        .step-title { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--pill-color); margin-bottom: 10px; }
+
+        @media (max-width: 600px) {
+            .glass-island { width: 95%; padding: 15px; border-radius: 30px; }
+            .brand-title { font-size: 1.4rem; }
+            .nav-pills { overflow-x: auto; display: flex; } /* En móvil volvemos a flex para scroll si hace falta */
+            .pill-bg { display: none; } 
+            .pill-btn.active { background: var(--text-main); color: var(--bg-body); }
+            .modal-content { padding: 20px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-wrapper">
+        <header class="glass-island">
+            <div class="top-bar">
+                <a href="fisica.html" class="icon-btn" title="Volver">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                </a>
+                <h1 class="brand-title">Cinemática Innove</h1>
+                <button class="icon-btn" onclick="toggleTheme()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+
+            <nav class="nav-pills">
+                <div class="pill-bg" id="pill-bg"></div>
+                <button class="pill-btn active" onclick="filter('all', 0)">Todo</button>
+                <button class="pill-btn" onclick="filter('eso', 1)">ESO</button>
+                <button class="pill-btn" onclick="filter('bach', 2)">Bachillerato</button>
+                <button class="pill-btn" onclick="filter('uni', 3)">Universidad</button>
+            </nav>
+        </header>
+    </div>
+
+    <main class="container">
+        <div class="grid" id="grid">
+            </div>
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="m-title" style="margin:0; font-weight:800; font-size:1.5rem;">Título del Problema</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-content" id="m-body"></div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= BASE DE DATOS HARDCORE ================= */
+        const db = [
+            // --- ESO (Conceptos Sólidos) ---
+            { 
+                id: "E-1", type: "eso", icon: "🚄", title: "Encuentro Diferido", 
+                desc: "Dos móviles se encuentran saliendo a distintos tiempos.",
+                text: "Un tren sale de A hacia B a 120 km/h. 30 minutos después, otro tren sale de A hacia B a 150 km/h. ¿A qué distancia de A se produce el alcance?",
+                steps: [
+                    { t: "Conversión de tiempo", c: "Retraso = 30 min = 0.5 h." },
+                    { t: "Ecuaciones de Posición", c: "$x_1 = 120t$ (Sale en t=0).<br>$x_2 = 150(t - 0.5)$ (Sale en t=0.5)." },
+                    { t: "Condición de Alcance", c: "$120t = 150(t - 0.5) \\implies 120t = 150t - 75 \\implies 30t = 75 \\implies t = 2.5h$." },
+                    { t: "Posición Final", c: "$x = 120(2.5) = 300 \\text{ km}$." }
+                ]
+            },
+            { 
+                id: "E-2", type: "eso", icon: "⛰️", title: "Caída Libre Profunda", 
+                desc: "Cálculo de altura basado en el sonido del impacto.",
+                text: "Se deja caer una piedra en un pozo profundo. El sonido del impacto se oye 3 segundos después de soltarla. ($v_{sonido} = 340 m/s$). Halla la profundidad $h$.",
+                steps: [
+                    { t: "Dos tiempos", c: "$t_{caida} + t_{sonido} = 3$." },
+                    { t: "Ecuaciones", c: "Caída: $h = 4.9 t_c^2$.<br>Sonido: $h = 340 t_s = 340(3 - t_c)$." },
+                    { t: "Sistema No Lineal", c: "$4.9t_c^2 = 1020 - 340t_c \\implies 4.9t_c^2 + 340t_c - 1020 = 0$." },
+                    { t: "Resolución", c: "$t_c \\approx 2.88s$. Profundidad $h = 4.9(2.88)^2 \\approx 40.6 \\text{ m}$." }
+                ]
+            },
+
+            // --- BACHILLERATO (Selectividad Difícil) ---
+            { 
+                id: "B-1", type: "bach", icon: "📐", title: "Parabólico en Plano Inclinado", 
+                desc: "Tiro parabólico impactando sobre una pendiente.",
+                text: "Se lanza un proyectil con $v_0$ horizontalmente desde la cima de un plano inclinado un ángulo $\\beta$ hacia abajo. Halla la distancia $d$ recorrida sobre el plano hasta el impacto.",
+                steps: [
+                    { t: "Coordenadas", c: "Origen en la cima. Plano: $y = -x \\tan\\beta$." },
+                    { t: "Trayectoria", c: "$x = v_0 t$.<br>$y = -\\frac{1}{2}gt^2$." },
+                    { t: "Intersección", c: "$-\\frac{1}{2}gt^2 = -(v_0 t) \\tan\\beta$.<br>Solución $t=0$ y $t = \\frac{2v_0 \\tan\\beta}{g}$." },
+                    { t: "Distancia d", c: "$x = v_0 t = \\frac{2v_0^2 \\tan\\beta}{g}$.<br>$d = \\frac{x}{\\cos\\beta} = \\frac{2v_0^2 \\sin\\beta}{g \\cos^2\\beta}$." }
+                ]
+            },
+            { 
+                id: "B-2", type: "bach", icon: "🎡", title: "Aceleración Variable", 
+                desc: "Movimiento circular con aceleración angular dependiente del tiempo.",
+                text: "Una partícula gira con $\\alpha(t) = 3t^2 \\text{ rad/s}^2$. Si $R=2m$ y parte del reposo, halla el módulo de la aceleración total en $t=2s$.",
+                steps: [
+                    { t: "Velocidad Angular", c: "$\\omega = \\int \\alpha dt = t^3$. En $t=2$, $\\omega = 8 \\text{ rad/s}$." },
+                    { t: "Aceleración Angular", c: "En $t=2$, $\\alpha = 3(4) = 12 \\text{ rad/s}^2$." },
+                    { t: "Componentes", c: "$a_t = \\alpha R = 12(2) = 24$.<br>$a_n = \\omega^2 R = 64(2) = 128$." },
+                    { t: "Total", c: "$a = \\sqrt{24^2 + 128^2} \\approx 130.2 \\text{ m/s}^2$." }
+                ]
+            },
+
+            // --- UNIVERSIDAD (Ingeniería Avanzada) ---
+            { 
+                id: "U-1", type: "uni", icon: "🌪️", title: "Arrastre Cuadrático", 
+                desc: "Ecuación diferencial no lineal $F_d = -cv^2$.",
+                text: "Un objeto de masa $m$ se lanza verticalmente hacia arriba con $v_0$ en un medio con resistencia $F = -kmv^2$. Halla la altura máxima.",
+                steps: [
+                    { t: "Newton", c: "Subiendo: $ma = -mg - kmv^2 \\implies a = -g(1 + \\frac{k}{g}v^2)$." },
+                    { t: "Regla de la Cadena", c: "$v \\frac{dv}{dy} = -g(1 + \\frac{k}{g}v^2)$." },
+                    { t: "Integración", c: "$\\int_0^{h_{max}} dy = -\\frac{1}{g} \\int_{v_0}^0 \\frac{v}{1 + \\frac{k}{g}v^2} dv$." },
+                    { t: "Resultado", c: "$h_{max} = \\frac{1}{2k} \\ln(1 + \\frac{k}{g}v_0^2)$." }
+                ]
+            },
+            { 
+                id: "U-2", type: "uni", icon: "🌀", title: "Sistemas no Inerciales", 
+                desc: "Aceleración de Coriolis y Arrastre en plataforma giratoria.",
+                text: "Una plataforma gira a $\\omega$ constante. Una partícula se mueve radialmente hacia fuera con $r(t) = vt$. Halla la fuerza total sobre la partícula.",
+                steps: [
+                    { t: "Acel. Relativa", c: "$\\vec{a}' = 0$ (v constante)." },
+                    { t: "Acel. Arrastre", c: "Centrípeta: $-\\omega^2 r \\hat{u}_r$." },
+                    { t: "Acel. Coriolis", c: "$2\\vec{\\omega} \\times \\vec{v}'$.<br>$2(\\omega \\hat{k}) \\times (v \\hat{u}_r) = 2\\omega v \\hat{u}_\\theta$." },
+                    { t: "Total", c: "$\\vec{a} = -\\omega^2 v t \\hat{u}_r + 2\\omega v \\hat{u}_\\theta$." }
+                ]
+            },
+            { 
+                id: "U-3", type: "uni", icon: "🧬", title: "Geometría Diferencial", 
+                desc: "Cálculo del triedro de Frenet (T, N, B) y curvatura.",
+                text: "Para la curva helicoidal $\\vec{r}(t) = (a\\cos t, a\\sin t, bt)$, demuestra que la curvatura $\\kappa$ es constante.",
+                steps: [
+                    { t: "Derivadas", c: "$\\vec{r}' = (-a\\sin t, a\\cos t, b)$. $|r'| = \\sqrt{a^2+b^2}$ (cte).<br>$\\vec{r}'' = (-a\\cos t, -a\\sin t, 0)$." },
+                    { t: "Producto Vectorial", c: "$\\vec{r}' \\times \\vec{r}'' = (ab\\sin t, -ab\\cos t, a^2)$." },
+                    { t: "Curvatura", c: "$\\kappa = \\frac{|r' \\times r''|}{|r'|^3} = \\frac{\\sqrt{a^2b^2 + a^4}}{(a^2+b^2)^{3/2}} = \\frac{a}{a^2+b^2}$." },
+                    { t: "Conclusión", c: "Al depender solo de $a$ y $b$, la curvatura es constante." }
+                ]
+            }
+        ];
+
+        /* ================= LÓGICA ================= */
+        const grid = document.getElementById('grid');
+        const modal = document.getElementById('modal');
+        const pillBg = document.getElementById('pill-bg');
+        const root = document.documentElement;
+
+        const styles = {
+            eso: { color: 'var(--col-eso)' },
+            bach: { color: 'var(--col-bach)' },
+            uni: { color: 'var(--col-uni)' }
+        };
+
+        function toggleTheme() {
+            const current = root.getAttribute('data-theme');
+            root.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+        }
+
+        function filter(type, index) {
+            // Animación de la píldora usando Grid
+            // Como es grid, cada celda es 25%. Sin embargo, translate funciona sobre el objeto.
+            // Movemos 100% de su propio ancho (que es 1 celda).
+            const offset = index * 100; 
+            pillBg.style.transform = `translateX(${offset}%)`;
+
+            document.querySelectorAll('.pill-btn').forEach((btn, i) => {
+                if (i === index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            render(type);
+        }
+
+        function render(filterType) {
+            grid.innerHTML = '';
+            const filtered = filterType === 'all' ? db : db.filter(e => e.type === filterType);
+
+            filtered.forEach((ex, i) => {
+                const style = styles[ex.type];
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.setProperty('--pill-color', style.color);
+                
+                // Animación de entrada
+                card.style.animation = `fadeUp 0.5s ease forwards ${i * 0.05}s`;
+                card.style.opacity = '0';
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="icon-circle">${ex.icon}</div>
+                        <span class="level-pill" style="background:${style.color}">${ex.type.toUpperCase()}</span>
+                    </div>
+                    <h3>${ex.title}</h3>
+                    <p class="desc">${ex.desc}</p>
+                    <button class="btn-action">
+                        <span>Ver Solución</span>
+                        <span>→</span>
+                    </button>
+                `;
+                
+                card.onclick = () => openModal(ex, style.color);
+                grid.appendChild(card);
+            });
+            
+            // Keyframes dinámicos
+            if (!document.getElementById('anim-css')) {
+                const s = document.createElement('style');
+                s.id = 'anim-css';
+                s.innerHTML = `@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }`;
+                document.head.appendChild(s);
+            }
+
+            MathJax.typesetPromise();
+        }
+
+        function openModal(ex, color) {
+            document.getElementById('m-title').innerText = ex.title;
+            const body = document.getElementById('m-body');
+            
+            body.innerHTML = `
+                <div class="problem-statement" style="border-color:${color}">
+                    ${ex.text}
+                </div>
+                ${ex.steps.map(s => `
+                    <div class="step" style="--pill-color: ${color}">
+                        <div class="step-title">${s.t}</div>
+                        <div>${s.c}</div>
+                    </div>
+                `).join('')}
+            `;
+            
+            modal.classList.add('active');
+            MathJax.typesetPromise();
+        }
+
+        function closeModal() { modal.classList.remove('active'); }
+        
+        // Cerrar con Escape
+        document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+        // Inicializar
+        render('all');
+
+    </script>
+</body>
+</html>
