@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinámica Innove | Master Suite</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            chtml: { scale: 1.15 }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            /* --- PALETA DINÁMICA (Cálida/Energética) --- */
+            --bg-body: #fdf2f2; /* Un tono crema/rosado muy suave */
+            --glass-panel: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text-main: #2d1b2e;
+            --text-muted: #865c6c;
+            --accent-color: #b33951;
+            
+            /* Gradientes Cálidos (Basado en tu imagen) */
+            --grad-text: linear-gradient(135deg, #b33951 0%, #e84393 100%);
+            --grad-bg: radial-gradient(at 0% 0%, rgba(255, 159, 67, 0.15) 0px, transparent 50%),
+                       radial-gradient(at 100% 100%, rgba(232, 67, 147, 0.15) 0px, transparent 50%),
+                       radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.8) 0px, transparent 50%);
+
+            /* Sombras */
+            --shadow-float: 0 25px 50px -12px rgba(179, 57, 81, 0.15);
+            --shadow-card: 0 10px 25px -5px rgba(0,0,0,0.06);
+
+            /* Radios */
+            --radius-xl: 40px;
+            --radius-pill: 100px;
+            
+            /* Dificultad */
+            --col-eso: #00b894;   /* Verde */
+            --col-bach: #e17055;  /* Naranja Intenso */
+            --col-uni: #d63031;   /* Rojo Rubí */
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1a0b10;
+            --glass-panel: rgba(45, 20, 30, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #fbe7ef;
+            --text-muted: #d4aeb8;
+            --accent-color: #ff7675;
+            --grad-text: linear-gradient(135deg, #ffffff 0%, #ff7675 100%);
+            --grad-bg: radial-gradient(at 0% 0%, rgba(232, 67, 147, 0.2) 0px, transparent 50%),
+                       radial-gradient(at 100% 100%, rgba(255, 159, 67, 0.1) 0px, transparent 50%);
+            --shadow-float: 0 25px 50px -12px rgba(0,0,0,0.7);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            background-image: var(--grad-bg);
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 100px;
+            overflow-x: hidden;
+            transition: background 0.4s;
+        }
+
+        /* ================= SUPER HEADER ================= */
+        .header-wrapper {
+            position: sticky; top: 20px; z-index: 100;
+            display: flex; justify-content: center;
+            padding: 0 20px;
+            margin-bottom: 60px;
+        }
+
+        .glass-island {
+            background: var(--glass-panel);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: 20px 35px;
+            width: 100%; max-width: 900px;
+            box-shadow: var(--shadow-float);
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar {
+            width: 100%; display: grid; grid-template-columns: 48px 1fr 48px; align-items: center;
+        }
+
+        .icon-btn {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(179, 57, 81, 0.08); border: none;
+            display: grid; place-items: center; cursor: pointer;
+            color: var(--text-main); transition: transform 0.2s, background 0.2s;
+        }
+        .icon-btn:hover { background: rgba(179, 57, 81, 0.15); transform: scale(1.1); }
+
+        .brand-title {
+            font-size: 1.8rem; font-weight: 800; letter-spacing: -0.8px;
+            background: var(--grad-text); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center; white-space: nowrap;
+        }
+
+        .nav-pills {
+            background: rgba(179, 57, 81, 0.05);
+            padding: 5px; border-radius: var(--radius-pill);
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            position: relative; width: 100%; max-width: 550px;
+        }
+
+        .pill-btn {
+            border: none; background: transparent;
+            padding: 12px 0; border-radius: var(--radius-pill);
+            font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem;
+            color: var(--text-muted); cursor: pointer; position: relative; z-index: 2;
+            transition: color 0.3s; text-align: center;
+        }
+
+        .pill-btn.active { color: var(--bg-body); } /* Texto blanco/claro sobre el fondo activo */
+
+        /* IMPORTANTE: El color de la píldora activa cambia para coincidir con el tema Dinámica */
+        .pill-bg {
+            position: absolute; top: 5px; bottom: 5px; left: 5px;
+            width: calc(25% - 2.5px);
+            background: var(--accent-color); /* Color de acento (rojo/rosa) */
+            border-radius: var(--radius-pill);
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(179, 57, 81, 0.3);
+        }
+
+        /* ================= GRID ================= */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer; display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -10px rgba(179, 57, 81, 0.15);
+            background: rgba(255,255,255,0.95);
+        }
+        [data-theme="dark"] .card:hover { background: rgba(50, 25, 35, 0.95); }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .icon-circle {
+            width: 65px; height: 65px; border-radius: 26px;
+            background: rgba(179, 57, 81, 0.05);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; 
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+            border: 1px solid rgba(179, 57, 81, 0.1);
+            transition: transform 0.3s;
+        }
+        .card:hover .icon-circle { transform: rotate(12deg) scale(1.1); background: rgba(179, 57, 81, 0.1); }
+
+        .level-pill {
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+            padding: 8px 14px; border-radius: 50px;
+            background: var(--pill-color); color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; color: var(--text-main); }
+        
+        .desc { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+
+        .btn-action {
+            width: 100%; padding: 14px; border-radius: 20px;
+            border: none; background: rgba(179, 57, 81, 0.05); color: var(--text-main);
+            font-weight: 700; cursor: pointer; transition: 0.2s;
+            display: flex; justify-content: space-between; padding: 14px 24px;
+            font-size: 1rem;
+        }
+        
+        .card:hover .btn-action { background: var(--pill-color); color: white; }
+
+        /* ================= MODAL ================= */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(45, 27, 46, 0.4); backdrop-filter: blur(20px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal {
+            background: var(--glass-panel); 
+            width: 95%; max-width: 900px; height: 90vh;
+            border-radius: 40px; border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-float);
+            transform: scale(0.9); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex; flex-direction: column; overflow: hidden;
+            backdrop-filter: blur(40px);
+        }
+
+        .modal-overlay.active .modal { transform: scale(1); }
+
+        .modal-header {
+            padding: 30px 40px; border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .close-btn {
+            background: rgba(179, 57, 81, 0.1); border: none; width: 40px; height: 40px;
+            border-radius: 50%; color: var(--text-main); cursor: pointer;
+            font-size: 1.4rem; display: grid; place-items: center; transition: 0.2s;
+        }
+        .close-btn:hover { background: var(--accent-color); color: white; transform: rotate(90deg); }
+
+        .modal-content { padding: 40px; overflow-y: auto; font-size: 1.1rem; }
+
+        .problem-statement {
+            font-size: 1.2rem; font-weight: 500; line-height: 1.6;
+            margin-bottom: 40px; padding: 30px; border-radius: 24px;
+            background: rgba(179, 57, 81, 0.04); border: 1px solid var(--glass-border);
+        }
+
+        .step { margin-bottom: 35px; padding-left: 25px; border-left: 5px solid var(--pill-color); }
+        .step-title { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; color: var(--pill-color); margin-bottom: 10px; }
+
+        @media (max-width: 600px) {
+            .glass-island { width: 95%; padding: 15px; border-radius: 30px; }
+            .brand-title { font-size: 1.4rem; }
+            .nav-pills { overflow-x: auto; display: flex; }
+            .pill-bg { display: none; } 
+            .pill-btn.active { background: var(--accent-color); color: white; }
+            .modal-content { padding: 20px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-wrapper">
+        <header class="glass-island">
+            <div class="top-bar">
+                <a href="fisica.html" class="icon-btn" title="Volver">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                </a>
+                <h1 class="brand-title">Dinámica Innove</h1>
+                <button class="icon-btn" onclick="toggleTheme()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+
+            <nav class="nav-pills">
+                <div class="pill-bg" id="pill-bg"></div>
+                <button class="pill-btn active" onclick="filter('all', 0)">Todo</button>
+                <button class="pill-btn" onclick="filter('eso', 1)">ESO</button>
+                <button class="pill-btn" onclick="filter('bach', 2)">Bachillerato</button>
+                <button class="pill-btn" onclick="filter('uni', 3)">Universidad</button>
+            </nav>
+        </header>
+    </div>
+
+    <main class="container">
+        <div class="grid" id="grid">
+            </div>
+    </main>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="m-title" style="margin:0; font-weight:800; font-size:1.5rem;">Título del Problema</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-content" id="m-body"></div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= DATABASE: DINÁMICA (NUEVO TEMA) ================= */
+        const db = [
+            // --- ESO (Fundamentos de Newton) ---
+            { 
+                id: "ESO-D1", type: "eso", icon: "🧳", title: "Caja con Rozamiento", 
+                desc: "Cálculo básico de fuerzas horizontales y fricción.",
+                text: "Arrastras una maleta de 20kg por un suelo horizontal con una fuerza de 100N. Si el coeficiente de rozamiento es $\\mu=0.3$, calcula la aceleración.",
+                steps: [
+                    { t: "Fuerza Normal", c: "$N = mg = 20(9.8) = 196 N$." },
+                    { t: "Fuerza de Rozamiento", c: "$F_r = \\mu N = 0.3(196) = 58.8 N$." },
+                    { t: "2ª Ley de Newton", c: "$F - F_r = ma \\implies 100 - 58.8 = 20a$." },
+                    { t: "Resultado", c: "$41.2 = 20a \\implies a = 2.06 \\text{ m/s}^2$." }
+                ]
+            },
+            { 
+                id: "ESO-D2", type: "eso", icon: "⚖️", title: "El Ascensor", 
+                desc: "Peso aparente y fuerzas verticales.",
+                text: "Una persona de 70kg está en un ascensor que sube acelerando a $2 m/s^2$. ¿Qué fuerza marca la báscula sobre la que está de pie?",
+                steps: [
+                    { t: "Diagrama de Fuerzas", c: "Normal ($N$) hacia arriba, Peso ($P$) hacia abajo. Aceleración positiva (arriba)." },
+                    { t: "Ecuación", c: "$N - P = ma \\implies N - mg = ma$." },
+                    { t: "Cálculo", c: "$N = m(g+a) = 70(9.8 + 2) = 70(11.8) = 826 N$." }
+                ]
+            },
+
+            // --- BACHILLERATO (Planos y Poleas) ---
+            { 
+                id: "BACH-D1", type: "bach", icon: "📐", title: "Plano Inclinado", 
+                desc: "Descomposición de fuerzas en pendiente con fricción.",
+                text: "Un bloque baja deslizando por un plano inclinado $30^\\circ$ con velocidad constante. Calcula el coeficiente de rozamiento dinámico $\\mu$.",
+                steps: [
+                    { t: "Condición de equilibrio", c: "Velocidad constante implica $a=0$. La suma de fuerzas es cero." },
+                    { t: "Ejes", c: "Eje X (movimiento): $P_x - F_r = 0$. Eje Y: $N - P_y = 0$." },
+                    { t: "Componentes", c: "$mg \\sin\\theta = \\mu N$. Como $N = mg \\cos\\theta$, entonces $mg \\sin\\theta = \\mu mg \\cos\\theta$." },
+                    { t: "Resultado", c: "$\\mu = \\tan\\theta = \\tan(30^\\circ) \\approx 0.577$." }
+                ]
+            },
+            { 
+                id: "BACH-D2", type: "bach", icon: "🏗️", title: "Máquina de Atwood", 
+                desc: "Sistema de dos masas conectadas por una polea.",
+                text: "Dos masas $m_1=2kg$ y $m_2=3kg$ cuelgan de una polea ideal. Calcula la aceleración del sistema y la tensión de la cuerda.",
+                steps: [
+                    { t: "Ecuaciones por cuerpo", c: "Masa 2 (baja): $m_2g - T = m_2a$.<br>Masa 1 (sube): $T - m_1g = m_1a$." },
+                    { t: "Sumando ecuaciones", c: "$m_2g - m_1g = (m_1+m_2)a$." },
+                    { t: "Aceleración", c: "$a = g \\frac{m_2-m_1}{m_1+m_2} = 9.8 \\frac{1}{5} = 1.96 \\text{ m/s}^2$." },
+                    { t: "Tensión", c: "$T = m_1(g+a) = 2(9.8+1.96) = 23.52 N$." }
+                ]
+            },
+
+            // --- UNIVERSIDAD (Mecánica Avanzada) ---
+            { 
+                id: "UNI-D1", type: "uni", icon: "⚙️", title: "Polea Masiva (Torque)", 
+                desc: "Dinámica de rotación con momento de inercia.",
+                text: "En una máquina de Atwood, la polea es un disco sólido de masa $M$ y radio $R$. Halla la aceleración lineal de las masas $m_1$ y $m_2$ ($m_2 > m_1$).",
+                steps: [
+                    { t: "Torque en la polea", c: "$\\tau = (T_2 - T_1)R = I\\alpha$. Con $I = \\frac{1}{2}MR^2$ y $\\alpha = a/R$." },
+                    { t: "Ecuaciones lineales", c: "$m_2g - T_2 = m_2a$<br>$T_1 - m_1g = m_1a$." },
+                    { t: "Sistema Completo", c: "Sumando todo: $(m_2 - m_1)g = (m_1 + m_2 + M/2)a$." },
+                    { t: "Resultado", c: "$a = g \\frac{m_2 - m_1}{m_1 + m_2 + M/2}$." }
+                ]
+            },
+            { 
+                id: "UNI-D2", type: "uni", icon: "🚀", title: "Masa Variable", 
+                desc: "Ecuación del cohete (Tsiolkovsky).",
+                text: "Un cohete expulsa gas a velocidad relativa $u$ constante. Si parte del reposo con masa $M_0$, halla su velocidad en función de la masa restante $m(t)$ en el espacio vacío.",
+                steps: [
+                    { t: "Conservación Momento", c: "$dp = 0$. $m dv + u dm = 0$ (donde $dm$ es negativo)." },
+                    { t: "Integración", c: "$\\int_0^v dv = -u \\int_{M_0}^m \\frac{dm}{m}$." },
+                    { t: "Resultado", c: "$v = -u \\ln(m/M_0) = u \\ln(M_0/m)$." }
+                ]
+            },
+            { 
+                id: "UNI-D3", type: "uni", icon: "⚛️", title: "Lagrangiano", 
+                desc: "Péndulo simple usando mecánica analítica.",
+                text: "Obtén la ecuación de movimiento de un péndulo simple de longitud $l$ usando las ecuaciones de Euler-Lagrange.",
+                steps: [
+                    { t: "Energías", c: "$T = \\frac{1}{2}ml^2\\dot{\\theta}^2$.<br>$V = mgl(1 - \\cos\\theta)$." },
+                    { t: "Lagrangiano L = T - V", c: "$L = \\frac{1}{2}ml^2\\dot{\\theta}^2 - mgl(1 - \\cos\\theta)$." },
+                    { t: "Euler-Lagrange", c: "$\\frac{d}{dt}(\\frac{\\partial L}{\\partial \\dot{\\theta}}) - \\frac{\\partial L}{\\partial \\theta} = 0$." },
+                    { t: "Resultado", c: "$ml^2\\ddot{\\theta} + mgl\\sin\\theta = 0 \\implies \\ddot{\\theta} + \\frac{g}{l}\\sin\\theta = 0$." }
+                ]
+            }
+        ];
+
+        /* ================= LÓGICA ================= */
+        const grid = document.getElementById('grid');
+        const modal = document.getElementById('modal');
+        const pillBg = document.getElementById('pill-bg');
+        const root = document.documentElement;
+
+        const styles = {
+            eso: { color: 'var(--col-eso)' },
+            bach: { color: 'var(--col-bach)' },
+            uni: { color: 'var(--col-uni)' }
+        };
+
+        function toggleTheme() {
+            const current = root.getAttribute('data-theme');
+            root.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+        }
+
+        function filter(type, index) {
+            // Animación de la píldora (Grid based)
+            const offset = index * 100; 
+            pillBg.style.transform = `translateX(${offset}%)`;
+
+            document.querySelectorAll('.pill-btn').forEach((btn, i) => {
+                if (i === index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            render(type);
+        }
+
+        function render(filterType) {
+            grid.innerHTML = '';
+            const filtered = filterType === 'all' ? db : db.filter(e => e.type === filterType);
+
+            filtered.forEach((ex, i) => {
+                const style = styles[ex.type];
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.setProperty('--pill-color', style.color);
+                
+                card.style.animation = `fadeUp 0.5s ease forwards ${i * 0.05}s`;
+                card.style.opacity = '0';
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="icon-circle">${ex.icon}</div>
+                        <span class="level-pill" style="background:${style.color}">${ex.type.toUpperCase()}</span>
+                    </div>
+                    <h3>${ex.title}</h3>
+                    <p class="desc">${ex.desc}</p>
+                    <button class="btn-action">
+                        <span>Ver Solución</span>
+                        <span>→</span>
+                    </button>
+                `;
+                
+                card.onclick = () => openModal(ex, style.color);
+                grid.appendChild(card);
+            });
+            
+            if (!document.getElementById('anim-css')) {
+                const s = document.createElement('style');
+                s.id = 'anim-css';
+                s.innerHTML = `@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }`;
+                document.head.appendChild(s);
+            }
+
+            MathJax.typesetPromise();
+        }
+
+        function openModal(ex, color) {
+            document.getElementById('m-title').innerText = ex.title;
+            const body = document.getElementById('m-body');
+            
+            body.innerHTML = `
+                <div class="problem-statement" style="border-color:${color}">
+                    ${ex.text}
+                </div>
+                ${ex.steps.map(s => `
+                    <div class="step" style="--pill-color: ${color}">
+                        <div class="step-title">${s.t}</div>
+                        <div>${s.c}</div>
+                    </div>
+                `).join('')}
+            `;
+            
+            modal.classList.add('active');
+            MathJax.typesetPromise();
+        }
+
+        function closeModal() { modal.classList.remove('active'); }
+        document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+        render('all');
+
+    </script>
+</body>
+</html>
